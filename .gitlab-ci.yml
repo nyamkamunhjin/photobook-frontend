@@ -1,29 +1,15 @@
 stages:
   - develoment
-  - frontend-development
-
 develoment:
   only:
     - master
   stage: develoment
   script:
     - docker login registry.fibo.cloud -p ${DOCKER_PWD} -u ${DOCKER_USERNAME}
-    - time DOCKER_BUILDKIT=1 docker build -t registry.fibo.cloud/exa/photobook-admin .
-    - docker ps --quiet --filter="name=photobook-admin" | xargs --no-run-if-empty docker rm -f
-    - docker push registry.fibo.cloud/exa/photobook-admin
-    - docker run -dt -p 83:80 --restart always --name photobook-admin registry.fibo.cloud/exa/photobook-admin
-    - docker image prune -f
-  tags:
-    - exa_fibo
-
-frontend-development:
-  only:
-    - front-end
-  stage: frontend-development
-  script:
-    - time DOCKER_BUILDKIT=1 docker build -t photobook-frontend .
+    - time DOCKER_BUILDKIT=1 docker build -t registry.fibo.cloud/exa/photobook-frontend .
     - docker ps --quiet --filter="name=photobook-frontend" | xargs --no-run-if-empty docker rm -f
-    - docker run -dt -p 84:80 --restart always --name photobook-frontend photobook-frontend
+    - docker push registry.fibo.cloud/exa/photobook-frontend
+    - docker run -dt -p 84:80 --restart always --name photobook-frontend registry.fibo.cloud/exa/photobook-frontend
     - docker image prune -f
   tags:
     - exa_fibo
