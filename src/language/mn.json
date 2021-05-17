@@ -1,0 +1,163 @@
+{
+  "site-name": "Support",
+  "powered_by": "Powered by",
+  "log-in": "Нэвтрэх",
+  "login": "Нэвтрэх",
+  "success!": "Амжилттай",
+  "loading!": "Уншиж байна",
+  "close": "Close",
+  "save": "Save",
+  "total-page": "Total page",
+  "delete-confirm-text": "Are you sure to delete?",
+  "true": "Yes",
+  "no": "No",
+
+  "create": "Create",
+  "delete": "Delete",
+  "update": "Update",
+
+  "name": "Name",
+  "code": "Code",
+  "empty": "Empty",
+  "is-show": "Show",
+  "is-freeze": "Freeze",
+  "key": "Key",
+  "settings": "Settings",
+
+  "categories": "Categories",
+  "category": "Category",
+
+  "layouts": "Layouts",
+  "layout": "Layout",
+
+  "layout_category": "Layout Category",
+  "layout_categories": "Layout Categories",
+
+  "layout_file": "Layout File",
+  "layout_files": "Layout Files",
+
+  "clipart": "Clipart",
+  "cliparts": "Cliparts",
+
+  "clipart_category": "Clipart Category",
+  "clipart_categories": "Clipart Categories",
+
+  "clipart_file": "Clipart File",
+  "clipart_files": "Clipart Files",
+
+  "mask": "Mask",
+  "masks": "Masks",
+
+  "mask_category": "Mask Category",
+  "mask_categories": "Mask Categories",
+
+  "mask_file": "Mask File",
+  "mask_files": "Mask Files",
+
+  "editor": "Editor",
+
+  "files": "Files",
+  "file": "File",
+
+  "background": "Background",
+  "backgrounds": "Backgrounds",
+
+  "background_category": "Background Category",
+  "background_categories": "Background Categories",
+
+  "background_file": "Background File",
+  "background_files": "Background Files",
+
+  "photobook": "Photobook",
+
+  "canvas": "Canvas",
+
+  "frame": "Frame",
+  "frames": "Frames",
+
+  "frame_category": "Frame Category",
+  "frame_categories": "Frame Categories",
+
+  "frame_file": "Frame File",
+  "frame_files": "Frame Files",
+
+  "log-out": "Log out",
+
+  "image_url": "URL",
+  "image_id": "Image ID",
+  "image": "Image",
+
+  "template": "Template",
+  "templates": "Templates",
+
+  "template_category": "Template Category",
+  "template_categories": "Template Categories",
+
+  "binding_type": "Binding Type",
+
+  "paper_size": "Paper Size",
+
+  "paper_material": "Paper Material",
+
+  "cover_material": "Cover Material",
+
+  "cover_type": "Cover Type",
+
+  "frame_material": "Frame Material",
+
+  "cover_material_color": "Cover Material Color",
+
+  "upload": "Upload",
+  "prompt.name": "Нэр оруулна уу",
+  "prompt.name.placeholder": "Нэр",
+
+  "home": "Home",
+
+  "type": "Type",
+  "brightness": "brightness",
+  "contrast": "Contrast",
+  "saturation": "Saturation",
+  "toolbox.deleteImage": "Remove image from the design",
+  "toolbox.effect": "Add a photo effect",
+  "toolbox.zoomIn": "Zoom In",
+  "toolbox.zoomOut": "Zoom Out",
+  "toolbox.zoomFit": "Fit the image with in the photo slot",
+  "toolbox.left": "Rotate Left",
+  "toolbox.right": "Rotate Right",
+  "toolbox.flit": "Flit Image",
+  "toolbox.redTrans": "Reduce transparency",
+  "toolbox.incTrans": "Increase transparency",
+  "toolbox.frame": "Frame",
+  "toolbox.forward": "Bring forward",
+  "toolbox.backward": "Bring backward",
+  "toolbox.delete": "Delete component",
+  "toolbox.trans": "Change the transparency of the component",
+  "toolbox.color": "Choose the color",
+  "toolbox.frameChange": "Change the frame style",
+  "toolbox.bold": "Bold font style",
+  "toolbox.italic": "Italic font style",
+  "toolbox.underlined": "Underlined font style",
+  "toolbox.align": "Align text left, right and center",
+  "toolbox.font": "Browse font",
+  "toolbox.fontSize": "Change the font size",
+  "slide": "Slide",
+  "slide.remove": "Remove",
+  "slide.duplicate": "Duplicate",
+  "slide.add_page": "Add page",
+  "slide.hide_buttons": "Hide buttons",
+  "slide.next": "Next",
+  "slide.prev": "Prev",
+  "slide.all": "All",
+  "slide.single": "Single",
+  "logout": "Logout",
+  "redo": "Redo",
+  "undo": "Undo",
+  "back": "Back",
+  "parent": "Parent",
+  "material": "Material",
+  "quantity": "Quantity",
+  "price": "Price",
+  "description": "Description",
+  "choose_source_to": "Choose source to",
+  "add_photos": "Add photos"
+}

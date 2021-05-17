@@ -1,0 +1,84 @@
+{
+  "extends": ["airbnb", "prettier", "prettier/react", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["prettier", "react-hooks", "@typescript-eslint"],
+  "rules": {
+    "import/no-useless-path-segments": "off",
+    "prettier/prettier": ["error"],
+    "semi": ["error", "never"],
+    "no-underscore-dangle": [0],
+    "no-unused-vars": [0],
+    "react/jsx-filename-extension": [
+      0,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "warn",
+      {
+        "devDependencies": true
+      }
+    ],
+    "no-useless-escape": "off",
+    "no-script-url": "off",
+    "indent": "off",
+    "react/jsx-indent": "off",
+    "react/jsx-indent-props": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/href-no-hash": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-template-curly-in-string": "off",
+    "react/prop-types": 0,
+    "react/prefer-stateless-function": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "react/jsx-props-no-spreading": "off",
+    "linebreak-style": 0,
+    "react/jsx-wrap-multilines": 0,
+    "react/no-danger": 0,
+    "react/forbid-prop-types": 0,
+    "no-use-before-define": 0,
+    "no-param-reassign": 0,
+    "import/no-unresolved": 0,
+    "no-console": 1,
+    "camelcase": "off",
+    "react/jsx-curly-newline": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/require-default-props": "off",
+    "import/extensions": [0],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
+    "react/destructuring-assignment": ["warn"],
+    "jsx-a11y/no-static-element-interactions": ["off"],
+    "jsx-a11y/click-events-have-key-events": ["off"],
+    "prefer-template": ["off"],
+    "@typescript-eslint/ban-types": ["off"],
+    "no-else-return": ["off"],
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/explicit-module-boundary-types": ["off"]
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "jsx": true,
+    "useJSXTextNode": true,
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "ignorePatterns": ["./node_modules"],
+  "globals": {
+    "localStorage": true,
+    "fetch": true,
+    "window": true,
+    "location": true,
+    "navigator": true,
+    "test": true,
+    "expect": true,
+    "document": true,
+    "FormData": true,
+    "File:": true,
+    "Blob": true,
+    "FileReader": true,
+    "XMLHttpRequest": true
+  }
+}
