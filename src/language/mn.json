@@ -185,5 +185,10 @@
   "missing.input": "Missing input",
   "paper_material.price": "Price",
   "paper_material.name": "Name",
-  "designer": "Designer"
+  "designer": "Designer",
+  "sign-in": "Sign in",
+  "sign-up": "Sign up",
+  "home": "Home",
+  "canvas": "Canvas",
+  "start_book": "Start book"
 }
