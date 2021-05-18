@@ -343,6 +343,21 @@ export interface UserInterface {
   token: string | null
 }
 
+export type User = {
+  id: number
+  email: string | null
+  password?: string | null
+  firstName: string | null
+  lastName: string | null
+  address: string | null
+  avatarUrl: string | null
+  createdAt: Date
+  updatedAt: Date
+  googleId: string | null
+  facebookId: string | null
+  role: string
+}
+
 export interface LayoutObject {
   top: number
   left: number

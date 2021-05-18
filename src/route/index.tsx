@@ -20,6 +20,11 @@ const LoadableLoader = (loader: any) =>
   })
 const routes: RouteInterface[] = [
   {
+    path: '/profile',
+    component: LoadableLoader(() => import('pages/profile')),
+    exact: true,
+  },
+  {
     path: '/product/photobook/template/:id',
     component: LoadableLoader(() => import('pages/product/photobook/template')),
     exact: true,
@@ -76,7 +81,7 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
-    path: '/photobook',
+    path: '/editor',
     component: LoadableLoader(() => import('pages/editor/editor')),
     exact: true,
   },
