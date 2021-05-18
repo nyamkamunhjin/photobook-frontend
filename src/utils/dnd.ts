@@ -14,8 +14,6 @@ export const remove = (list: any[], unique: string): any[] => {
 }
 
 export const copy = (source: any[], destination: any[], droppableSource: any, droppableDestination: any) => {
-  console.log('==> dest', destination)
-  console.log('--source', source)
   const sourceClone = Array.from(source)
   const destClone = Array.from(destination)
   const item = sourceClone[droppableSource.index]

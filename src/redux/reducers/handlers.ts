@@ -10,14 +10,20 @@ import {
   UPDATE_OBJECT,
 } from '../actions/types'
 
-const getProjectsHandler = (state: ProjectInterface, action: any) => {
+const setSlideDimensionHandler = (state: ProjectInterface, action: any) => {
+  const { payload } = action
+
+  const { bgStyles, slideWidth, slideHeight } = payload
   return {
     ...state,
-    projects: action.payload,
-    fetching: false,
+    bgStyles,
+    slideWidth,
+    slideHeight,
+    loading: false,
   }
 }
 
+// #region [ProjectHandlers]
 const updateProjectsHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
 
@@ -35,30 +41,8 @@ const setCurrentProjectHandler = (state: ProjectInterface, action: any) => {
   return {
     ...state,
     currentProject: action.payload,
-  }
-}
-
-const setSlideDimensionHandler = (state: ProjectInterface, action: any) => {
-  const { payload } = action
-
-  const { bgStyles, slideWidth, slideHeight } = payload
-  return {
-    ...state,
-    bgStyles,
-    slideWidth,
-    slideHeight,
     loading: false,
-  }
-}
-
-const addProjectHandler = (state: ProjectInterface, action: any) => {
-  const { payload } = action
-
-  return {
-    ...state,
-    projects: [...state.projects, payload],
-    currentProject: payload,
-    loading: false,
+    fetching: false,
   }
 }
 
@@ -77,6 +61,15 @@ const saveProjectHandler = (state: ProjectInterface, action: any) => {
   }
 }
 
+const saveProjectAttHandler = (state: ProjectInterface, action: any) => {
+  const { payload } = action
+  state.currentProject = { ...state.currentProject, ...payload }
+  return {
+    ...state,
+    loading: false,
+  }
+}
+
 const newSlideHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
   Insert(state.currentProject.slides, payload.slideIndex, payload.slide)
@@ -87,9 +80,12 @@ const newSlideHandler = (state: ProjectInterface, action: any) => {
 }
 
 const reOrderSlideHandler = (state: ProjectInterface, action: any) => {
-  const { payload } = action
+  const {
+    payload: { slides },
+  } = action
   console.log('SDAVE', action)
-  state.currentProject.slides = payload
+
+  state.currentProject.slides = slides
   return {
     ...state,
     loading: false,
@@ -108,13 +104,15 @@ const duplicateSlideHandler = (state: ProjectInterface, action: any) => {
 
 const deleteSlideHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
-  state.currentProject.slides = state.currentProject.slides.filter((slide: Slide) => slide.slideId !== payload)
+  state.currentProject.slides.splice(payload, 1)
   return {
     ...state,
     loading: false,
   }
 }
+// #region [ProjectHandlers]
 
+// #region [ObjectHandler]
 const loadObjectsHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
 
@@ -123,6 +121,7 @@ const loadObjectsHandler = (state: ProjectInterface, action: any) => {
     objects: payload,
   }
 }
+// #endregion [ObjectHandler]
 
 const loadContainersHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
@@ -132,7 +131,12 @@ const loadContainersHandler = (state: ProjectInterface, action: any) => {
     containers: payload,
   }
 }
-
+const clearProject = (state: ProjectInterface) => {
+  return {
+    ...state,
+    fetching: true,
+  }
+}
 const loadBackgroundsHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
 
@@ -564,17 +568,17 @@ const projectsErrorHandler = (state: ProjectInterface, action: any) => {
 }
 
 export default {
-  getProjectsHandler,
   updateProjectsHandler,
   setCurrentProjectHandler,
   setSlideDimensionHandler,
-  addProjectHandler,
   saveProjectHandler,
+  saveProjectAttHandler,
   newSlideHandler,
   deleteSlideHandler,
   loadObjectsHandler,
   loadContainersHandler,
   loadBackgroundsHandler,
+  clearProject,
   loadErrorHandler,
   updateContainerHandler,
   updateGroupContainerHandler,

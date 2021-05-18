@@ -1,8 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
-import { Button, Form, Grid, Modal, Spin } from 'antd'
+import { Button, Grid, Modal, Spin } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import { ModalProps } from 'antd/lib/modal'
-import { HorizonalLayout } from 'configs'
 import React from 'react'
 import { useIntl } from 'react-intl'
 
@@ -23,23 +22,16 @@ interface Props extends ModalProps {
 }
 
 const FormModal: React.FC<Props> = ({
-  form,
   name,
   children,
-  onFinish,
   loading,
   okText,
   cancelText,
   onCancel,
-  initialValues,
   type = 'default',
   formLoading,
-  formLayout = HorizonalLayout,
-  preserve,
   okDisable = false,
   cancelDisable = false,
-  onValuesChange,
-  onFieldsChange,
   ...props
 }) => {
   const intl = useIntl()

@@ -1,18 +1,31 @@
 export type DomType = HTMLElement
 
-export type ObjectType = 'image'
-export interface StyleType extends Omit<CSSStyleDeclaration, 'borderWidth' | 'left' | 'height' | 'top' | 'width'> {
+export type ObjectType = 'image' | 'object' | 'text' | 'shape' | ''
+export interface StyleType {
+  display?: string
   filterName?: string
   brightness?: number
-  borderWidth: number
+  borderWidth?: string
   contrast?: number
+  transform?: string
   saturation?: number
   rgb?: RGB
-  rotateAngle: number
-  top: number | string
-  width: number | string
-  height: number | string
-  left: number | string
+  rotateAngle?: number
+  top?: number | string
+  width?: number | string
+  height?: number | string
+  left?: number | string
+  opacity?: string
+  backgroundColor?: string
+  borderImage?: string
+  borderColor?: string
+  borderImageSource?: string
+  borderImageRepeat?: string
+  borderImageSlice?: number
+  maskImage?: string
+  WebkitMaskImage?: string
+  zIndex?: string
+  filter?: string
 }
 export interface RGB {
   r?: number
@@ -29,6 +42,20 @@ export interface PElement {
   height: number
   left?: string
   top?: string
+}
+
+export interface OElement {
+  w: number
+  h: number
+  l: number
+  t: number
+}
+
+export interface CollisionObject {
+  size: number
+  key: string
+  index: number
+  vertical: boolean
 }
 
 export interface Container {
@@ -52,16 +79,16 @@ export interface ObjectProps {
   maskStyle?: StyleType
   maskImage?: string
   textStyle?: StyleType
-  frameStyle: StyleType
+  frameStyle?: StyleType
   frameImage?: string
-  autogrowStyle?: StyleType
+  autogrowStyle?: { height: string }
   shapeStyle?: StyleType
   shapeClass?: string
-  imageUrl: string
+  imageUrl?: string
   placeholderStyle: StyleType
   style: StyleType
-  tempUrl: string
-  texts: string[]
+  tempUrl?: string
+  texts?: string[]
 }
 export interface PObject {
   className: string
@@ -70,7 +97,7 @@ export interface PObject {
   style: StyleType
 }
 
-export type FeatureType = 'frames' | 'backgrounds' | 'masks' | 'cliparts'
+export type FeatureType = 'frames' | 'backgrounds' | 'masks' | 'cliparts' | 'images' | 'layouts'
 export interface TemplateType {
   id: number
   name: string
@@ -100,21 +127,25 @@ export interface BindingType {
 export interface CoverType {
   id: number
   name: string
-  videoUrl?: string
-  imageUrl?: string
+  imageUrl: string
   tempUrl?: string
+  featureImageUrl: string
+  tempFeatureUrl?: string
   description?: string
   editable: boolean
   quantity: number
   price: number
+  videoUrl?: string
+  objects?: PObject[]
+  backgrounds?: BackgroundImage[]
   bindingTypes: BindingType[]
   coverMaterials: CoverMaterial[]
 }
 export interface FrameMaterial {
   id: number
   name: string
-  imageUrl: string
-  tempUrl: string
+  imageUrl?: string
+  tempUrl?: string
   description: string
   quantity: number
   price: number
@@ -124,10 +155,9 @@ export interface FrameMaterial {
 
 export interface PaperSize {
   id: number
-  size: string
-  imageUrl?: string
   width: number
   height: number
+  size: string
   description?: string
   quantity: number
   projects?: Project[]
@@ -162,10 +192,9 @@ export interface Category {
   id: number
   name: string
   parentId: number
-  templateTypeId?: number
-  templateType?: TemplateType
   parent?: Category
-  categories?: Category[] // child categories
+  templateType?: TemplateType
+  categories?: Category[]
 }
 
 export interface LayoutCategory {
@@ -193,19 +222,19 @@ export interface Slide {
 export interface Template {
   id: number
   name: string
-  imageUrl?: string
-  tempUrl?: string
-  featureImageUrl?: string
-  tempFeatureUrl?: string
   paperMaterialId: number
   paperSizeId: number
   coverTypeId: number
   bindingTypeId: number
   coverMaterialId: number
-  frameMaterialId: number
+  frameMaterialId?: number
   templateTypeId: number
-  price: number
-  description: string
+  price?: number
+  description?: string
+  imageUrl?: string
+  tempUrl?: string
+  featureImageUrl?: string
+  tempFeatureUrl?: string
   slides: Slide[]
   paperMaterial?: PaperMaterial
   paperSize?: PaperSize
@@ -230,6 +259,7 @@ export interface PaperMaterial {
   tempUrl?: string
   quantity: number
   price: number
+  subPaperMaterials: PaperMaterialPrice[]
   templateTypes: TemplateType[]
   paperSizes: PaperSize
   templates: Template[]
@@ -237,9 +267,8 @@ export interface PaperMaterial {
 }
 
 export interface Project {
-  id?: number
+  id: number
   name?: string
-  imageUrl?: string
   userId?: number
   paperMaterialId?: number
   paperSizeId?: number
@@ -269,10 +298,11 @@ export interface Project {
 export interface Image {
   id?: string
   imageUrl: string
-  imageType: string
-  imageId: string
-  tempUrl?: string
-  userId: string
+  tempUrl: string
+  public: boolean
+  type: string
+  userId: number
+  imageCategories?: ImageCategory[]
 }
 
 export interface BackgroundImage {
@@ -299,7 +329,7 @@ export interface EditorInterface {
   sidebarOpen: boolean
   backgroundEdit: boolean
   loading: boolean
-  type: string
+  type: FeatureType
 }
 export interface SettingsInterface {
   collapse: boolean
@@ -323,9 +353,9 @@ export interface LayoutObject {
 export interface LayoutInterface {
   id?: string
   name?: string
-  count?: number
-  index?: number
-  objects: LayoutObject[]
+  count: number
+  index: number
+  objects?: LayoutObject[]
   layoutCategories?: LayoutCategory[]
 }
 
@@ -340,26 +370,25 @@ export interface LayoutsInterface {
   layouts: LayoutInterface[]
 }
 export interface ProjectInterface {
-  projects: Project[]
   currentProject: Project
   undoHistory: HistoryInterface[]
   redoHistory: HistoryInterface[]
-  bgStyles: Object
+  bgStyles: StyleType[]
   slideHeight: number
   slideWidth: number
   slideIndex: number
   objects: PObject[]
   containers: Container[]
   backgrounds: BackgroundImage[]
-  layout: {
-    left: LayoutInterface
-    right: LayoutInterface
-  }
+  layout: FullLayout
   layouts: LayoutsInterface[]
   loading: boolean
   fetching: boolean
 }
-
+export interface FullLayout {
+  left: LayoutInterface
+  right: LayoutInterface
+}
 export interface BGInterface {
   'background-full': PElement
   'background-left': PElement
@@ -369,7 +398,7 @@ export interface BGInterface {
 export interface HistoryProps {
   object?: PObject
   objects?: PObject[]
-  layout?: LayoutInterface
+  layout?: FullLayout
   container?: Container
   containers?: Container[]
   background?: BackgroundImage
@@ -381,7 +410,7 @@ export interface HistoryInterface {
 }
 
 export interface ImageInterface {
-  images: string[]
+  images: Image[]
   loading: boolean
 }
 export interface RouteInterface {
@@ -405,6 +434,12 @@ export interface StateInterface {
   image: ImageInterface
   auth: UserInterface
   settings: SettingsInterface
+}
+
+export interface PaperMaterialPrice {
+  id: number
+  name: string
+  price: number
 }
 
 export type Locales = 'mn' | 'en'

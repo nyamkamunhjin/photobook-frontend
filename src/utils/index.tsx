@@ -19,8 +19,11 @@ export const moneyFormat: (money?: number) => string = (money) => {
   return new Intl.NumberFormat().format(money)
 }
 
-export const buildQuery = ({ pageSize, filters, sorter }: PaginatedParams[0], data: Object): string => {
+export const buildQuery = ({ pageSize, filters, sorter, current }: PaginatedParams[0], data: Object): string => {
   let query = `limit=${pageSize}`
+  if (current) {
+    query += `&offset=${(current - 1) * pageSize}`
+  }
   Object.entries(data).forEach(([key, value]) => {
     if (value && value.length > 0) {
       query += `&${key}=${value}`
@@ -109,4 +112,12 @@ export const debounce = (func: any, ms: any) => {
 
 export const Insert = (arr: any[], index: number, item: any) => {
   return arr.splice(index, 0, item)
+}
+
+export const ParseNumber = (num?: string | number) => {
+  if (!num) return 0
+  if (typeof num === 'number') {
+    return num
+  }
+  return Number(num.replace('px', ''))
 }

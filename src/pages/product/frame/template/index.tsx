@@ -1,7 +1,7 @@
 import { useRequest } from 'ahooks'
 import { message } from 'antd'
 import React, { FC, useState } from 'react'
-import { getFrameMaterial, getTemplate, listFrameMaterial, listPaperSize } from 'api'
+import { getTemplate, listFrameMaterial, listPaperSize } from 'api'
 import { FrameLayoutOptions, Loading } from 'components'
 import { useParams } from 'react-router'
 import WidthLimiter from 'layouts/main/components/width-limiter'

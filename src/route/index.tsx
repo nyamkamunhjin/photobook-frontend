@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'connected-react-router'
@@ -75,108 +76,8 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
-    path: '/category/layout',
-    component: LoadableLoader(() => import('pages/category/layout')),
-    exact: true,
-  },
-  {
-    path: '/category/frame',
-    component: LoadableLoader(() => import('pages/category/frame')),
-    exact: true,
-  },
-  {
-    path: '/category/clipart',
-    component: LoadableLoader(() => import('pages/category/clipart')),
-    exact: true,
-  },
-  {
-    path: '/category/background',
-    component: LoadableLoader(() => import('pages/category/background')),
-    exact: true,
-  },
-  {
-    path: '/category/template',
-    component: LoadableLoader(() => import('pages/category/template')),
-    exact: true,
-  },
-  {
-    path: '/category/mask',
-    component: LoadableLoader(() => import('pages/category/mask')),
-    exact: true,
-  },
-  {
-    path: '/files/layout',
-    component: LoadableLoader(() => import('pages/files/layout')),
-    exact: true,
-  },
-  {
-    path: '/files/frame',
-    component: LoadableLoader(() => import('pages/files/frame')),
-    exact: true,
-  },
-  {
-    path: '/files/clipart',
-    component: LoadableLoader(() => import('pages/files/clipart')),
-    exact: true,
-  },
-  {
-    path: '/files/background',
-    component: LoadableLoader(() => import('pages/files/background')),
-    exact: true,
-  },
-  {
-    path: '/files/mask',
-    component: LoadableLoader(() => import('pages/files/mask')),
-    exact: true,
-  },
-  {
-    path: '/material/binding-type',
-    component: LoadableLoader(() => import('pages/material/binding-type')),
-    exact: true,
-  },
-  {
-    path: '/material/paper-material',
-    component: LoadableLoader(() => import('pages/material/paper-material')),
-    exact: true,
-  },
-  {
-    path: '/material/paper-size',
-    component: LoadableLoader(() => import('pages/material/paper-size')),
-    exact: true,
-  },
-  {
-    path: '/material/cover-material',
-    component: LoadableLoader(() => import('pages/material/cover-material')),
-    exact: true,
-  },
-  {
-    path: '/material/cover-type',
-    component: LoadableLoader(() => import('pages/material/cover-type')),
-    exact: true,
-  },
-  {
-    path: '/material/frame-material',
-    component: LoadableLoader(() => import('pages/material/frame-material')),
-    exact: true,
-  },
-  {
-    path: '/material/cover-material-color',
-    component: LoadableLoader(() => import('pages/material/cover-material-color')),
-    exact: true,
-  },
-  {
     path: '/photobook',
-    component: LoadableLoader(() => import('pages/photobook/editor')),
-    exact: true,
-  },
-  {
-    path: '/photobook/layout',
-    component: LoadableLoader(() => import('pages/photobook/layout')),
-    exact: true,
-  },
-  {
-    path: '/photobook/cover',
-    component: LoadableLoader(() => import('pages/photobook/cover')),
+    component: LoadableLoader(() => import('pages/editor/editor')),
     exact: true,
   },
   // {
@@ -206,7 +107,7 @@ const Router: React.FC<RouterProps> = ({ history }) => {
     return () => {
       window.removeEventListener('storage', storageListener)
     }
-  }, [])
+  }, [dispatch, history])
 
   return (
     <ConnectedRouter history={history}>

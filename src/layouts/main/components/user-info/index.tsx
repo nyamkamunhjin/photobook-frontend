@@ -1,16 +1,14 @@
 import { LogoutOutlined } from '@ant-design/icons'
 import { Avatar, Button, Popover } from 'antd'
-import { useRouter } from 'components'
 import { useDispatch } from 'react-redux'
 import React from 'react'
 import { useIntl } from 'react-intl'
+import { LOGOUT } from 'redux/actions/types'
 import styles from './styles.module.scss'
-import { LOGOUT } from '../../../../redux/actions/types'
 
 const UserInfo: React.FC<unknown> = () => {
   const intl = useIntl()
   const dispatch = useDispatch()
-  const router = useRouter()
 
   return (
     <Popover

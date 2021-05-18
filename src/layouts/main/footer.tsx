@@ -2,11 +2,7 @@ import { FacebookFilled, InstagramFilled, YoutubeFilled } from '@ant-design/icon
 import React, { FC } from 'react'
 import WidthLimiter from './components/width-limiter'
 
-interface Props {
-  a?: string
-}
-
-const Footer: FC<Props> = (props) => {
+const Footer: FC = () => {
   return (
     <footer className=" h-80 bg-gray-50">
       <WidthLimiter className="flex items-center ">

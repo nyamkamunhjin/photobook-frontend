@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import './style.css'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { signUp } from 'api'
-import { REGISTER_FAIL, REGISTER_SUCCESS } from 'redux/actions/types'
+import { REGISTER_SUCCESS } from 'redux/actions/types'
 
 const Signup: React.FC = () => {
   const router = useRouter()

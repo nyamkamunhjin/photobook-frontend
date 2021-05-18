@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
 import { History } from 'history'

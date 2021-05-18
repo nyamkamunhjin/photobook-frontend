@@ -1,7 +1,7 @@
-import { API, Storage } from 'aws-amplify'
+import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category, FrameMaterial } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -83,47 +83,20 @@ export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
 // #endregion
 
 // #region [ImageCategory]
-export const listImageCategory = async (
-  type?: string,
-  params?: PaginatedParams[0],
-  data?: Record<string, unknown>,
-  offset = 0
-) => {
+export const listImageCategory = async (type?: string, params?: PaginatedParams[0], data?: Record<string, unknown>) => {
   let query = params && data ? buildQuery(params, data) : ''
   if (query.length > 0) {
     query += '&'
   }
   query += `type=${type}`
-  if (offset && params && params.current !== 1) {
-    query += `&offset=${JSON.stringify(offset)}`
-  }
 
   const response = await BaseRequest({
     url: `image-category?${query}`,
     method: 'GET',
   })
-  console.log(response)
 
   if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
   return response?.data
-}
-
-export const deleteImageCategory = async (data: object) => {
-  const response = await BaseRequest({
-    url: `image-category`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateImageCategory = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `image-category/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
 }
 
 export const getImageCategory = async (id: number) => {
@@ -134,34 +107,17 @@ export const getImageCategory = async (id: number) => {
   return response?.data
 }
 
-export const createImageCategory = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'image-category',
-    method: 'POST',
-    data,
-  })
-  return response?.status
-}
-
 // #endregion [ImageCategory]
 
 // #region [Image]
 
-export const listImage = async (
-  type?: string,
-  params?: PaginatedParams[0],
-  data?: Record<string, unknown>,
-  offset?: Image
-) => {
+export const listImage = async (type?: string, params?: PaginatedParams[0], data?: Record<string, unknown>) => {
   let query = params && data ? buildQuery(params, data) : ''
   if (type) {
     if (query.length > 0) {
       query += '&'
     }
     query += `type=${type}`
-  }
-  if (offset && params && params.current !== 1) {
-    query += `&offset=${JSON.stringify(offset)}`
   }
   const response = await BaseRequest({
     url: `image?${query}`,
@@ -183,6 +139,7 @@ export const deleteImage = async (data: object) => {
     method: 'DELETE',
     data,
   })
+
   return response
 }
 
@@ -209,7 +166,7 @@ export const createImage = async (data: Object) => {
     method: 'POST',
     data,
   })
-  return response?.status
+  return response?.data
 }
 
 // #endregion [Image]
@@ -239,24 +196,6 @@ export const listTemplate = async (params?: PaginatedParams[0], data?: Record<st
   return templates
 }
 
-export const deleteTemplate = async (data: object) => {
-  const response = await BaseRequest({
-    url: `template`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateTemplate = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `template/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getTemplate = async (id: number) => {
   const response = await BaseRequest({
     url: `template/${id}`,
@@ -268,16 +207,6 @@ export const getTemplate = async (id: number) => {
 
   return response?.data
 }
-
-export const createTemplate = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'template',
-    method: 'POST',
-    data,
-  })
-  return response?.status
-}
-// #endregion [Template]
 
 // #endregion [Template]
 
@@ -301,39 +230,12 @@ export const listTemplateCategory = async (
   return response?.data
 }
 
-export const deleteTemplateCategory = async (data: object) => {
-  const response = await BaseRequest({
-    url: `category`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateTemplateCategory = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `category/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getTemplateCategory = async (id: number) => {
   const response = await BaseRequest({
     url: `category/${id}`,
     method: 'GET',
   })
   return response?.data
-}
-
-export const createTemplateCategory = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'category',
-    method: 'POST',
-    data,
-  })
-  return response?.status
 }
 
 // #endregion [TemplateCategory]
@@ -362,24 +264,6 @@ export const listLayout = async (
   return response
 }
 
-export const deleteLayout = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'layout',
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateLayout = async (id: string, data: Object) => {
-  const response = await BaseRequest({
-    url: `layout/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getLayout = async (id: string): Promise<LayoutInterface | null> => {
   if (id.length === 0) return null
   const response = await BaseRequest({
@@ -387,15 +271,6 @@ export const getLayout = async (id: string): Promise<LayoutInterface | null> => 
     method: 'GET',
   })
   return response?.data
-}
-
-export const createLayout = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'layout',
-    method: 'POST',
-    data,
-  })
-  return response?.status
 }
 
 // #endregion [Layout]
@@ -420,39 +295,12 @@ export const listLayoutCategory = async (
   return response?.data
 }
 
-export const deleteLayoutCategory = async (data: object) => {
-  const response = await BaseRequest({
-    url: `layout-category`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateLayoutCategory = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `layout-category/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getLayoutCategory = async (id: number) => {
   const response = await BaseRequest({
     url: `layout-category/${id}`,
     method: 'GET',
   })
   return response?.data
-}
-
-export const createLayoutCategory = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'layout-category',
-    method: 'POST',
-    data,
-  })
-  return response?.status
 }
 
 // #endregion [LayoutCategory]
@@ -495,7 +343,16 @@ export const updateProject = async (id: number, data: Object) => {
   return response
 }
 
-export const getProject = async (id: number) => {
+export const updateProjectSlides = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `project/${id}/slides`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
+export const getProject = async (id: string) => {
   const response = await BaseRequest({
     url: `project/${id}`,
     method: 'GET',
@@ -540,24 +397,6 @@ export const listBindingType = async (params?: PaginatedParams[0], data?: Record
   return bindingTypes
 }
 
-export const deleteBindingType = async (data: object) => {
-  const response = await BaseRequest({
-    url: `binding-type`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateBindingType = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `binding-type/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getBindingType = async (id: number) => {
   const response = await BaseRequest({
     url: `binding-type/${id}`,
@@ -567,15 +406,6 @@ export const getBindingType = async (id: number) => {
   bindingType.tempUrl = await Storage.get(bindingType.imageUrl, { expires: 60 * 60 * 24 * 7 })
   bindingType.tempFeatureUrl = await Storage.get(bindingType.featureImageUrl, { expires: 60 * 60 * 24 * 7 })
   return bindingType
-}
-
-export const createBindingType = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'binding-type',
-    method: 'POST',
-    data,
-  })
-  return response
 }
 
 // #endregion [BindingType]
@@ -594,24 +424,6 @@ export const listPaperSize = async (params?: PaginatedParams[0], data?: Record<s
 
   if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
   return response?.data
-}
-
-export const deletePaperSize = async (data: object) => {
-  const response = await BaseRequest({
-    url: `paper-size`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updatePaperSize = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `paper-size/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
 }
 
 export const getPaperSize = async (id: number) => {
@@ -660,24 +472,6 @@ export const listCoverMaterial = async (
   return coverMaterials
 }
 
-export const deleteCoverMaterial = async (data: object) => {
-  const response = await BaseRequest({
-    url: `cover-material`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateCoverMaterial = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `cover-material/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getCoverMaterial = async (id: number) => {
   const response = await BaseRequest({
     url: `cover-material/${id}`,
@@ -723,24 +517,6 @@ export const listCoverType = async (params?: PaginatedParams[0], data?: Record<s
   return coverTypes
 }
 
-export const deleteCoverType = async (data: object) => {
-  const response = await BaseRequest({
-    url: `cover-type`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateCoverType = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `cover-type/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getCoverType = async (id: string) => {
   const response = await BaseRequest({
     url: `cover-type/${id}`,
@@ -754,15 +530,6 @@ export const getCoverType = async (id: string) => {
   coverType.tempFeatureUrl = await Storage.get(coverType.featureImageUrl, { expires: 60 * 60 * 24 * 7 })
 
   return response?.data
-}
-
-export const createCoverType = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'cover-type',
-    method: 'POST',
-    data,
-  })
-  return response
 }
 
 // #endregion [CoverType]
@@ -795,24 +562,6 @@ export const listPaperMaterial = async (
   return paperMaterials
 }
 
-export const deletePaperMaterial = async (data: object) => {
-  const response = await BaseRequest({
-    url: `paper-material`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updatePaperMaterial = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `paper-material/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getPaperMaterial = async (id: number) => {
   const response = await BaseRequest({
     url: `paper-material/${id}`,
@@ -821,15 +570,6 @@ export const getPaperMaterial = async (id: number) => {
   const material = response?.data
   material.tempUrl = await Storage.get(material.imageUrl, { expires: 60 * 60 * 24 * 7 })
   return material
-}
-
-export const createPaperMaterial = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'paper-material',
-    method: 'POST',
-    data,
-  })
-  return response
 }
 
 // #endregion [PaperMaterial]
@@ -862,24 +602,6 @@ export const listFrameMaterial = async (
   return frameMaterials
 }
 
-export const deleteFrameMaterial = async (data: object) => {
-  const response = await BaseRequest({
-    url: `frame-material`,
-    method: 'DELETE',
-    data,
-  })
-  return response
-}
-
-export const updateFrameMaterial = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `frame-material/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
 export const getFrameMaterial = async (id: number) => {
   const response = await BaseRequest({
     url: `frame-material/${id}`,
@@ -888,15 +610,6 @@ export const getFrameMaterial = async (id: number) => {
   const material = response?.data
   material.tempUrl = await Storage.get(material.imageUrl, { expires: 60 * 60 * 24 * 7 })
   return material
-}
-
-export const createFrameMaterial = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'frame-material',
-    method: 'POST',
-    data,
-  })
-  return response
 }
 
 // #endregion [FrameMaterial]
@@ -960,32 +673,6 @@ export const getCoverMaterialColor = async (id: number) => {
   const coverMaterialColor = response?.data
   coverMaterialColor.tempUrl = await Storage.get(coverMaterialColor.imageUrl, { expires: 60 * 60 * 24 * 7 })
   return coverMaterialColor
-}
-export const createCoverMaterialColor = async (data: Object) => {
-  const response = await BaseRequest({
-    url: 'cover-material-color',
-    method: 'POST',
-    data,
-  })
-  return response
-}
-
-export const updateCoverMaterialColor = async (id: number, data: Object) => {
-  const response = await BaseRequest({
-    url: `cover-material-color/${id}`,
-    method: 'PUT',
-    data,
-  })
-  return response
-}
-
-export const deleteCoverMaterialColor = async (data: object) => {
-  const response = await BaseRequest({
-    url: `cover-material-color`,
-    method: 'DELETE',
-    data,
-  })
-  return response
 }
 // #endregion [CoverMaterialColors]
 

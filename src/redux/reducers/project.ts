@@ -1,8 +1,6 @@
 import { ProjectInterface } from 'interfaces'
 import {
-  GET_PROJECTS,
   ADD_LAYOUT,
-  ADD_PROJECT,
   PROJECTS_ERROR,
   SAVE_PROJECT,
   NEW_SLIDE,
@@ -20,6 +18,7 @@ import {
   REORDER_SLIDE,
   SET_SLIDE_DIMENSION,
   SET_CURRENT_PROJECT,
+  SAVE_PROJECT_ATTR,
   UPDATE_CONTAINER,
   UPDATE_GROUP_CONTAINER,
   UPDATE_BACKGROUND,
@@ -27,12 +26,13 @@ import {
   UPDATE_OBJECT,
   UPDATE_PROJECT,
   DUPLICATE_SLIDE,
+  CLEAR_PROJECT,
 } from '../actions/types'
 import projectHandlers from './handlers'
 
-const defaultState: ProjectInterface = {
-  projects: [],
+export const defaultProject: ProjectInterface = {
   currentProject: {
+    id: 0,
     paperSizeId: 1,
     slides: [
       {
@@ -50,7 +50,7 @@ const defaultState: ProjectInterface = {
       },
     ],
   },
-  bgStyles: {},
+  bgStyles: [],
   slideWidth: 0,
   slideHeight: 0,
   slideIndex: 0,
@@ -69,6 +69,7 @@ const defaultState: ProjectInterface = {
       layouts: [
         {
           index: 0,
+          count: 4,
           objects: [
             { top: 0, width: 50, left: 0, height: 50, className: 'image-placeholder' },
             { top: 0, width: 50, left: 50, height: 50, className: 'image-placeholder' },
@@ -77,6 +78,7 @@ const defaultState: ProjectInterface = {
           ],
         },
         {
+          count: 4,
           index: 1,
           objects: [
             { top: 0, width: 50, left: 0, height: 55, className: 'image-placeholder' },
@@ -91,6 +93,7 @@ const defaultState: ProjectInterface = {
       count: 3,
       layouts: [
         {
+          count: 3,
           index: 0,
           objects: [
             { top: 0, width: 100, left: 0, height: 50, className: 'image-placeholder' },
@@ -99,6 +102,7 @@ const defaultState: ProjectInterface = {
           ],
         },
         {
+          count: 3,
           index: 1,
           objects: [
             { top: 0, width: 50, left: 0, height: 50, className: 'image-placeholder' },
@@ -112,6 +116,7 @@ const defaultState: ProjectInterface = {
       count: 2,
       layouts: [
         {
+          count: 2,
           index: 0,
           objects: [
             { top: 0, width: 100, left: 0, height: 50, className: 'image-placeholder' },
@@ -119,6 +124,7 @@ const defaultState: ProjectInterface = {
           ],
         },
         {
+          count: 2,
           index: 1,
           objects: [
             { top: 8, width: 80, left: 10, height: 40, className: 'image-placeholder' },
@@ -126,6 +132,7 @@ const defaultState: ProjectInterface = {
           ],
         },
         {
+          count: 2,
           index: 2,
           objects: [
             { top: 0, width: 50, left: 0, height: 100, className: 'image-placeholder' },
@@ -138,15 +145,18 @@ const defaultState: ProjectInterface = {
       count: 1,
       layouts: [
         {
+          count: 1,
           index: 0,
           objects: [{ top: 0, width: 100, left: 0, height: 100, className: 'image-placeholder' }],
         },
         {
           index: 1,
+          count: 1,
           objects: [{ top: 10, width: 80, left: 10, height: 80, className: 'image-placeholder' }],
         },
         {
           index: 2,
+          count: 1,
           objects: [{ top: 20, width: 60, left: 20, height: 60, className: 'image-placeholder' }],
         },
       ],
@@ -157,14 +167,13 @@ const defaultState: ProjectInterface = {
 }
 
 const handlers: any = {}
-handlers[GET_PROJECTS] = projectHandlers.getProjectsHandler
 handlers[UPDATE_PROJECT] = projectHandlers.updateProjectsHandler
 handlers[SET_CURRENT_PROJECT] = projectHandlers.setCurrentProjectHandler
 handlers[SET_SLIDE_DIMENSION] = projectHandlers.setSlideDimensionHandler
-handlers[ADD_PROJECT] = projectHandlers.addProjectHandler
 handlers[SAVE_PROJECT] = projectHandlers.saveProjectHandler
+handlers[SAVE_PROJECT_ATTR] = projectHandlers.saveProjectAttHandler
 handlers[NEW_SLIDE] = projectHandlers.newSlideHandler
-handlers[DUPLICATE_SLIDE] = projectHandlers.duplicateSlideHandler
+handlers[DUPLICATE_SLIDE] = projectHandlers.newSlideHandler
 handlers[REORDER_SLIDE] = projectHandlers.reOrderSlideHandler
 handlers[DELETE_SLIDE] = projectHandlers.deleteSlideHandler
 handlers[LOAD_OBJECTS] = projectHandlers.loadObjectsHandler
@@ -184,8 +193,9 @@ handlers[UNDO] = projectHandlers.undoHandler
 handlers[REDO] = projectHandlers.redoHandler
 handlers[SLIDES_ERROR] = projectHandlers.slidesErrorHandler
 handlers[PROJECTS_ERROR] = projectHandlers.projectsErrorHandler
+handlers[CLEAR_PROJECT] = projectHandlers.clearProject
 
-const project = (state = defaultState, action: { type: string; payload: any }) => {
+const project = (state = defaultProject, action: { type: string; payload: any }) => {
   const handler = handlers[action.type]
 
   if (handler) return handler(state, action)

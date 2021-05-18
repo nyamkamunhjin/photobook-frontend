@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { FC } from 'react'
 import Tippy from '@tippyjs/react/headless'
 import WidthLimiter from 'layouts/main/components/width-limiter'

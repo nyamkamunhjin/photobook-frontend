@@ -1,15 +1,12 @@
-import { createProject, listProject, updateProject as _updateProject } from 'api'
-import { API } from 'aws-amplify'
-import { BackgroundImage, Container, PObject, Project, Slide } from 'interfaces'
+import { createProject, getPaperSize, getProject, updateProject as _updateProject, updateProjectSlides } from 'api'
+import { BackgroundImage, Container, PaperSize, PObject, Project, Slide } from 'interfaces'
+import { generateDuplicatedSlide, generateNewSlide } from 'utils/transformer-lib'
 import {
-  GET_PROJECTS,
   UPDATE_PROJECT,
   PROJECTS_ERROR,
-  ADD_PROJECT,
   SAVE_PROJECT,
   SLIDES_ERROR,
   NEW_SLIDE,
-  DUPLICATE_SLIDE,
   DELETE_SLIDE,
   REDO,
   REDO_ERROR,
@@ -31,35 +28,28 @@ import {
   UPDATE_OBJECT,
   ADD_LAYOUT,
   REORDER_SLIDE,
+  SAVE_PROJECT_ATTR,
+  CLEAR_PROJECT,
 } from './types'
 
-// Get projects
-export const getProjects = () => async (dispatch: any) => {
+// #region [Project]
+export const getProjects = (id: string | null) => async (dispatch: any) => {
   try {
-    let projects = await listProject()
-    if (projects.length === 0) {
-      console.log('user has no project')
-      console.log('creating project')
-      const newProject = await createProject({ name: 'New Project', templateId: 1 })
-
-      console.log('creating first slide')
-      await _updateProject(newProject?.data.id, {
-        slide: {
-          name: 'slide 1',
-          objects: [],
-          containers: [],
-          backgrounds: [],
-        },
+    if (id === 'new') {
+      dispatch({ type: CLEAR_PROJECT })
+      const newProject = await createProject({
+        name: 'New Project',
+        templateId: 1,
+        paperSizeId: 1,
+        slides: [generateNewSlide()],
       })
-      projects = await listProject()
+      const project = await getProject(newProject?.data.id)
+      dispatch(setCurrentProject(project))
+    } else if (id) {
+      dispatch({ type: CLEAR_PROJECT })
+      const project = await getProject(id)
+      dispatch(setCurrentProject(project))
     }
-
-    dispatch({
-      type: GET_PROJECTS,
-      payload: projects,
-    })
-
-    dispatch(setCurrentProject(projects[0]))
   } catch (err) {
     dispatch({
       type: PROJECTS_ERROR,
@@ -67,17 +57,12 @@ export const getProjects = () => async (dispatch: any) => {
     })
   }
 }
-
-// updateProject
-export const updateProject = (projectId: number, props: { paperSize: string }) => async (dispatch: any) => {
+// update project
+export const updateProject = (projectId: number, props: { paperSizeId: number }) => async (dispatch: any) => {
   try {
-    await API.put('photobook', `/projects/${projectId}`, {
-      body: {
-        paperSize: props.paperSize,
-      },
-    })
-
-    dispatch(setSlideStyle(props.paperSize))
+    await _updateProject(projectId, { paperSizeId: props.paperSizeId })
+    const paperSize: PaperSize = await getPaperSize(props.paperSizeId)
+    dispatch(setSlideStyle(`${paperSize.width}x${paperSize.height}`))
 
     dispatch({
       type: UPDATE_PROJECT,
@@ -91,27 +76,12 @@ export const updateProject = (projectId: number, props: { paperSize: string }) =
   }
 }
 
-// Set current project
+// set current project
 export const setCurrentProject = (project: Project) => async (dispatch: any) => {
   try {
+    dispatch(setSlideStyle(`${project.paperSize?.width}x${project.paperSize?.height}`))
     dispatch({
       type: SET_CURRENT_PROJECT,
-      payload: project,
-    })
-    dispatch(setSlideStyle(project.paperSize?.size))
-  } catch (err) {
-    dispatch({
-      type: PROJECTS_ERROR,
-      payload: { msg: err },
-    })
-  }
-}
-
-// Add Project
-export const addProject = (project: Project) => async (dispatch: any) => {
-  try {
-    dispatch({
-      type: ADD_PROJECT,
       payload: project,
     })
   } catch (err) {
@@ -123,13 +93,10 @@ export const addProject = (project: Project) => async (dispatch: any) => {
 }
 
 // Save project
-export const saveProject = (projectId: number, updatedSlide: Slide) => async (dispatch: any) => {
-  console.log('saving project action')
+export const saveProject = (projectId: number, updatedSlide: Slide, slideIndex: number) => async (dispatch: any) => {
   try {
-    await API.put('photobook', `/projects/slide/${projectId}`, {
-      body: {
-        slide: updatedSlide,
-      },
+    await updateProjectSlides(projectId, {
+      update: [updatedSlide, slideIndex],
     })
 
     dispatch({
@@ -144,43 +111,63 @@ export const saveProject = (projectId: number, updatedSlide: Slide) => async (di
   }
 }
 
-// set bgStyle
-export const setSlideStyle = (paperSize = '14x11') => async (dispatch: any) => {
+export const saveProjectAttribute = (projectId: number, data: Object) => async (dispatch: any) => {
   try {
-    const [width, height] = paperSize.split('x') // 14x11
-    const slideWidth = parseFloat(width) * 100 * 2 + 30 // 30 is the book spine
-    const slideHeight = parseFloat(height) * 100 // 11 * 100 = 1100
-
-    const bgStyles = {
-      'background-full': {
-        left: 0 + 'px',
-        width: slideWidth + 'px',
-        height: slideHeight + 'px',
-      },
-      'background-left': {
-        left: 0,
-        width: slideWidth / 2 + 'px',
-        height: slideHeight + 'px',
-      },
-      'background-right': {
-        left: slideWidth / 2 + 'px',
-        width: slideWidth / 2 + 'px',
-        height: slideHeight + 'px',
-      },
-    }
-
+    await _updateProject(projectId, data)
     dispatch({
-      type: SET_SLIDE_DIMENSION,
-      payload: { bgStyles, slideWidth, slideHeight },
+      type: SAVE_PROJECT_ATTR,
+      payload: data,
     })
   } catch (err) {
-    console.error('LOAD Slide style', err)
     dispatch({
-      type: LOAD_ERROR,
+      type: PROJECTS_ERROR,
       payload: { msg: err },
     })
   }
 }
+// #endregion [Project]
+
+// #region [Slide]
+// set bgStyle
+export const setSlideStyle =
+  (paperSize = '14x11') =>
+  async (dispatch: any) => {
+    try {
+      console.log('paper sizeeeeeeeeee', paperSize)
+      const [width, height] = paperSize.split('x') // 14x11
+      const slideWidth = parseFloat(width) * 100 * 2 + 30 // 30 is the book spine
+      const slideHeight = parseFloat(height) * 100 // 11 * 100 = 1100
+
+      const bgStyles = {
+        'background-full': {
+          left: 0 + 'px',
+          width: slideWidth + 'px',
+          height: slideHeight + 'px',
+        },
+        'background-left': {
+          left: 0,
+          width: slideWidth / 2 + 'px',
+          height: slideHeight + 'px',
+        },
+        'background-right': {
+          left: slideWidth / 2 + 'px',
+          width: slideWidth / 2 + 'px',
+          height: slideHeight + 'px',
+        },
+      }
+
+      dispatch({
+        type: SET_SLIDE_DIMENSION,
+        payload: { bgStyles, slideWidth, slideHeight },
+      })
+    } catch (err) {
+      console.error('LOAD Slide style', err)
+      dispatch({
+        type: LOAD_ERROR,
+        payload: { msg: err },
+      })
+    }
+  }
 
 // loadObjects
 export const loadObjects = (objects: PObject[]) => async (dispatch: any) => {
@@ -199,7 +186,7 @@ export const loadObjects = (objects: PObject[]) => async (dispatch: any) => {
 }
 
 // loadContainers
-export const loadContainers = (containers: Object[]) => async (dispatch: any) => {
+export const loadContainers = (containers: Container[]) => async (dispatch: any) => {
   try {
     dispatch({
       type: LOAD_CONTAINERS,
@@ -231,19 +218,16 @@ export const loadBackgrounds = (backgrounds: Object[]) => async (dispatch: any) 
 }
 
 // Add new slide
-export const addNewSlide = (slideIndex: number, projectId: number) => async (dispatch: any) => {
+export const addNewSlide = (projectId: number, slideIndex: number) => async (dispatch: any) => {
   try {
-    const res = await API.post('photobook', `/projects/slide/${projectId}`, {
-      body: {
-        slide: {
-          name: 'slide',
-        },
-      },
+    const newSlide = generateNewSlide()
+    await updateProjectSlides(projectId, {
+      insert: [newSlide, slideIndex + 1],
     })
 
     dispatch({
       type: NEW_SLIDE,
-      payload: { slide: res.slide, slideIndex },
+      payload: { slide: newSlide, slideIndex: slideIndex + 1 },
     })
   } catch (err) {
     dispatch({
@@ -253,11 +237,15 @@ export const addNewSlide = (slideIndex: number, projectId: number) => async (dis
   }
 }
 // Duplicate slide
-export const duplicateSlide = (projectId: number, slideId: string) => async (dispatch: any) => {
+export const duplicateSlide = (projectId: number, slideIndex: number, slide: Slide) => async (dispatch: any) => {
   try {
+    const newSlide = generateDuplicatedSlide(slide)
+    await updateProjectSlides(projectId, {
+      insert: [newSlide, slideIndex + 1],
+    })
     dispatch({
-      type: DUPLICATE_SLIDE,
-      payload: slideId,
+      type: NEW_SLIDE,
+      payload: { slide: newSlide, slideIndex: slideIndex + 1 },
     })
   } catch (err) {
     dispatch({
@@ -268,11 +256,16 @@ export const duplicateSlide = (projectId: number, slideId: string) => async (dis
 }
 
 // reorder slide
-export const reOrderSlide = (slides: Slide[]) => async (dispatch: any) => {
+export const reOrderSlide = (projectId: number, slides: Slide[]) => async (dispatch: any) => {
   try {
+    await _updateProject(projectId, {
+      slides,
+    })
     dispatch({
       type: REORDER_SLIDE,
-      payload: slides,
+      payload: {
+        slides,
+      },
     })
   } catch (err) {
     dispatch({
@@ -283,17 +276,14 @@ export const reOrderSlide = (slides: Slide[]) => async (dispatch: any) => {
 }
 
 // delete slide
-export const deleteSlide = (projectId: number, slideId: string) => async (dispatch: any) => {
+export const deleteSlide = (projectId: number, slideIndex: number) => async (dispatch: any) => {
   try {
-    await API.del('photobook', `/projects/slide/${projectId}`, {
-      body: {
-        slideId,
-      },
+    await updateProjectSlides(projectId, {
+      pop: slideIndex,
     })
-
     dispatch({
       type: DELETE_SLIDE,
-      payload: slideId,
+      payload: slideIndex,
     })
   } catch (err) {
     dispatch({
@@ -414,8 +404,6 @@ export const addLayout = (props: { objects: Object[] }) => async (dispatch: any)
       payload: props,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },

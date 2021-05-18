@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect } from 'react'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 import { message, RadioChangeEvent } from 'antd'
 import { MenuClickEventHandler } from 'rc-menu/lib/interface'

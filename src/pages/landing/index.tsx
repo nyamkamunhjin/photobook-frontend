@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import React from 'react'
 import './style.scss'
-import { Features, Hero, ImageCarousel, ShowCaseProducts, SocialProof } from 'components'
+import { Features, Hero, ImageCarousel, ShowCaseProducts, SocialProof } from 'page-components/landing-page'
 
 const tempHeroData = [
   {

@@ -1,6 +1,5 @@
 import { createImage, listImage } from 'api'
-import { API, Storage } from 'aws-amplify'
-import { Image } from 'interfaces'
+import { Storage } from 'aws-amplify'
 import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR } from './types'
 
 // Get images
@@ -12,7 +11,6 @@ export const getImages = () => async (dispatch: any) => {
       payload: images,
     })
   } catch (err) {
-    console.log(err)
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: err },
@@ -21,29 +19,25 @@ export const getImages = () => async (dispatch: any) => {
 }
 
 // Add image
-export const addImage = (imageUrl: string, type: string) => async (dispatch: any) => {
-  try {
-    await createImage({ imageUrl })
-    let image = await API.post('photobook', '/images', {
-      body: {
-        imageUrl,
-        type,
-      },
-    })
+export const addImage =
+  (imageUrl: string, type = 'images') =>
+  async (dispatch: any) => {
+    try {
+      let image = await createImage({ imageUrl, type })
 
-    image = {
-      ...image,
-      tempUrl: await Storage.get(image.imageUrl),
+      image = {
+        ...image,
+        tempUrl: await Storage.get(image.imageUrl),
+      }
+
+      dispatch({
+        type: ADD_IMAGE,
+        payload: image,
+      })
+    } catch (err) {
+      dispatch({
+        type: IMAGE_ERROR,
+        payload: { msg: err },
+      })
     }
-
-    dispatch({
-      type: ADD_IMAGE,
-      payload: image,
-    })
-  } catch (err) {
-    dispatch({
-      type: IMAGE_ERROR,
-      payload: { msg: err },
-    })
   }
-}

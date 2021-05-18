@@ -7,6 +7,7 @@
   "loading!": "Уншиж байна",
   "close": "Close",
   "save": "Save",
+  "cancel": "Cancel",
   "total-page": "Total page",
   "delete-confirm-text": "Are you sure to delete?",
   "true": "Yes",
@@ -68,10 +69,6 @@
   "background_file": "Background File",
   "background_files": "Background Files",
 
-  "photobook": "Photobook",
-
-  "canvas": "Canvas",
-
   "frame": "Frame",
   "frames": "Frames",
 
@@ -95,23 +92,21 @@
 
   "binding_type": "Binding Type",
 
-  "paper_size": "Paper Size",
+  "paper_size": "Size",
 
-  "paper_material": "Paper Material",
+  "paper_material": "Material",
 
-  "cover_material": "Cover Material",
+  "cover_material": "Material",
 
-  "cover_type": "Cover Type",
+  "cover_type": "Type",
 
   "frame_material": "Frame Material",
 
-  "cover_material_color": "Cover Material Color",
+  "cover_material_color": "Color",
 
   "upload": "Upload",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
-
-  "home": "Home",
 
   "type": "Type",
   "brightness": "brightness",
@@ -144,12 +139,14 @@
   "slide.remove": "Remove",
   "slide.duplicate": "Duplicate",
   "slide.add_page": "Add page",
-  "slide.hide_buttons": "Hide buttons",
+  "slide.hide_buttons": "Hide",
+  "slide.show_buttons": "Show",
   "slide.next": "Next",
   "slide.prev": "Prev",
   "slide.all": "All",
-  "slide.single": "Single",
+  "slide.single": "One Page",
   "logout": "Logout",
+  "photobook": "Photobook",
   "redo": "Redo",
   "undo": "Undo",
   "back": "Back",
@@ -159,5 +156,34 @@
   "price": "Price",
   "description": "Description",
   "choose_source_to": "Choose source to",
-  "add_photos": "Add photos"
+  "add_photos": "Add photos",
+  "please_add_photos": "Please add photos",
+  "projects": "Projects",
+  "square": "Square",
+  "photo": "Photo",
+  "text": "Text",
+  "preview": "Preview",
+  "images": "Images",
+  "shuffle": "Suffle",
+  "more": "More",
+  "less": "Less",
+  "cover_types": "Cover types",
+  "binding_types": "Binding types",
+  "size": "Size",
+  "width": "Width",
+  "height": "Height",
+  "feature_image": "Feature image",
+  "template_create": "Create Template",
+  "template_update": "Update Template",
+  "edit_background": "Edit Background",
+  "video": "Video",
+  "cover_materials": "Cover materials",
+  "cover_material_colors":"Cover material colors",
+  "tools": "Tools",
+  "paper": "Paper",
+  "cover": "Cover",
+  "missing.input": "Missing input",
+  "paper_material.price": "Price",
+  "paper_material.name": "Name",
+  "designer": "Designer"
 }

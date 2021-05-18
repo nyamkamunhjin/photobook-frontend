@@ -26,7 +26,7 @@ const Redirect: FC = () => {
         router.push('/')
       }
     }
-  }, [router])
+  }, [router, dispatch])
 
   return <FormattedMessage id="please_wait" />
 }

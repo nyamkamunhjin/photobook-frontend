@@ -1,4 +1,6 @@
-import { LayoutObject } from 'interfaces'
+import { LayoutObject, OElement, Slide } from 'interfaces'
+import { ParseNumber } from 'utils'
+import lodash from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
 
 export const getLength = (x: number, y: number): number => Math.sqrt(x * x + y * y)
@@ -272,13 +274,13 @@ export const tLToCenter = ({
 })
 
 export const positionsToPercent = ({
-  top,
-  left,
-  width,
-  height,
+  top = 0,
+  left = 0,
+  width = 0,
+  height = 0,
   containerHeight = 877 - 20, // height - border width
   containerWidth = 960 - 20, // width - border width
-  className,
+  className = '',
 }: {
   top: number | string
   left: number | string
@@ -288,10 +290,10 @@ export const positionsToPercent = ({
   containerWidth?: number
   className?: string
 }) => ({
-  top: (Number(top) / containerHeight) * 100,
-  left: (Number(left) / containerWidth) * 100,
-  width: (Number(width) / containerWidth) * 100,
-  height: (Number(height) / containerHeight) * 100,
+  top: (ParseNumber(top) / containerHeight) * 100,
+  left: (ParseNumber(left) / containerWidth) * 100,
+  width: (ParseNumber(width) / containerWidth) * 100,
+  height: (ParseNumber(height) / containerHeight) * 100,
   className,
 })
 
@@ -300,10 +302,10 @@ export const percentToPosition = (
   containerHeight = 877 - 20,
   containerWidth = 960 - 20
 ) => ({
-  top: (Number(top) * containerHeight) / 100,
-  left: (Number(left) * containerWidth) / 100,
-  width: (Number(width) * containerWidth) / 100,
-  height: (Number(height) * containerHeight) / 100,
+  top: (ParseNumber(top) * containerHeight) / 100,
+  left: (ParseNumber(left) * containerWidth) / 100,
+  width: (ParseNumber(width) * containerWidth) / 100,
+  height: (ParseNumber(height) * containerHeight) / 100,
 })
 
 export const layoutPositionsToObjectPercent = (style: LayoutObject) => ({
@@ -314,7 +316,7 @@ export const layoutPositionsToObjectPercent = (style: LayoutObject) => ({
     style: { transform: 'scaleX(1)' },
     className: 'image-placeholder',
     imageStyle: { display: 'none', top: 0, left: 0, width: '100%' },
-    placeholderStyle: { opacity: 0.5, backgroundColor: '#6c928e' },
+    placeholderStyle: { opacity: '0.5', backgroundColor: '#6c928e' },
   },
 })
 
@@ -328,7 +330,7 @@ export const layoutPositionsToTextPercent = (style: LayoutObject) => ({
     className: 'text-container',
     style: { transform: 'scaleX(1)' },
     texts: ['Enter text here'],
-    placeholderStyle: { opacity: 1 },
+    placeholderStyle: { opacity: '1' },
   },
 })
 
@@ -340,7 +342,7 @@ export const layoutPositionsToImage = (style: LayoutObject) => ({
     style: { transform: 'scaleX(1)' },
     className: 'image-placeholder',
     imageStyle: { display: 'none', top: 0, left: 0, width: '100%' },
-    placeholderStyle: { opacity: 0.5, backgroundColor: '#6c928e' },
+    placeholderStyle: { opacity: '0.5', backgroundColor: '#737373' },
   },
 })
 
@@ -354,6 +356,85 @@ export const layoutPositionsToText = (style: LayoutObject) => ({
     className: 'text-container',
     style: { transform: 'scaleX(1)' },
     texts: ['Enter text here'],
-    placeholderStyle: { opacity: 1 },
+    placeholderStyle: { opacity: '1' },
   },
 })
+
+export const generateNewSlide = () => ({
+  slideId: uuidv4(),
+  objects: [],
+  containers: [],
+  backgrounds: [],
+})
+
+export const generateDuplicatedSlide = (slide: Slide) => ({
+  ...slide,
+  slideId: uuidv4(),
+})
+
+const ALIGNMENT_PROPS = {
+  tt: 0,
+  rr: 0,
+  bb: 0,
+  ll: 0,
+  tb: 0,
+  bt: 0,
+  rl: 0,
+  lr: 0,
+  xx: 0,
+  yy: 0,
+}
+
+export const diffRect = (a: OElement, b: OElement, index: number) => {
+  const result = Object.keys(ALIGNMENT_PROPS).map((key) => {
+    switch (key) {
+      case 'tt':
+        return { size: Math.abs(a.t - b.t), key, index, vertical: false }
+      case 'bb':
+        return { size: Math.abs(b.t + b.h - a.t - a.h), key, index, vertical: false }
+      case 'rr':
+        return { size: Math.abs(b.l + b.w - a.l - a.w), key, index, vertical: true }
+      case 'll':
+        return { size: Math.abs(a.l - b.l), key, index, vertical: true }
+      case 'tb':
+        return { size: Math.abs(a.t - b.t - b.h), key, index, vertical: false }
+      case 'bt':
+        return { size: Math.abs(b.t - a.t - a.h), key, index, vertical: false }
+      case 'rl':
+        return { size: Math.abs(b.l - a.l - a.w), key, index, vertical: true }
+      case 'lr':
+        return { size: Math.abs(a.l - b.l - b.w), key, index, vertical: true }
+      case 'yy':
+        return {
+          size: Math.abs((a.l + a.w - b.l - b.w + (a.l - b.l)) / 2),
+          key,
+          index,
+          vertical: true,
+        }
+      case 'xx':
+        return {
+          size: Math.abs((a.t - b.t + (a.t + a.h - b.t - b.h)) / 2),
+          key,
+          index,
+          vertical: false,
+        }
+      default:
+        return 0
+    }
+  })
+  return lodash(result)
+    .groupBy('vertical')
+    .map((group) => lodash.minBy(group, 'size'))
+    .value()
+}
+
+// case ALIGNMENT_PROPS.tt: return calc(rectA.top-rectB.top);
+// case ALIGNMENT_PROPS.bb: return calc(rectB.bottom-rectA.bottom);
+// case ALIGNMENT_PROPS.rr: return calc(rectB.right-rectA.right);
+// case ALIGNMENT_PROPS.ll: return calc(rectA.left-rectB.left);
+// case ALIGNMENT_PROPS.tb: return calc(rectA.top-rectB.bottom);
+// case ALIGNMENT_PROPS.bt: return calc(rectB.top-rectA.bottom);
+// case ALIGNMENT_PROPS.rl: return calc(rectB.left-rectA.right);
+// case ALIGNMENT_PROPS.lr: return calc(rectA.left-rectB.right);
+// case ALIGNMENT_PROPS.xx: return calc(((rectA.right-rectB.right)+(rectA.left-rectB.left))/2);
+// case ALIGNMENT_PROPS.yy: return calc(((rectA.top-rectB.top)+(rectA.bottom-rectB.bottom))/2);

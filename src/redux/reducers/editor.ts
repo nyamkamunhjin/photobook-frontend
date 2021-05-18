@@ -3,7 +3,7 @@ import { SET_IMAGE_TYPE, SET_DRAG_START, SET_BACKGROUND_EDIT, TOGGLE_SIDEBAR } f
 
 const initialState: EditorInterface = {
   imageType: 'layouts',
-  type: 'background',
+  type: 'backgrounds',
   dragStart: false,
   backgroundEdit: false,
   sidebarOpen: false,
