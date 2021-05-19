@@ -269,6 +269,7 @@ export interface PaperMaterial {
 export interface Project {
   id: number
   name?: string
+  imageUrl?: string
   userId?: number
   paperMaterialId?: number
   paperSizeId?: number
@@ -339,7 +340,7 @@ export interface SettingsInterface {
 export interface UserInterface {
   isAuthenticated: boolean
   loading: boolean
-  user: Object | null
+  user: User | null
   token: string | null
 }
 

@@ -7,7 +7,11 @@ import { LOGOUT } from 'redux/actions/types'
 import { useHistory } from 'react-router'
 import styles from './styles.module.scss'
 
-const UserInfo: React.FC<unknown> = () => {
+interface Props {
+  avatarUrl: string | null
+}
+
+const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
   const [visible, setVisible] = useState(false)
   const history = useHistory()
   const intl = useIntl()
@@ -20,7 +24,7 @@ const UserInfo: React.FC<unknown> = () => {
       content={
         <div className="flex flex-col gap-2">
           <button
-            className="btn"
+            className="btn-primary"
             type="button"
             onClick={() => {
               setVisible(false)
@@ -31,7 +35,7 @@ const UserInfo: React.FC<unknown> = () => {
           </button>
 
           <button
-            className="btn"
+            className="btn-primary"
             type="button"
             onClick={() => {
               setVisible(false)
@@ -44,7 +48,7 @@ const UserInfo: React.FC<unknown> = () => {
       }
     >
       <Button type="link" className={styles.avatar} onClick={() => setVisible((prev) => !prev)}>
-        <Avatar shape="square" size="small" style={{ backgroundColor: '#0666b3' }} alt="user-avatar" />
+        <Avatar shape="square" size="small" src={avatarUrl} style={{ backgroundColor: '#0666b3' }} alt="user-avatar" />
       </Button>
     </Popover>
   )

@@ -11,7 +11,7 @@ export const loadUser = (): any => async (dispatch: Dispatch) => {
     if (user) {
       dispatch({
         type: USER_LOADED,
-        payload: user?.data,
+        payload: user?.data.user,
       })
     } else {
       dispatch({
