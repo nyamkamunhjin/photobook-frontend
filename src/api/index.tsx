@@ -309,11 +309,7 @@ export const getLayoutCategory = async (id: number) => {
 // #endregion [LayoutCategory]
 
 // #region [LayoutProject]
-export const listProject = async (
-  params?: PaginatedParams[0],
-  data?: Record<string, unknown>,
-  offset?: ImageCategory
-) => {
+export const listProject = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
   let query = params && data ? buildQuery(params, data) : ''
   if (offset && params && params.current !== 1) {
     query += `&offset=${JSON.stringify(offset)}`
