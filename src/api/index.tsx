@@ -62,9 +62,12 @@ export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
   axios.defaults.headers.common['Accept-Language'] = locale || 'mn'
   axios.defaults.headers.common['Content-Type'] = 'application/json'
   axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*'
-  if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`
+  // if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`
   const config: AxiosRequestConfig = {
     baseURL: process.env.REACT_APP_BACK_URL,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     ...props,
   }
   try {
@@ -196,7 +199,7 @@ export const listTemplate = async (params?: PaginatedParams[0], data?: Record<st
   return templates
 }
 
-export const getTemplate = async (id: number) => {
+export const getTemplate = async (id: number | string) => {
   const response = await BaseRequest({
     url: `template/${id}`,
     method: 'GET',
@@ -351,6 +354,14 @@ export const updateProjectSlides = async (id: number, data: Object) => {
 export const getProject = async (id: string) => {
   const response = await BaseRequest({
     url: `project/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const getProjectByUuid = async (id: string) => {
+  const response = await BaseRequest({
+    url: `project/uuid/${id}`,
     method: 'GET',
   })
   return response?.data

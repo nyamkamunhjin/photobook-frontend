@@ -71,6 +71,11 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor',
+    component: LoadableLoader(() => import('pages/editor/editor')),
+    exact: true,
+  },
+  {
     path: '/redirect',
     component: LoadableLoader(() => import('pages/redirect')),
     exact: true,
@@ -78,11 +83,6 @@ const routes: RouteInterface[] = [
   {
     path: '/auth/forget',
     component: LoadableLoader(() => import('pages/auth/login')),
-    exact: true,
-  },
-  {
-    path: '/editor',
-    component: LoadableLoader(() => import('pages/editor/editor')),
     exact: true,
   },
   // {

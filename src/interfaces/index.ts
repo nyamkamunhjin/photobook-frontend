@@ -280,6 +280,7 @@ export interface Project {
   templateId?: number
   templateTypeId?: number
   price?: number
+  uuid: string
   description?: string
   slides: Slide[]
   paperMaterial?: PaperMaterial

@@ -34,6 +34,7 @@ export const defaultProject: ProjectInterface = {
   currentProject: {
     id: 0,
     paperSizeId: 1,
+    uuid: '',
     slides: [
       {
         name: 'slide 1',

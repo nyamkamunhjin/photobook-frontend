@@ -1,7 +1,10 @@
 import React, { FC, useCallback, useEffect } from 'react'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
+import Slider from 'react-alice-carousel'
 import { BindingType, CoverMaterial, CoverMaterialColor, CoverType, PaperSize, Template } from 'interfaces'
-import Carousels from 'components/carousel'
+import 'react-alice-carousel/lib/alice-carousel.css'
+import { Button } from 'antd'
+import { Link } from 'react-router-dom'
 
 interface Props {
   template: Template
@@ -164,28 +167,37 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
       <div className="space-y-4" hidden={selectedState.coverMaterial?.coverMaterialColors.length === 0}>
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_material_color' })}</span>
         <div className="flex flex-wrap gap-4">
-          <Carousels>
-            {({ style, className }: any) =>
-              selectedState.coverMaterial?.coverMaterialColors?.map((each: CoverMaterialColor) => (
-                <button
-                  type="button"
-                  className={`glider-slide ${className}`}
-                  style={style}
-                  key={each.id}
-                  onClick={() => {
-                    setSelectedState((prev) => ({ ...prev, coverMaterialColor: each }))
-                  }}
-                >
-                  <div className="flex flex-col">
-                    <img src={each.imageUrl} alt="cover-material-color" />
-                    <span>{each.name}</span>
-                  </div>
-                </button>
-              ))
-            }
-          </Carousels>
+          <Slider
+            responsive={{
+              0: { items: 4 },
+              600: { items: 6 },
+            }}
+            disableButtonsControls
+            disableDotsControls
+            items={selectedState.coverMaterial?.coverMaterialColors.map((each) => (
+              <div
+                className={`cursor-pointer w-28 focus:outline-none  ${
+                  selectedState.coverMaterialColor?.id === each.id
+                    ? 'border-4 border-blue-300'
+                    : 'hover:border-green-200'
+                } `}
+                onClick={() => {
+                  setSelectedState((prev) => ({ ...prev, coverMaterialColor: each }))
+                }}
+              >
+                <img src={each.imageUrl} className="w-full" alt={each.name} key={each.id} />
+              </div>
+            ))}
+          />
         </div>
       </div>
+      <Link
+        to={`/editor?template=${template.id}&coverType=${selectedState.coverType?.id}&paperSize=${selectedState.paperSize?.id}&bindingType=${selectedState.bindingType?.id}&material=${selectedState.coverMaterial?.id}&color=${selectedState.coverMaterialColor?.id}`}
+      >
+        <Button>
+          <FormattedMessage id="start_book" />
+        </Button>
+      </Link>
     </div>
   )
 }
