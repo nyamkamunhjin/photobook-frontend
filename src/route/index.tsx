@@ -20,6 +20,11 @@ const LoadableLoader = (loader: any) =>
   })
 const routes: RouteInterface[] = [
   {
+    path: '/profile',
+    component: LoadableLoader(() => import('pages/profile')),
+    exact: true,
+  },
+  {
     path: '/product/photobook/template/:id',
     component: LoadableLoader(() => import('pages/product/photobook/template')),
     exact: true,
@@ -66,6 +71,11 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor',
+    component: LoadableLoader(() => import('pages/editor/editor')),
+    exact: true,
+  },
+  {
     path: '/redirect',
     component: LoadableLoader(() => import('pages/redirect')),
     exact: true,
@@ -73,11 +83,6 @@ const routes: RouteInterface[] = [
   {
     path: '/auth/forget',
     component: LoadableLoader(() => import('pages/auth/login')),
-    exact: true,
-  },
-  {
-    path: '/photobook',
-    component: LoadableLoader(() => import('pages/editor/editor')),
     exact: true,
   },
   // {

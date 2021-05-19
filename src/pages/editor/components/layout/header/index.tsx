@@ -88,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div className="HeaderView">
-      <Row style={{ flex: 5, justifyContent: 'flex-start' }}>
+      <Row style={{ flex: 5, justifyContent: 'flex-start', alignItems: 'center' }}>
         <IconButton
           onClick={() => history.goBack()}
           icon={<ArrowLeftOutlined className="icon text-gray-700" style={{ fontSize: 16 }} />}

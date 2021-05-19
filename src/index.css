@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+.btn {
+  @apply py-1 px-3 rounded focus:outline-none font-semibold;
+}
+.btn-primary {
+  @apply btn bg-blue-400 text-white shadow hover:shadow-lg;
+}
+
+.btn-text {
+  @apply btn bg-transparent text-gray-800 font-semibold hover:shadow;
+}
+
+.btn-accept {
+  @apply btn bg-green-400 text-white font-semibold shadow hover:shadow-lg;
+}
+
+.btn-cancel {
+  @apply btn bg-red-400 text-white font-semibold shadow hover:shadow-lg;
+}
+
+.btn-warning {
+  @apply btn bg-yellow-400 text-white font-semibold hover:shadow-lg;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
@@ -29,5 +52,6 @@ code {
 }
 
 .ant-pagination-item-link {
-  border-width: 0px !important
+  border-width: 0px !important;
+  background: transparent !important;
 }

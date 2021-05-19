@@ -11,7 +11,7 @@ export const loadUser = (): any => async (dispatch: Dispatch) => {
     if (user) {
       dispatch({
         type: USER_LOADED,
-        payload: user?.data,
+        payload: user?.data.user,
       })
     } else {
       dispatch({
@@ -96,8 +96,6 @@ export const loginUser = (email: string, password: string) => async (dispatch: a
 // Logout / Clear Profile
 export const logout = (history: any) => async (dispatch: Dispatch) => {
   try {
-    await Auth.signOut()
-
     // dispatch({
     //   type: CLEAR_PROFILE,
     // })
