@@ -66,6 +66,11 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor',
+    component: LoadableLoader(() => import('pages/editor/editor')),
+    exact: true,
+  },
+  {
     path: '/redirect',
     component: LoadableLoader(() => import('pages/redirect')),
     exact: true,
@@ -75,11 +80,7 @@ const routes: RouteInterface[] = [
     component: LoadableLoader(() => import('pages/auth/login')),
     exact: true,
   },
-  {
-    path: '/photobook',
-    component: LoadableLoader(() => import('pages/editor/editor')),
-    exact: true,
-  },
+
   // {
   //   path: '/templates',
   //   component: LoadableLoader(() => import('pages/templates')),
@@ -95,6 +96,7 @@ const Router: React.FC<RouterProps> = ({ history }) => {
 
   useEffect(() => {
     // listen storage change
+    console.log('aaaaaaaaaaaaaaaa')
     const storageListener = (event: StorageEvent) => {
       if (event.storageArea?.getItem('token')) {
         dispatch(loadUser())

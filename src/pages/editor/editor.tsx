@@ -3,6 +3,7 @@
 /* eslint-disable consistent-return */
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { useQueryState } from 'react-router-use-location-state'
 import { connect } from 'react-redux'
 import {
   getProjects as _getProjects,
@@ -42,15 +43,13 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import { useQuery } from 'hooks'
-import { useLocation } from 'react-router'
 import { Header, BackgroundImages, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderBackground, renderObject } from './components/utils'
 import './components/styles/editor.scss'
 
 interface Props {
-  getProjects: (id: string | null) => Promise<void>
+  getProjects: (id: number, paperSizeId: number, project: string) => Promise<string | undefined>
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
   addNewSlide: (slideIndex: number, projectId: number) => Promise<void>
   duplicateSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
@@ -107,8 +106,14 @@ const BookEditor: React.FC<Props> = ({
     fetching,
   },
 }) => {
-  const id = useQuery(useLocation().search).get('id')
-  // refs
+  const [template, setTemplate] = useQueryState('template', 1)
+  const [coverType, setCoverType] = useQueryState('coverType', 1)
+  const [paperSize, setPaperSize] = useQueryState('paperSize', 1)
+  const [bindingType, setBindingType] = useQueryState('bindingType', 1)
+  const [material, setMaterial] = useQueryState('material', 1)
+  const [color, setColor] = useQueryState('color', 1)
+  const [uuid, setUuid] = useQueryState('project', '')
+
   const slideViewRef: any = useRef(null)
   const editorContainerRef: any = useRef(null)
   const slideContainerRef: any = useRef(null)
@@ -131,7 +136,6 @@ const BookEditor: React.FC<Props> = ({
   const [_object, setObject] = useState<any>(null)
   const [_groupObjects, setGroupObjects] = useState<any>(null)
   const [footerCollapse, setFooterCollapse] = useBoolean(false)
-
   const [_groupStyles, setGroupStyles] =
     useState<{
       left: any
@@ -351,12 +355,16 @@ const BookEditor: React.FC<Props> = ({
   })
 
   useEffect(() => {
-    if (!id) {
+    if (!template) {
       window.history.back()
       return
     }
-    getProjects(id)
-  }, [getProjects, id])
+    getProjects(template, paperSize, uuid).then((id) => {
+      if (id) {
+        setUuid(id)
+      }
+    })
+  }, [getProjects, template])
 
   useEffect(() => {
     if (!loading) loadSlide()

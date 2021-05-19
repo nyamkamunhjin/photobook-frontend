@@ -5,7 +5,6 @@ import { BindingType, CoverMaterial, CoverMaterialColor, CoverType, PaperSize, T
 import 'react-alice-carousel/lib/alice-carousel.css'
 import { Button } from 'antd'
 import { Link } from 'react-router-dom'
-import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 
 interface Props {
   template: Template
@@ -30,9 +29,7 @@ interface Props {
 
 const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
-  const navigate = () => {
-    console.log(template)
-  }
+
   const initialState = useCallback(() => {
     let coverType
     let bindingType
@@ -194,9 +191,13 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
           />
         </div>
       </div>
-      <Button onClick={navigate}>
-        <FormattedMessage id="start_book" />
-      </Button>
+      <Link
+        to={`/editor?template=${template.id}&coverType=${selectedState.coverType?.id}&paperSize=${selectedState.paperSize?.id}&bindingType=${selectedState.bindingType?.id}&material=${selectedState.coverMaterial?.id}&color=${selectedState.coverMaterialColor?.id}`}
+      >
+        <Button>
+          <FormattedMessage id="start_book" />
+        </Button>
+      </Link>
     </div>
   )
 }

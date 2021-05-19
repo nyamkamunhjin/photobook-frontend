@@ -1,5 +1,13 @@
-import { createProject, getPaperSize, getProject, updateProject as _updateProject, updateProjectSlides } from 'api'
-import { BackgroundImage, Container, PaperSize, PObject, Project, Slide } from 'interfaces'
+import {
+  createProject,
+  getPaperSize,
+  getProject,
+  getProjectByUuid,
+  getTemplate,
+  updateProject as _updateProject,
+  updateProjectSlides,
+} from 'api'
+import { BackgroundImage, Container, PaperSize, PObject, Project, Slide, Template } from 'interfaces'
 import { generateDuplicatedSlide, generateNewSlide } from 'utils/transformer-lib'
 import {
   UPDATE_PROJECT,
@@ -33,22 +41,25 @@ import {
 } from './types'
 
 // #region [Project]
-export const getProjects = (id: string | null) => async (dispatch: any) => {
+export const getProjects = (id: number, paperSizeId: number, uuid: string) => async (dispatch: any) => {
   try {
-    if (id === 'new') {
+    if (uuid.length === 0) {
       dispatch({ type: CLEAR_PROJECT })
+      const template: Template = await getTemplate(id)
       const newProject = await createProject({
         name: 'New Project',
-        templateId: 1,
-        paperSizeId: 1,
-        slides: [generateNewSlide()],
+        templateId: id,
+        paperSizeId,
+        slides: template.slides,
       })
-      const project = await getProject(newProject?.data.id)
+      const project: Project = await getProject(newProject?.data.id)
       dispatch(setCurrentProject(project))
-    } else if (id) {
+      return project.uuid
+    } else {
       dispatch({ type: CLEAR_PROJECT })
-      const project = await getProject(id)
+      const project = await getProjectByUuid(uuid)
       dispatch(setCurrentProject(project))
+      return uuid
     }
   } catch (err) {
     dispatch({
@@ -56,6 +67,7 @@ export const getProjects = (id: string | null) => async (dispatch: any) => {
       payload: { msg: err },
     })
   }
+  return undefined
 }
 // update project
 export const updateProject = (projectId: number, props: { paperSizeId: number }) => async (dispatch: any) => {
