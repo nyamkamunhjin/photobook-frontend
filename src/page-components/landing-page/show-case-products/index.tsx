@@ -5,13 +5,13 @@ const ShowCaseProducts: FC = () => {
   return (
     <WidthLimiter className="flex flex-col justify-center items-center p-4 space-y-4">
       <div className="flex justify-center gap-4">
-        <button className="font-bold text-lg text-gray-500" type="button">
+        <button className="btn-text text-xl" type="button">
           New
         </button>
-        <button className="font-bold text-lg text-gray-500" type="button">
+        <button className="btn-text text-xl" type="button">
           Popular
         </button>
-        <button className="font-bold text-lg text-gray-500" type="button">
+        <button className="btn-text text-xl" type="button">
           Special
         </button>
       </div>

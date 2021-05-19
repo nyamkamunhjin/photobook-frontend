@@ -1,27 +1,21 @@
-import { useRequest } from 'ahooks'
-import React, { FC, useState } from 'react'
-import { getCurrentUser } from 'api'
+import React, { FC } from 'react'
 import { Loading } from 'components'
-import { User } from 'interfaces'
+import { RootInterface } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 import { useQueryState } from 'react-router-use-location-state'
 import OrderHistory from 'page-components/profile/order-history'
-import MyProjects from '../../page-components/profile/my-projects'
-import MyInfo from '../../page-components/profile/my-info'
-import MyCart from '../../page-components/profile/my-cart'
+import MyProjects from 'page-components/profile/my-projects'
+import MyInfo from 'page-components/profile/my-info'
+import MyCart from 'page-components/profile/my-cart'
+import { useSelector } from 'react-redux'
 
 type tabState = 'order_history' | 'my_projects' | 'my_cart' | 'my_info'
 const tabStates: tabState[] = ['order_history', 'my_projects', 'my_cart', 'my_info']
 
 const Profile: FC = () => {
-  const [user, setUser] = useState<User>()
+  const user = useSelector((state: RootInterface) => state.auth.user)
   const [tabState, setTabState] = useQueryState<tabState>('tab', 'order_history')
-  useRequest(getCurrentUser, {
-    onSuccess: (res: any) => {
-      setUser(res.data.user)
-    },
-  })
 
   const menuSwitch: (state: tabState) => any = (state) => {
     switch (state) {
@@ -45,7 +39,11 @@ const Profile: FC = () => {
           {/* side menu */}
           <div className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg">
             <div className="w-56 h-56">
-              <img className="rounded-full" src={user.avatarUrl || undefined} alt="profile" />
+              {user.avatarUrl ? (
+                <img className="rounded-full w-full h-full object-cover" src={user.avatarUrl} alt="profile" />
+              ) : (
+                <div className="bg-green-300 rounded-full w-full h-full" />
+              )}
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -56,7 +54,7 @@ const Profile: FC = () => {
               {tabStates.map((state) => (
                 <button
                   key={state}
-                  className={`${state === tabState ? 'btn-accept' : 'btn-primary'} max-w-xs w-full`}
+                  className={`${state === tabState ? 'btn-primary' : 'btn-text'} max-w-xs w-full`}
                   type="button"
                   onClick={() => setTabState(state)}
                 >

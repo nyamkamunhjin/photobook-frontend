@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -706,6 +706,15 @@ export const getCurrentUser = async () => {
   const response = await BaseRequest({
     url: `auth/user`,
     method: 'GET',
+  })
+  return response
+}
+
+export const updateCurrentUser = async (data: Partial<User>) => {
+  const response = await BaseRequest({
+    url: `user`,
+    method: 'PUT',
+    data,
   })
   return response
 }
