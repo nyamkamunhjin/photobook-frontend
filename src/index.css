@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 .btn {
-  @apply py-1 px-3 rounded focus:outline-none font-semibold;
+  @apply py-2 px-4 rounded focus:outline-none font-semibold;
 }
 .btn-primary {
-  @apply btn bg-blue-400 text-white shadow hover:shadow-lg;
+  @apply btn bg-gray-800 text-white shadow hover:shadow-lg;
 }
 
 .btn-text {
-  @apply btn bg-transparent text-gray-800 font-semibold hover:shadow;
+  @apply btn bg-transparent text-gray-600 font-semibold;
 }
 
 .btn-accept {

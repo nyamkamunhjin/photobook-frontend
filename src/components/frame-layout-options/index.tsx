@@ -41,7 +41,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
       <div className="space-y-4">
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
-          {paperSizes.map((each: PaperSize) => (
+          {paperSizes?.map((each: PaperSize) => (
             <button
               type="button"
               className={`w-32 p-2 rounded border-dashed border-4 focus:outline-none  ${
@@ -69,7 +69,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
       <div className="space-y-4">
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'frame_material' })}</span>
         <div className="flex flex-wrap gap-4">
-          {frameMaterials.map((each: FrameMaterial) => (
+          {frameMaterials?.map((each: FrameMaterial) => (
             <button
               type="button"
               className={`w-28 p-2 rounded border-dashed border-4 focus:outline-none  ${

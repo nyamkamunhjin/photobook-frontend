@@ -1,26 +1,33 @@
 import { useRequest } from 'ahooks'
 import { List } from 'antd'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { listProject } from 'api'
 import { Project, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
-import project from '../../../redux/reducers/project'
+import { useHistory } from 'react-router'
 
 const MyProjects: FC = () => {
+  const history = useHistory()
   const user = useSelector((state: RootInterface) => state.auth.user)
   const projects = useRequest(
-    ({ current, pageSize }) => listProject({ current, pageSize }, {}, (current - 1) * pageSize),
+    ({ current, pageSize }, { userId }, pageNumber) => listProject({ current, pageSize }, { userId }, pageNumber),
     {
+      manual: true,
       paginated: true,
     }
   )
 
-  // useEffect(() => {
-  //   if (user?.id) {
-  //     projects.run({ current: 0, pageSize: 10 }, { userId: user.id })
-  //   }
-  // }, [user])
+  useEffect(() => {
+    if (user?.id) {
+      projects.run(
+        { current: projects.pagination.current, pageSize: projects.pagination.pageSize },
+        { userId: user.id.toString() },
+        (projects.pagination.current - 1) * projects.pagination.pageSize
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   return (
     <div className="p-2">
@@ -41,7 +48,11 @@ const MyProjects: FC = () => {
               className="rounded p-2 hover:bg-gray-50"
               key={item.id}
               actions={[
-                <button className="btn-primary" type="button" onClick={() => alert('todo edit')}>
+                <button
+                  className="btn-primary"
+                  type="button"
+                  onClick={() => history.push(`/editor?project=${item.uuid}`)}
+                >
                   <FormattedMessage id="edit" />
                 </button>,
               ]}

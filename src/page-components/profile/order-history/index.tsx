@@ -38,7 +38,7 @@ const OrderHistory: FC = () => {
       dataIndex: 'status',
       key: 'status',
       align: 'center',
-      render: (text) => <Tag className="w-28 bg-green-400 text-white font-semibold">{text}</Tag>,
+      render: (text) => <Tag className="w-28 bg-green-300 text-white font-semibold">{text}</Tag>,
     },
   ]
 
