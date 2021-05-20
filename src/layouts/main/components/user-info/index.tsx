@@ -38,6 +38,17 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
             type="button"
             onClick={() => {
               setVisible(false)
+              history.push('/profile?tab=my_projects')
+            }}
+          >
+            <FormattedMessage id="my_projects" />
+          </button>
+
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={() => {
+              setVisible(false)
               history.push('/profile?tab=my_cart')
             }}
           >
