@@ -714,3 +714,41 @@ export const getCurrentUser = async () => {
   return response
 }
 // #endregion [Authentication]
+
+// #region [Facebook]
+export const getFacebookAlbums = async () => {
+  const token = localStorage.getItem('facebookAccessToken')
+  const response = await axios.get(`https://graph.facebook.com/v10.0/me/albums?access_token=${token}`)
+  return response.data.data
+}
+
+export const getFacebookImages = async (album: string) => {
+  if (album.length === 0) return []
+  const token = localStorage.getItem('facebookAccessToken')
+  const response = await axios.get(
+    `https://graph.facebook.com/v10.0/${album}/photos?access_token=${token}&fields=id%2Cimages%2Cname%2Cpicture%2Ccreated_time`
+  )
+  return response.data?.data
+}
+
+export const getFacebookProfile = async () => {
+  const token = localStorage.getItem('facebookAccessToken')
+  const response = await axios.get(
+    `https://graph.facebook.com/v10.0/me?access_token=${token}&fields=id%2Cfirst_name%2Clast_name%2Cpicture`
+  )
+  return response.data
+}
+// #endregion [Facebook]
+
+// #region [Google]
+export const getGoogleProfile = async () => {
+  const token = localStorage.getItem('googleAccessToken')
+
+  const response = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  })
+  return response.data
+}
+// #endregion [Google]

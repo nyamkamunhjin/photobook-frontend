@@ -190,5 +190,11 @@
   "sign-up": "Sign up",
   "home": "Home",
   "canvas": "Canvas",
-  "start_book": "Start book"
+  "start_book": "Start book",
+  "upload.computer": "Computer",
+  "upload.my_photos": "My photos",
+  "upload.facebook": "Facebook",
+  "upload.google": "Google",
+  "logged_as": "Logged as {name}",
+  "logout.facebook": "Logout from Facebook"
 }

@@ -443,4 +443,40 @@ export interface PaperMaterialPrice {
   price: number
 }
 
+export interface FacebookAlbum {
+  id: string
+  created_time: string
+  name: string
+}
+export interface FacebookProfile {
+  id: string
+  first_name: string
+  last_name: string
+  picture: {
+    data: {
+      url: string
+    }
+  }
+}
+export interface FacebookImage {
+  source: string
+  height: number
+  width: number
+}
+
+export interface FacebookPicture {
+  id: string
+  images: FacebookImage[]
+  picture: string
+  created_time: string
+}
+
+export interface GoogleProfile {
+  id: string
+  email: string
+  name: string
+  given_name: string
+  picture: string
+}
+
 export type Locales = 'mn' | 'en'
