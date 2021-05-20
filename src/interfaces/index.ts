@@ -349,6 +349,7 @@ export type User = {
   id: number
   email: string | null
   password?: string | null
+  phoneNumber: string | null
   firstName: string | null
   lastName: string | null
   address: string | null
@@ -457,6 +458,16 @@ export interface PaperMaterialPrice {
   id: number
   name: string
   price: number
+}
+
+export type ShippingAddress = {
+  id: number
+  firstName: string
+  lastName: string
+  companyName: string | null
+  address: string
+  description: string
+  userId: number
 }
 
 export type Locales = 'mn' | 'en'
