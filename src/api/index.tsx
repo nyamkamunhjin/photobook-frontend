@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -172,6 +172,15 @@ export const createImage = async (data: Object) => {
   return response?.data
 }
 
+export const createMultiImage = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'image/many',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
 // #endregion [Image]
 
 // #region [Template]
@@ -192,7 +201,6 @@ export const listTemplate = async (params?: PaginatedParams[0], data?: Record<st
     template.tempUrl = await Storage.get(template.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(
       () => template.imageUrl
     )
-    console.log(template.tempUrl)
   })
 
   if (params) return { list: templates, total: response?.totalCount, offset: response?.offset }
@@ -709,4 +717,56 @@ export const getCurrentUser = async () => {
   })
   return response
 }
+
+export const updateCurrentUser = async (data: Partial<User>) => {
+  const response = await BaseRequest({
+    url: `user`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
 // #endregion [Authentication]
+
+// #region [Facebook]
+export const getFacebookAlbums = async () => {
+  const token = localStorage.getItem('facebookAccessToken')
+  const response = await axios.get(`https://graph.facebook.com/v10.0/me/albums?access_token=${token}`)
+  return response.data.data
+}
+
+export const getFacebookImages = async (album: string) => {
+  if (album.length === 0) return []
+  const token = localStorage.getItem('facebookAccessToken')
+  const response = await axios.get(
+    `https://graph.facebook.com/v10.0/${album}/photos?access_token=${token}&fields=id%2Cimages%2Cname%2Cpicture%2Ccreated_time`
+  )
+  return response.data?.data
+}
+
+export const getFacebookProfile = async () => {
+  const token = localStorage.getItem('facebookAccessToken')
+  const response = await axios.get(
+    `https://graph.facebook.com/v10.0/me?access_token=${token}&fields=id%2Cfirst_name%2Clast_name%2Cpicture`
+  )
+  return response.data
+}
+// #endregion [Facebook]
+
+// #region [Google]
+export const getGoogleProfile = async () => {
+  const response = await BaseRequest({
+    url: `google/profile`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const getGoogleImages = async () => {
+  const response = await BaseRequest({
+    url: `google/images`,
+    method: 'GET',
+  })
+  return response?.data?.mediaItems || []
+}
+// #endregion [Google]

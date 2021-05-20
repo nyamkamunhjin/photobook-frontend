@@ -35,7 +35,7 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
           </button>
 
           <button
-            className="btn-primary"
+            className="btn-cancel"
             type="button"
             onClick={() => {
               setVisible(false)

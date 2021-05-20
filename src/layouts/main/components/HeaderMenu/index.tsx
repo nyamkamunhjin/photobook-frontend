@@ -7,7 +7,7 @@ import { listCoverType, listTemplateCategory } from 'api'
 import { Category, CoverType } from 'interfaces'
 import { useRequest } from 'ahooks'
 import useRouter from 'components/router'
-import { Loading } from '../../../../components'
+import { Loading } from 'components'
 
 const HeaderMenu: FC = () => {
   const router = useRouter()

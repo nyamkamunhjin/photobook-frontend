@@ -20,6 +20,7 @@ export const moneyFormat: (money?: number) => string = (money) => {
 }
 
 export const buildQuery = ({ pageSize, filters, sorter, current }: PaginatedParams[0], data: Object): string => {
+  // always cast number to string
   let query = `limit=${pageSize}`
   if (current) {
     query += `&offset=${(current - 1) * pageSize}`
