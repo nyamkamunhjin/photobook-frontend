@@ -1,9 +1,16 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
 import useRequest from '@ahooksjs/use-request'
-import { Button, Checkbox, Grid, Modal, Radio, Select, Spin } from 'antd'
+import { Button, Checkbox, Grid, Modal, Select, Spin } from 'antd'
 import { ModalProps } from 'antd/lib/modal'
-import { getFacebookAlbums, getFacebookImages, getFacebookProfile, getGoogleProfile } from 'api'
-import { FacebookAlbum, FacebookPicture, FacebookProfile, GoogleProfile } from 'interfaces'
+import { getFacebookAlbums, getFacebookImages, getFacebookProfile, getGoogleImages, getGoogleProfile } from 'api'
+import {
+  FacebookAlbum,
+  FacebookPicture,
+  FacebookProfile,
+  GooglePicture,
+  GoogleProfile,
+  UploadablePicture,
+} from 'interfaces'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -13,7 +20,7 @@ interface Props extends ModalProps {
   loading: boolean
   okDisable?: boolean
   cancelDisable?: boolean
-  onUpload?: (changedFields: any, allFields: any) => void
+  onUpload: (images: any) => void
 }
 
 const UploadModal: React.FC<Props> = ({
@@ -23,27 +30,31 @@ const UploadModal: React.FC<Props> = ({
   okText,
   cancelText,
   onCancel,
+  onUpload,
   type = 'default',
   okDisable = false,
   cancelDisable = false,
   ...props
 }) => {
   const [selectedAlbum, setSelectedAlbum] = useState<string>('')
+  const [selectedImages, setSelectedImages] = useState<any[]>()
+  const intl = useIntl()
+  const screens = Grid.useBreakpoint()
   const profile = useRequest<FacebookProfile | GoogleProfile>((e) => e(), {
     manual: true,
   })
-  const images = useRequest<FacebookPicture[]>(() => getFacebookImages(selectedAlbum), {
+  const images = useRequest<FacebookPicture[] | GooglePicture[]>((e) => e(selectedAlbum), {
     manual: false,
     refreshDeps: [selectedAlbum],
   })
 
   const albums = useRequest<FacebookAlbum[]>(getFacebookAlbums, {
+    manual: true,
     onSuccess: (_albums) => {
       setSelectedAlbum(_albums[0].id)
     },
   })
-  const intl = useIntl()
-  const screens = Grid.useBreakpoint()
+
   const calcWidth = () => {
     switch (type) {
       case 'wide':
@@ -76,17 +87,27 @@ const UploadModal: React.FC<Props> = ({
     }
   }
 
+  const removeGoogle = (_event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    localStorage.removeItem('googleAccessToken')
+    if (onCancel) {
+      onCancel(_event)
+    }
+  }
+
   useEffect(() => {
     const getData = (storage: any) => {
       switch (name) {
         case 'facebook':
           if (storage?.getItem('facebookAccessToken')) {
             profile.run(getFacebookProfile)
+            images.run(getFacebookImages)
+            albums.run()
           }
           break
         case 'google':
           if (storage?.getItem('googleAccessToken')) {
             profile.run(getGoogleProfile)
+            images.run(getGoogleImages)
           }
           break
         default:
@@ -137,12 +158,13 @@ const UploadModal: React.FC<Props> = ({
       </div>
     </div>
   )
+
   const googleHeader = (_profile: GoogleProfile) => (
     <div className="w-full flex">
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex items-center justify-end">
         <div className="2xl:w-1/3 xl:w-1/2 lg:w-1/2 md:w-1/2 sm:w-1/2 flex justify-around">
-          <Button onClick={removeFacebook}>
-            <FormattedMessage id="logout.facebook" />
+          <Button onClick={removeGoogle}>
+            <FormattedMessage id="logout.google" />
           </Button>
           <div className="text-right">
             <FormattedMessage
@@ -176,7 +198,35 @@ const UploadModal: React.FC<Props> = ({
     }
     return <div />
   }
-  console.log(name)
+
+  const googleBody = (_images: GooglePicture[]) =>
+    _images?.map((image) => (
+      <Checkbox key={image.id} value={image.id} className="w-24 h-24">
+        <img src={image.baseUrl} className="object-cover" alt={image.id} />
+      </Checkbox>
+    ))
+
+  const facebookBody = (_images: FacebookPicture[]) =>
+    _images?.map((image) => (
+      <Checkbox key={image.id} value={image.id} className="w-24 h-24">
+        <img src={image.picture} className="object-cover" alt={image.id} />
+      </Checkbox>
+    ))
+
+  const body = () => {
+    if (profile.data) {
+      switch (name) {
+        case 'facebook':
+          return facebookBody(images.data as FacebookPicture[])
+        case 'google':
+          return googleBody(images.data as GooglePicture[])
+        default:
+          return <div />
+      }
+    }
+    return <div />
+  }
+
   return (
     <Modal
       {...props}
@@ -186,7 +236,13 @@ const UploadModal: React.FC<Props> = ({
       maskClosable={false}
       onCancel={onCancel}
       footer={[
-        <Button key="submit" disabled={okDisable} type="primary" htmlType="submit" form={name} loading={loading}>
+        <Button
+          key="submit"
+          disabled={okDisable}
+          type="primary"
+          onClick={() => onUpload(selectedImages)}
+          loading={loading}
+        >
           {okText || intl.formatMessage({ id: 'save' })}
         </Button>,
         <Button key="close" disabled={cancelDisable} onClick={onCancel}>
@@ -194,7 +250,7 @@ const UploadModal: React.FC<Props> = ({
         </Button>,
       ]}
     >
-      {loading || profile.loading ? (
+      {loading || profile.loading || images.loading ? (
         <Spin spinning>
           <div style={{ height: 150 }} />
         </Spin>
@@ -202,12 +258,32 @@ const UploadModal: React.FC<Props> = ({
         <>
           <div>{header()}</div>
           <div>
-            <Checkbox.Group>
-              {images.data?.map((image) => (
-                <Checkbox key={image.id} value={image.id} className="w-24 h-24">
-                  <img src={image.picture} className="object-cover" alt={image.id} />
-                </Checkbox>
-              ))}
+            <Checkbox.Group
+              onChange={(list) => {
+                if (name === 'google') {
+                  setSelectedImages(
+                    (images.data as GooglePicture[])
+                      .filter((a) => list.includes(a.id))
+                      .map<UploadablePicture>((each) => ({
+                        url: each.baseUrl,
+                        filename: each.filename,
+                        mimeType: each.mimeType,
+                      }))
+                  )
+                } else if (name === 'facebook') {
+                  setSelectedImages(
+                    (images.data as FacebookPicture[])
+                      .filter((a) => list.includes(a.id))
+                      .map<UploadablePicture>((each) => ({
+                        url: each.images[0].source,
+                        filename: each.id,
+                        mimeType: 'JPG',
+                      }))
+                  )
+                }
+              }}
+            >
+              {body()}
             </Checkbox.Group>
           </div>
         </>

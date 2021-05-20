@@ -1,6 +1,7 @@
-import { createImage, listImage } from 'api'
+import { createImage, createMultiImage, listImage } from 'api'
 import { Storage } from 'aws-amplify'
-import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR } from './types'
+import { UploadablePicture } from 'interfaces'
+import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES } from './types'
 
 // Get images
 export const getImages = () => async (dispatch: any) => {
@@ -41,3 +42,22 @@ export const addImage =
       })
     }
   }
+
+export const addImages = (keys: string[]) => async (dispatch: any) => {
+  try {
+    const images = await createMultiImage(keys.map((key) => ({ imageUrl: key, type: 'images' })))
+    images.forEach(async (image: any) => {
+      image.tempUrl = await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => image.imageUrl)
+    })
+
+    dispatch({
+      type: ADD_IMAGES,
+      payload: images,
+    })
+  } catch (err) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: err },
+    })
+  }
+}

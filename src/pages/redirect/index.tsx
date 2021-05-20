@@ -12,6 +12,9 @@ const Redirect: FC = () => {
       localStorage.setItem('token', router.query.token)
       if (router.query.googleAccessToken) {
         localStorage.setItem('googleAccessToken', router.query.googleAccessToken)
+        if (router.query.googleRefreshToken) {
+          localStorage.setItem('googleRefreshToken', router.query.googleRefreshToken)
+        }
       }
 
       if (router.query.facebookAccessToken) {

@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -172,6 +172,15 @@ export const createImage = async (data: Object) => {
   return response?.data
 }
 
+export const createMultiImage = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'image/many',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
 // #endregion [Image]
 
 // #region [Template]
@@ -192,7 +201,6 @@ export const listTemplate = async (params?: PaginatedParams[0], data?: Record<st
     template.tempUrl = await Storage.get(template.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(
       () => template.imageUrl
     )
-    console.log(template.tempUrl)
   })
 
   if (params) return { list: templates, total: response?.totalCount, offset: response?.offset }
@@ -309,11 +317,7 @@ export const getLayoutCategory = async (id: number) => {
 // #endregion [LayoutCategory]
 
 // #region [LayoutProject]
-export const listProject = async (
-  params?: PaginatedParams[0],
-  data?: Record<string, unknown>,
-  offset?: ImageCategory
-) => {
+export const listProject = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
   let query = params && data ? buildQuery(params, data) : ''
   if (offset && params && params.current !== 1) {
     query += `&offset=${JSON.stringify(offset)}`
@@ -713,6 +717,15 @@ export const getCurrentUser = async () => {
   })
   return response
 }
+
+export const updateCurrentUser = async (data: Partial<User>) => {
+  const response = await BaseRequest({
+    url: `user`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
 // #endregion [Authentication]
 
 // #region [Facebook]
@@ -742,13 +755,18 @@ export const getFacebookProfile = async () => {
 
 // #region [Google]
 export const getGoogleProfile = async () => {
-  const token = localStorage.getItem('googleAccessToken')
-
-  const response = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
-    headers: {
-      Authorization: 'Bearer ' + token,
-    },
+  const response = await BaseRequest({
+    url: `google/profile`,
+    method: 'GET',
   })
-  return response.data
+  return response?.data
+}
+
+export const getGoogleImages = async () => {
+  const response = await BaseRequest({
+    url: `google/images`,
+    method: 'GET',
+  })
+  return response?.data?.mediaItems || []
 }
 // #endregion [Google]

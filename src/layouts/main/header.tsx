@@ -1,4 +1,3 @@
-import { Button } from 'antd'
 import { RootInterface } from 'interfaces'
 import React, { FC } from 'react'
 import { FormattedMessage } from 'react-intl'
@@ -21,21 +20,15 @@ const Topbar: FC = () => {
           <div className="ml-auto space-x-2">
             {!user && (
               <>
-                <Button
-                  className="rounded-md hover:border-transparent hover:text-black"
-                  onClick={() => router.push('/auth/signin')}
-                >
+                <button type="button" className="btn-text" onClick={() => router.push('/auth/signin')}>
                   <FormattedMessage id="sign-in" />
-                </Button>
-                <Button
-                  className="bg-yellow-400 rounded-md text-gray-50 hover:border-transparent hover:shadow-sm"
-                  onClick={() => router.push('/auth/signup')}
-                >
+                </button>
+                <button type="button" className="btn-warning" onClick={() => router.push('/auth/signup')}>
                   <FormattedMessage id="sign-up" />
-                </Button>
+                </button>
               </>
             )}
-            {user && <UserInfo />}
+            {user && <UserInfo avatarUrl={user.avatarUrl} />}
           </div>
         </div>
         <div className="mx-auto">

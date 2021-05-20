@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   const dispatch = useDispatch()
 
   const googleSignin = () => {
-    const popupWindow = window.open(`${process.env.REACT_APP_BACK_URL}/auth/google`, '_blank', 'width=400, height=300')
+    const popupWindow = window.open(`${process.env.REACT_APP_BACK_URL}/auth/google`, '_blank', 'width=600, height=600')
     if (popupWindow) popupWindow.focus()
   }
 
@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     const popupWindow = window.open(
       `${process.env.REACT_APP_BACK_URL}/auth/facebook`,
       '_blank',
-      'width=400, height=300'
+      'width=600, height=600'
     )
     if (popupWindow) popupWindow.focus()
   }

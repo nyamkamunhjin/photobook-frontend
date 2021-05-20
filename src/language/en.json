@@ -196,5 +196,6 @@
   "upload.facebook": "Facebook",
   "upload.google": "Google",
   "logged_as": "Logged as {name}",
-  "logout.facebook": "Logout from Facebook"
+  "logout.facebook": "Logout from Facebook",
+  "logout.google": "Logout from Google"
 }

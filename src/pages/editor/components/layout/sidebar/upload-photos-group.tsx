@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { LaptopOutlined, PictureOutlined } from '@ant-design/icons'
-import { UploadModal } from 'components'
+import { UploadablePicture } from 'interfaces'
 import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
+import UploadModal from '../upload-modal'
 
 interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
+  uploadPhotos: (images: UploadablePicture[]) => void
 }
 
 interface Type {
@@ -13,7 +15,7 @@ interface Type {
   type: 'google' | 'facebook'
 }
 
-const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto }) => {
+const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
   const [inputRef, setInputRef] = useState<any>(null)
   const [modal, setModal] = useState<Type>({
     visible: false,
@@ -81,6 +83,7 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto }) => {
       {modal.visible && (
         <UploadModal
           onCancel={() => setModal({ visible: false, type: 'facebook' })}
+          onUpload={uploadPhotos}
           type="wide"
           visible={modal.visible}
           name={modal.type}

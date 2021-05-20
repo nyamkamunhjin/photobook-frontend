@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import { Modal, Button } from 'antd'
 import Spinner from 'components/spinner'
+import { UploadablePicture } from 'interfaces'
 import UploadPhotosGroup from '../upload-photos-group'
 
 interface Props {
-  loading: any
+  loading: boolean
   images: any
-  uploadPhoto: any
+  uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
+  uploadPhotos: (images: UploadablePicture[]) => void
 }
 
-const Images: React.FC<Props> = ({ loading, images, uploadPhoto }) => {
+const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
-  const dragStart = (e: any, tempUrl: any, imageUrl: any) => {
+  const dragStart = (e: any, tempUrl: string, imageUrl: string) => {
     e.dataTransfer.setData('tempUrl', tempUrl)
     e.dataTransfer.setData('imageUrl', imageUrl)
   }
@@ -38,7 +40,7 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto }) => {
           Add more photos
         </Button>
         <Modal title="Upload" visible={modalVisible} onOk={handleOk} onCancel={handleCancel}>
-          <UploadPhotosGroup uploadPhoto={uploadPhoto} />
+          <UploadPhotosGroup uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
         </Modal>
       </div>
       <div className="ImportedPhotos">
