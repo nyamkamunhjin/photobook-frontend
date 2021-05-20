@@ -101,9 +101,12 @@ const Router: React.FC<RouterProps> = ({ history }) => {
   useEffect(() => {
     // listen storage change
     const storageListener = (event: StorageEvent) => {
+      const { pathname } = window.location
       if (event.storageArea?.getItem('token')) {
         dispatch(loadUser())
-        history.push('/')
+        if (!/^\/editor(?=\/|$)/i.test(pathname)) {
+          history.push('/')
+        }
       }
     }
 

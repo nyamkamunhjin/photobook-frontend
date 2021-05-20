@@ -11,16 +11,16 @@ import {
 } from '@ant-design/icons'
 import { useDrop } from 'ahooks'
 import { Button } from 'antd'
-import { getImages as _getImages, addImage as _addImage } from 'redux/actions/image'
+import { getImages as _getImages, addImage as _addImage, addImages as _addImages } from 'redux/actions/image'
 import {
   setType as _setType,
   setDragStart as _setDragStart,
   setBackgroundEdit as _setBackgroundEdit,
   toggleSidebar as _toggleSidebar,
 } from 'redux/actions/editor'
-import { s3Upload } from 'utils/aws-lib'
+import { s3Upload, s3SyncImages } from 'utils/aws-lib'
 import { FormattedMessage } from 'react-intl'
-import { EditorInterface, ImageInterface, RootInterface } from 'interfaces'
+import { EditorInterface, ImageInterface, RootInterface, UploadablePicture } from 'interfaces'
 
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
@@ -33,6 +33,7 @@ import UploadPhotosGroup from './upload-photos-group'
 interface Props {
   getImages: () => void
   addImage: (imageUrl: string, type: string) => void
+  addImages: (images: string[]) => void
   setType: (type: string) => void
   setDragStart: (dragStart: boolean) => void
   setBackgroundEdit: (backgroundEdit: boolean) => void
@@ -49,6 +50,7 @@ const SideBarPanel: React.FC<Props> = ({
   hasImage,
   hasLayout = true,
   addImage,
+  addImages,
   setType,
   setDragStart,
   setBackgroundEdit,
@@ -74,6 +76,14 @@ const SideBarPanel: React.FC<Props> = ({
       addImage(imageUrl, editor.type)
     }
   }
+
+  const uploadPhotos = async (_images: UploadablePicture[]) => {
+    if (_images.length) {
+      const keys = await s3SyncImages(_images)
+      await addImages(keys)
+    }
+  }
+
   const isActive = (name: any) => {
     return editor.type === name ? 'active' : ''
   }
@@ -116,10 +126,10 @@ const SideBarPanel: React.FC<Props> = ({
                 </p>
               </div>
 
-              <UploadPhotosGroup uploadPhoto={uploadPhoto} />
+              <UploadPhotosGroup uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
             </div>
           ) : (
-            <Images loading={loading} images={uploadedImages} uploadPhoto={uploadPhoto} />
+            <Images loading={loading} images={uploadedImages} uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
           )
         }
         return <div />
@@ -264,6 +274,7 @@ const mapStateToProps = (state: RootInterface) => ({
 export default connect(mapStateToProps, {
   getImages: _getImages,
   addImage: _addImage,
+  addImages: _addImages,
   setType: _setType,
   setDragStart: _setDragStart,
   setBackgroundEdit: _setBackgroundEdit,

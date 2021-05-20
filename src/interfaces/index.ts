@@ -469,5 +469,53 @@ export type ShippingAddress = {
   description: string
   userId: number
 }
+export interface FacebookAlbum {
+  id: string
+  created_time: string
+  name: string
+}
+export interface FacebookProfile {
+  id: string
+  first_name: string
+  last_name: string
+  picture: {
+    data: {
+      url: string
+    }
+  }
+}
+export interface FacebookImage {
+  source: string
+  height: number
+  width: number
+}
+
+export interface FacebookPicture {
+  id: string
+  images: FacebookImage[]
+  picture: string
+  created_time: string
+}
+
+export interface GoogleProfile {
+  id: string
+  email: string
+  name: string
+  given_name: string
+  picture: string
+}
+export interface GooglePicture {
+  id: string
+  productUrl: string
+  baseUrl: string
+  mimeType: string
+  filename: string
+}
+
+export interface UploadablePicture {
+  filename: string
+  url: string
+  mimeType: string
+}
 
 export type Locales = 'mn' | 'en'
