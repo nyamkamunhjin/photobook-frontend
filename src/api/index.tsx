@@ -728,6 +728,61 @@ export const updateCurrentUser = async (data: Partial<User>) => {
 }
 // #endregion [Authentication]
 
+// #region [ShippingAddress]
+export const listShippingAddress = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `shipping-address?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const createShippingAddress = async (data: object) => {
+  const response = await BaseRequest({
+    url: `shipping-address`,
+    method: 'POST',
+    data,
+  })
+  return response
+}
+
+export const deleteShippingAddress = async (id: number) => {
+  const response = await BaseRequest({
+    url: `shipping-address/${id}`,
+    method: 'DELETE',
+  })
+  return response
+}
+
+export const updateShippingAddress = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `shipping-address/${id}`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
+export const getShippingAddress = async (id: number) => {
+  const response = await BaseRequest({
+    url: `shipping-address/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+// #endregion [ShippingAddress]
+
 // #region [Facebook]
 export const getFacebookAlbums = async () => {
   const token = localStorage.getItem('facebookAccessToken')

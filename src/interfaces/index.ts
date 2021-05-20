@@ -349,6 +349,7 @@ export type User = {
   id: number
   email: string | null
   password?: string | null
+  phoneNumber: string | null
   firstName: string | null
   lastName: string | null
   address: string | null
@@ -459,6 +460,15 @@ export interface PaperMaterialPrice {
   price: number
 }
 
+export type ShippingAddress = {
+  id: number
+  firstName: string
+  lastName: string
+  companyName: string | null
+  address: string
+  description: string
+  userId: number
+}
 export interface FacebookAlbum {
   id: string
   created_time: string
