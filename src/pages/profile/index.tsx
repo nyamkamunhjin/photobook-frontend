@@ -35,10 +35,13 @@ const Profile: FC = () => {
   return (
     <WidthLimiter className="min-h-screen bg-gray-100 w-full">
       {user ? (
-        <div className="flex flex-col gap-2 items-center sm:flex-row sm:items-start p-2">
+        <div className="flex flex-col gap-2 p-2 items-center sm:flex-row sm:items-start">
           {/* side menu */}
-          <div className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg">
-            <div className="w-56 h-56">
+          <div
+            className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg max-w-xs"
+            style={{ minWidth: '15rem' }}
+          >
+            <div className="w-40 h-40">
               {user.avatarUrl ? (
                 <img className="rounded-full w-full h-full object-cover" src={user.avatarUrl} alt="profile" />
               ) : (
@@ -46,9 +49,9 @@ const Profile: FC = () => {
               )}
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {user.firstName && <span className="font-semibold text-xl">{user.firstName}</span>}
-              {user.lastName && <span className="font-semibold text-xl">{user.lastName}</span>}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {user.firstName && <span className="font-semibold text-lg">{user.firstName}</span>}
+              {user.lastName && <span className="font-semibold text-lg">{user.lastName}</span>}
             </div>
             <div className="flex gap-2 w-full flex-col items-center">
               {tabStates.map((state) => (

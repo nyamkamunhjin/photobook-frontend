@@ -1,4 +1,3 @@
-import { LogoutOutlined } from '@ant-design/icons'
 import { Avatar, Button, Popover } from 'antd'
 import { useDispatch } from 'react-redux'
 import React, { useState } from 'react'
@@ -28,10 +27,43 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
             type="button"
             onClick={() => {
               setVisible(false)
-              history.push('/profile')
+              history.push('/profile?tab=order_history')
             }}
           >
-            <FormattedMessage id="profile" />
+            <FormattedMessage id="order_history" />
+          </button>
+
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={() => {
+              setVisible(false)
+              history.push('/profile?tab=my_projects')
+            }}
+          >
+            <FormattedMessage id="my_projects" />
+          </button>
+
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={() => {
+              setVisible(false)
+              history.push('/profile?tab=my_cart')
+            }}
+          >
+            <FormattedMessage id="my_cart" />
+          </button>
+
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={() => {
+              setVisible(false)
+              history.push('/profile?tab=my_info')
+            }}
+          >
+            <FormattedMessage id="my_info" />
           </button>
 
           <button
@@ -42,7 +74,7 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
               dispatch({ type: LOGOUT })
             }}
           >
-            {intl.formatMessage({ id: 'log-out' })}
+            <FormattedMessage id="log-out" />
           </button>
         </div>
       }
