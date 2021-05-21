@@ -726,6 +726,24 @@ export const verifyEmail = async () => {
   return response
 }
 
+export const forgotPassword = async (email: string) => {
+  const response = await BaseRequest({
+    url: `auth/forgot-password`,
+    method: 'POST',
+    data: { email },
+  })
+  return response
+}
+
+export const changePassword = async (token: string, data: any) => {
+  const response = await BaseRequest({
+    url: `auth/change-password/${token}`,
+    method: 'POST',
+    data,
+  })
+  return response
+}
+
 export const updateCurrentUser = async (data: Partial<User>) => {
   const response = await BaseRequest({
     url: `user`,

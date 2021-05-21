@@ -147,15 +147,15 @@ const ShippingAddressModal: FC<Props> = ({ id, setId, type, setType }) => {
           </Form.Item>
           <Form.Item
             name="description"
-            label={<FormattedMessage id="addtional_description" />}
+            label={<FormattedMessage id="additional_description" />}
             rules={[
               {
                 type: 'string',
-                message: <FormattedMessage id="wrong_addtional_description" />,
+                message: <FormattedMessage id="wrong_additional_description" />,
               },
               {
                 required: true,
-                message: <FormattedMessage id="please_input_addtional_description" />,
+                message: <FormattedMessage id="please_input_additional_description" />,
               },
             ]}
           >

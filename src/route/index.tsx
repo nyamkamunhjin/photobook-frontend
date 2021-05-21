@@ -65,9 +65,20 @@ const routes: RouteInterface[] = [
     component: LoadableLoader(() => import('pages/auth/login')),
     exact: true,
   },
+
   {
     path: '/auth/signup',
     component: LoadableLoader(() => import('pages/auth/signup')),
+    exact: true,
+  },
+  {
+    path: '/auth/forgot-password',
+    component: LoadableLoader(() => import('pages/auth/forgot-password')),
+    exact: true,
+  },
+  {
+    path: '/auth/change-password',
+    component: LoadableLoader(() => import('pages/auth/change-password')),
     exact: true,
   },
   {

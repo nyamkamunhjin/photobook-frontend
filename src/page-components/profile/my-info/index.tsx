@@ -54,6 +54,9 @@ const MyInfo: FC = () => {
 
   const onFinish = (values: Partial<User>) => {
     setUpdateLoading(true)
+
+    if (values.password?.trim() === '') delete values.password
+
     updateCurrentUser({ ...values, phoneNumber: values.phoneNumber?.toString() })
       .then(() => {
         dispatch(loadUser())
@@ -228,7 +231,7 @@ const MyInfo: FC = () => {
             }
             rules={[
               {
-                required: true,
+                // required: true,
                 message: <FormattedMessage id="please_input_password" />,
               },
             ]}
@@ -245,7 +248,7 @@ const MyInfo: FC = () => {
             }
             rules={[
               {
-                required: true,
+                // required: true,
                 message: <FormattedMessage id="please_input_confirm_password" />,
               },
               ({ getFieldValue }) => ({

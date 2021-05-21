@@ -140,10 +140,17 @@
   "social_accounts": "Social Accounts",
   "connected": "Connected",
   "addresses": "Addresses",
+
   "add": "Add",
   "delivery_first_name": "First Name",
   "delivery_last_name": "Last Name",
   "delivery_company_name": "Company Name",
+  "company_name": "Company Name",
+  "address": "Address",
+  "additional_description": "Additional Description",
+  "please_input_address": "Please input address",
+  "please_input_additional_description": "Please input additional description",
+
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",
   "wrong_email": "Wrong Email",

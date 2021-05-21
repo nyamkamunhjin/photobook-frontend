@@ -5,8 +5,7 @@ import { FacebookFilled, GoogleOutlined } from '@ant-design/icons'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { signIn } from 'api'
 import { LOGIN_FAIL, LOGIN_SUCCESS } from 'redux/actions/types'
-import { useRouter } from 'components'
-import './style.css'
+import { CustomButton, useRouter } from 'components'
 import { loadUser } from 'redux/actions/auth'
 
 const Login: React.FC = () => {
@@ -32,7 +31,6 @@ const Login: React.FC = () => {
   const onFinish = (values: any) => {
     setLoading(true)
     const { email, password } = values
-    // dispatch(loginUser(email, password)) // redux yaj message haruulahaa oilgodoggue ee
 
     signIn(email, password)
       .then((user) => {
@@ -58,39 +56,50 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="w-96 bg-white rounded-lg p-6 shadow-md mx-auto">
-      <Button className="my-3" icon={<GoogleOutlined />} onClick={googleSignin}>
-        Sign in with Google
-      </Button>
-      <Button className="my-3" icon={<FacebookFilled />} onClick={facebookSignin}>
-        Sign in with Facebook
-      </Button>
-      <Form
-        name="basic"
-        layout="vertical"
-        initialValues={{
-          email: 'admin@example.com',
-          password: 'FERNANDOtorres_9',
-        }}
-        onFinish={(values) => onFinish(values)}
-      >
-        <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
-          <Input />
-        </Form.Item>
+    <div className="w-full h-screen bg-gray-100">
+      <div className="w-96 flex flex-col gap-4 bg-white rounded-lg p-6 shadow-md mx-auto mt-10">
+        <div className="ml-auto">
+          <CustomButton className="btn-text text-xs text-blue-400" onClick={() => router.push('/auth/forgot-password')}>
+            <FormattedMessage id="forgot-password" />?
+          </CustomButton>
+        </div>
+        <CustomButton className="btn-primary" icon={<GoogleOutlined />} onClick={googleSignin}>
+          Sign in with Google
+        </CustomButton>
+        <CustomButton className="btn-primary" icon={<FacebookFilled />} onClick={facebookSignin}>
+          Sign in with Facebook
+        </CustomButton>
+        <Form name="basic" layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            label={
+              <span className="font-semibold text-gray-500">
+                <FormattedMessage id="email" />
+              </span>
+            }
+            name="email"
+            rules={[{ required: true, message: 'Please input your email!' }]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item>
-          <Button loading={loading} type="primary" htmlType="submit">
-            <FormattedMessage id="sign-in" />
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label={
+              <span className="font-semibold text-gray-500">
+                <FormattedMessage id="password" />
+              </span>
+            }
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item>
+            <CustomButton className="btn-warning" loading={loading} type="submit">
+              <FormattedMessage id="sign-in" />
+            </CustomButton>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   )
 }
