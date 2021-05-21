@@ -348,6 +348,7 @@ export interface UserInterface {
 export type User = {
   id: number
   email: string | null
+  emailConfirmed: boolean
   password?: string | null
   phoneNumber: string | null
   firstName: string | null

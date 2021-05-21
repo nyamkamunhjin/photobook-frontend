@@ -718,6 +718,14 @@ export const getCurrentUser = async () => {
   return response
 }
 
+export const verifyEmail = async () => {
+  const response = await BaseRequest({
+    url: `auth/verify-email`,
+    method: 'GET',
+  })
+  return response
+}
+
 export const updateCurrentUser = async (data: Partial<User>) => {
   const response = await BaseRequest({
     url: `user`,
