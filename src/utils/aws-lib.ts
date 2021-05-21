@@ -26,6 +26,7 @@ export function blobToFile(blob: Blob, name: string): File {
   const _blob: any = blob
   _blob.lastModifiedDate = new Date()
   _blob.name = name
+
   return _blob
 }
 
@@ -33,11 +34,12 @@ export async function s3SyncImages(images: UploadablePicture[]) {
   const keys = await Promise.all(
     images?.map(async (image) => {
       const filename = `${Date.now()}-${image.filename}`
-      const { data } = await axios.get(image.url, {
+      const url = image.url.includes('google')
+        ? `https://u0n54noja5.execute-api.us-east-1.amazonaws.com/google-download?domain=${image.url}`
+        : image.url
+      const { data } = await axios.get(url, {
         transformRequest: (_data, headers) => {
-          if (image.url.includes('google')) {
-            headers.common['Access-Control-Allow-Origin'] = '*'
-          } else {
+          if (!image.url.includes('google')) {
             delete headers.common['Access-Control-Allow-Headers']
           }
           return _data
@@ -45,7 +47,6 @@ export async function s3SyncImages(images: UploadablePicture[]) {
         responseType: 'blob',
       })
       const file = blobToFile(data, filename)
-      console.log(file)
       const thumb = await resizeFile(file)
       Storage.put(image.filename, file, {
         progressCallback: (progress: any) => {
@@ -53,6 +54,27 @@ export async function s3SyncImages(images: UploadablePicture[]) {
         },
         level: 'private',
         contentType: image.mimeType,
+      })
+      const stored: any = await Storage.put(filename, thumb, {
+        contentType: file.type,
+      })
+      return stored.key
+    })
+  )
+  return keys
+}
+
+export async function s3UploadImages(files: File[]) {
+  const keys = await Promise.all(
+    files?.map(async (file) => {
+      const filename = `${Date.now()}-${file.name}`
+      const thumb = await resizeFile(file)
+      Storage.put(file.name, file, {
+        progressCallback: (progress: any) => {
+          console.log(`Uploaded: ${progress.loaded}/${progress.total}`)
+        },
+        level: 'private',
+        contentType: file.type,
       })
       const stored: any = await Storage.put(filename, thumb, {
         contentType: file.type,

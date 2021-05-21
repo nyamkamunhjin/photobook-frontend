@@ -302,14 +302,21 @@
     align-items: center;
     justify-content: center;
     margin: 5px 0;
-
+    height: 130px;
+    width: 130px;
+    .active {
+      border: 3px solid #4480aa !important;
+      cursor: pointer;
+    }
     img {
       padding: 3px;
       margin: 0 2px;
       border: 3px solid rgb(238, 238, 238);
       border-radius: 5px;
       transition: 0.1s;
-      width: 130px;
+      max-height: 130px;
+      max-width: 130px;
+      object-fit:contain;
 
       &:hover {
         border: 3px solid #767676;
@@ -648,36 +655,18 @@
   }
 
   .SlideActions {
+    padding: 10px;
     background-color: #fff;
     box-shadow: -5px 0 4px -3px rgba(0, 0, 0, 0.3);
     position: relative;
     z-index: 5300;
     flex: 0 0 160px;
     border-left: 1px solid #d3d3d3;
-
-    .inactive {
-      color: #e5e7eb;
-      &:hover {
-        cursor: default;
-        background: #fff;
-      }
+    div {
+      font-size: 0.85rem;
     }
-
-    p {
-      padding: 8px 5px;
-      margin: 0;
-      transition: 0.1s ease-in-out;
-      &:hover {
-        cursor: pointer;
-        background: #ddedfc;
-      }
-    }
-
-    .SlideActionButton {
-      font-size: 12px;
-      justify-content: flex-start;
-      margin-bottom: 3px;
-      padding: 4px 0;
+    svg {
+      margin: 5px;
     }
   }
 }
@@ -693,6 +682,7 @@
   height: 100vh;
   display: none;
 }
+
 
 @import './slide.scss';
 @import './font.scss';

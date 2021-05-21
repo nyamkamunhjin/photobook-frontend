@@ -8,6 +8,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   important: true,
   theme: {
+    fontSize: {
+      'xs': '.65rem'
+    },
     extend: {},
     container: {
       center: true,

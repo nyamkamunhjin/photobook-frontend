@@ -1,21 +1,24 @@
 /* eslint-disable react/button-has-type */
-import React, { CSSProperties, FC } from 'react'
+import React, { FC } from 'react'
 import Loading from '../loading'
 
-interface Props {
+interface Props extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   loading?: boolean
-  className?: string
-  children: React.ReactNode
-  type?: 'button' | 'submit' | 'reset'
-  onClick?: () => void
-  form?: string
-  style?: CSSProperties
+  icon?: React.ReactNode
+  iconPosition?: 'left' | 'right'
 }
 
-const CustomButton: FC<Props> = ({ loading, className, children, type = 'button', onClick, form, style }) => {
+const CustomButton: FC<Props> = ({ loading, type = 'button', icon, iconPosition = 'left', ...props }) => {
   return (
-    <button type={type} className={className} onClick={onClick} form={form} style={style}>
-      {loading ? <Loading className="text-base text-white" fill={false} /> : children}
+    <button {...props} type={type}>
+      {loading ? (
+        <Loading className="text-base text-white" fill={false} />
+      ) : (
+        <div className={`flex ${iconPosition === 'left' ? '' : 'flex-row-reverse'} gap-1 items-center justify-center`}>
+          {icon}
+          {props.children}
+        </div>
+      )}
     </button>
   )
 }

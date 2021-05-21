@@ -6,6 +6,7 @@ import {
   FeatureType,
   FullLayout,
   HistoryProps,
+  Image,
   LayoutObject,
   LayoutsInterface,
   ObjectType,
@@ -1198,9 +1199,7 @@ export default class Editor {
   public createImage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     if (e.dataTransfer) {
-      const tempUrl = e.dataTransfer.getData('tempUrl')
-      const imageUrl: any = e.dataTransfer.getData('imageUrl')
-
+      const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
       const { x, y } = this.canvasRef.current.getBoundingClientRect()
       const x1 = e.clientX - x
       const y1 = e.clientY - y
@@ -1214,21 +1213,22 @@ export default class Editor {
         transform: '',
         zIndex: 100 + objects.length + '',
       }
-
-      this.addObject({
-        object: {
-          id: uuidv4(),
-          className: 'object',
-          style,
-          props: {
-            imageUrl,
-            tempUrl,
-            className: 'image-placeholder',
-            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-            style: { transform: 'scaleX(1)' },
-            placeholderStyle: { opacity: 1 },
+      images.forEach((image) => {
+        this.addObject({
+          object: {
+            id: uuidv4(),
+            className: 'object',
+            style,
+            props: {
+              imageUrl: image.imageUrl,
+              tempUrl: image.tempUrl,
+              className: 'image-placeholder',
+              imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+              style: { transform: 'scaleX(1)' },
+              placeholderStyle: { opacity: 1 },
+            },
           },
-        },
+        })
       })
     } else {
       const style = {
@@ -1311,13 +1311,13 @@ export default class Editor {
       } else {
         e.target.style.border = 'none'
         const index = objects.findIndex((o: any) => o.id === e.target.id)
-
+        const image = JSON.parse(e.dataTransfer.getData('images')) as Image[]
         const newObject = {
           ...objects[index],
           props: {
             ...objects[index].props,
-            imageUrl: e.dataTransfer.getData('imageUrl'),
-            tempUrl: e.dataTransfer.getData('tempUrl'),
+            imageUrl: image[0].imageUrl,
+            tempUrl: image[0].tempUrl,
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
             placeholderStyle: { opacity: '1' },
           },

@@ -11,14 +11,19 @@ import {
 } from '@ant-design/icons'
 import { useDrop } from 'ahooks'
 import { Button } from 'antd'
-import { getImages as _getImages, addImage as _addImage, addImages as _addImages } from 'redux/actions/image'
+import {
+  getImages as _getImages,
+  addImage as _addImage,
+  addImages as _addImages,
+  uploadImages as _uploadImages,
+} from 'redux/actions/image'
 import {
   setType as _setType,
   setDragStart as _setDragStart,
   setBackgroundEdit as _setBackgroundEdit,
   toggleSidebar as _toggleSidebar,
 } from 'redux/actions/editor'
-import { s3Upload, s3SyncImages } from 'utils/aws-lib'
+import { s3Upload, s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage } from 'react-intl'
 import { EditorInterface, ImageInterface, RootInterface, UploadablePicture } from 'interfaces'
 
@@ -34,6 +39,7 @@ interface Props {
   getImages: () => void
   addImage: (imageUrl: string, type: string) => void
   addImages: (images: string[]) => void
+  uploadImages: () => void
   setType: (type: string) => void
   setDragStart: (dragStart: boolean) => void
   setBackgroundEdit: (backgroundEdit: boolean) => void
@@ -51,6 +57,7 @@ const SideBarPanel: React.FC<Props> = ({
   hasLayout = true,
   addImage,
   addImages,
+  uploadImages,
   setType,
   setDragStart,
   setBackgroundEdit,
@@ -63,22 +70,24 @@ const SideBarPanel: React.FC<Props> = ({
 
   const [props, { isHovering }] = useDrop({
     onFiles: (files) => {
-      s3Upload(files[0]).then((imageUrl) => {
-        addImage(imageUrl, editor.type)
+      uploadImages()
+      s3UploadImages(files).then((keys) => {
+        addImages(keys)
       })
     },
   })
 
   const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files?.length > 0) {
-      const image = e.target.files[0]
-      const imageUrl = await s3Upload(image)
-      addImage(imageUrl, editor.type)
+      await uploadImages()
+      const keys = await s3UploadImages(Array.from(e.target.files))
+      await addImages(keys)
     }
   }
 
   const uploadPhotos = async (_images: UploadablePicture[]) => {
     if (_images.length) {
+      await uploadImages()
       const keys = await s3SyncImages(_images)
       await addImages(keys)
     }
@@ -279,4 +288,5 @@ export default connect(mapStateToProps, {
   setDragStart: _setDragStart,
   setBackgroundEdit: _setBackgroundEdit,
   toggleSidebar: _toggleSidebar,
+  uploadImages: _uploadImages,
 })(SideBarPanel)

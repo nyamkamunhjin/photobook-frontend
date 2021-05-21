@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react'
 import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons'
+import { BsFileMinus, BsFiles, BsFileEarmarkPlus } from 'react-icons/bs'
 import { FormattedMessage } from 'react-intl'
 import { Spin } from 'antd'
 import { Actions } from 'ahooks/lib/useBoolean'
@@ -292,13 +293,14 @@ const FooterListTools: React.FC<Props> = ({
             </div>
             <div className="SlideActions">
               <div
-                className="cursor-pointer"
+                className="cursor-pointer flex items-center"
                 onClick={() => {
                   if (currentProject.id) {
                     addNewSlide(currentProject?.id, slideIndex)
                   }
                 }}
               >
+                <BsFileEarmarkPlus />
                 <FormattedMessage id="slide.add_page" />
               </div>
               <div
@@ -306,17 +308,19 @@ const FooterListTools: React.FC<Props> = ({
                   const { id } = currentProject
                   if (id) duplicateSlide(id, slideIndex)
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer flex items-center"
               >
+                <BsFiles />
                 <FormattedMessage id="slide.duplicate" />
               </div>
               <div
-                className="cursor-pointer"
+                className="cursor-pointer flex items-center"
                 onClick={() => {
                   const { id } = currentProject
                   if (id) deleteSlide(id, slideIndex)
                 }}
               >
+                <BsFileMinus />
                 <FormattedMessage id="slide.remove" />
               </div>
             </div>

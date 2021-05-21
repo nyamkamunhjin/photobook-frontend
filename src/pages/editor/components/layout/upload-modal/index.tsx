@@ -40,11 +40,11 @@ const UploadModal: React.FC<Props> = ({
   const [selectedImages, setSelectedImages] = useState<any[]>()
   const intl = useIntl()
   const screens = Grid.useBreakpoint()
-  const profile = useRequest<FacebookProfile | GoogleProfile>((e) => e(), {
+  const profile = useRequest<FacebookProfile | GoogleProfile>((e) => e && e(), {
     manual: true,
   })
-  const images = useRequest<FacebookPicture[] | GooglePicture[]>((e) => e(selectedAlbum), {
-    manual: false,
+  const images = useRequest<FacebookPicture[] | GooglePicture[]>((e, album) => e(album), {
+    manual: true,
     refreshDeps: [selectedAlbum],
   })
 
@@ -52,6 +52,7 @@ const UploadModal: React.FC<Props> = ({
     manual: true,
     onSuccess: (_albums) => {
       setSelectedAlbum(_albums[0].id)
+      images.run(getFacebookImages, _albums[0].id)
     },
   })
 
@@ -100,14 +101,14 @@ const UploadModal: React.FC<Props> = ({
         case 'facebook':
           if (storage?.getItem('facebookAccessToken')) {
             profile.run(getFacebookProfile)
-            images.run(getFacebookImages)
+            images.run(getFacebookImages, selectedAlbum)
             albums.run()
           }
           break
         case 'google':
           if (storage?.getItem('googleAccessToken')) {
             profile.run(getGoogleProfile)
-            images.run(getGoogleImages)
+            images.run(getGoogleImages, '')
           }
           break
         default:
@@ -128,7 +129,14 @@ const UploadModal: React.FC<Props> = ({
     <div className="w-full flex">
       <div className="w-full flex items-center justify-between">
         <div className="2xl:w-1/3 xl:w-1/2 lg:w-1/2 md:w-1/3 sm:w-1/2">
-          <Select value={selectedAlbum} className="w-full" onChange={(e) => setSelectedAlbum(`${e}`)}>
+          <Select
+            value={selectedAlbum}
+            className="w-full"
+            onChange={(e) => {
+              setSelectedAlbum(`${e}`)
+              images.run(getFacebookImages, e)
+            }}
+          >
             {albums.data?.map((album) => (
               <Select.Option key={album.id} value={album.id}>
                 {album.name}
@@ -240,10 +248,13 @@ const UploadModal: React.FC<Props> = ({
           key="submit"
           disabled={okDisable}
           type="primary"
-          onClick={() => onUpload(selectedImages)}
+          onClick={(e) => {
+            onUpload(selectedImages)
+            if (onCancel) onCancel(e)
+          }}
           loading={loading}
         >
-          {okText || intl.formatMessage({ id: 'save' })}
+          {okText || intl.formatMessage({ id: 'upload' })}
         </Button>,
         <Button key="close" disabled={cancelDisable} onClick={onCancel}>
           {cancelText || intl.formatMessage({ id: 'close' })}
