@@ -122,3 +122,9 @@ export const ParseNumber = (num?: string | number) => {
   }
   return Number(num.replace('px', ''))
 }
+
+export const filterArray = (arr: any[], obj: any, key: string) => {
+  return arr.some((o) => obj[key] === o[key]) // if you can find the object
+    ? arr.filter((o) => obj[key] !== o[key]) // remove it
+    : [...arr, obj] // or add it if not
+}

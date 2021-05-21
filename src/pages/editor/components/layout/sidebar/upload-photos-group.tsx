@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { LaptopOutlined, PictureOutlined } from '@ant-design/icons'
 import { UploadablePicture } from 'interfaces'
+import { RiComputerFill, RiFacebookBoxFill, RiGoogleFill, RiImageFill } from 'react-icons/ri'
 import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import UploadModal from '../upload-modal'
@@ -51,30 +51,31 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
       <div className="UploadPhotosGroup grid grid-cols-1 md:grid-cols-2">
         <input
           type="file"
+          multiple
           style={{ display: 'none' }}
           onChange={(e) => uploadPhoto(e)}
           ref={(file) => setInputRef(file)}
         />
         <div onClick={() => inputRef.click()} className="UploadPhotos">
-          <LaptopOutlined className="icon" />
+          <RiComputerFill size={23} />
           <span>
             <FormattedMessage id="upload.computer" />
           </span>
         </div>
         <div className="UploadPhotos">
-          <PictureOutlined className="icon" />
+          <RiImageFill size={23} />
           <span>
             <FormattedMessage id="upload.my_photos" />
           </span>
         </div>
         <div onClick={onFacebook} className="UploadPhotos">
-          <PictureOutlined className="icon" />
+          <RiFacebookBoxFill size={23} />
           <span>
             <FormattedMessage id="upload.facebook" />
           </span>
         </div>
         <div onClick={onGoogle} className="UploadPhotos">
-          <PictureOutlined className="icon" />
+          <RiGoogleFill size={23} />
           <span>
             <FormattedMessage id="upload.google" />
           </span>

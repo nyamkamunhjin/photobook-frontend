@@ -197,5 +197,12 @@
   "upload.google": "Google",
   "logged_as": "Logged as {name}",
   "logout.facebook": "Logout from Facebook",
-  "logout.google": "Logout from Google"
+  "logout.google": "Logout from Google",
+  "image.add_new": "Add more photos",
+  "image.thumbs": "Thumbs",
+  "image.sort": "Sort",
+  "sort.a-z": "File name a-z",
+  "sort.z-a": "File name z-a",
+  "sort.earlier": "Earlier",
+  "sort.recently": "Recently"
 }

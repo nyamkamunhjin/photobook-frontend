@@ -299,11 +299,16 @@ export interface Project {
 
 export interface Image {
   id?: string
+  name: string
+  width?: number
+  height?: number
   imageUrl: string
   tempUrl: string
   public: boolean
   type: string
   userId: number
+  createdAt: Date,
+  updatedAt: Date,
   imageCategories?: ImageCategory[]
 }
 

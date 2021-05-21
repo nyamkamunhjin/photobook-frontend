@@ -32,6 +32,7 @@ export const SAVE_PROJECT_ATTR = 'SAVE_PROJECT_ATTR'
 export const GET_IMAGES = 'GET_IMAGES'
 export const ADD_IMAGE = 'ADD_IMAGE'
 export const ADD_IMAGES = 'ADD_IMAGES'
+export const UPLOAD_IMAGES = 'UPLOAD_IMAGES'
 
 export const IMAGE_ERROR = 'IMAGE_ERROR'
 

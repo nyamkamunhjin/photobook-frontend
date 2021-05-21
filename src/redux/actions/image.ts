@@ -1,7 +1,7 @@
 import { createImage, createMultiImage, listImage } from 'api'
 import { Storage } from 'aws-amplify'
-import { UploadablePicture } from 'interfaces'
-import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES } from './types'
+import { Image, UploadablePicture } from 'interfaces'
+import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES } from './types'
 
 // Get images
 export const getImages = () => async (dispatch: any) => {
@@ -45,10 +45,14 @@ export const addImage =
 
 export const addImages = (keys: string[]) => async (dispatch: any) => {
   try {
-    const images = await createMultiImage(keys.map((key) => ({ imageUrl: key, type: 'images' })))
-    images.forEach(async (image: any) => {
-      image.tempUrl = await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => image.imageUrl)
-    })
+    let images = await createMultiImage(keys.map((key) => ({ imageUrl: key, type: 'images' })))
+
+    images = await Promise.all(
+      images.map(async (image: Image) => ({
+        ...image,
+        tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+      }))
+    )
 
     dispatch({
       type: ADD_IMAGES,
@@ -60,4 +64,10 @@ export const addImages = (keys: string[]) => async (dispatch: any) => {
       payload: { msg: err },
     })
   }
+}
+
+export const uploadImages = () => async (dispatch: any) => {
+  dispatch({
+    type: UPLOAD_IMAGES,
+  })
 }
