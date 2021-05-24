@@ -38,6 +38,7 @@ import {
   REORDER_SLIDE,
   SAVE_PROJECT_ATTR,
   CLEAR_PROJECT,
+  GET_IMAGES,
 } from './types'
 
 // #region [Project]
@@ -54,11 +55,19 @@ export const getProjects = (id: number, paperSizeId: number, uuid: string) => as
       })
       const project: Project = await getProject(newProject?.data.id)
       dispatch(setCurrentProject(project))
+      dispatch({
+        type: GET_IMAGES,
+        payload: project.images,
+      })
       return project.uuid
     } else {
       dispatch({ type: CLEAR_PROJECT })
       const project = await getProjectByUuid(uuid)
       dispatch(setCurrentProject(project))
+      dispatch({
+        type: GET_IMAGES,
+        payload: project.images,
+      })
       return uuid
     }
   } catch (err) {
