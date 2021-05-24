@@ -57,7 +57,7 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos })
   }
   const toggle = useThrottleFn(
     (image: Image, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (event.shiftKey || selectedImages?.some((each) => each.id === image.id)) {
+      if (event.shiftKey || (event.shiftKey && selectedImages?.some((each) => each.id === image.id))) {
         setSelectedImages(filterArray(selectedImages || [], image, 'id'))
       } else {
         setSelectedImages([image])
@@ -117,7 +117,7 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos })
               <FormattedMessage id="image.sort" />
             </span>
             <div className="w-full">
-              <Select defaultValue={sort} size="small" className="min-w-full">
+              <Select defaultValue={sort} size="small" onChange={(e) => setSort(e)} className="min-w-full">
                 <Select.Option value="a-z">
                   <FormattedMessage id="sort.a-z" />
                 </Select.Option>

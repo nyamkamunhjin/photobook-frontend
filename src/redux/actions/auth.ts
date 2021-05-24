@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Auth } from 'aws-amplify'
 import { Dispatch } from 'redux'
 import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from './types'
 import { getCurrentUser, signIn } from '../../api'

@@ -316,7 +316,7 @@
       transition: 0.1s;
       max-height: 130px;
       max-width: 130px;
-      object-fit:contain;
+      object-fit: contain;
 
       &:hover {
         border: 3px solid #767676;
@@ -682,7 +682,6 @@
   height: 100vh;
   display: none;
 }
-
 
 @import './slide.scss';
 @import './font.scss';

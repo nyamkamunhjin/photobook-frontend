@@ -307,8 +307,8 @@ export interface Image {
   public: boolean
   type: string
   userId: number
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: Date
+  updatedAt: Date
   imageCategories?: ImageCategory[]
 }
 
