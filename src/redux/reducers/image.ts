@@ -13,7 +13,7 @@ const image = (state = initialState, action: any) => {
     case UPLOAD_IMAGES:
       return {
         ...state,
-        loading: true
+        loading: true,
       }
     case GET_IMAGES:
       return {
