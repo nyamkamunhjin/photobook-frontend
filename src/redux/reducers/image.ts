@@ -1,8 +1,9 @@
 import { ImageInterface } from 'interfaces'
-import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES } from '../actions/types'
+import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES, GET_CATEGORIES } from '../actions/types'
 
 const initialState: ImageInterface = {
   images: [],
+  categories: [],
   loading: true,
 }
 
@@ -19,6 +20,12 @@ const image = (state = initialState, action: any) => {
       return {
         ...state,
         images: payload,
+        loading: false,
+      }
+    case GET_CATEGORIES:
+      return {
+        ...state,
+        categories: payload,
         loading: false,
       }
     case ADD_IMAGE:

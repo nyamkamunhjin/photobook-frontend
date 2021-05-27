@@ -1,6 +1,6 @@
 import { Storage } from 'aws-amplify'
 import axios from 'axios'
-import { UploadablePicture } from 'interfaces'
+import { Image, UploadablePicture } from 'interfaces'
 import Resizer from 'react-image-file-resizer'
 
 export async function s3Upload(file: File) {
@@ -20,6 +20,15 @@ export async function s3Upload(file: File) {
   })
 
   return stored.key
+}
+
+export async function getS3Images(images: Image[]) {
+  return Promise.all(
+    images.map(async (image: Image) => ({
+      ...image,
+      tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+    }))
+  )
 }
 
 export function blobToFile(blob: Blob, name: string): File {

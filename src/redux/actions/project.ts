@@ -1,13 +1,16 @@
+import { Storage } from 'aws-amplify'
 import {
   createProject,
   getPaperSize,
   getProject,
   getProjectByUuid,
   getTemplate,
+  listImageCategoryByProject,
   updateProject as _updateProject,
   updateProjectSlides,
 } from 'api'
-import { BackgroundImage, Container, PaperSize, PObject, Project, Slide, Template } from 'interfaces'
+import { BackgroundImage, Container, Image, PaperSize, PObject, Project, Slide, Template } from 'interfaces'
+import { getS3Images } from 'utils/aws-lib'
 import { generateDuplicatedSlide, generateNewSlide } from 'utils/transformer-lib'
 import {
   UPDATE_PROJECT,
@@ -39,6 +42,7 @@ import {
   SAVE_PROJECT_ATTR,
   CLEAR_PROJECT,
   GET_IMAGES,
+  GET_CATEGORIES,
 } from './types'
 
 // #region [Project]
@@ -62,11 +66,18 @@ export const getProjects = (id: number, paperSizeId: number, uuid: string) => as
       return project.uuid
     } else {
       dispatch({ type: CLEAR_PROJECT })
-      const project = await getProjectByUuid(uuid)
+      const project: Project = await getProjectByUuid(uuid)
+      const imageCategories = await listImageCategoryByProject(project.templateId)
+      const images = await getS3Images(project.images || [])
       dispatch(setCurrentProject(project))
       dispatch({
+        type: GET_CATEGORIES,
+        payload: imageCategories,
+      })
+
+      dispatch({
         type: GET_IMAGES,
-        payload: project.images,
+        payload: images,
       })
       return uuid
     }
@@ -154,7 +165,6 @@ export const setSlideStyle =
   (paperSize = '14x11') =>
   async (dispatch: any) => {
     try {
-      console.log('paper sizeeeeeeeeee', paperSize)
       const [width, height] = paperSize.split('x') // 14x11
       const slideWidth = parseFloat(width) * 100 * 2 + 30 // 30 is the book spine
       const slideHeight = parseFloat(height) * 100 // 11 * 100 = 1100
@@ -339,8 +349,7 @@ export const updateBackground = (props: { background: BackgroundImage }) => asyn
       payload: props,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -356,8 +365,7 @@ export const setBackgrounds = (props: { backgrounds: BackgroundImage[] }) => asy
       payload: props,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -373,8 +381,7 @@ export const updateContainer = (props: { container: Object }) => async (dispatch
       payload: props,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -390,8 +397,7 @@ export const updateGroupContainer = (props: { containers: Container[] }) => asyn
       payload: props,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -401,15 +407,13 @@ export const updateGroupContainer = (props: { containers: Container[] }) => asyn
 
 // updateObject
 export const updateObject = (props: { object: Object }) => async (dispatch: any) => {
-  console.log(props)
   try {
     dispatch({
       type: UPDATE_OBJECT,
       payload: props,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -442,8 +446,7 @@ export const addObject = (props: { object: Object }) => async (dispatch: any) =>
 
     dispatch(updateHistory(ADD_OBJECT, props))
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -461,8 +464,7 @@ export const removeObject = (props: { object: Object; container: Object }) => as
 
     dispatch(updateHistory(REMOVE_OBJECT, props))
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: SLIDES_ERROR,
       payload: { msg: err },
@@ -477,8 +479,7 @@ export const undo = () => async (dispatch: any) => {
       type: UNDO,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: UNDO_ERROR,
       payload: { msg: err },
@@ -493,8 +494,7 @@ export const redo = () => async (dispatch: any) => {
       type: REDO,
     })
   } catch (err) {
-    console.log('err')
-    console.log(err)
+    console.error(err)
     dispatch({
       type: REDO_ERROR,
       payload: { msg: err },

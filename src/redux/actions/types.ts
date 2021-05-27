@@ -30,6 +30,7 @@ export const SAVE_PROJECT = 'SAVE_PROJECT'
 export const SAVE_PROJECT_ATTR = 'SAVE_PROJECT_ATTR'
 
 export const GET_IMAGES = 'GET_IMAGES'
+export const GET_CATEGORIES = 'GET_CATEGORIES'
 export const ADD_IMAGE = 'ADD_IMAGE'
 export const ADD_IMAGES = 'ADD_IMAGES'
 export const UPLOAD_IMAGES = 'UPLOAD_IMAGES'

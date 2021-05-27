@@ -12,7 +12,7 @@ interface Props {
 
 interface Type {
   visible: boolean
-  type: 'google' | 'facebook'
+  type: 'google' | 'facebook' | 'photos'
 }
 
 const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
@@ -45,6 +45,9 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
     }
     setModal({ visible: true, type: 'google' })
   }
+  const onPhotos = () => {
+    setModal({ visible: true, type: 'photos' })
+  }
 
   return (
     <>
@@ -62,7 +65,7 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
             <FormattedMessage id="upload.computer" />
           </span>
         </div>
-        <div className="UploadPhotos">
+        <div onClick={onPhotos} className="UploadPhotos">
           <RiImageFill size={23} />
           <span>
             <FormattedMessage id="upload.my_photos" />

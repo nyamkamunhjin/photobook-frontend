@@ -112,6 +112,7 @@ export interface ImageCategory {
   name: string
   parentId: number
   parent?: ImageCategory
+  images: Image[]
 }
 export interface BindingType {
   id: number
@@ -270,6 +271,7 @@ export interface Project {
   id: number
   name?: string
   imageUrl?: string
+  tempUrl?: string
   userId?: number
   paperMaterialId?: number
   paperSizeId?: number
@@ -277,7 +279,7 @@ export interface Project {
   bindingTypeId?: number
   coverMaterialId?: number
   frameMaterialId?: number
-  templateId?: number
+  templateId: number
   templateTypeId?: number
   price?: number
   uuid: string
@@ -298,7 +300,7 @@ export interface Project {
 }
 
 export interface Image {
-  id?: string
+  id: string
   name: string
   width?: number
   height?: number
@@ -435,6 +437,7 @@ export interface HistoryInterface {
 
 export interface ImageInterface {
   images: Image[]
+  categories: ImageCategory[]
   loading: boolean
 }
 export interface RouteInterface {

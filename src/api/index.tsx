@@ -102,6 +102,25 @@ export const listImageCategory = async (type?: string, params?: PaginatedParams[
   return response?.data
 }
 
+export const listImageCategoryByProject = async (templateId: number) => {
+  const response = await BaseRequest({
+    url: `image-category/project/${templateId}`,
+    method: 'GET',
+  })
+  const categories = await Promise.all(
+    response?.data.map(async (category: ImageCategory) => ({
+      ...category,
+      images: await Promise.all(
+        category.images.map(async (image) => ({
+          ...image,
+          tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+        }))
+      ),
+    }))
+  )
+  return categories
+}
+
 export const getImageCategory = async (id: number) => {
   const response = await BaseRequest({
     url: `image-category/${id}`,
@@ -113,6 +132,22 @@ export const getImageCategory = async (id: number) => {
 // #endregion [ImageCategory]
 
 // #region [Image]
+export const listMyImages = async (params?: PaginatedParams[0], data?: Record<string, unknown>) => {
+  const query = params && data ? buildQuery(params, data) : ''
+
+  const response = await BaseRequest({
+    url: `image/user-images?${query}`,
+    method: 'GET',
+  })
+  const images = await Promise.all(
+    response?.data.map(async (image: Image) => ({
+      ...image,
+      tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+    }))
+  )
+  if (params) return { list: images, total: response?.totalCount, offset: response?.offset }
+  return images
+}
 
 export const listImage = async (type?: string, params?: PaginatedParams[0], data?: Record<string, unknown>) => {
   let query = params && data ? buildQuery(params, data) : ''
@@ -166,6 +201,15 @@ export const getImage = async (id: string) => {
 export const createImage = async (data: Object) => {
   const response = await BaseRequest({
     url: 'image',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const linkImages = async (data: Object, projectId: number) => {
+  const response = await BaseRequest({
+    url: `image/link/${projectId}`,
     method: 'POST',
     data,
   })
@@ -328,8 +372,13 @@ export const listProject = async (params?: PaginatedParams[0], data?: Record<str
     method: 'GET',
   })
 
-  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
-  return response?.data
+  const project = response?.data
+  project.forEach(async (template: any) => {
+    template.tempUrl = await Storage.get(template.imageUrl, { expires: 60 * 60 * 24 * 7 })
+  })
+
+  if (params) return { list: project, total: response?.totalCount, offset: response?.offset }
+  return project
 }
 
 export const deleteProject = async (data: object) => {

@@ -289,7 +289,7 @@
   display: flex;
   flex-flow: wrap;
   width: 285px;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin: 10px 12px;
   padding-right: 8px;
@@ -301,9 +301,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 5px 0;
-    height: 130px;
-    width: 130px;
+    margin: 4px;
+    height: 100px;
+    width: 100px;
     .active {
       border: 3px solid #4480aa !important;
       cursor: pointer;
@@ -314,8 +314,8 @@
       border: 3px solid rgb(238, 238, 238);
       border-radius: 5px;
       transition: 0.1s;
-      max-height: 130px;
-      max-width: 130px;
+      max-height: 100px;
+      max-width: 100px;
       object-fit: contain;
 
       &:hover {

@@ -58,7 +58,13 @@ const MyProjects: FC = () => {
               ]}
             >
               <List.Item.Meta
-                avatar={<img className="w-28 h-28 rounded" src={item.imageUrl} alt="project" />}
+                avatar={
+                  <img
+                    className="w-28 h-28 rounded"
+                    src={item.imageUrl?.includes('http') ? item.imageUrl : item.tempUrl}
+                    alt="project"
+                  />
+                }
                 title={
                   <span className="font-semibold text-lg">
                     {item.name} <span className="text-sm text-gray-500">({item.templateType?.name})</span>
