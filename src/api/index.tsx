@@ -900,3 +900,71 @@ export const getGoogleImages = async () => {
   return response?.data?.mediaItems || []
 }
 // #endregion [Google]
+
+// #region [LandingPageHero]
+export const listLandingPageHero = async () => {
+  const response = await BaseRequest({
+    url: `landing/hero`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [LandingPageHero]
+export const listLandingPageReview = async () => {
+  const response = await BaseRequest({
+    url: `landing/review`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [LandingPageHero]
+export const listLandingPageImageCarousel = async () => {
+  const response = await BaseRequest({
+    url: `landing/image-carousel`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [LandingPageHero]
+export const listLandingPageShowCase = async () => {
+  const response = await BaseRequest({
+    url: `landing/show-case`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [ProductAd]
+export const listProductAd = async (templateType: string) => {
+  const response = await BaseRequest({
+    url: `product/image/get`,
+    method: 'POST',
+    data: {
+      templateType,
+    },
+  })
+
+  return response?.data
+}
+
+// #endregion [ProductAd]
+// #region [HeaderAd]
+export const listHeaderAd = async (templateType: string) => {
+  const response = await BaseRequest({
+    url: `header/image/get`,
+    method: 'POST',
+    data: {
+      templateType,
+    },
+  })
+
+  return response?.data
+}
+// #endregion [HeaderAd]
