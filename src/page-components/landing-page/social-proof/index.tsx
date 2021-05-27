@@ -21,8 +21,7 @@ interface Props {
 
 const SocialProof: FC<Props> = ({ reviews, features }) => {
   return (
-    <div className="flex justify-center items-center bg-blue-100">
-      {/* bg-gradient-to-tr from-blue-300 to-green-300 */}
+    <div className="flex justify-center items-center bg-blue-50">
       <WidthLimiter className="flex flex-col justify-center items-center py-6 px-2">
         <p className="font-semibold text-gray-800 text-xl">What our Customers Are Saying</p>
         <Carousel className="w-96 md:w-full max-w-lg" autoplay autoplaySpeed={4000}>
@@ -44,8 +43,8 @@ export default SocialProof
 
 const Review: FC<Review> = ({ author, text }) => {
   return (
-    <figure className="rounded shadow p-8 w-full max-w-lg bg-white">
-      <blockquote className="text-lg font-semibold h-24">
+    <figure className="shadow-md p-8 w-full max-w-lg bg-white">
+      <blockquote className="text-lg font-semibold h-24 w-full">
         <p>{text}</p>
       </blockquote>
       <figcaption className="font-semibold ">

@@ -2,6 +2,13 @@
 import React from 'react'
 import './style.scss'
 import { Features, Hero, ImageCarousel, ShowCaseProducts, SocialProof } from 'page-components/landing-page'
+import { useRequest } from 'ahooks'
+import {
+  listLandingPageHero,
+  listLandingPageImageCarousel,
+  listLandingPageReview,
+  listLandingPageShowCase,
+} from '../../api'
 
 const tempHeroData = [
   {
@@ -69,13 +76,17 @@ const datas = [
   },
 ]
 const Home = () => {
+  const hero = useRequest(listLandingPageHero)
+  const showCases = useRequest(listLandingPageShowCase)
+  const imageCarousels = useRequest(listLandingPageImageCarousel)
+  const reviews = useRequest(listLandingPageReview)
   return (
     <>
-      <Hero datas={tempHeroData} />
-      <ShowCaseProducts />
-      <ImageCarousel datas={tempHeroData} />
+      {hero.data && <Hero datas={hero.data} />}
+      {showCases.data && <ShowCaseProducts cards={showCases.data} />}
+      {imageCarousels.data && <ImageCarousel datas={imageCarousels.data} />}
       <Features />
-      <SocialProof reviews={tempDatas} features={datas} />
+      {reviews.data && <SocialProof reviews={reviews.data} features={datas} />}
     </>
   )
 }
