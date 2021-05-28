@@ -15,7 +15,7 @@ const ForgotPassword: React.FC = () => {
     forgotPassword(email)
       .then(() => {
         notification.info({
-          message: intl.formatMessage({ id: 'sent-password-change-link' }),
+          message: intl.formatMessage({ id: 'sent_password_change_link' }),
         })
       })
       .finally(() => {
@@ -40,7 +40,7 @@ const ForgotPassword: React.FC = () => {
           </Form.Item>
           <Form.Item>
             <CustomButton className="btn-warning" loading={loading} type="submit">
-              <FormattedMessage id="send-password-change-link" />
+              <FormattedMessage id="send_password_change_link" />
             </CustomButton>
           </Form.Item>
         </Form>

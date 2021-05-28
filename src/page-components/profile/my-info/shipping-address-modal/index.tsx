@@ -1,6 +1,6 @@
-import { notification, Modal, Input, Form } from 'antd'
+import { Modal, Input, Form } from 'antd'
 import React, { FC, useEffect } from 'react'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 import { CustomButton, Loading } from 'components'
 import { createShippingAddress, getShippingAddress, updateShippingAddress } from 'api'
 import { useRequest } from 'ahooks'
@@ -13,10 +13,9 @@ interface Props {
 }
 
 const ShippingAddressModal: FC<Props> = ({ id, setId, type, setType }) => {
-  const intl = useIntl()
   const shippingAddress = useRequest(getShippingAddress, {
     manual: true,
-    onSuccess: (res) => {
+    onSuccess: () => {
       // notification.success({ message: JSON.stringify(res) })
     },
   })

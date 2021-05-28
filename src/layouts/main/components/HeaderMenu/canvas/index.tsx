@@ -29,7 +29,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
             categories?.list?.flatMap((each) => {
               if (each.templateType?.name === 'canvas') {
                 return (
-                  <li className="text-gray-600 text-xs" key={each.id}>
+                  <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
                     <button
                       className="focus:outline-none"
                       type="button"
@@ -55,11 +55,11 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
             categories?.list?.flatMap((each) => {
               if (each.templateType?.name === 'frame') {
                 return (
-                  <li className="text-gray-600 text-xs" key={each.id}>
+                  <li className="text-gray-600 text-xs" key={each.id + each.name}>
                     <button
                       className="focus:outline-none"
                       type="button"
-                      onClick={() => router.replace(`/product/frame?all=false&category=${each.id}`)}
+                      onClick={() => router.replace(`/product/frame?all=false&category=${each.id + each.name}`)}
                     >
                       {each.name}
                     </button>

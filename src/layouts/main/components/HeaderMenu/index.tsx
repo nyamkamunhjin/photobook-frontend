@@ -22,7 +22,6 @@ const HeaderMenu: FC = () => {
       <button
         type="button"
         className="text-gray-500 tracking-widest text-base font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
-        key="photobook"
         onClick={() => router.replace('/')}
       >
         <FormattedMessage id="home" />
@@ -79,7 +78,6 @@ const HeaderMenu: FC = () => {
       <button
         type="button"
         className="text-gray-500 tracking-widest text-base font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
-        key="photobook"
         onClick={() => router.replace('/')}
       >
         <FormattedMessage id="about_us" />
@@ -87,7 +85,6 @@ const HeaderMenu: FC = () => {
       <button
         type="button"
         className="text-gray-500 tracking-widest text-base font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
-        key="photobook"
         onClick={() => router.replace('/')}
       >
         <FormattedMessage id="gift_card" />

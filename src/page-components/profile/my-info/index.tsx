@@ -191,7 +191,7 @@ const MyInfo: FC = () => {
                     verifyEmail().then(() => {
                       notification.info({
                         message: intl.formatMessage({
-                          id: 'email-verification-sent',
+                          id: 'email_verification_sent',
                         }),
                       })
                     })

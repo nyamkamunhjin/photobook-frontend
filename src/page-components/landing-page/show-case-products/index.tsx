@@ -21,7 +21,7 @@ const ShowCaseProducts: FC<Props> = ({ cards }) => {
       </div>
       <div className="flex flex-wrap md:flex-nowrap justify-center gap-10">
         {cards.map((card) => (
-          <Card key={`products${card.name}`} imageUrl={card.imageUrl} name={card.name} />
+          <Card key={card.name + card.imageUrl} imageUrl={card.imageUrl} name={card.name} />
         ))}
       </div>
     </WidthLimiter>

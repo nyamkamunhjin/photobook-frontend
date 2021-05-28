@@ -25,7 +25,7 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
         <ul className="flex flex-col gap-2">
           {coverTypes ? (
             coverTypes?.map((each) => (
-              <li className="text-gray-600 text-xs" key={each.id}>
+              <li className="text-gray-600 text-xs" key={each.id + each.name + each.quantity}>
                 <button
                   className="focus:outline-none"
                   type="button"
@@ -50,7 +50,7 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
             categories?.list?.flatMap((each) => {
               if (each.templateType?.name === 'photobook') {
                 return (
-                  <li className="text-gray-600 text-xs" key={each.id}>
+                  <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
                     <button
                       className="focus:outline-none"
                       type="button"
