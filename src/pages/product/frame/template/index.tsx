@@ -70,7 +70,11 @@ const ProductTemplate: FC = () => {
                     }
                   }}
                 >
-                  <img className="w-full" src={(template.data as Template).imageUrl} alt="template" />
+                  <img
+                    className="w-full"
+                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${(template.data as Template).imageUrl}`}
+                    alt="template"
+                  />
                 </button>
               )}
             </div>

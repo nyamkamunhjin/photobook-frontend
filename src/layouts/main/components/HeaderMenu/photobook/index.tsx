@@ -17,7 +17,7 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
 
   return (
     <WidthLimiter className="flex flex-wrap sm:flex-nowrap bg-white  shadow" style={{ minHeight: '25rem' }}>
-      <img className="w-52 object-cover" src={imageLeft} alt="photobook" />
+      <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="photobook" />
       <div className="mx-4 p-4">
         <p className="font-semibold">
           <FormattedMessage id="photobook" />
@@ -67,7 +67,11 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
           )}
         </ul>
       </div>
-      <img className="w-52 object-cover ml-auto" src={imageRight} alt="photobook" />
+      <img
+        className="w-52 object-cover ml-auto"
+        src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageRight}`}
+        alt="photobook"
+      />
     </WidthLimiter>
   )
 }

@@ -61,7 +61,7 @@ const MyProjects: FC = () => {
                 avatar={
                   <img
                     className="w-28 h-28 rounded"
-                    src={item.imageUrl?.includes('http') ? item.imageUrl : item.tempUrl}
+                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}
                     alt="project"
                   />
                 }

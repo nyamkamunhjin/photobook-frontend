@@ -6,6 +6,7 @@ interface Props {
   template: Template
   rowSize?: 1 | 2 | 3 | 4 | 6
 }
+console.log(process.env)
 
 const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
   return (
@@ -18,7 +19,7 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
         <div>
           <img
             className="w-full rounded"
-            src={template.imageUrl?.includes('http') ? template.imageUrl : template.tempUrl}
+            src={`${process.env.REACT_APP_PUBLIC_IMAGE}${template.imageUrl}`}
             alt={template.name}
             width={300}
             height={300}
