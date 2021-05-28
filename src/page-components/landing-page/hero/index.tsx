@@ -1,5 +1,6 @@
-import { Carousel } from 'antd'
+import AliceCarousel from 'react-alice-carousel'
 import React, { FC } from 'react'
+import 'react-alice-carousel/lib/alice-carousel.css'
 
 interface Combo {
   imageUrl: string
@@ -12,18 +13,28 @@ interface Props {
 
 const Hero: FC<Props> = ({ datas }) => {
   return (
-    <Carousel className="ease-out" autoplay>
+    <AliceCarousel
+      autoPlay
+      disableDotsControls
+      disableButtonsControls
+      autoPlayStrategy="none"
+      autoPlayInterval={4000}
+      animationDuration={4000}
+      // animationType="fadeout"
+      mouseTracking
+      infinite
+    >
       {datas.map(({ imageUrl, text }) => (
         <Content key={imageUrl} imageUrl={imageUrl} text={text} />
       ))}
-    </Carousel>
+    </AliceCarousel>
   )
 }
 
 export default Hero
 
 const Content: FC<Combo> = ({ imageUrl, text }) => (
-  <div className="w-full flex justify-center items-center" style={{ height: '50vh' }}>
+  <div className="w-full flex justify-center items-center" style={{ height: '60vh' }}>
     <div
       className="w-full h-full grid place-items-center bg-center"
       style={{

@@ -4,7 +4,9 @@ import { FormattedMessage } from 'react-intl'
 const Empty = () => {
   return (
     <div>
-      <FormattedMessage id="empty" />
+      <p className="phrase-add">
+        <FormattedMessage id="empty" />
+      </p>
     </div>
   )
 }

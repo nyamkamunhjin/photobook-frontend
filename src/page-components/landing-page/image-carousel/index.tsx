@@ -1,5 +1,6 @@
-import { Carousel } from 'antd'
 import React, { FC } from 'react'
+import AliceCarousel from 'react-alice-carousel'
+import 'react-alice-carousel/lib/alice-carousel.css'
 
 interface Combo {
   imageUrl: string
@@ -12,11 +13,21 @@ interface Props {
 
 const ImageCarousel: FC<Props> = ({ datas }) => {
   return (
-    <Carousel className="ease-out" autoplay>
+    <AliceCarousel
+      // autoPlay
+      disableDotsControls
+      disableButtonsControls
+      autoPlayStrategy="none"
+      // autoPlayInterval={2000}
+      // animationDuration={2000}
+      // animationType="fadeout"
+      mouseTracking
+      infinite
+    >
       {datas.map(({ imageUrl, text }) => (
         <Content key={`ImageCarousel${imageUrl}`} imageUrl={imageUrl} text={text} />
       ))}
-    </Carousel>
+    </AliceCarousel>
   )
 }
 

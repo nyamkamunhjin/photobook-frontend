@@ -102,6 +102,25 @@ export const listImageCategory = async (type?: string, params?: PaginatedParams[
   return response?.data
 }
 
+export const listImageCategoryByProject = async (templateId: number) => {
+  const response = await BaseRequest({
+    url: `image-category/project/${templateId}`,
+    method: 'GET',
+  })
+  const categories = await Promise.all(
+    response?.data.map(async (category: ImageCategory) => ({
+      ...category,
+      images: await Promise.all(
+        category.images.map(async (image) => ({
+          ...image,
+          tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+        }))
+      ),
+    }))
+  )
+  return categories
+}
+
 export const getImageCategory = async (id: number) => {
   const response = await BaseRequest({
     url: `image-category/${id}`,
@@ -113,6 +132,22 @@ export const getImageCategory = async (id: number) => {
 // #endregion [ImageCategory]
 
 // #region [Image]
+export const listMyImages = async (params?: PaginatedParams[0], data?: Record<string, unknown>) => {
+  const query = params && data ? buildQuery(params, data) : ''
+
+  const response = await BaseRequest({
+    url: `image/user-images?${query}`,
+    method: 'GET',
+  })
+  const images = await Promise.all(
+    response?.data.map(async (image: Image) => ({
+      ...image,
+      tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+    }))
+  )
+  if (params) return { list: images, total: response?.totalCount, offset: response?.offset }
+  return images
+}
 
 export const listImage = async (type?: string, params?: PaginatedParams[0], data?: Record<string, unknown>) => {
   let query = params && data ? buildQuery(params, data) : ''
@@ -328,7 +363,21 @@ export const listProject = async (params?: PaginatedParams[0], data?: Record<str
     method: 'GET',
   })
 
-  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  const project = response?.data
+  project.forEach(async (template: any) => {
+    template.tempUrl = await Storage.get(template.imageUrl, { expires: 60 * 60 * 24 * 7 })
+  })
+
+  if (params) return { list: project, total: response?.totalCount, offset: response?.offset }
+  return project
+}
+
+export const updateProjectImages = async (data: Object, projectId: number) => {
+  const response = await BaseRequest({
+    url: `project/${projectId}/images`,
+    method: 'PUT',
+    data,
+  })
   return response?.data
 }
 
@@ -851,3 +900,71 @@ export const getGoogleImages = async () => {
   return response?.data?.mediaItems || []
 }
 // #endregion [Google]
+
+// #region [LandingPageHero]
+export const listLandingPageHero = async () => {
+  const response = await BaseRequest({
+    url: `landing/hero`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [LandingPageHero]
+export const listLandingPageReview = async () => {
+  const response = await BaseRequest({
+    url: `landing/review`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [LandingPageHero]
+export const listLandingPageImageCarousel = async () => {
+  const response = await BaseRequest({
+    url: `landing/image-carousel`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [LandingPageHero]
+export const listLandingPageShowCase = async () => {
+  const response = await BaseRequest({
+    url: `landing/show-case`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageHero]
+// #region [ProductAd]
+export const listProductAd = async (templateType: string) => {
+  const response = await BaseRequest({
+    url: `product/image/get`,
+    method: 'POST',
+    data: {
+      templateType,
+    },
+  })
+
+  return response?.data
+}
+
+// #endregion [ProductAd]
+// #region [HeaderAd]
+export const listHeaderAd = async (templateType: string) => {
+  const response = await BaseRequest({
+    url: `header/image/get`,
+    method: 'POST',
+    data: {
+      templateType,
+    },
+  })
+
+  return response?.data
+}
+// #endregion [HeaderAd]

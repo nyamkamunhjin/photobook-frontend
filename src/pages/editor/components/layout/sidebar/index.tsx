@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import {
   BgColorsOutlined,
@@ -12,10 +12,10 @@ import {
 import { useDrop } from 'ahooks'
 import { Button } from 'antd'
 import {
-  getImages as _getImages,
-  addImage as _addImage,
   addImages as _addImages,
   uploadImages as _uploadImages,
+  linkImages as _linkImages,
+  unlinkImages as _unlinkImages,
 } from 'redux/actions/image'
 import {
   setType as _setType,
@@ -23,9 +23,9 @@ import {
   setBackgroundEdit as _setBackgroundEdit,
   toggleSidebar as _toggleSidebar,
 } from 'redux/actions/editor'
-import { s3Upload, s3SyncImages, s3UploadImages } from 'utils/aws-lib'
+import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage } from 'react-intl'
-import { EditorInterface, ImageInterface, RootInterface, UploadablePicture } from 'interfaces'
+import { EditorInterface, ImageInterface, Project, RootInterface, UploadablePicture } from 'interfaces'
 
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
@@ -36,34 +36,36 @@ import Layouts from './tabs/layouts'
 import UploadPhotosGroup from './upload-photos-group'
 
 interface Props {
-  getImages: () => void
-  addImage: (imageUrl: string, type: string) => void
-  addImages: (images: string[]) => void
-  uploadImages: () => void
+  addImages: (images: string[], id: number) => Promise<void>
+  linkImages: (images: string[], id: number) => Promise<void>
+  unlinkImages: (images: string[], id: number) => Promise<void>
+  uploadImages: () => Promise<void>
   setType: (type: string) => void
   setDragStart: (dragStart: boolean) => void
   setBackgroundEdit: (backgroundEdit: boolean) => void
   toggleSidebar: () => void
   editor: EditorInterface
   image: ImageInterface
+  currentProject: Project
   layoutGroups: any
   hasImage?: boolean
   hasLayout?: boolean
 }
 
 const SideBarPanel: React.FC<Props> = ({
-  getImages,
   hasImage,
   hasLayout = true,
-  addImage,
   addImages,
   uploadImages,
+  linkImages,
+  unlinkImages,
   setType,
   setDragStart,
   setBackgroundEdit,
+  currentProject,
   toggleSidebar,
   editor,
-  image: { images, loading },
+  image: { images, loading, categories },
   layoutGroups,
 }) => {
   const [closed, setClosed] = useState<boolean>(!editor.sidebarOpen)
@@ -72,7 +74,7 @@ const SideBarPanel: React.FC<Props> = ({
     onFiles: (files) => {
       uploadImages()
       s3UploadImages(files).then((keys) => {
-        addImages(keys)
+        addImages(keys, currentProject.id)
       })
     },
   })
@@ -81,16 +83,26 @@ const SideBarPanel: React.FC<Props> = ({
     if (e.target.files && e.target.files?.length > 0) {
       await uploadImages()
       const keys = await s3UploadImages(Array.from(e.target.files))
-      await addImages(keys)
+      await addImages(keys, currentProject.id)
     }
   }
 
-  const uploadPhotos = async (_images: UploadablePicture[]) => {
+  const syncPhoto = async (_images: UploadablePicture[]) => {
     if (_images.length) {
       await uploadImages()
       const keys = await s3SyncImages(_images)
-      await addImages(keys)
+      await addImages(keys, currentProject.id)
     }
+  }
+
+  const linkPhoto = async (_images: string[]) => {
+    await uploadImages()
+    await linkImages(_images, currentProject.id)
+  }
+
+  const unlinkPhoto = async (_images: string[]) => {
+    await uploadImages()
+    await unlinkImages(_images, currentProject.id)
   }
 
   const isActive = (name: any) => {
@@ -115,10 +127,6 @@ const SideBarPanel: React.FC<Props> = ({
     setType('')
   }
 
-  useEffect(() => {
-    getImages()
-  }, [getImages])
-
   const renderEditor = () => {
     switch (editor.type) {
       case 'images': {
@@ -135,16 +143,23 @@ const SideBarPanel: React.FC<Props> = ({
                 </p>
               </div>
 
-              <UploadPhotosGroup uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
+              <UploadPhotosGroup uploadPhoto={uploadPhoto} syncPhoto={syncPhoto} linkPhoto={linkPhoto} />
             </div>
           ) : (
-            <Images loading={loading} images={uploadedImages} uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
+            <Images
+              loading={loading}
+              images={uploadedImages}
+              uploadPhoto={uploadPhoto}
+              syncPhoto={syncPhoto}
+              linkPhoto={linkPhoto}
+              unlinkPhoto={unlinkPhoto}
+            />
           )
         }
         return <div />
       }
       case 'backgrounds': {
-        const backgrounds = images.filter((image) => image.type === editor.type)
+        const backgrounds = categories.filter((category) => category.type === editor.type)
         return !loading && backgrounds.length === 0 ? (
           <div className="UploadImageDropArea">
             <div>
@@ -156,7 +171,7 @@ const SideBarPanel: React.FC<Props> = ({
         ) : (
           <Backgrounds
             loading={loading}
-            images={backgrounds}
+            categories={backgrounds}
             backgroundEdit={editor.backgroundEdit}
             setDragStart={setDragStart}
             setBackgroundEdit={setBackgroundEdit}
@@ -164,7 +179,7 @@ const SideBarPanel: React.FC<Props> = ({
         )
       }
       case 'cliparts': {
-        const cliparts = images.filter((image) => image.type === editor.type)
+        const cliparts = categories.filter((category) => category.type === editor.type)
         return !loading && cliparts.length === 0 ? (
           <div className="UploadImageDropArea">
             <div>
@@ -174,14 +189,14 @@ const SideBarPanel: React.FC<Props> = ({
             </div>
           </div>
         ) : (
-          <Cliparts loading={loading} images={cliparts} />
+          <Cliparts loading={loading} categories={cliparts} />
         )
       }
       case 'layouts': {
         return <Layouts loading={loading} setDragStart={setDragStart} layoutGroups={layoutGroups} />
       }
       case 'masks': {
-        const masks = images.filter((image) => image.type === editor.type)
+        const masks = categories.filter((category) => category.type === editor.type)
         return !loading && masks.length === 0 ? (
           <div className="UploadImageDropArea">
             <div>
@@ -191,11 +206,11 @@ const SideBarPanel: React.FC<Props> = ({
             </div>
           </div>
         ) : (
-          <Masks loading={loading} images={masks} />
+          <Masks loading={loading} categories={masks} />
         )
       }
       case 'frames': {
-        const frames = images.filter((image) => image.type === editor.type)
+        const frames = categories.filter((category) => category.type === editor.type)
         return !loading && frames.length === 0 ? (
           <div className="UploadImageDropArea">
             <div>
@@ -205,7 +220,7 @@ const SideBarPanel: React.FC<Props> = ({
             </div>
           </div>
         ) : (
-          <Frames loading={loading} images={frames} />
+          <Frames loading={loading} categories={frames} />
         )
       }
       default:
@@ -278,12 +293,13 @@ const SideBarPanel: React.FC<Props> = ({
 const mapStateToProps = (state: RootInterface) => ({
   image: state.image,
   editor: state.editor,
+  currentProject: state.project.currentProject,
 })
 
 export default connect(mapStateToProps, {
-  getImages: _getImages,
-  addImage: _addImage,
   addImages: _addImages,
+  linkImages: _linkImages,
+  unlinkImages: _unlinkImages,
   setType: _setType,
   setDragStart: _setDragStart,
   setBackgroundEdit: _setBackgroundEdit,

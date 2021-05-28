@@ -16,7 +16,13 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
     >
       <article>
         <div>
-          <img className="w-full rounded" src={template.imageUrl} alt={template.name} width={300} height={300} />
+          <img
+            className="w-full rounded"
+            src={template.imageUrl?.includes('http') ? template.imageUrl : template.tempUrl}
+            alt={template.name}
+            width={300}
+            height={300}
+          />
         </div>
         <div className="flex flex-col items-center">
           <p className="text-black">{template.name}</p>

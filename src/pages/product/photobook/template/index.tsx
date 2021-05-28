@@ -28,7 +28,7 @@ const ProductTemplate: FC = () => {
     onSuccess: (res) => {
       if (res.imageUrl) {
         setSelectedShowCase({
-          url: res.imageUrl,
+          url: res.imageUrl.includes('http') ? res.imageUrl : res.tempUrl,
           type: 'image',
         })
       }
@@ -89,11 +89,22 @@ const ProductTemplate: FC = () => {
                   type="button"
                   onClick={() => {
                     if (template.data?.imageUrl) {
-                      setSelectedShowCase({ url: template.data.imageUrl, type: 'image' })
+                      setSelectedShowCase({
+                        url: template.data.imageUrl.includes('http') ? template.data.imageUrl : template.data.tempUrl,
+                        type: 'image',
+                      })
                     }
                   }}
                 >
-                  <img className="w-full" src={(template.data as Template).imageUrl} alt="template" />
+                  <img
+                    className="w-full"
+                    src={
+                      (template.data as Template).imageUrl?.includes('http')
+                        ? (template.data as Template).imageUrl
+                        : (template.data as Template).tempUrl
+                    }
+                    alt="template"
+                  />
                 </button>
               )}
               {selectedState.bindingType?.featureImageUrl && (
@@ -103,11 +114,24 @@ const ProductTemplate: FC = () => {
                   type="button"
                   onClick={() => {
                     if (selectedState.bindingType?.featureImageUrl) {
-                      setSelectedShowCase({ url: selectedState.bindingType.featureImageUrl, type: 'image' })
+                      setSelectedShowCase({
+                        url: selectedState.bindingType.featureImageUrl.includes('http')
+                          ? selectedState.bindingType.featureImageUrl
+                          : selectedState.bindingType.tempFeatureUrl || '',
+                        type: 'image',
+                      })
                     }
                   }}
                 >
-                  <img className="w-full" src={selectedState.bindingType?.featureImageUrl} alt="bindingType" />
+                  <img
+                    className="w-full"
+                    src={
+                      selectedState.bindingType?.featureImageUrl.includes('http')
+                        ? selectedState.bindingType?.featureImageUrl
+                        : selectedState.bindingType?.tempFeatureUrl
+                    }
+                    alt="bindingType"
+                  />
                 </button>
               )}
             </div>
