@@ -28,7 +28,7 @@ const ProductTemplate: FC = () => {
     onSuccess: (res) => {
       if (res.imageUrl) {
         setSelectedShowCase({
-          url: res.imageUrl.includes('http') ? res.imageUrl : res.tempUrl,
+          url: res.imageUrl,
           type: 'image',
         })
       }
@@ -59,7 +59,11 @@ const ProductTemplate: FC = () => {
                   allowFullScreen
                 />
               ) : (
-                <img className="w-full object-contain" src={selectedShowCase?.url} alt="showcase" />
+                <img
+                  className="w-full object-contain"
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${selectedShowCase?.url}`}
+                  alt="showcase"
+                />
               )}
             </div>
             <div className="flex gap-4">
@@ -90,7 +94,7 @@ const ProductTemplate: FC = () => {
                   onClick={() => {
                     if (template.data?.imageUrl) {
                       setSelectedShowCase({
-                        url: template.data.imageUrl.includes('http') ? template.data.imageUrl : template.data.tempUrl,
+                        url: template.data.imageUrl,
                         type: 'image',
                       })
                     }
@@ -98,11 +102,7 @@ const ProductTemplate: FC = () => {
                 >
                   <img
                     className="w-full"
-                    src={
-                      (template.data as Template).imageUrl?.includes('http')
-                        ? (template.data as Template).imageUrl
-                        : (template.data as Template).tempUrl
-                    }
+                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${(template.data as Template).imageUrl}`}
                     alt="template"
                   />
                 </button>
@@ -115,9 +115,7 @@ const ProductTemplate: FC = () => {
                   onClick={() => {
                     if (selectedState.bindingType?.featureImageUrl) {
                       setSelectedShowCase({
-                        url: selectedState.bindingType.featureImageUrl.includes('http')
-                          ? selectedState.bindingType.featureImageUrl
-                          : selectedState.bindingType.tempFeatureUrl || '',
+                        url: selectedState.bindingType.featureImageUrl,
                         type: 'image',
                       })
                     }
@@ -125,11 +123,7 @@ const ProductTemplate: FC = () => {
                 >
                   <img
                     className="w-full"
-                    src={
-                      selectedState.bindingType?.featureImageUrl.includes('http')
-                        ? selectedState.bindingType?.featureImageUrl
-                        : selectedState.bindingType?.tempFeatureUrl
-                    }
+                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${selectedState.bindingType?.featureImageUrl}`}
                     alt="bindingType"
                   />
                 </button>

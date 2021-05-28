@@ -525,7 +525,7 @@ export interface UploadablePicture {
   filename: string
   url: string
   mimeType: string
-  id ?: string
+  id?: string
 }
 
 export type Locales = 'mn' | 'en'
