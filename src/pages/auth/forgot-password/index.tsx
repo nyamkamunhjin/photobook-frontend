@@ -13,10 +13,9 @@ const ForgotPassword: React.FC = () => {
     const { email } = values
 
     forgotPassword(email)
-      .then((res) => {
+      .then(() => {
         notification.info({
           message: intl.formatMessage({ id: 'sent-password-change-link' }),
-          description: <a href={res?.data}>link</a>,
         })
       })
       .finally(() => {
@@ -27,15 +26,7 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="w-full h-screen bg-gray-100">
       <div className="w-96 flex flex-col gap-4 rounded-lg bg-white p-6 shadow-md mx-auto mt-10">
-        <Form
-          name="basic"
-          layout="vertical"
-          initialValues={{
-            email: 'admin@example.com',
-            password: 'FERNANDOtorres_9',
-          }}
-          onFinish={(values) => onFinish(values)}
-        >
+        <Form name="basic" layout="vertical" onFinish={(values) => onFinish(values)}>
           <Form.Item
             label={
               <span className="font-semibold text-gray-500">
