@@ -114,6 +114,12 @@ export interface ImageCategory {
   parent?: ImageCategory
   images: Image[]
 }
+
+export interface PaginatedResult<T> {
+  list: T[]
+  offset: number
+  total: number
+}
 export interface BindingType {
   id: number
   name: string

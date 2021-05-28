@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { updateProject } from 'redux/actions/project'
 import { Modal, Select, Form, Button } from 'antd'
 import { useRequest } from 'ahooks'
-import { PaperSize, ProjectInterface, StateInterface } from 'interfaces'
+import { PaginatedResult, PaperSize, ProjectInterface, StateInterface } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
 import { listPaperSize } from 'api'
 
@@ -17,6 +17,7 @@ const layout = {
 
 interface Props {
   setSettingsVisible: (value: boolean) => void
+  type: 'photobook' | 'canvas' | 'photo' | 'frame'
   settingsVisible: boolean
   updateProject: (projectId: number, props: { paperSizeId: number }) => void
   project: ProjectInterface
@@ -30,11 +31,14 @@ const SlideSettings: React.FC<Props> = ({
   setSettingsVisible,
   settingsVisible,
   updateProject,
+  type,
   project: { currentProject },
 }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const submitRef = useRef<HTMLButtonElement>(null)
-  const { data } = useRequest<PaperSize[]>(listPaperSize)
+  const { data } = useRequest<PaginatedResult<PaperSize>>(() =>
+    listPaperSize({ current: 0, pageSize: 100 }, { templateType: type })
+  )
 
   const handleSettingsCancel = () => {
     setSettingsVisible(false)
@@ -85,7 +89,7 @@ const SlideSettings: React.FC<Props> = ({
       >
         <Form.Item name="paperSizeId" label="Paper size">
           <Select style={{ minWidth: 200 }}>
-            {data?.map((paper) => (
+            {data?.list?.map((paper) => (
               <Option key={`paper-${paper.id}`} value={paper.id}>
                 {paper.size}
               </Option>

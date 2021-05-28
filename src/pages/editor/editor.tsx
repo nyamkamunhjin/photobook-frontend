@@ -445,6 +445,7 @@ const BookEditor: React.FC<Props> = ({
             createEclipse={() => editors.createEclipse(objects)}
             changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
             layout={layout}
+            type="photobook"
             layouts={layouts}
           />
           <div

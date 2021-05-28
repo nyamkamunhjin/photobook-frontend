@@ -16,6 +16,7 @@ import { LayoutsInterface } from 'interfaces'
 import SlideSettings from './settings'
 
 interface Props {
+  type: 'photobook' | 'canvas' | 'photo' | 'frame'
   createImage: (e: unknown) => void
   createText?: () => void
   createSquare?: () => void
@@ -41,6 +42,7 @@ const SideButtons: React.FC<Props> = ({
   createSquare,
   createEclipse,
   changeLayout,
+  type = 'photobook',
   layout,
   layouts,
   settings = true,
@@ -131,7 +133,7 @@ const SideButtons: React.FC<Props> = ({
     <div className="side-buttons">
       <div>{renderButtons('left')}</div>
       <div>{renderButtons('right')}</div>
-      <SlideSettings setSettingsVisible={setSettingsVisible} settingsVisible={settingsVisible} />
+      <SlideSettings type={type} setSettingsVisible={setSettingsVisible} settingsVisible={settingsVisible} />
     </div>
   )
 }
