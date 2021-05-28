@@ -188,12 +188,11 @@ const MyInfo: FC = () => {
                 <CustomButton
                   className="btn-primary whitespace-nowrap"
                   onClick={() => {
-                    verifyEmail().then((res) => {
+                    verifyEmail().then(() => {
                       notification.info({
                         message: intl.formatMessage({
                           id: 'email-verification-sent',
                         }),
-                        description: <a href={res?.data}>verify email</a>,
                       })
                     })
                   }}
