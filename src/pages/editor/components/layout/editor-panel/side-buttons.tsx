@@ -19,6 +19,7 @@ interface Props {
   createImage: (e: unknown) => void
   createText?: () => void
   createSquare?: () => void
+  createEclipse?: () => void
   changeLayout?: (align: string, type: string) => void
   layout?: {
     left: {
@@ -38,6 +39,7 @@ const SideButtons: React.FC<Props> = ({
   createImage,
   createText,
   createSquare,
+  createEclipse,
   changeLayout,
   layout,
   layouts,
@@ -107,6 +109,12 @@ const SideButtons: React.FC<Props> = ({
           <div hidden={!createSquare} onClick={createSquare} className="item">
             <BorderOutlined style={{ fontSize: 24 }} />
             <FormattedMessage id="square" />
+          </div>
+        )}
+        {createEclipse && (
+          <div hidden={!createEclipse} onClick={createEclipse} className="item">
+            <BorderOutlined style={{ fontSize: 24 }} />
+            <FormattedMessage id="eclipse" />
           </div>
         )}
         {settings && (

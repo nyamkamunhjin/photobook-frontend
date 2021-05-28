@@ -442,6 +442,7 @@ const BookEditor: React.FC<Props> = ({
             createImage={(e) => editors.createImage(e, objects)}
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
+            createEclipse={() => editors.createEclipse(objects)}
             changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
             layout={layout}
             layouts={layouts}

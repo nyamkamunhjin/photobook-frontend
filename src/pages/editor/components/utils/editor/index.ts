@@ -1168,6 +1168,34 @@ export default class Editor {
 
     return objectType
   }
+  public createEclipse = (objects: PObject[]) => {
+    this.hideToolbar()
+    const style = {
+      top: 100,
+      left: 100,
+      width: 300,
+      height: 300,
+      rotateAngle: 0,
+      transform: '',
+      zIndex: 100 + objects.length + '',
+    }
+
+    this.addObject({
+      object: {
+        id: uuidv4(),
+        className: 'object',
+        style,
+        props: {
+          className: 'shape',
+          style: { transform: 'scaleX(1)' },
+          shapeClass: 'eclipse',
+          shapeStyle: { background: 'cyan' },
+        },
+      },
+    })
+
+    this.setObjectType('shape')
+  }
   public createSquare = (objects: PObject[]) => {
     this.hideToolbar()
     const style = {
