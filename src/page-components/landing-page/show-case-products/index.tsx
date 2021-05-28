@@ -40,7 +40,11 @@ const Card: FC<CardProps> = ({ name, imageUrl }) => {
       className="flex flex-col rounded-sm items-center bg-white gap-2 p-2 w-full max-w mx-auto overflow-hidden"
       style={{ maxWidth: '20rem' }}
     >
-      <img className="object-cover h-72 transform duration-500 ease-out hover:scale-110" src={imageUrl} alt="card" />
+      <img
+        className="object-cover h-72 transform duration-500 ease-out hover:scale-110"
+        src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
+        alt="card"
+      />
       <p className="font-light text-sm text-gray-500 my-4">{name}</p>
     </div>
   )

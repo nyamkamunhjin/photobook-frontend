@@ -111,7 +111,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
               }}
             >
               <div className="flex flex-col">
-                <img src={each.imageUrl.includes('http') ? each.imageUrl : each.tempUrl} alt="cover-type" />
+                <img src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`} alt="cover-type" />
                 <span>{each.name}</span>
               </div>
             </button>
@@ -134,7 +134,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
               }}
             >
               <div className="flex flex-col">
-                <img src={each.imageUrl.includes('http') ? each.imageUrl : each.tempUrl} alt="binding-type" />
+                <img src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`} alt="binding-type" />
                 <span>{each.name}</span>
               </div>
             </button>
@@ -156,7 +156,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
               }}
             >
               <div className="flex flex-col">
-                <img src={each.imageUrl.includes('http') ? each.imageUrl : each.tempUrl} alt="cover-material" />
+                <img src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`} alt="cover-material" />
                 <span>{each.name}</span>
               </div>
             </button>
@@ -186,7 +186,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
                 }}
               >
                 <img
-                  src={each.imageUrl?.includes('http') ? each.imageUrl : each.tempUrl}
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`}
                   className="w-full"
                   alt={each.name}
                   key={each.id}

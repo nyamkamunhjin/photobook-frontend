@@ -9,6 +9,7 @@ export async function s3Upload(file: File) {
 
   // if we were uploading publicly we can use the Storage.put() method
   const stored: any = await Storage.put(filename, thumb, {
+    ACL: 'public-read',
     contentType: file.type,
   })
   Storage.put(filename, file, {
@@ -66,6 +67,7 @@ export async function s3SyncImages(images: UploadablePicture[]) {
       })
       const stored: any = await Storage.put(filename, thumb, {
         contentType: file.type,
+        ACL: 'public-read',
       })
       return stored.key
     })
@@ -87,6 +89,7 @@ export async function s3UploadImages(files: File[]) {
       })
       const stored: any = await Storage.put(filename, thumb, {
         contentType: file.type,
+        ACL: 'public-read',
       })
       return stored.key
     })

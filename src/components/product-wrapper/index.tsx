@@ -9,7 +9,11 @@ const ProductWrapper: FC<Props> = ({ bannerImageUrl, children }) => {
   return (
     <div className="flex flex-col">
       <div className="aspect-w-4 aspect-h-1">
-        <img className="w-full object-cover" alt="banner" src={bannerImageUrl} />
+        <img
+          className="w-full object-cover"
+          alt="banner"
+          src={`${process.env.REACT_APP_PUBLIC_IMAGE}${bannerImageUrl}`}
+        />
       </div>
       <div>{children}</div>
     </div>

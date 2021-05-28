@@ -38,7 +38,7 @@ const Content: FC<Combo> = ({ imageUrl, text }) => (
     <div
       className="w-full h-full grid place-items-center bg-center"
       style={{
-        backgroundImage: `url(${imageUrl})`,
+        backgroundImage: `url(${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl})`,
       }}
     >
       <div className="font-extrabold text-5xl">{text}</div>
