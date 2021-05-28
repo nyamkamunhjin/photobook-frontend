@@ -154,6 +154,14 @@
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",
   "wrong_email": "Wrong Email",
+  "forgot_password": "Forgot Password",
+  "send_password_change_link": "Send password change link",
+  "sent_password_change_link": "Sent password change link",
+  "email_verification_sent": "Email verification sent",
+  "sign_in_success": "Sign in success",
+  "sign_in_error": "Sign in error",
+  "sign_up_success": "Sign up success",
+  "sign_up_error": "Sign up error",
 
   "type": "Type",
   "brightness": "brightness",
@@ -253,6 +261,6 @@
   "sort.z-a": "File name z-a",
   "sort.earlier": "Earlier",
   "sort.recently": "Recently",
-  "about_us": "About us",
-  "gift_card": "Gift card"
+  "about_us": "About Us",
+  "gift_card": "Gift Card"
 }

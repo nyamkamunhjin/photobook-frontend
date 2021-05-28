@@ -24,7 +24,7 @@ const Signup: React.FC = () => {
           type: REGISTER_SUCCESS,
         })
         notification.success({
-          message: intl.formatMessage({ id: 'sign-up-success' }),
+          message: intl.formatMessage({ id: 'sign_up_success' }),
         })
         router.push('/auth/signin')
       })
@@ -32,7 +32,7 @@ const Signup: React.FC = () => {
         // dispatch({ type: REGISTER_FAIL })
 
         notification.warning({
-          message: intl.formatMessage({ id: 'sign-up-error' }),
+          message: intl.formatMessage({ id: 'sign_up_error' }),
         })
       })
       .finally(() => setLoading(false))

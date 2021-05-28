@@ -39,7 +39,7 @@ const Login: React.FC = () => {
           payload: user,
         })
         notification.success({
-          message: intl.formatMessage({ id: 'sign-in-success' }),
+          message: intl.formatMessage({ id: 'sign_in_success' }),
         })
         dispatch(loadUser())
         router.push('/')
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
       .catch(() => {
         dispatch({ type: LOGIN_FAIL })
         notification.warning({
-          message: intl.formatMessage({ id: 'sign-in-error' }),
+          message: intl.formatMessage({ id: 'sign_in_error' }),
         })
       })
       .finally(() => {
@@ -60,7 +60,7 @@ const Login: React.FC = () => {
       <div className="w-96 flex flex-col gap-4 bg-white rounded-lg p-6 shadow-md mx-auto mt-10">
         <div className="ml-auto">
           <CustomButton className="btn-text text-xs text-blue-400" onClick={() => router.push('/auth/forgot-password')}>
-            <FormattedMessage id="forgot-password" />?
+            <FormattedMessage id="forgot_password" />?
           </CustomButton>
         </div>
         <CustomButton className="btn-primary" icon={<GoogleOutlined />} onClick={googleSignin}>
