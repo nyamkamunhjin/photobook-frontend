@@ -33,6 +33,7 @@ export const GET_IMAGES = 'GET_IMAGES'
 export const GET_CATEGORIES = 'GET_CATEGORIES'
 export const ADD_IMAGE = 'ADD_IMAGE'
 export const ADD_IMAGES = 'ADD_IMAGES'
+export const REMOVE_IMAGES = 'REMOVE_IMAGES'
 export const UPLOAD_IMAGES = 'UPLOAD_IMAGES'
 
 export const IMAGE_ERROR = 'IMAGE_ERROR'

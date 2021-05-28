@@ -1,7 +1,7 @@
-import { createImage, createMultiImage, listImage, linkImages as _linkImage } from 'api'
+import { createImage, createMultiImage, listImage, updateProjectImages } from 'api'
 import { Storage } from 'aws-amplify'
 import { Image, UploadablePicture } from 'interfaces'
-import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES } from './types'
+import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES, REMOVE_IMAGES } from './types'
 
 // Get images
 export const getImages = () => async (dispatch: any) => {
@@ -44,17 +44,31 @@ export const addImage =
   }
 export const linkImages = (keys: string[], id: number) => async (dispatch: any) => {
   try {
-    let images = await _linkImage(keys, id)
-    images = await Promise.all(
-      images.map(async (image: Image) => ({
+    let { actions } = await updateProjectImages({ link: keys }, id)
+    actions = await Promise.all(
+      actions.map(async (image: Image) => ({
         ...image,
         tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
       }))
     )
-
     dispatch({
       type: ADD_IMAGES,
-      payload: images,
+      payload: actions,
+    })
+  } catch (err) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: err },
+    })
+  }
+}
+
+export const unlinkImages = (keys: string[], id: number) => async (dispatch: any) => {
+  try {
+    await updateProjectImages({ unlink: keys }, id)
+    dispatch({
+      type: REMOVE_IMAGES,
+      payload: keys,
     })
   } catch (err) {
     dispatch({

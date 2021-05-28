@@ -22,7 +22,7 @@ const Frames: React.FC<Props> = ({ loading, categories }) => {
     <div className="Images">
       <div className="ImportedPhotos">
         <Collapse defaultActiveKey={[4]} style={{ width: '100%' }}>
-          {categories.map((category: ImageCategory, j) => (
+          {categories.map((category: ImageCategory) => (
             <Panel header={category.name} key={`cparent-${category.id}`}>
               <div
                 style={{

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import {
   BgColorsOutlined,
@@ -11,7 +11,12 @@ import {
 } from '@ant-design/icons'
 import { useDrop } from 'ahooks'
 import { Button } from 'antd'
-import { addImages as _addImages, uploadImages as _uploadImages } from 'redux/actions/image'
+import {
+  addImages as _addImages,
+  uploadImages as _uploadImages,
+  linkImages as _linkImages,
+  unlinkImages as _unlinkImages,
+} from 'redux/actions/image'
 import {
   setType as _setType,
   setDragStart as _setDragStart,
@@ -32,6 +37,8 @@ import UploadPhotosGroup from './upload-photos-group'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
+  linkImages: (images: string[], id: number) => Promise<void>
+  unlinkImages: (images: string[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   setType: (type: string) => void
   setDragStart: (dragStart: boolean) => void
@@ -50,13 +57,14 @@ const SideBarPanel: React.FC<Props> = ({
   hasLayout = true,
   addImages,
   uploadImages,
+  linkImages,
+  unlinkImages,
   setType,
   setDragStart,
   setBackgroundEdit,
   currentProject,
   toggleSidebar,
   editor,
-
   image: { images, loading, categories },
   layoutGroups,
 }) => {
@@ -79,12 +87,22 @@ const SideBarPanel: React.FC<Props> = ({
     }
   }
 
-  const uploadPhotos = async (_images: UploadablePicture[]) => {
+  const syncPhoto = async (_images: UploadablePicture[]) => {
     if (_images.length) {
       await uploadImages()
       const keys = await s3SyncImages(_images)
       await addImages(keys, currentProject.id)
     }
+  }
+
+  const linkPhoto = async (_images: string[]) => {
+    await uploadImages()
+    await linkImages(_images, currentProject.id)
+  }
+
+  const unlinkPhoto = async (_images: string[]) => {
+    await uploadImages()
+    await unlinkImages(_images, currentProject.id)
   }
 
   const isActive = (name: any) => {
@@ -125,10 +143,17 @@ const SideBarPanel: React.FC<Props> = ({
                 </p>
               </div>
 
-              <UploadPhotosGroup uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
+              <UploadPhotosGroup uploadPhoto={uploadPhoto} syncPhoto={syncPhoto} linkPhoto={linkPhoto} />
             </div>
           ) : (
-            <Images loading={loading} images={uploadedImages} uploadPhoto={uploadPhoto} uploadPhotos={uploadPhotos} />
+            <Images
+              loading={loading}
+              images={uploadedImages}
+              uploadPhoto={uploadPhoto}
+              syncPhoto={syncPhoto}
+              linkPhoto={linkPhoto}
+              unlinkPhoto={unlinkPhoto}
+            />
           )
         }
         return <div />
@@ -273,6 +298,8 @@ const mapStateToProps = (state: RootInterface) => ({
 
 export default connect(mapStateToProps, {
   addImages: _addImages,
+  linkImages: _linkImages,
+  unlinkImages: _unlinkImages,
   setType: _setType,
   setDragStart: _setDragStart,
   setBackgroundEdit: _setBackgroundEdit,

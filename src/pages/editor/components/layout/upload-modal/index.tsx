@@ -1,8 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
-import useRequest from '@ahooksjs/use-request'
 import { Button, Grid, Modal, Spin } from 'antd'
 import { ModalProps } from 'antd/lib/modal'
-import { FacebookProfile, GoogleProfile } from 'interfaces'
+import { UploadablePicture } from 'interfaces'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import Facebook from './facebook'
@@ -16,6 +15,7 @@ interface Props extends ModalProps {
   okDisable?: boolean
   cancelDisable?: boolean
   onUpload: (images: any) => void
+  onLink: (images: any) => void
 }
 
 const UploadModal: React.FC<Props> = ({
@@ -26,6 +26,7 @@ const UploadModal: React.FC<Props> = ({
   cancelText,
   onCancel,
   onUpload,
+  onLink,
   type = 'default',
   okDisable = false,
   cancelDisable = false,
@@ -74,7 +75,11 @@ const UploadModal: React.FC<Props> = ({
           disabled={okDisable}
           type="primary"
           onClick={(e) => {
-            onUpload(selectedImages)
+            if (name === 'photos') {
+              onLink(selectedImages?.map((each) => each.id))
+            } else {
+              onUpload(selectedImages)
+            }
             if (onCancel) onCancel(e)
           }}
           loading={loading}
@@ -94,7 +99,7 @@ const UploadModal: React.FC<Props> = ({
         <>
           {name === 'facebook' && <Facebook name={name} setSelectedImages={setSelectedImages} onCancel={onCancel} />}
           {name === 'google' && <Google name={name} setSelectedImages={setSelectedImages} onCancel={onCancel} />}
-          {name === 'photos' && <Photos name={name} setSelectedImages={setSelectedImages} onCancel={onCancel} />}
+          {name === 'photos' && <Photos name={name} setSelectedImages={setSelectedImages} />}
         </>
       )}
     </Modal>

@@ -12,7 +12,9 @@ interface Props {
   loading: boolean
   images: Image[]
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
-  uploadPhotos: (images: UploadablePicture[]) => void
+  syncPhoto: (images: UploadablePicture[]) => void
+  linkPhoto: (images: string[]) => void
+  unlinkPhoto: (images: string[]) => void
 }
 
 interface PreviewInterface {
@@ -21,7 +23,7 @@ interface PreviewInterface {
   left: number
 }
 
-const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos }) => {
+const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, linkPhoto, unlinkPhoto }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   const [hover, setHover] = useState<PreviewInterface>()
@@ -44,7 +46,11 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos })
   const handleCancel = () => {
     setModalVisible(false)
   }
-
+  const onRemote = () => {
+    if (selectedImages && selectedImages?.length > 0) {
+      unlinkPhoto(selectedImages?.map((each) => each.id))
+    }
+  }
   const onZoomOut = () => {
     if ((zoom || 1) > 1) {
       setZoom((zoom || 1) - 1)
@@ -135,7 +141,7 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos })
           </div>
           <div className="flex flex-col justify-end p-2 flex-none">
             <div className="flex">
-              <div onClick={onZoomOut} className="cursor-pointer p-1">
+              <div onClick={onRemote} className="cursor-pointer p-1">
                 <CgTrashEmpty size={20} className="text-gray-500" />
               </div>
             </div>
@@ -150,8 +156,12 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, uploadPhotos })
               uploadPhoto(e)
               handleCancel()
             }}
-            uploadPhotos={(e) => {
-              uploadPhotos(e)
+            syncPhoto={(e) => {
+              syncPhoto(e)
+              handleCancel()
+            }}
+            linkPhoto={(e) => {
+              linkPhoto(e)
               handleCancel()
             }}
           />

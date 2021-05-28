@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
-import useRequest from '@ahooksjs/use-request'
+import { useRequest } from 'ahooks'
 import { Button, Checkbox, Spin } from 'antd'
 import { getGoogleImages, getGoogleProfile } from 'api'
 import { GooglePicture, GoogleProfile, UploadablePicture } from 'interfaces'
@@ -12,7 +12,7 @@ interface Props {
   setSelectedImages: (images: UploadablePicture[]) => void
 }
 
-const Google: React.FC<Props> = ({ children, name, onCancel, setSelectedImages, ...props }) => {
+const Google: React.FC<Props> = ({ name, onCancel, setSelectedImages }) => {
   const profile = useRequest<GoogleProfile>((e) => e && e(), {
     manual: true,
   })
@@ -43,6 +43,7 @@ const Google: React.FC<Props> = ({ children, name, onCancel, setSelectedImages, 
     return () => {
       window.removeEventListener('storage', storageListener)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name])
 
   const googleHeader = (_profile: GoogleProfile) => (

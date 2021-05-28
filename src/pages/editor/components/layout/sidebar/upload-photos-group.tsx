@@ -7,7 +7,8 @@ import UploadModal from '../upload-modal'
 
 interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
-  uploadPhotos: (images: UploadablePicture[]) => void
+  linkPhoto: (images: string[]) => void
+  syncPhoto: (images: UploadablePicture[]) => void
 }
 
 interface Type {
@@ -15,7 +16,7 @@ interface Type {
   type: 'google' | 'facebook' | 'photos'
 }
 
-const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
+const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto }) => {
   const [inputRef, setInputRef] = useState<any>(null)
   const [modal, setModal] = useState<Type>({
     visible: false,
@@ -87,7 +88,8 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, uploadPhotos }) => {
       {modal.visible && (
         <UploadModal
           onCancel={() => setModal({ visible: false, type: 'facebook' })}
-          onUpload={uploadPhotos}
+          onUpload={syncPhoto}
+          onLink={linkPhoto}
           type="wide"
           visible={modal.visible}
           name={modal.type}

@@ -1,8 +1,8 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
-import useRequest from '@ahooksjs/use-request'
+import { useRequest } from 'ahooks'
 import { Button, Checkbox, Select, Spin } from 'antd'
 import { getFacebookAlbums, getFacebookImages, getFacebookProfile } from 'api'
-import { FacebookAlbum, FacebookPicture, FacebookProfile, Image, UploadablePicture } from 'interfaces'
+import { FacebookAlbum, FacebookPicture, FacebookProfile, UploadablePicture } from 'interfaces'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 
@@ -12,7 +12,7 @@ interface Props {
   setSelectedImages: (images: UploadablePicture[]) => void
 }
 
-const Facebook: React.FC<Props> = ({ children, name, onCancel, setSelectedImages, ...props }) => {
+const Facebook: React.FC<Props> = ({ name, onCancel, setSelectedImages }) => {
   const [selectedAlbum, setSelectedAlbum] = useState<string>('')
   const profile = useRequest<FacebookProfile>((e) => e && e(), {
     manual: true,
@@ -55,6 +55,7 @@ const Facebook: React.FC<Props> = ({ children, name, onCancel, setSelectedImages
     return () => {
       window.removeEventListener('storage', storageListener)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name])
 
   const facebookHeader = (_profile: FacebookProfile) => (

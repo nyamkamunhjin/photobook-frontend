@@ -1,5 +1,13 @@
 import { ImageInterface } from 'interfaces'
-import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES, GET_CATEGORIES } from '../actions/types'
+import {
+  GET_IMAGES,
+  ADD_IMAGE,
+  IMAGE_ERROR,
+  ADD_IMAGES,
+  UPLOAD_IMAGES,
+  GET_CATEGORIES,
+  REMOVE_IMAGES,
+} from '../actions/types'
 
 const initialState: ImageInterface = {
   images: [],
@@ -15,6 +23,12 @@ const image = (state = initialState, action: any) => {
       return {
         ...state,
         loading: true,
+      }
+    case REMOVE_IMAGES:
+      return {
+        ...state,
+        images: state.images.filter((each) => !payload.includes(each.id)),
+        loading: false,
       }
     case GET_IMAGES:
       return {

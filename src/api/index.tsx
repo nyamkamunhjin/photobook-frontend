@@ -207,15 +207,6 @@ export const createImage = async (data: Object) => {
   return response?.data
 }
 
-export const linkImages = async (data: Object, projectId: number) => {
-  const response = await BaseRequest({
-    url: `image/link/${projectId}`,
-    method: 'POST',
-    data,
-  })
-  return response?.data
-}
-
 export const createMultiImage = async (data: Object) => {
   const response = await BaseRequest({
     url: 'image/many',
@@ -379,6 +370,15 @@ export const listProject = async (params?: PaginatedParams[0], data?: Record<str
 
   if (params) return { list: project, total: response?.totalCount, offset: response?.offset }
   return project
+}
+
+export const updateProjectImages = async (data: Object, projectId: number) => {
+  const response = await BaseRequest({
+    url: `project/${projectId}/images`,
+    method: 'PUT',
+    data,
+  })
+  return response?.data
 }
 
 export const deleteProject = async (data: object) => {

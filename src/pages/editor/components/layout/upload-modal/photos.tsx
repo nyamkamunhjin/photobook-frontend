@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
-import useRequest from '@ahooksjs/use-request'
+import { useRequest } from 'ahooks'
 import { Checkbox, Spin } from 'antd'
 import { listMyImages } from 'api'
 import { Empty } from 'components'
@@ -8,11 +8,10 @@ import React from 'react'
 
 interface Props {
   name: 'photos'
-  onCancel?: (e: React.MouseEvent<HTMLElement>) => void
   setSelectedImages: (images: UploadablePicture[]) => void
 }
 
-const Photos: React.FC<Props> = ({ children, name, onCancel, setSelectedImages, ...props }) => {
+const Photos: React.FC<Props> = ({ setSelectedImages }) => {
   const images = useRequest<Image[]>(listMyImages)
 
   const renderBody = (_images: Image[]) =>
@@ -39,6 +38,7 @@ const Photos: React.FC<Props> = ({ children, name, onCancel, setSelectedImages, 
                       .map<UploadablePicture>((each) => ({
                         url: each.imageUrl,
                         filename: each.name,
+                        id: each.id,
                         mimeType: 'png',
                       }))
                   )

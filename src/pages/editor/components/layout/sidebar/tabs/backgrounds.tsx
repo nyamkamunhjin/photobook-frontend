@@ -30,7 +30,7 @@ const Backgrounds: React.FC<Props> = ({ loading, categories, backgroundEdit, set
     <div className="Images">
       <div className="ImportedPhotos" style={{ marginBottom: 45 }}>
         <Collapse defaultActiveKey={[4]} style={{ width: '100%' }}>
-          {categories.map((category: ImageCategory, j) => (
+          {categories.map((category: ImageCategory) => (
             <Panel header={category.name} key={`cparent-${category.id}`}>
               <div
                 style={{
