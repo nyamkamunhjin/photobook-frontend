@@ -1075,13 +1075,13 @@ export default class Editor {
           break
         case 'yy':
           size =
-            ParseNumber(this.objects[elementY.index].style.top) +
-            ParseNumber(this.objects[elementY.index].style.height) / 2
-          this.magnetX.style.top = `${size * this.scale}px`
+            ParseNumber(this.objects[elementY.index].style.left) +
+            ParseNumber(this.objects[elementY.index].style.width) / 2
+          this.magnetY.style.left = `${size * this.scale}px`
           if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height) / 2}px`
+            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width) / 2}px`
           }
-          this.renderLine(true)
+          this.renderLine(false)
           break
         default:
           break
