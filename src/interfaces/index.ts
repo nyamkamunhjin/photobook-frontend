@@ -475,6 +475,18 @@ export interface PaperMaterialPrice {
   price: number
 }
 
+export type ShoppingCart = {
+  id: number
+  projectId: number
+  userId: number
+  voucherId: number | null
+  quantity: number
+  giftCardId: number | null
+  userDiscountId: number | null
+  templateDiscountId: number | null
+  project: Project
+}
+
 export type ShippingAddress = {
   id: number
   firstName: string
