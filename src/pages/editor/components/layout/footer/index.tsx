@@ -17,23 +17,24 @@ interface Toggle {
   action: Actions
 }
 interface Props {
+  hideTools?: boolean
   slideIndex: number
   currentProject: Project
   slideWidth: number
   fitScale: number
   deSelectObject: () => void
   setScale: (scale: number) => void
-  prevSlide: () => void
-  nextSlide: () => void
-  hasNext: () => boolean
-  hasPrevious: () => boolean
+  prevSlide?: () => void
+  nextSlide?: () => void
+  hasNext?: () => boolean
+  hasPrevious?: () => boolean
   collapse: Toggle
   preview: Toggle
   single: Toggle
-  addNewSlide: (slideIndex: number, projectId: number) => void
-  duplicateSlide: (projectId: number, slideIndex: number) => void
-  reOrderSlide: (projectId: number, slides: Slide[], dest: number) => void
-  deleteSlide: (projectId: number, slideIndex: number) => void
+  addNewSlide?: (slideIndex: number, projectId: number) => void
+  duplicateSlide?: (projectId: number, slideIndex: number) => void
+  reOrderSlide?: (projectId: number, slides: Slide[], dest: number) => void
+  deleteSlide?: (projectId: number, slideIndex: number) => void
   bgStyles: StyleType[]
   objects: SlideObject[]
   slideHeight: number
@@ -42,7 +43,7 @@ interface Props {
   saveObjects: () => void
   updateHistory: (historyType: string, props: any) => void
   updateObject: (props: { object: PObject }) => void
-  changeSlideIndex: (index: number) => void
+  changeSlideIndex?: (index: number) => void
   containers: Container[]
   backgrounds: BackgroundImage[]
 }
@@ -74,6 +75,7 @@ const FooterListTools: React.FC<Props> = ({
   saveObjects,
   updateHistory,
   updateObject,
+  hideTools = false,
   scale,
 }) => {
   const [refreshing, setRefreshing] = useBoolean(false)
@@ -148,7 +150,9 @@ const FooterListTools: React.FC<Props> = ({
   }
 
   const onDragEnd = (source: number, dest: number) => {
-    reOrderSlide(currentProject.id, reorder(currentProject.slides, source, dest), dest)
+    if (reOrderSlide) {
+      reOrderSlide(currentProject.id, reorder(currentProject.slides, source, dest), dest)
+    }
   }
 
   return (
@@ -214,21 +218,26 @@ const FooterListTools: React.FC<Props> = ({
             </div>
           </div>
           <div className="center-side-tools">
-            <div className={`switch-slide ${!hasPrevious() && 'inactive'}`}>
-              <span onClick={prevSlide}>
-                <FormattedMessage id="slide.prev" />
-              </span>
-            </div>
+            {hasPrevious && (
+              <div className={`switch-slide ${!hasPrevious() && 'inactive'}`}>
+                <span onClick={prevSlide}>
+                  <FormattedMessage id="slide.prev" />
+                </span>
+              </div>
+            )}
+
             <div className="slide-page-number">
               <span>
                 <FormattedMessage id="slide" /> {slideIndex + 1}
               </span>
             </div>
-            <div className={`switch-slide ${!hasNext() && 'inactive'}`}>
-              <span onClick={nextSlide}>
-                <FormattedMessage id="slide.next" />
-              </span>
-            </div>
+            {hasNext && (
+              <div className={`switch-slide ${!hasNext() && 'inactive'}`}>
+                <span onClick={nextSlide}>
+                  <FormattedMessage id="slide.next" />
+                </span>
+              </div>
+            )}
           </div>
           <div className="right-side-tools">
             <div className="ZoomPanel">
@@ -291,39 +300,45 @@ const FooterListTools: React.FC<Props> = ({
                 )}
               </div>
             </div>
-            <div className="SlideActions">
-              <div
-                className="cursor-pointer flex items-center"
-                onClick={() => {
-                  if (currentProject.id) {
-                    addNewSlide(currentProject?.id, slideIndex)
-                  }
-                }}
-              >
-                <BsFileEarmarkPlus />
-                <FormattedMessage id="slide.add_page" />
+            {!hideTools && (
+              <div className="SlideActions">
+                <div
+                  className="cursor-pointer flex items-center"
+                  onClick={() => {
+                    if (currentProject.id && addNewSlide) {
+                      addNewSlide(currentProject?.id, slideIndex)
+                    }
+                  }}
+                >
+                  <BsFileEarmarkPlus />
+                  <FormattedMessage id="slide.add_page" />
+                </div>
+                <div
+                  onClick={() => {
+                    const { id } = currentProject
+                    if (id && duplicateSlide) {
+                      duplicateSlide(id, slideIndex)
+                    }
+                  }}
+                  className="cursor-pointer flex items-center"
+                >
+                  <BsFiles />
+                  <FormattedMessage id="slide.duplicate" />
+                </div>
+                <div
+                  className="cursor-pointer flex items-center"
+                  onClick={() => {
+                    const { id } = currentProject
+                    if (id && deleteSlide) {
+                      deleteSlide(id, slideIndex)
+                    }
+                  }}
+                >
+                  <BsFileMinus />
+                  <FormattedMessage id="slide.remove" />
+                </div>
               </div>
-              <div
-                onClick={() => {
-                  const { id } = currentProject
-                  if (id) duplicateSlide(id, slideIndex)
-                }}
-                className="cursor-pointer flex items-center"
-              >
-                <BsFiles />
-                <FormattedMessage id="slide.duplicate" />
-              </div>
-              <div
-                className="cursor-pointer flex items-center"
-                onClick={() => {
-                  const { id } = currentProject
-                  if (id) deleteSlide(id, slideIndex)
-                }}
-              >
-                <BsFileMinus />
-                <FormattedMessage id="slide.remove" />
-              </div>
-            </div>
+            )}
           </div>
         )}
       </div>

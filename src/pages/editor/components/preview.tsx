@@ -13,10 +13,10 @@ interface Props {
   editor: EditorInterface
   project: ProjectInterface
   slideIndex: number
-  prevSlide: () => void
-  nextSlide: () => void
-  hasNext: () => boolean
-  hasPrevious: () => boolean
+  prevSlide?: () => void
+  nextSlide?: () => void
+  hasNext?: () => boolean
+  hasPrevious?: () => boolean
 }
 
 const Preview: React.FC<Props> = ({
@@ -130,12 +130,16 @@ const Preview: React.FC<Props> = ({
           </div>
         </div>
       </div>
-      <div className={`control prev cursor-pointer ${!hasPrevious() && 'inactive'}`} onClick={prevSlide}>
-        <LeftOutlined />
-      </div>
-      <div className={`control next cursor-pointer ${!hasNext() && 'inactive'}`} onClick={nextSlide}>
-        <RightOutlined />
-      </div>
+      {hasPrevious && (
+        <div className={`control prev cursor-pointer ${!hasPrevious() && 'inactive'}`} onClick={prevSlide}>
+          <LeftOutlined />
+        </div>
+      )}
+      {hasNext && (
+        <div className={`control next cursor-pointer ${!hasNext() && 'inactive'}`} onClick={nextSlide}>
+          <RightOutlined />
+        </div>
+      )}
     </div>
   )
 }
