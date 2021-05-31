@@ -371,12 +371,15 @@ export const generateDuplicatedSlide = (slide: Slide) => ({
   ...slide,
   slideId: uuidv4(),
 })
-
 const ALIGNMENT_PROPS = {
   tt: 0,
+  ty: 0,
   rr: 0,
+  rx: 0,
   bb: 0,
+  by: 0,
   ll: 0,
+  lx: 0,
   tb: 0,
   bt: 0,
   rl: 0,
@@ -390,12 +393,20 @@ export const diffRect = (a: OElement, b: OElement, index: number) => {
     switch (key) {
       case 'tt':
         return { size: Math.abs(a.t - b.t), key, index, vertical: false }
+      case 'ty':
+        return { size: Math.abs(a.t - b.t - b.h / 2), key, index, vertical: false }
       case 'bb':
         return { size: Math.abs(b.t + b.h - a.t - a.h), key, index, vertical: false }
+      case 'by':
+        return { size: Math.abs(b.t + b.h / 2 - a.t - a.h), key, index, vertical: false }
       case 'rr':
         return { size: Math.abs(b.l + b.w - a.l - a.w), key, index, vertical: true }
+      case 'rx':
+        return { size: Math.abs(b.l + b.w / 2 - a.l - a.w), key, index, vertical: true }
       case 'll':
         return { size: Math.abs(a.l - b.l), key, index, vertical: true }
+      case 'lx':
+        return { size: Math.abs(a.l - b.l - b.h / 2), key, index, vertical: true }
       case 'tb':
         return { size: Math.abs(a.t - b.t - b.h), key, index, vertical: false }
       case 'bt':
@@ -404,14 +415,14 @@ export const diffRect = (a: OElement, b: OElement, index: number) => {
         return { size: Math.abs(b.l - a.l - a.w), key, index, vertical: true }
       case 'lr':
         return { size: Math.abs(a.l - b.l - b.w), key, index, vertical: true }
-      case 'yy':
+      case 'xx':
         return {
           size: Math.abs((a.l + a.w - b.l - b.w + (a.l - b.l)) / 2),
           key,
           index,
           vertical: true,
         }
-      case 'xx':
+      case 'yy':
         return {
           size: Math.abs((a.t - b.t + (a.t + a.h - b.t - b.h)) / 2),
           key,
