@@ -911,7 +911,8 @@ export const listLandingPageHero = async () => {
 }
 
 // #endregion [LandingPageHero]
-// #region [LandingPageHero]
+
+// #region [LandingPageReview]
 export const listLandingPageReview = async () => {
   const response = await BaseRequest({
     url: `landing/review`,
@@ -920,8 +921,9 @@ export const listLandingPageReview = async () => {
   return response?.data
 }
 
-// #endregion [LandingPageHero]
-// #region [LandingPageHero]
+// #endregion [LandingPageReview]
+
+// #region [LandingPageImageCarousel]
 export const listLandingPageImageCarousel = async () => {
   const response = await BaseRequest({
     url: `landing/image-carousel`,
@@ -930,8 +932,9 @@ export const listLandingPageImageCarousel = async () => {
   return response?.data
 }
 
-// #endregion [LandingPageHero]
-// #region [LandingPageHero]
+// #endregion [LandingPageImageCarousel]
+
+// #region [LandingPageShowCase]
 export const listLandingPageShowCase = async () => {
   const response = await BaseRequest({
     url: `landing/show-case`,
@@ -940,7 +943,8 @@ export const listLandingPageShowCase = async () => {
   return response?.data
 }
 
-// #endregion [LandingPageHero]
+// #endregion [LandingPageShowCase]
+
 // #region [ProductAd]
 export const listProductAd = async (templateType: string) => {
   const response = await BaseRequest({
@@ -955,6 +959,7 @@ export const listProductAd = async (templateType: string) => {
 }
 
 // #endregion [ProductAd]
+
 // #region [HeaderAd]
 export const listHeaderAd = async (templateType: string) => {
   const response = await BaseRequest({
@@ -968,3 +973,65 @@ export const listHeaderAd = async (templateType: string) => {
   return response?.data
 }
 // #endregion [HeaderAd]
+
+// #region [ShoppingCart]
+export const listShoppingCart = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `shopping-cart?${query}`,
+    method: 'GET',
+  })
+
+  const project = response?.data
+  project.forEach(async (template: any) => {
+    template.tempUrl = await Storage.get(template.imageUrl, { expires: 60 * 60 * 24 * 7 })
+  })
+
+  if (params) return { list: project, total: response?.totalCount, offset: response?.offset }
+  return project
+}
+
+export const deleteShoppingCart = async (data: object) => {
+  const response = await BaseRequest({
+    url: `shopping-cart`,
+    method: 'DELETE',
+    data,
+  })
+  return response
+}
+
+export const updateShoppingCart = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `shopping-cart/${id}`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
+export const getShoppingCart = async (id: string) => {
+  const response = await BaseRequest({
+    url: `shopping-cart/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const createShoppingCart = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'shopping-cart',
+    method: 'POST',
+    data,
+  })
+  return response
+}
+
+// #endregion [ShoppingCart]

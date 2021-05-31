@@ -1,11 +1,12 @@
 import { useRequest } from 'ahooks'
-import { List } from 'antd'
+import { List, Popconfirm } from 'antd'
 import React, { FC, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { listProject } from 'api'
+import { createShoppingCart, deleteProject, listProject } from 'api'
 import { Project, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
+import { CustomButton } from 'components'
 
 const MyProjects: FC = () => {
   const history = useHistory()
@@ -45,7 +46,7 @@ const MyProjects: FC = () => {
           }}
           renderItem={(item: Project) => (
             <List.Item
-              className="rounded p-2 hover:bg-gray-50"
+              className="flex flex-col items-start lg:flex-row gap-4 rounded p-2 hover:bg-gray-50"
               key={item.id}
               actions={[
                 <button
@@ -55,23 +56,53 @@ const MyProjects: FC = () => {
                 >
                   <FormattedMessage id="edit" />
                 </button>,
+                <Popconfirm
+                  title={<FormattedMessage id="delete-confirm-text" />}
+                  onConfirm={() => {
+                    deleteProject({
+                      ids: [item.id],
+                    }).then(() => {
+                      projects.refresh()
+                    })
+                  }}
+                  okText={<FormattedMessage id="yes" />}
+                  cancelText={<FormattedMessage id="no" />}
+                >
+                  <CustomButton className="btn-cancel" type="button">
+                    <FormattedMessage id="delete" />
+                  </CustomButton>
+                </Popconfirm>,
+                <CustomButton
+                  className="btn-accept"
+                  type="button"
+                  onClick={() => {
+                    if (user) {
+                      createShoppingCart({
+                        project: item.id,
+                        user: user.id,
+                      }).then(() => {
+                        history.push('/profile?tab=my_cart')
+                      })
+                    }
+                  }}
+                >
+                  <FormattedMessage id="add_to_cart" />
+                </CustomButton>,
               ]}
             >
-              <List.Item.Meta
-                avatar={
-                  <img
-                    className="w-28 h-28 rounded"
-                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}
-                    alt="project"
-                  />
-                }
-                title={
-                  <span className="font-semibold text-lg">
-                    {item.name} <span className="text-sm text-gray-500">({item.templateType?.name})</span>
+              <div className="flex">
+                <img
+                  className="w-28 h-28 rounded"
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}
+                  alt="project"
+                />
+                <div className="flex flex-col">
+                  <span className="font-semibold text-base">
+                    {item.name} <span className="font-light text-sm text-gray-500">({item.templateType?.name})</span>
                   </span>
-                }
-                description={<p>{item.description}</p>}
-              />
+                  <p>{item.description}</p>
+                </div>
+              </div>
             </List.Item>
           )}
         />
