@@ -2,7 +2,7 @@ import { useRequest } from 'ahooks'
 import { List, Popconfirm } from 'antd'
 import React, { FC, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { createShoppingCart, deleteProject, listProject } from 'api'
+import { createCartItem, deleteProject, listProject } from 'api'
 import { Project, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
@@ -77,9 +77,8 @@ const MyProjects: FC = () => {
                   type="button"
                   onClick={() => {
                     if (user) {
-                      createShoppingCart({
+                      createCartItem({
                         project: item.id,
-                        user: user.id,
                       }).then(() => {
                         history.push('/profile?tab=my_cart')
                       })

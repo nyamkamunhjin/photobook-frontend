@@ -975,59 +975,48 @@ export const listHeaderAd = async (templateType: string) => {
 // #endregion [HeaderAd]
 
 // #region [ShoppingCart]
-export const listShoppingCart = async (
-  params?: PaginatedParams[0],
-  data?: Record<string, unknown>,
-  offset?: number
-) => {
-  let query = params && data ? buildQuery(params, data) : ''
-  if (offset && params && params.current !== 1) {
-    query += `&offset=${JSON.stringify(offset)}`
-  }
-
+export const listShoppingCart = async () => {
   const response = await BaseRequest({
-    url: `shopping-cart?${query}`,
+    url: `shopping-cart`,
     method: 'GET',
   })
 
-  const project = response?.data
-  project.forEach(async (template: any) => {
-    template.tempUrl = await Storage.get(template.imageUrl, { expires: 60 * 60 * 24 * 7 })
+  response?.data.cartItems.forEach(async (record: any) => {
+    record.project.tempUrl = await Storage.get(record.project.imageUrl, { expires: 60 * 60 * 24 * 7 })
   })
 
-  if (params) return { list: project, total: response?.totalCount, offset: response?.offset }
-  return project
+  return response?.data
 }
 
-export const deleteShoppingCart = async (data: object) => {
+export const deleteCartItem = async (data: object) => {
   const response = await BaseRequest({
-    url: `shopping-cart`,
+    url: `cart-item`,
     method: 'DELETE',
     data,
   })
   return response
 }
 
-export const updateShoppingCart = async (id: number, data: Object) => {
+export const updateCartItem = async (id: number, data: Object) => {
   const response = await BaseRequest({
-    url: `shopping-cart/${id}`,
+    url: `cart-item/${id}`,
     method: 'PUT',
     data,
   })
   return response
 }
 
-export const getShoppingCart = async (id: string) => {
+export const getCartItem = async (id: string) => {
   const response = await BaseRequest({
-    url: `shopping-cart/${id}`,
+    url: `cart-item/${id}`,
     method: 'GET',
   })
   return response?.data
 }
 
-export const createShoppingCart = async (data: Object) => {
+export const createCartItem = async (data: Object) => {
   const response = await BaseRequest({
-    url: 'shopping-cart',
+    url: 'cart-item',
     method: 'POST',
     data,
   })
