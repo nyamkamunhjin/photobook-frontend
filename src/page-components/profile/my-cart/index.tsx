@@ -2,8 +2,15 @@ import { useRequest } from 'ahooks'
 import { List, Popconfirm, InputNumber, Checkbox, Select, message } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { createOrder, deleteCartItem, listShippingAddress, listShoppingCart, updateCartItem } from 'api'
-import { Payment, CartItem, RootInterface, ShippingAddress, User } from 'interfaces'
+import {
+  createOrder,
+  deleteCartItem,
+  getShoppingCartSummary,
+  listShippingAddress,
+  listShoppingCart,
+  updateCartItem,
+} from 'api'
+import { CartItem, RootInterface, ShippingAddress, User } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
@@ -11,65 +18,38 @@ import { SelectValue } from 'antd/lib/select'
 
 interface CreateOrder {
   user: User['id']
-  address: ShippingAddress['id']
-  payment: Partial<Payment>
+  address?: ShippingAddress['id']
   cartItemIds: CartItem['id'][]
-  deliveryDays: number
 }
 
 const MyCart: React.FC = () => {
   const history = useHistory()
-  const [checked, setChecked] = useState(false)
+  const [deliveryChecked, setDeliveryChecked] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
-  const [price, setPrice] = useState(0)
-  const [shippingFee, setShippingFee] = useState(0)
-  const [days, setDays] = useState(0)
+
   const user = useSelector((state: RootInterface) => state.auth.user)
   const shippingAddresses = useRequest(() =>
     listShippingAddress({ current: 0, pageSize: 100 }, { userId: user?.id.toString() })
   )
+  const summary = useRequest(getShoppingCartSummary, {
+    manual: true,
+  })
   const shoppingCart = useRequest(listShoppingCart, {
     manual: true,
   })
-
-  const calculate: (cartItems: CartItem[], shipping?: boolean) => { price: number; days: number } = (
-    cartItems,
-    shipping
-  ) => {
-    const result = cartItems.reduce(
-      (acc, cur) => {
-        acc.price += (cur.project.price || 0) * cur.quantity
-        acc.days += cur.quantity
-        return acc
-      },
-      { price: 0, days: 0, shippingFee: 0 }
-    )
-
-    if (shipping) {
-      result.days += 1
-      setShippingFee(3000)
-    } else {
-      setShippingFee(0)
-    }
-
-    setPrice(result.price)
-    setDays(result.days)
-    return result
-  }
 
   const onCreateOrder = (shipping: boolean) => {
     const { cartItems } = shoppingCart.data
 
     if (user && cartItems) {
-      const result = calculate(cartItems, shipping)
+      // const result = calculate(cartItems, shipping)
       const order: CreateOrder = {
         user: user?.id,
-        address: selectedAddress as number,
         cartItemIds: shoppingCart.data.cartItems.map((each: CartItem) => each.id),
-        payment: {
-          paymentAmount: result.price,
-        },
-        deliveryDays: result.days,
+      }
+
+      if (shipping) {
+        order.address = selectedAddress as number
       }
 
       createOrder(order).then(() => {
@@ -87,10 +67,10 @@ const MyCart: React.FC = () => {
   }, [user])
 
   useEffect(() => {
-    if (shoppingCart.data) {
-      calculate(shoppingCart.data.cartItems, checked)
-    }
-  }, [shoppingCart.data, checked])
+    summary.run({
+      isShipping: deliveryChecked,
+    })
+  }, [shoppingCart.data, deliveryChecked, selectedAddress])
 
   return (
     <div className="p-2">
@@ -168,17 +148,14 @@ const MyCart: React.FC = () => {
       {shoppingCart.data?.cartItems.length > 0 && (
         <div className="flex flex-col lg:flex-row justify-between gap-4 mt-8">
           <div className="w-full">
-            <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>
+            <Checkbox checked={deliveryChecked} onChange={(e) => setDeliveryChecked(e.target.checked)}>
               <FormattedMessage id="delivery" />
             </Checkbox>
-            {checked && <Address shippingAddresses={shippingAddresses.data?.list} setSelected={setSelectedAddress} />}
+            {deliveryChecked && (
+              <Address shippingAddresses={shippingAddresses.data?.list} setSelected={setSelectedAddress} />
+            )}
           </div>
-          <OrderSummary
-            price={price}
-            daysToDeliver={days}
-            shippingFee={shippingFee}
-            onCreateOrder={() => onCreateOrder(checked)}
-          />
+          <OrderSummary {...summary.data} onCreateOrder={() => onCreateOrder(deliveryChecked)} />
         </div>
       )}
     </div>
@@ -189,12 +166,21 @@ export default MyCart
 
 interface OrderSummaryProps {
   price: number
+  vatFee: number
+  totalPrice: number
   daysToDeliver: number
   shippingFee: number
   onCreateOrder: () => void
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ price, daysToDeliver, shippingFee, onCreateOrder }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({
+  price,
+  vatFee,
+  totalPrice,
+  daysToDeliver,
+  shippingFee,
+  onCreateOrder,
+}) => {
   return (
     <div className="flex flex-col gap-2 bg-gray-100 max-w-xs w-full p-4">
       <div className="flex justify-between">
@@ -219,9 +205,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ price, daysToDeliver, shipp
 
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="tax_amount" />
+          <FormattedMessage id="vat_fee" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(price / 10)} ₮</span>
+        <span className="font-light">{Intl.NumberFormat().format(vatFee)} ₮</span>
       </div>
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
@@ -234,9 +220,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ price, daysToDeliver, shipp
       <hr className="border-t border-solid border-gray-300" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="order_subtotal" />
+          <FormattedMessage id="total" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(price * 1.1 + shippingFee)} ₮</span>
+        <span className="font-light">{Intl.NumberFormat().format(totalPrice)} ₮</span>
       </div>
       <CustomButton className="mt-4 btn-accept" onClick={onCreateOrder}>
         <FormattedMessage id="order_now" />

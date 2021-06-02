@@ -1023,6 +1023,15 @@ export const createCartItem = async (data: Object) => {
   return response
 }
 
+export const getShoppingCartSummary = async (data: { isShipping: boolean }) => {
+  const response = await BaseRequest({
+    url: 'shopping-cart/summary',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
 // #endregion [ShoppingCart]
 
 // #region [Order]
@@ -1075,5 +1084,4 @@ export const createOrder = async (data: Object) => {
   })
   return response
 }
-
 // #endregion [Order]

@@ -116,7 +116,7 @@
 
   "order_summary": "Order summary",
   "shipping_fee": "Shipping fee",
-  "tax_amount": "Tax amount",
+  "vat_fee": "Vat Fee",
   "order_subtotal": "Order subtotal",
   "order_now": "Order now",
   "delivery_date": "Delivery date",
@@ -126,6 +126,7 @@
   "order_id": "Order Id",
   "order_name": "Order Name",
   "status": "Status",
+  "total": "Total",
 
   "edit": "Edit",
   "add_to_cart": "Add to cart",
