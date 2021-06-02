@@ -486,6 +486,17 @@ export type CartItem = {
   voucherId: number | null
   giftCardId: number | null
 }
+
+export type Payment = {
+  id: number
+  type: string | null
+  paymentResponse: string | null
+  paymentAmount: number
+  paidAmount: number
+  createdAt: Date
+  updatedAt: Date
+}
+
 export type ShippingAddress = {
   id: number
   firstName: string

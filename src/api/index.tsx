@@ -1024,3 +1024,56 @@ export const createCartItem = async (data: Object) => {
 }
 
 // #endregion [ShoppingCart]
+
+// #region [Order]
+export const listOrder = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `order?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const deleteOrder = async (data: object) => {
+  const response = await BaseRequest({
+    url: `order`,
+    method: 'DELETE',
+    data,
+  })
+  return response
+}
+
+export const updateOrder = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `order/${id}`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
+export const getOrder = async (id: string) => {
+  const response = await BaseRequest({
+    url: `order/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const createOrder = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'order',
+    method: 'POST',
+    data,
+  })
+  return response
+}
+
+// #endregion [Order]

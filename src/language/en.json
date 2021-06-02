@@ -12,6 +12,7 @@
   "delete-confirm-text": "Are you sure to delete?",
   "true": "Yes",
   "no": "No",
+  "yes": "Yes",
 
   "create": "Create",
   "delete": "Delete",
@@ -113,6 +114,14 @@
   "my_cart": "My Cart",
   "my_info": "My Info",
 
+  "order_summary": "Order summary",
+  "shipping_fee": "Shipping fee",
+  "tax_amount": "Tax amount",
+  "order_subtotal": "Order subtotal",
+  "order_now": "Order now",
+  "delivery_date": "Delivery date",
+  "delivery": "Delivery",
+  "day": "Day",
   "date": "Date",
   "order_id": "Order Id",
   "order_name": "Order Name",
