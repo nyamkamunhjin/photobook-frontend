@@ -1,7 +1,7 @@
 import { useRequest } from 'ahooks'
-import { List, Popconfirm, InputNumber, Checkbox, Select, message } from 'antd'
+import { List, Popconfirm, InputNumber, Checkbox, Select, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import {
   createOrder,
   deleteCartItem,
@@ -10,19 +10,14 @@ import {
   listShoppingCart,
   updateCartItem,
 } from 'api'
-import { CartItem, RootInterface, ShippingAddress, User } from 'interfaces'
+import { CartItem, RootInterface, ShippingAddress } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
 import { SelectValue } from 'antd/lib/select'
 
-interface CreateOrder {
-  user: User['id']
-  address?: ShippingAddress['id']
-  cartItemIds: CartItem['id'][]
-}
-
 const MyCart: React.FC = () => {
+  const intl = useIntl()
   const history = useHistory()
   const [deliveryChecked, setDeliveryChecked] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
@@ -40,20 +35,19 @@ const MyCart: React.FC = () => {
 
   const onCreateOrder = (shipping: boolean) => {
     const { cartItems } = shoppingCart.data
-
+    const order: { isShipping: boolean; address?: number } = {
+      isShipping: false,
+    }
     if (user && cartItems) {
-      // const result = calculate(cartItems, shipping)
-      const order: CreateOrder = {
-        user: user?.id,
-        cartItemIds: shoppingCart.data.cartItems.map((each: CartItem) => each.id),
-      }
-
-      if (shipping) {
+      if (shipping && selectedAddress) {
         order.address = selectedAddress as number
+        order.isShipping = true
       }
 
       createOrder(order).then(() => {
-        message.success('success')
+        notification.success({
+          message: intl.formatMessage({ id: 'success!' }),
+        })
         history.push('/profile?tab=order_history')
       })
     }
@@ -152,7 +146,11 @@ const MyCart: React.FC = () => {
               <FormattedMessage id="delivery" />
             </Checkbox>
             {deliveryChecked && (
-              <Address shippingAddresses={shippingAddresses.data?.list} setSelected={setSelectedAddress} />
+              <Address
+                shippingAddresses={shippingAddresses.data?.list}
+                selected={selectedAddress}
+                setSelected={setSelectedAddress}
+              />
             )}
           </div>
           <OrderSummary {...summary.data} onCreateOrder={() => onCreateOrder(deliveryChecked)} />
@@ -170,7 +168,7 @@ interface OrderSummaryProps {
   totalPrice: number
   daysToDeliver: number
   shippingFee: number
-  onCreateOrder: () => void
+  onCreateOrder: (shipping: boolean) => void
 }
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
@@ -224,7 +222,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         </span>
         <span className="font-light">{Intl.NumberFormat().format(totalPrice)} ₮</span>
       </div>
-      <CustomButton className="mt-4 btn-accept" onClick={onCreateOrder}>
+      <CustomButton className="mt-4 btn-accept" onClick={() => onCreateOrder(shippingFee !== 0)}>
         <FormattedMessage id="order_now" />
       </CustomButton>
     </div>
@@ -233,13 +231,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
 interface ShippingAddressProps {
   shippingAddresses: ShippingAddress[]
+  selected: SelectValue
   setSelected: React.Dispatch<React.SetStateAction<SelectValue>>
 }
 
-const Address: React.FC<ShippingAddressProps> = ({ shippingAddresses, setSelected }) => {
+const Address: React.FC<ShippingAddressProps> = ({ shippingAddresses, selected, setSelected }) => {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <Select defaultValue={shippingAddresses[0]?.id} onChange={setSelected}>
+      <Select value={selected} onChange={setSelected}>
         {shippingAddresses?.map((item) => (
           <Select.Option key={item.id} value={item.id}>
             <div className="flex flex-col gap-2">

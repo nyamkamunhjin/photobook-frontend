@@ -56,8 +56,8 @@ const MyInfo: FC = () => {
     setUpdateLoading(true)
 
     if (values.password?.trim() === '') delete values.password
-
-    updateCurrentUser({ ...values, phoneNumber: values.phoneNumber?.toString() })
+    if (values.phoneNumber) values.phoneNumber = values.phoneNumber.toString()
+    updateCurrentUser(values)
       .then(() => {
         dispatch(loadUser())
         notification.success({ message: intl.formatMessage({ id: 'success' }) })
@@ -315,7 +315,7 @@ const MyInfo: FC = () => {
           </CustomButton>
           <List
             // itemLayout="vertical"
-            dataSource={shippingAddresses.data?.list}
+            dataSource={shippingAddresses.data?.list || []}
             loading={shippingAddresses.loading}
             pagination={{
               ...shippingAddresses.pagination,

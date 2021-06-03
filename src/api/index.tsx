@@ -64,7 +64,7 @@ export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
   axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*'
   // if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`
   const config: AxiosRequestConfig = {
-    baseURL: process.env.REACT_APP_BACK_URL,
+    baseURL: process.env.REACT_APP_BACK_URL as string,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -1042,7 +1042,7 @@ export const listOrder = async (params?: PaginatedParams[0], data?: Record<strin
   }
 
   const response = await BaseRequest({
-    url: `order?${query}`,
+    url: `order/user?${query}`,
     method: 'GET',
   })
 
@@ -1076,7 +1076,7 @@ export const getOrder = async (id: string) => {
   return response?.data
 }
 
-export const createOrder = async (data: Object) => {
+export const createOrder = async (data: { isShipping: boolean; address?: number }) => {
   const response = await BaseRequest({
     url: 'order',
     method: 'POST',
