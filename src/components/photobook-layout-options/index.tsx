@@ -5,6 +5,7 @@ import { BindingType, CoverMaterial, CoverMaterialColor, CoverType, PaperSize, T
 import 'react-alice-carousel/lib/alice-carousel.css'
 import { Button } from 'antd'
 import { Link } from 'react-router-dom'
+import CustomButton from '../custom-button'
 
 interface Props {
   template: Template
@@ -199,9 +200,9 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
       <Link
         to={`/editor?template=${template.id}&coverType=${selectedState.coverType?.id}&paperSize=${selectedState.paperSize?.id}&bindingType=${selectedState.bindingType?.id}&material=${selectedState.coverMaterial?.id}&color=${selectedState.coverMaterialColor?.id}`}
       >
-        <Button>
+        <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />
-        </Button>
+        </CustomButton>
       </Link>
     </div>
   )

@@ -114,6 +114,12 @@ export interface ImageCategory {
   parent?: ImageCategory
   images: Image[]
 }
+
+export interface PaginatedResult<T> {
+  list: T[]
+  offset: number
+  total: number
+}
 export interface BindingType {
   id: number
   name: string
@@ -467,6 +473,28 @@ export interface PaperMaterialPrice {
   id: number
   name: string
   price: number
+}
+
+export type CartItem = {
+  id: number
+  projectId: number
+  project: Project
+  quantity: number
+  shoppingCartId: number
+  templateDiscountId: number | null
+  userDiscountId: number | null
+  voucherId: number | null
+  giftCardId: number | null
+}
+
+export type Payment = {
+  id: number
+  type: string | null
+  paymentResponse: string | null
+  paymentAmount: number
+  paidAmount: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 export type ShippingAddress = {

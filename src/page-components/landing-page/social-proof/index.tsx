@@ -43,11 +43,11 @@ export default SocialProof
 
 const Review: FC<Review> = ({ author, text }) => {
   return (
-    <figure className="shadow-md p-8 w-full max-w-lg bg-white">
-      <blockquote className="text-lg font-semibold h-24 w-full">
+    <figure className="p-8 w-full max-w-lg bg-white">
+      <blockquote className="text-base font-semibold w-full" style={{ minWidth: '6rem' }}>
         <p>{text}</p>
       </blockquote>
-      <figcaption className="font-semibold ">
+      <figcaption className="font-semibold">
         <div className="text-blue-600">{author}</div>
       </figcaption>
     </figure>

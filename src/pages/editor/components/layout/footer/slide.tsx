@@ -20,7 +20,7 @@ interface Props {
   objects: SlideObject[]
   containers: Container[]
   height: number
-  changeSlideIndex: (index: number) => void
+  changeSlideIndex?: (index: number) => void
 }
 
 const Slides: React.FC<Props> = ({
@@ -55,7 +55,7 @@ const Slides: React.FC<Props> = ({
   return (
     <>
       <div
-        onClick={() => changeSlideIndex(index)}
+        onClick={() => changeSlideIndex && changeSlideIndex(index)}
         className={slideIndex === index ? 'Slide selected' : 'Slide'}
         ref={scaledContainerRef}
       >

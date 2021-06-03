@@ -12,6 +12,7 @@
   "delete-confirm-text": "Are you sure to delete?",
   "true": "Yes",
   "no": "No",
+  "yes": "Yes",
 
   "create": "Create",
   "delete": "Delete",
@@ -113,12 +114,23 @@
   "my_cart": "My Cart",
   "my_info": "My Info",
 
+  "order_summary": "Order summary",
+  "shipping_fee": "Shipping fee",
+  "vat_fee": "Vat Fee",
+  "order_subtotal": "Order subtotal",
+  "order_now": "Order now",
+  "delivery_date": "Delivery date",
+  "delivery": "Delivery",
+  "day": "Day",
   "date": "Date",
   "order_id": "Order Id",
   "order_name": "Order Name",
   "status": "Status",
+  "total": "Total",
 
   "edit": "Edit",
+  "add_to_cart": "Add to cart",
+  "order": "Order",
 
   "first_name": "First Name",
   "last_name": "Last Name",
@@ -154,6 +166,14 @@
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",
   "wrong_email": "Wrong Email",
+  "forgot_password": "Forgot Password",
+  "send_password_change_link": "Send password change link",
+  "sent_password_change_link": "Sent password change link",
+  "email_verification_sent": "Email verification sent",
+  "sign_in_success": "Sign in success",
+  "sign_in_error": "Sign in error",
+  "sign_up_success": "Sign up success",
+  "sign_up_error": "Sign up error",
 
   "type": "Type",
   "brightness": "brightness",
@@ -253,6 +273,6 @@
   "sort.z-a": "File name z-a",
   "sort.earlier": "Earlier",
   "sort.recently": "Recently",
-  "about_us": "About us",
-  "gift_card": "Gift card"
+  "about_us": "About Us",
+  "gift_card": "Gift Card"
 }

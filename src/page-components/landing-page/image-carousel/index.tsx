@@ -36,7 +36,7 @@ export default ImageCarousel
 const Content: FC<Combo> = ({ imageUrl, text }) => (
   <div className="w-full flex justify-center items-center bg-yellow-100 h-96">
     <div
-      className="w-full h-full grid place-items-center bg-center"
+      className="w-full h-full grid place-items-center bg-center bg-cover"
       style={{
         backgroundImage: `url(${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl})`,
       }}

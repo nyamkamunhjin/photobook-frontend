@@ -64,7 +64,7 @@ export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
   axios.defaults.headers.common['Access-Control-Allow-Headers'] = '*'
   // if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`
   const config: AxiosRequestConfig = {
-    baseURL: process.env.REACT_APP_BACK_URL,
+    baseURL: process.env.REACT_APP_BACK_URL as string,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -911,7 +911,8 @@ export const listLandingPageHero = async () => {
 }
 
 // #endregion [LandingPageHero]
-// #region [LandingPageHero]
+
+// #region [LandingPageReview]
 export const listLandingPageReview = async () => {
   const response = await BaseRequest({
     url: `landing/review`,
@@ -920,8 +921,9 @@ export const listLandingPageReview = async () => {
   return response?.data
 }
 
-// #endregion [LandingPageHero]
-// #region [LandingPageHero]
+// #endregion [LandingPageReview]
+
+// #region [LandingPageImageCarousel]
 export const listLandingPageImageCarousel = async () => {
   const response = await BaseRequest({
     url: `landing/image-carousel`,
@@ -930,8 +932,9 @@ export const listLandingPageImageCarousel = async () => {
   return response?.data
 }
 
-// #endregion [LandingPageHero]
-// #region [LandingPageHero]
+// #endregion [LandingPageImageCarousel]
+
+// #region [LandingPageShowCase]
 export const listLandingPageShowCase = async () => {
   const response = await BaseRequest({
     url: `landing/show-case`,
@@ -940,7 +943,8 @@ export const listLandingPageShowCase = async () => {
   return response?.data
 }
 
-// #endregion [LandingPageHero]
+// #endregion [LandingPageShowCase]
+
 // #region [ProductAd]
 export const listProductAd = async (templateType: string) => {
   const response = await BaseRequest({
@@ -955,6 +959,7 @@ export const listProductAd = async (templateType: string) => {
 }
 
 // #endregion [ProductAd]
+
 // #region [HeaderAd]
 export const listHeaderAd = async (templateType: string) => {
   const response = await BaseRequest({
@@ -968,3 +973,115 @@ export const listHeaderAd = async (templateType: string) => {
   return response?.data
 }
 // #endregion [HeaderAd]
+
+// #region [ShoppingCart]
+export const listShoppingCart = async () => {
+  const response = await BaseRequest({
+    url: `shopping-cart`,
+    method: 'GET',
+  })
+
+  response?.data.cartItems.forEach(async (record: any) => {
+    record.project.tempUrl = await Storage.get(record.project.imageUrl, { expires: 60 * 60 * 24 * 7 })
+  })
+
+  return response?.data
+}
+
+export const deleteCartItem = async (data: object) => {
+  const response = await BaseRequest({
+    url: `cart-item`,
+    method: 'DELETE',
+    data,
+  })
+  return response
+}
+
+export const updateCartItem = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `cart-item/${id}`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
+export const getCartItem = async (id: string) => {
+  const response = await BaseRequest({
+    url: `cart-item/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const createCartItem = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'cart-item',
+    method: 'POST',
+    data,
+  })
+  return response
+}
+
+export const getShoppingCartSummary = async (data: { isShipping: boolean }) => {
+  const response = await BaseRequest({
+    url: 'shopping-cart/summary',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+// #endregion [ShoppingCart]
+
+// #region [Order]
+export const listOrder = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `order/user?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const deleteOrder = async (data: object) => {
+  const response = await BaseRequest({
+    url: `order`,
+    method: 'DELETE',
+    data,
+  })
+  return response
+}
+
+export const updateOrder = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `order/${id}`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
+export const getOrder = async (id: string) => {
+  const response = await BaseRequest({
+    url: `order/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const createOrder = async (data: { isShipping: boolean; address?: number }) => {
+  const response = await BaseRequest({
+    url: 'order',
+    method: 'POST',
+    data,
+  })
+  return response
+}
+// #endregion [Order]

@@ -6,7 +6,6 @@ import {
   FeatureType,
   FullLayout,
   HistoryProps,
-  Image,
   LayoutObject,
   LayoutsInterface,
   ObjectType,
@@ -33,56 +32,58 @@ import {
 interface Props {
   setTextObjectIndex: (index: number) => void
   setObjectIndex: (index: number) => void
-  scale: number
-  overflow: string
   setOverflow: (overflow: string) => void
-  _isTextEditing: boolean
   setIsTextEditing: (text: boolean) => void
-  _groupObjects: any
   setGroupObjects?: (object: any) => void
   setGroupStyles?: (object: any) => void
-  scaledContainerRef: any
-  slideContainerRef?: any
   setObjectType: (object: ObjectType) => void
-  _objectType?: ObjectType
-  groupRef: any
-  canvasRef: any
-
-  slideHeight: number
-  slideWidth: number
-  selectionRef: any
-  _groupStyles: any
   updateGroupContainer: (props: { containers: Container[] }) => void
-  slideViewRef: any
   updateObject: (props: { object: PObject }) => void
   loadBackgrounds?: (backgrounds: Object[]) => void
   updateHistory: (historyType: string, props: HistoryProps) => void
   addLayout?: (props: { objects: Object[]; layout: FullLayout }) => void
   addObject: (props: { object: Object }) => void
   removeObject: (props: { object: Object; container: Object }) => void
-  _object?: any
+  setObject: (object: any) => void
+  scaledContainerRef: any
+  slideContainerRef?: any
+  groupRef: any
+  canvasRef: any
+  selectionRef: any
+  slideViewRef: any
+  slideHeight: number
+  slideWidth: number
+  overflow: string
+  scale: number
   magnetX?: any
   magnetY?: any
   double?: boolean
-  setObject: (object: any) => void
+  _objectType?: ObjectType
+  _border?: number
+  _treshhold?: number
+  _isTextEditing: boolean
+  _groupObjects: any
+  _object?: any
+  _groupStyles: any
 }
 export default class Editor {
   _threshhold = 30
+  _border = 0
   _rotaterDistance = 30
   _rotateAngle = 0
   _isMouseDown = false
   _isCtrlDown = false
   _isShiftDown = false
-  objects?: PObject[]
   _groupStyles: any
-  groupRef: any
+  _objectType?: ObjectType
   _object: any
+  objects?: PObject[]
+  groupRef: any
   canvasRef: any
   selectionRef: any
   slideViewRef: any
   slideContainerRef?: any
   scaledContainerRef: any
-  _objectType?: ObjectType
   transformers: any = {
     n: 't',
     s: 'b',
@@ -149,6 +150,12 @@ export default class Editor {
     }
     if (props._object) {
       this._object = props._object
+    }
+    if (props._treshhold) {
+      this._threshhold = props._treshhold
+    }
+    if (props._border) {
+      this._border = props._border
     }
     this.setOverflow = props.setOverflow
     this.removeObject = props.removeObject
@@ -490,6 +497,219 @@ export default class Editor {
       }
     }
   }
+  public changeLayoutSingle = (
+    objects: Container[],
+    layout: FullLayout,
+    layouts: LayoutsInterface[],
+    align: string,
+    type: string
+  ) => {
+    if (type === 'less') {
+      const leftObjects = objects.filter((o: any) => o.style.left < this.slideWidth)
+      const rightObjects = objects.filter((o: any) => !leftObjects.includes(o))
+
+      let { count, index } = layout.left
+      if (count === -1) count = 0
+      index = 0
+      count -= 1
+      const [nextLayout] = layouts.filter((l: any) => l.count === count)
+
+      const nextObjects = nextLayout.layouts[index]
+
+      const layoutObjects: any = []
+
+      nextObjects.objects?.forEach((o: any, i: number) => {
+        const leftObject: any = leftObjects[i]
+
+        const style = {
+          top: (this.slideHeight * o.top) / 100,
+          left: (this.slideWidth * o.left) / 100,
+          width: (this.slideWidth * o.width) / 100,
+          height: (this.slideHeight * o.height) / 100,
+          rotateAngle: 0,
+          transform: '',
+          zIndex: 100 + i + '',
+        }
+
+        if (leftObject) {
+          layoutObjects.push({
+            ...leftObject,
+            style,
+          })
+        } else {
+          layoutObjects.push(layoutPositionsToImage(style))
+        }
+      })
+
+      this.addLayout({
+        objects: [...rightObjects, ...layoutObjects],
+        layout: {
+          ...layout,
+          left: {
+            count,
+            index,
+          },
+        },
+      })
+      this.updateHistory(ADD_LAYOUT, {
+        objects,
+        layout,
+      })
+    } else if (type === 'more') {
+      const leftObjects = objects.filter((o: any) => o.style.left < this.slideWidth)
+      const rightObjects = objects.filter((o: any) => !leftObjects.includes(o))
+
+      let { count, index } = layout.left
+      if (count === -1) count = 0
+      index = 0
+      count += 1
+      const [nextLayout] = layouts.filter((l: any) => l.count === count)
+
+      const nextObjects = nextLayout.layouts[index]
+
+      const layoutObjects: any = []
+
+      nextObjects.objects?.forEach((o: any, i: number) => {
+        const leftObject: any = leftObjects[i]
+
+        const style = {
+          top: (this.slideHeight * o.top) / 100,
+          left: (this.slideWidth * o.left) / 100,
+          width: (this.slideWidth * o.width) / 100,
+          height: (this.slideHeight * o.height) / 100,
+          rotateAngle: 0,
+          transform: '',
+          zIndex: 100 + i + '',
+        }
+
+        if (leftObject) {
+          layoutObjects.push({
+            ...leftObject,
+            style,
+          })
+        } else {
+          layoutObjects.push(layoutPositionsToImage(style))
+        }
+      })
+
+      this.addLayout({
+        objects: [...rightObjects, ...layoutObjects],
+        layout: {
+          ...layout,
+          left: {
+            count,
+            index,
+          },
+        },
+      })
+      this.updateHistory(ADD_LAYOUT, {
+        objects,
+        layout,
+      })
+    } else if (type === 'shuffle') {
+      if (align === 'left') {
+        const leftObjects = objects.filter((o: any) => o.style.left < this.slideWidth / 2)
+        const rightObjects = objects.filter((o: any) => !leftObjects.includes(o))
+
+        const { count } = layout.left
+        let { index } = layout.left
+        index += 1
+
+        const [nextLayout] = layouts.filter((l: any) => l.count === count)
+        if (nextLayout.layouts.length === index) index = 0
+        const nextObjects = nextLayout.layouts[index]
+
+        const layoutObjects: any = []
+        nextObjects.objects?.forEach((o: any, i: number) => {
+          const leftObject: any = leftObjects[i]
+
+          const style = {
+            top: (this.slideHeight * o.top) / 100,
+            left: ((this.slideWidth / 2) * o.left) / 100,
+            width: ((this.slideWidth / 2) * o.width) / 100,
+            height: (this.slideHeight * o.height) / 100,
+            rotateAngle: 0,
+            transform: '',
+            zIndex: 100 + i + '',
+          }
+
+          if (leftObject) {
+            layoutObjects.push({
+              ...leftObject,
+              style,
+            })
+          } else {
+            layoutObjects.push(layoutPositionsToImage(style))
+          }
+        })
+
+        this.addLayout({
+          objects: [...rightObjects, ...layoutObjects],
+          layout: {
+            ...layout,
+            left: {
+              count,
+              index,
+            },
+          },
+        })
+        this.updateHistory(ADD_LAYOUT, {
+          objects,
+          layout,
+        })
+      } else {
+        const rightObjects = objects.filter((o: any) => o.style.left >= this.slideWidth / 2)
+        const leftObjects = objects.filter((o: any) => !rightObjects.includes(o))
+
+        const { count } = layout.right
+        let { index } = layout.right
+        index += 1
+
+        const [nextLayout] = layouts.filter((l: any) => l.count === count)
+        if (nextLayout.layouts.length === index) index = 0
+        const nextObjects = nextLayout.layouts[index]
+
+        const layoutObjects: any = []
+        nextObjects.objects?.forEach((o: any, i: number) => {
+          const rightObject: any = rightObjects[i]
+
+          const style = {
+            top: (this.slideHeight * o.top) / 100,
+            left: this.slideWidth / 2 + ((this.slideWidth / 2) * o.left) / 100,
+            width: ((this.slideWidth / 2) * o.width) / 100,
+            height: (this.slideHeight * o.height) / 100,
+            rotateAngle: 0,
+            transform: '',
+            zIndex: 100 + i + '',
+          }
+
+          if (rightObject) {
+            layoutObjects.push({
+              ...rightObject,
+              style,
+            })
+          } else {
+            layoutObjects.push(layoutPositionsToImage(style))
+          }
+        })
+
+        this.addLayout({
+          objects: [...leftObjects, ...layoutObjects],
+          layout: {
+            ...layout,
+            right: {
+              count,
+              index,
+            },
+          },
+        })
+        this.updateHistory(ADD_LAYOUT, {
+          objects,
+          layout,
+        })
+      }
+    }
+  }
   public layoutDragOver = (e: any) => {
     if (e.target.classList.contains('layout-drop')) {
       e.target.style.border = '3px solid #333'
@@ -580,7 +800,10 @@ export default class Editor {
         },
       })
       this.updateHistory(ADD_LAYOUT, { objects })
-    } else if (layoutDrop.classList.contains('layout-drop-middle')) {
+    } else if (
+      layoutDrop.classList.contains('layout-drop-middle') ||
+      layoutDrop.classList.contains('layout-drop-full')
+    ) {
       const layoutData = JSON.parse(e.dataTransfer.getData('layout'))
       const { count, index } = layoutData
       const layoutObjects: any = []
@@ -987,105 +1210,192 @@ export default class Editor {
       this.magnetY.style.display = 'none'
     }
 
-    let size
+    let size = 0
     if (elementX.size <= this._threshhold) {
       switch (elementX.key) {
         case 'tt':
-          size = ParseNumber(this.objects[elementX.index].style.top)
+          if (elementX.index !== -1) {
+            size = ParseNumber(this.objects[elementX.index].style.top)
+          } else {
+            size = -this._border
+          }
+          this.magnetX.style.top = `${size * this.scale}px`
+          if (move) {
+            object.style.top = `${size}px`
+          }
+          break
+        case 'ty':
+          if (elementX.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementX.index].style.top) +
+              ParseNumber(this.objects[elementX.index].style.height) / 2
+          } else {
+            size = ParseNumber(this.slideHeight) / 2
+          }
           this.magnetX.style.top = `${size * this.scale}px`
           if (move) {
             object.style.top = `${size}px`
           }
           break
         case 'bb':
-          size =
-            ParseNumber(this.objects[elementX.index].style.top) + ParseNumber(this.objects[elementX.index].style.height)
+          if (elementX.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementX.index].style.top) +
+              ParseNumber(this.objects[elementX.index].style.height)
+          } else {
+            size = ParseNumber(this.slideHeight)
+          }
           this.magnetX.style.top = `${size * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
           }
-          this.renderLine(true)
+          break
+        case 'by':
+          if (elementX.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementX.index].style.top) +
+              ParseNumber(this.objects[elementX.index].style.height) / 2
+          } else {
+            size = ParseNumber(this.slideHeight) / 2
+          }
+          this.magnetX.style.top = `${size * this.scale}px`
+          if (this._index !== undefined && move) {
+            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
+          }
           break
         case 'tb':
-          size =
-            ParseNumber(this.objects[elementX.index].style.top) + ParseNumber(this.objects[elementX.index].style.height)
+          if (elementX.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementX.index].style.top) +
+              ParseNumber(this.objects[elementX.index].style.height)
+          } else {
+            size = ParseNumber(this.slideHeight / 2)
+          }
           this.magnetX.style.top = `${size * this.scale}px`
           if (move) {
             object.style.top = `${size}px`
           }
-          this.renderLine(true)
           break
         case 'bt':
-          size = ParseNumber(this.objects[elementX.index].style.top)
+          if (elementX.index !== -1) {
+            size = ParseNumber(this.objects[elementX.index].style.top)
+          } else {
+            size = ParseNumber(this.slideHeight / 2)
+          }
           this.magnetX.style.top = `${size * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
           }
-          this.renderLine(true)
           break
-        case 'xx':
-          size =
-            ParseNumber(this.objects[elementX.index].style.top) +
-            ParseNumber(this.objects[elementX.index].style.height) / 2
+        case 'yy':
+          if (elementX.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementX.index].style.top) +
+              ParseNumber(this.objects[elementX.index].style.height) / 2
+          } else {
+            size = ParseNumber(this.slideHeight / 2)
+          }
           this.magnetX.style.top = `${size * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height) / 2}px`
           }
-          this.renderLine(true)
           break
         default:
           break
       }
+      this.renderLine(true)
     }
     if (elementY.size <= this._threshhold) {
       switch (elementY.key) {
         case 'rr':
-          size =
-            ParseNumber(this.objects[elementY.index].style.left) + ParseNumber(this.objects[elementY.index].style.width)
+          if (elementY.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementY.index].style.left) +
+              ParseNumber(this.objects[elementY.index].style.width)
+          } else {
+            size = ParseNumber(this.slideWidth) + this._border
+          }
           this.magnetY.style.left = `${size * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
           }
-          this.renderLine(false)
+          break
+        case 'rx':
+          if (elementY.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementY.index].style.left) +
+              ParseNumber(this.objects[elementY.index].style.width) / 2
+          } else {
+            size = ParseNumber(this.slideWidth) / 2 + this._border
+          }
+          this.magnetY.style.left = `${size * this.scale}px`
+          if (this._index !== undefined && move) {
+            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
+          }
           break
         case 'll':
-          size = ParseNumber(this.objects[elementY.index].style.left)
+          if (elementY.index !== -1) {
+            size = ParseNumber(this.objects[elementY.index].style.left)
+          } else {
+            size = -this._border
+          }
           this.magnetY.style.left = `${size * this.scale}px`
           if (move) {
             object.style.left = `${size}px`
           }
-          this.renderLine(false)
+          break
+        case 'lx':
+          if (elementY.index !== -1) {
+            size = ParseNumber(this.objects[elementY.index].style.left) / 2
+          } else {
+            size = ParseNumber(this.slideWidth / 2)
+          }
+          this.magnetY.style.left = `${size * this.scale}px`
+          if (move) {
+            object.style.left = `${size}px`
+          }
           break
         case 'rl':
-          size = ParseNumber(this.objects[elementY.index].style.left)
+          if (elementY.index !== -1) {
+            size = ParseNumber(this.objects[elementY.index].style.left)
+          } else {
+            size = ParseNumber(this.slideHeight / 2)
+          }
           this.magnetY.style.left = `${size * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
           }
-          this.renderLine(false)
           break
         case 'lr':
-          size =
-            ParseNumber(this.objects[elementY.index].style.left) + ParseNumber(this.objects[elementY.index].style.width)
+          if (elementY.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementY.index].style.left) +
+              ParseNumber(this.objects[elementY.index].style.width)
+          } else {
+            size = ParseNumber(this.slideHeight / 2)
+          }
           this.magnetY.style.left = `${size * this.scale}px`
           if (move) {
             object.style.left = `${size}px`
           }
-          this.renderLine(false)
           break
-        case 'yy':
-          size =
-            ParseNumber(this.objects[elementY.index].style.top) +
-            ParseNumber(this.objects[elementY.index].style.height) / 2
-          this.magnetX.style.top = `${size * this.scale}px`
-          if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height) / 2}px`
+        case 'xx':
+          if (elementY.index !== -1) {
+            size =
+              ParseNumber(this.objects[elementY.index].style.left) +
+              ParseNumber(this.objects[elementY.index].style.width) / 2
+          } else {
+            size = ParseNumber(this.slideHeight / 2)
           }
-          this.renderLine(true)
+          this.magnetY.style.left = `${size * this.scale}px`
+          if (this._index !== undefined && move) {
+            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width) / 2}px`
+          }
           break
         default:
           break
       }
+      this.renderLine(false)
     }
 
     this.moveResizers({ object, objectType })
@@ -1109,6 +1419,18 @@ export default class Editor {
         )
         return asn
       }, [])
+      minSizes.push(
+        diffRect(
+          element,
+          {
+            l: ParseNumber(this._border),
+            h: ParseNumber(this.slideHeight) - this._border,
+            w: this.double ? ParseNumber(this.slideWidth / 2 - 30) : ParseNumber(this.slideWidth) - this._border,
+            t: this._border,
+          },
+          -1
+        )
+      )
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
@@ -1135,25 +1457,25 @@ export default class Editor {
         )
         return asn
       }, [])
-      // minSizes.push(
-      //   diffRect(
-      //     element,
-      //     {
-      //       l: ParseNumber(0),
-      //       h: ParseNumber(this.slideHeight),
-      //       w: ParseNumber(this.slideWidth / 2 - 30),
-      //       t: 0,
-      //     },
-      //     -1
-      //   )
-      // )
+      minSizes.push(
+        diffRect(
+          element,
+          {
+            l: ParseNumber(this._border),
+            h: ParseNumber(this.slideHeight) - this._border,
+            w: this.double ? ParseNumber(this.slideWidth / 2 - 30) : ParseNumber(this.slideWidth) - this._border,
+            t: this._border,
+          },
+          -1
+        )
+      )
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
         .value()
+      console.log('aaaavaaaa', x, y)
       this.renderLines(object, objectType, true, x, y)
     }
-    // console.log(this.objects)
   }, 500)
   public getObjectType = (classList: any): ObjectType => {
     let objectType: ObjectType = ''
@@ -1227,7 +1549,9 @@ export default class Editor {
   public createImage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     if (e.dataTransfer) {
-      const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
+      const tempUrl = e.dataTransfer.getData('tempUrl')
+      const imageUrl: any = e.dataTransfer.getData('imageUrl')
+
       const { x, y } = this.canvasRef.current.getBoundingClientRect()
       const x1 = e.clientX - x
       const y1 = e.clientY - y
@@ -1241,22 +1565,21 @@ export default class Editor {
         transform: '',
         zIndex: 100 + objects.length + '',
       }
-      images.forEach((image) => {
-        this.addObject({
-          object: {
-            id: uuidv4(),
-            className: 'object',
-            style,
-            props: {
-              imageUrl: image.imageUrl,
-              tempUrl: image.tempUrl,
-              className: 'image-placeholder',
-              imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-              style: { transform: 'scaleX(1)' },
-              placeholderStyle: { opacity: 1 },
-            },
+
+      this.addObject({
+        object: {
+          id: uuidv4(),
+          className: 'object',
+          style,
+          props: {
+            imageUrl,
+            tempUrl,
+            className: 'image-placeholder',
+            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+            style: { transform: 'scaleX(1)' },
+            placeholderStyle: { opacity: 1 },
           },
-        })
+        },
       })
     } else {
       const style = {
@@ -1339,13 +1662,13 @@ export default class Editor {
       } else {
         e.target.style.border = 'none'
         const index = objects.findIndex((o: any) => o.id === e.target.id)
-        const image = JSON.parse(e.dataTransfer.getData('images')) as Image[]
+
         const newObject = {
           ...objects[index],
           props: {
             ...objects[index].props,
-            imageUrl: image[0].imageUrl,
-            tempUrl: image[0].tempUrl,
+            imageUrl: e.dataTransfer.getData('imageUrl'),
+            tempUrl: e.dataTransfer.getData('tempUrl'),
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
             placeholderStyle: { opacity: '1' },
           },
