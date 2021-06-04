@@ -64,6 +64,7 @@ const MyCart: React.FC = () => {
     summary.run({
       isShipping: deliveryChecked,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shoppingCart.data, deliveryChecked, selectedAddress])
 
   return (
@@ -122,7 +123,7 @@ const MyCart: React.FC = () => {
                   <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
                 </span>
               </div>
-              <div className="flex flex-col">
+              <div className="ml-auto flex flex-col text-right">
                 {/* <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
                 <span className="text-gray-500">{item.project.paperSize?.size}</span>
                 <span className="text-gray-500">{item.project.bindingType?.name}</span>
