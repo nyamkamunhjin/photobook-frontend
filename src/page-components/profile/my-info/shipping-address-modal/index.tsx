@@ -6,7 +6,7 @@ import { createShippingAddress, getShippingAddress, updateShippingAddress } from
 import { useRequest } from 'ahooks'
 
 interface Props {
-  id?: number
+  id?: number | undefined
   setId: React.Dispatch<React.SetStateAction<number | undefined>>
   type?: 'edit' | 'add'
   setType: React.Dispatch<React.SetStateAction<'edit' | 'add' | undefined>>
@@ -21,7 +21,7 @@ const ShippingAddressModal: FC<Props> = ({ id, setId, type, setType }) => {
   })
 
   useEffect(() => {
-    if (id) {
+    if (typeof id === 'number') {
       shippingAddress.run(id)
     }
   }, [id, type])
@@ -69,7 +69,7 @@ const ShippingAddressModal: FC<Props> = ({ id, setId, type, setType }) => {
             <FormattedMessage id="cancel" />
           </CustomButton>
           <CustomButton className="btn-accept" type="submit" form="shippingForm">
-            <FormattedMessage id={type} />
+            <FormattedMessage id={type || ''} />
           </CustomButton>
         </div>,
       ]}
