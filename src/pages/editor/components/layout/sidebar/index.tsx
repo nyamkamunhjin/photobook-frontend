@@ -48,6 +48,7 @@ interface Props {
   image: ImageInterface
   currentProject: Project
   layoutGroups: any
+  hasFrames?: boolean
   hasImage?: boolean
   hasLayout?: boolean
 }
@@ -55,6 +56,7 @@ interface Props {
 const SideBarPanel: React.FC<Props> = ({
   hasImage,
   hasLayout = true,
+  hasFrames = true,
   addImages,
   uploadImages,
   linkImages,
@@ -271,7 +273,11 @@ const SideBarPanel: React.FC<Props> = ({
               <FormattedMessage id="masks" />
             </div>
           </div>
-          <div onClick={() => switchTab('frames')} className={'HeaderItem ' + isActive('frames') + isDisabled()}>
+          <div
+            hidden={!hasFrames}
+            onClick={() => switchTab('frames')}
+            className={'HeaderItem ' + isActive('frames') + isDisabled()}
+          >
             <BorderOuterOutlined style={{ fontSize: 24 }} />
             <div className="title">
               <FormattedMessage id="frames" />

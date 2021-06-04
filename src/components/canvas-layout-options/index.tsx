@@ -1,7 +1,9 @@
 import React, { FC, useEffect } from 'react'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { PaperMaterial, PaperSize, Template } from 'interfaces'
 import { Select } from 'antd'
+import { Link } from 'react-router-dom'
+import { CustomButton } from 'components'
 
 interface Props {
   template: Template
@@ -54,7 +56,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           >
             {paperMaterials.map((each) => (
               <Select.Option key={each.id} value={each.id}>
-                <span className="font-semibold text-gray-700 text-base">{each.paperType}</span>
+                <span className="font-semibold text-gray-700 text-base">{`${each.name} - ${each.paperType}`}</span>
               </Select.Option>
             ))}
           </Select>
@@ -88,6 +90,11 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           ))}
         </div>
       </div>
+      <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+        <CustomButton className="btn-primary">
+          <FormattedMessage id="start_book" />
+        </CustomButton>
+      </Link>
     </div>
   )
 }

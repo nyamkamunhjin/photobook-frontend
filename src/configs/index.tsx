@@ -22,3 +22,5 @@ export const VerticalLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 }
+
+export const SinglePageEditor = 'canvas,frame,photoprint'

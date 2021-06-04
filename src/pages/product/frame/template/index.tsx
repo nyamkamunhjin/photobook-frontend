@@ -55,7 +55,11 @@ const ProductTemplate: FC = () => {
                   allowFullScreen
                 />
               ) : (
-                <img className="w-full object-contain" src={selectedShowCase?.url} alt="showcase" />
+                <img
+                  className="w-full object-contain"
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${selectedShowCase?.url}`}
+                  alt="showcase"
+                />
               )}
             </div>
             <div className="flex gap-4">

@@ -35,7 +35,7 @@ const ProductTemplate: FC = () => {
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'canvas' }))
 
   const paperMaterials = useRequest(() => listPaperMaterial())
-
+  console.log(selectedShowCase)
   return (
     <WidthLimiter className="flex flex-col sm:flex-row min-h-screen">
       {template.loading ? (
@@ -55,7 +55,12 @@ const ProductTemplate: FC = () => {
                   allowFullScreen
                 />
               ) : (
-                <img className="w-full object-contain" src={selectedShowCase?.url} alt="showcase" />
+                <img
+                  draggable={false}
+                  className="w-full object-contain"
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${selectedShowCase?.url}`}
+                  alt="showcase"
+                />
               )}
             </div>
             <div className="flex gap-4">
@@ -71,6 +76,7 @@ const ProductTemplate: FC = () => {
                   }}
                 >
                   <img
+                    draggable={false}
                     className="w-full"
                     src={`${process.env.REACT_APP_PUBLIC_IMAGE}${(template.data as Template).imageUrl}`}
                     alt="template"
@@ -89,6 +95,7 @@ const ProductTemplate: FC = () => {
                   }}
                 >
                   <img
+                    draggable={false}
                     className="w-full"
                     src={`${process.env.REACT_APP_PUBLIC_IMAGE}${selectedState.paperMaterial.imageUrl}`}
                     alt="template"

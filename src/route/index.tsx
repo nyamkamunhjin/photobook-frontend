@@ -87,6 +87,16 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor/canvas',
+    component: LoadableLoader(() => import('pages/editor/canvas')),
+    exact: true,
+  },
+  {
+    path: '/editor/frame',
+    component: LoadableLoader(() => import('pages/editor/frame')),
+    exact: true,
+  },
+  {
     path: '/redirect',
     component: LoadableLoader(() => import('pages/redirect')),
     exact: true,
