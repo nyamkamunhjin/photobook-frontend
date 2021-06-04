@@ -35,6 +35,13 @@ const OrderHistory: React.FC = () => {
       render: (text) => <span>{text} ₮</span>,
     },
     {
+      title: () => <FormattedMessage id="shipping" />,
+      dataIndex: 'address',
+      key: 'address',
+      align: 'center',
+      render: (value) => value || <FormattedMessage id="no" />,
+    },
+    {
       title: () => <FormattedMessage id="status" />,
       dataIndex: 'status',
       key: 'status',
@@ -56,7 +63,7 @@ const OrderHistory: React.FC = () => {
         }}
         {...tableProps}
         dataSource={tableProps.dataSource.map((each) => {
-          return { ...each, ...each.payment, key: each.id }
+          return { ...each, ...each.payment, ...each.address, key: each.id }
         })}
         loading={loading}
       />
