@@ -114,6 +114,11 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor/print',
+    component: LoadableLoader(() => import('pages/editor/print')),
+    exact: true,
+  },
+  {
     path: '/redirect',
     component: LoadableLoader(() => import('pages/redirect')),
     exact: true,

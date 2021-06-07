@@ -10,49 +10,6 @@ import {
   listLandingPageShowCase,
 } from '../../api'
 
-const tempHeroData = [
-  {
-    imageUrl: 'https://media1.pbwwcdn.net/pages/imagewrap-book/imagewrap_banner.jpg',
-    text: 'CREATE CUSTOM WALL ART',
-  },
-  {
-    imageUrl:
-      'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/133758452/original/f9d2136ee29d58d55d35f2184569edeceabaa05b/do-wedding-album-layout-design.jpg',
-    text: 'CAROUSEL',
-  },
-  {
-    imageUrl:
-      'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/133758452/original/f9d2136ee29d58d55d35f2184569edeceabaa05b/do-wedding-album-layout-design.jpg',
-    text: 'CAROUSEL',
-  },
-  {
-    imageUrl:
-      'https://prd-static-default-2.sf-cdn.com/resources/images/store/2020/global/2000x852/xWF-168120_Site-Update_Linen_Photo_Books_2000x852.jpg.pagespeed.ic.ndblXZXI6l.jpg',
-    text: 'CREATE ',
-  },
-]
-
-const tempDatas = [
-  {
-    author: 'Yesulen G.',
-    text: `“CSS is the only framework that I've seen scale
-  on large teams. It’s easy to customize, adapts to any design,
-  and the build size is tiny.”`,
-  },
-  {
-    author: 'Yesulen G.',
-    text: `“CSS is the only framework that I've seen scale
-  on large teams. It’s easy to customize, adapts to any design,
-  and the build size is tiny.”`,
-  },
-  {
-    author: 'Yesulen G.',
-    text: `“CSS is the only framework that I've seen scale
-  on large teams. It’s easy to customize, adapts to any design,
-  and the build size is tiny.”`,
-  },
-]
-
 const datas = [
   {
     icon: 'ICON',

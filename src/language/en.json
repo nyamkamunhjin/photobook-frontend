@@ -285,5 +285,7 @@
   "gift_card": "Gift Card",
   "framedprint": "Framed Print",
   "photoprint": "Photo Print",
-  "paper_material_type": "Paper material type"
+  "paper_material_type": "Paper material type",
+  "duplicate": "Duplicate",
+  "remove": "Remove"
 }

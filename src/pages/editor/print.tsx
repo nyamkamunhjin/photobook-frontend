@@ -43,7 +43,7 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import { Header, BackgroundSingleImages, SideButtons, SideBarPanel, Toolbar } from './components/layout'
+import { Header, BackgroundSingleImages, SideButtons, PrintPanel, Toolbar } from './components/layout'
 import { Editor, renderBackground, renderObject } from './components/utils'
 import './components/styles/editor.scss'
 
@@ -492,8 +492,7 @@ const BookEditor: React.FC<Props> = ({
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
       <div className="EditorOnePageView">
-        <SideBarPanel layoutGroups={layouts} hasFrames={false} hasLayout={false} />
-        <div className="EditorPanel">{renderEditor}</div>
+        <PrintPanel />
       </div>
     </div>
   )
