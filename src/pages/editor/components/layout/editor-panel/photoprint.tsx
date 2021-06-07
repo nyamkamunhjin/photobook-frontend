@@ -6,7 +6,7 @@ import { Image, UploadablePicture } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
 import Spinner from 'components/spinner'
 import { filterArray } from 'utils'
-import UploadPhotosGroup from '../../upload-modal/upload-photos-group'
+import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 
 interface Props {
   loading: boolean

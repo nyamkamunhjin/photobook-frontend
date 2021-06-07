@@ -2,9 +2,14 @@
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Spin } from 'antd'
 import { getGoogleImages, getGoogleProfile } from 'api'
-import { GooglePicture, GoogleProfile, UploadablePicture } from 'interfaces'
+import { GooglePicture, GoogleProfile, GoogleResponse, UploadablePicture } from 'interfaces'
 import React, { useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
+
+interface Result {
+  list: GooglePicture[]
+  nextId?: string
+}
 
 interface Props {
   name: 'google'
@@ -16,8 +21,10 @@ const Google: React.FC<Props> = ({ name, onCancel, setSelectedImages }) => {
   const profile = useRequest<GoogleProfile>((e) => e && e(), {
     manual: true,
   })
-  const images = useRequest<GooglePicture[]>((e, album) => e(album), {
+  const images = useRequest((d: Result | undefined) => getGoogleImages(d?.nextId), {
     manual: true,
+    loadMore: true,
+    cacheKey: 'id',
   })
 
   const removeGoogle = (_event: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -31,7 +38,7 @@ const Google: React.FC<Props> = ({ name, onCancel, setSelectedImages }) => {
       if (name === 'google') {
         if (storage?.getItem('googleAccessToken')) {
           profile.run(getGoogleProfile)
-          images.run(getGoogleImages, '')
+          images.run(undefined)
         }
       }
     }
@@ -91,7 +98,7 @@ const Google: React.FC<Props> = ({ name, onCancel, setSelectedImages }) => {
             <Checkbox.Group
               onChange={(list) => {
                 setSelectedImages(
-                  (images.data as GooglePicture[])
+                  (images.data?.list as GooglePicture[])
                     .filter((a) => list.includes(a.id))
                     .map<UploadablePicture>((each) => ({
                       url: each.baseUrl,
@@ -101,9 +108,18 @@ const Google: React.FC<Props> = ({ name, onCancel, setSelectedImages }) => {
                 )
               }}
             >
-              {googleBody(images.data as GooglePicture[])}
+              {googleBody(images.data?.list as GooglePicture[])}
             </Checkbox.Group>
           </div>
+          <Button
+            loading={images.loadingMore}
+            hidden={!images.data?.nextId}
+            onClick={() => {
+              images.loadMore()
+            }}
+          >
+            <FormattedMessage id="more" />
+          </Button>
         </>
       )}
     </>

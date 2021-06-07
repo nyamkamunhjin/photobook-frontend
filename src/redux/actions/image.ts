@@ -1,6 +1,6 @@
 import { createImage, createMultiImage, listImage, updateProjectImages } from 'api'
 import { Storage } from 'aws-amplify'
-import { Image, UploadablePicture } from 'interfaces'
+import { Image } from 'interfaces'
 import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES, REMOVE_IMAGES } from './types'
 
 // Get images

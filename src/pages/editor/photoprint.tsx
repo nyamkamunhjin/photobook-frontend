@@ -43,7 +43,14 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import { Header, BackgroundImages, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
+import {
+  Header,
+  BackgroundSingleImages,
+  FooterListTools,
+  SideButtons,
+  SideBarPanel,
+  Toolbar,
+} from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderBackground, renderObject } from './components/utils'
 import './components/styles/editor.scss'
@@ -79,6 +86,7 @@ const BookEditor: React.FC<Props> = ({
   duplicateSlide,
   reOrderSlide,
   deleteSlide,
+  editor,
   loadObjects,
   loadContainers,
   updateGroupContainer,
@@ -91,7 +99,6 @@ const BookEditor: React.FC<Props> = ({
   addLayout,
   addObject,
   removeObject,
-  editor,
   project: {
     currentProject,
     objects,
@@ -106,12 +113,8 @@ const BookEditor: React.FC<Props> = ({
     fetching,
   },
 }) => {
-  const [template, setTemplate] = useQueryState('template', 1)
-  const [coverType, setCoverType] = useQueryState('coverType', 1)
-  const [paperSize, setPaperSize] = useQueryState('paperSize', 1)
-  const [bindingType, setBindingType] = useQueryState('bindingType', 1)
-  const [material, setMaterial] = useQueryState('material', 1)
-  const [color, setColor] = useQueryState('color', 1)
+  const [template] = useQueryState('template', 1)
+  const [paperSize] = useQueryState('paperSize', 1)
   const [uuid, setUuid] = useQueryState('project', '')
 
   const slideViewRef: any = useRef(null)
@@ -191,7 +194,7 @@ const BookEditor: React.FC<Props> = ({
       canvasRef,
       setGroupStyles,
       _object,
-      double: true,
+      double: false,
     })
   }, [scale, slideHeight, slideWidth])
 
@@ -443,10 +446,8 @@ const BookEditor: React.FC<Props> = ({
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
             createEclipse={() => editors.createEclipse(objects)}
-            changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
-            layout={layout}
-            type="photobook"
-            layouts={layouts}
+            settings={false}
+            type="canvas"
           />
           <div
             id="slide_container"
@@ -457,26 +458,8 @@ const BookEditor: React.FC<Props> = ({
           >
             <div id="slide" style={{ overflow }}>
               <div id="scaled_container" ref={scaledContainerRef}>
-                <div
-                  className="layout-drop layout-drop-left"
-                  onDragOver={editors.layoutDragOver}
-                  onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
-                />
-                <div
-                  className="layout-drop layout-drop-middle"
-                  onDragOver={editors.layoutDragOver}
-                  onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
-                />
-                <div
-                  className="layout-drop layout-drop-right"
-                  onDragOver={editors.layoutDragOver}
-                  onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
-                />
                 {!loading && (
-                  <BackgroundImages
+                  <BackgroundSingleImages
                     scale={scale}
                     editor={editor}
                     slideIndex={_slideIndex}
@@ -537,7 +520,7 @@ const BookEditor: React.FC<Props> = ({
                             </div>
                           )
                         })}
-                      </div>{' '}
+                      </div>
                     </>
                   )}
                 </div>
@@ -548,7 +531,7 @@ const BookEditor: React.FC<Props> = ({
                   onMouseDown={(e) => editors.selectionDragStart(e, containers)}
                 />
                 <div className="active-border" />
-                <div className="page-border" />
+                <div className="page-border-canvas" />
                 <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
                 <div id="magnetX" />
                 <div id="magnetY" />
@@ -594,24 +577,15 @@ const BookEditor: React.FC<Props> = ({
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage />}
+        {!preview && <SideBarPanel layoutGroups={layouts} hasFrames={false} hasLayout={false} hasImage />}
         <div className="EditorPanel">
-          {preview ? (
-            <Preview
-              slideIndex={_slideIndex}
-              nextSlide={nextSlide}
-              prevSlide={prevSlide}
-              hasNext={hasNext}
-              hasPrevious={hasPrevious}
-            />
-          ) : (
-            renderEditor
-          )}
+          {preview ? <Preview slideIndex={_slideIndex} /> : renderEditor}
           <FooterListTools
+            hideTools
             scale={scale}
             fitScale={fitScale}
             setScale={setScale}
-            loading={loading || refreshing}
+            loading={loading}
             bgStyles={bgStyles}
             collapse={{
               state: footerCollapse,
@@ -633,15 +607,6 @@ const BookEditor: React.FC<Props> = ({
             deSelectObject={editors.deSelectObject}
             slideIndex={_slideIndex}
             currentProject={currentProject}
-            changeSlideIndex={changeSlideIndex}
-            addNewSlide={onAddSlide}
-            duplicateSlide={onDuplicateSlide}
-            reOrderSlide={onReOrderSlide}
-            deleteSlide={onDeleteSlide}
-            nextSlide={nextSlide}
-            prevSlide={prevSlide}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious}
             updateObject={updateObject}
             updateHistory={updateHistory}
             saveObjects={saveObjects}

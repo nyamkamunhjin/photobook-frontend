@@ -1,7 +1,7 @@
 import { Avatar, Button, Popover } from 'antd'
 import { useDispatch } from 'react-redux'
 import React, { useState } from 'react'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 import { LOGOUT } from 'redux/actions/types'
 import { useHistory } from 'react-router'
 import styles from './styles.module.scss'
@@ -13,7 +13,6 @@ interface Props {
 const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
   const [visible, setVisible] = useState(false)
   const history = useHistory()
-  const intl = useIntl()
   const dispatch = useDispatch()
   return (
     <Popover

@@ -553,6 +553,10 @@ export interface GoogleProfile {
   given_name: string
   picture: string
 }
+export interface GoogleResponse {
+  mediaItems: GooglePicture[]
+  nextPageToken?: string
+}
 export interface GooglePicture {
   id: string
   productUrl: string
