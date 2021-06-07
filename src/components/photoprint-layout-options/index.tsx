@@ -1,68 +1,43 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useCallback, useEffect } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { PaperMaterial, PaperSize, Template } from 'interfaces'
-import { Select } from 'antd'
+import { PaperSize, Template } from 'interfaces'
+import 'react-alice-carousel/lib/alice-carousel.css'
 import { Link } from 'react-router-dom'
-import { CustomButton } from 'components'
+import CustomButton from '../custom-button'
 
 interface Props {
   template: Template
   paperSizes: PaperSize[]
-  paperMaterials: PaperMaterial[]
   selectedState: {
     paperSize?: PaperSize
-    paperMaterial?: PaperMaterial
   }
   setSelectedState: React.Dispatch<
     React.SetStateAction<{
       paperSize?: PaperSize | undefined
-      paperMaterial?: PaperMaterial | undefined
     }>
   >
 }
 
-const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, selectedState, setSelectedState }) => {
+const PhotoprintLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
 
-  useEffect(() => {
-    const initialState = () => {
-      const [paperSize] = paperSizes
-      // const [paperMaterial] = paperMaterials
+  const initialState = useCallback(() => {
+    const [paperSize] = paperSizes
 
-      setSelectedState({
-        paperSize,
-        // paperMaterial,
-      })
-    }
+    setSelectedState({
+      paperSize,
+    })
+  }, [paperSizes, setSelectedState])
+
+  useEffect(() => {
     if (paperSizes) {
       initialState()
     }
-  }, [paperSizes, setSelectedState])
+  }, [initialState, paperSizes])
 
   return (
     <div className="flex flex-col gap-4">
       <span className="text-2xl">{template.name}</span>
-
-      <div className="space-y-4">
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_material_type' })}</span>
-        <div className="flex flex-wrap gap-4">
-          <Select
-            className="w-full"
-            onChange={(value) => {
-              setSelectedState({
-                paperMaterial: paperMaterials.find(({ id }) => id === value),
-              })
-            }}
-          >
-            {paperMaterials.map((each) => (
-              <Select.Option key={each.id} value={each.id}>
-                <span className="font-semibold text-gray-700 text-base">{`${each.name} - ${each.paperType}`}</span>
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      </div>
-
       <div className="space-y-4">
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
@@ -74,7 +49,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
               } `}
               key={each.id}
               onClick={() => {
-                setSelectedState((prev) => ({ ...prev, paperSize: each }))
+                setSelectedState({ paperSize: each })
               }}
             >
               <div className="flex flex-col">
@@ -90,7 +65,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           ))}
         </div>
       </div>
-      <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+      <Link to={`/editor/photoprint?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
         <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />
         </CustomButton>
@@ -98,4 +73,4 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
     </div>
   )
 }
-export default CanvasLayoutOptions
+export default PhotoprintLayoutOptions

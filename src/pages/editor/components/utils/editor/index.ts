@@ -6,6 +6,7 @@ import {
   FeatureType,
   FullLayout,
   HistoryProps,
+  Image,
   LayoutObject,
   LayoutsInterface,
   ObjectType,
@@ -1598,6 +1599,57 @@ export default class Editor {
     }
     this.setObjectType('image')
   }
+  public createImages = (e: any, objects: PObject[]) => {
+    this.hideToolbar()
+    if (e.dataTransfer) {
+      JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image) => {
+        const { x, y } = this.canvasRef.current.getBoundingClientRect()
+        const x1 = e.clientX - x
+        const y1 = e.clientY - y
+
+        const style = {
+          top: y1,
+          left: x1,
+          width: 500,
+          height: 300,
+          rotateAngle: 0,
+          transform: '',
+          zIndex: 100 + objects.length + '',
+        }
+
+        this.addObject({
+          object: {
+            id: uuidv4(),
+            className: 'object',
+            style,
+            props: {
+              imageUrl: image.imageUrl,
+              tempUrl: image.tempUrl,
+              className: 'image-placeholder',
+              imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+              style: { transform: 'scaleX(1)' },
+              placeholderStyle: { opacity: 1 },
+            },
+          },
+        })
+      })
+    } else {
+      const style = {
+        top: 100,
+        left: 100,
+        width: 500,
+        height: 300,
+        rotateAngle: 0,
+        transform: '',
+        zIndex: 100 + objects.length + '',
+      }
+
+      this.addObject({
+        object: layoutPositionsToImage(style),
+      })
+    }
+    this.setObjectType('image')
+  }
   public onObjectDrop = (e: any, type: FeatureType, objects: PObject[], _index: number) => {
     this.hideToolbar()
     e.preventDefault()
@@ -1662,13 +1714,13 @@ export default class Editor {
       } else {
         e.target.style.border = 'none'
         const index = objects.findIndex((o: any) => o.id === e.target.id)
-
+        const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
         const newObject = {
           ...objects[index],
           props: {
             ...objects[index].props,
-            imageUrl: e.dataTransfer.getData('imageUrl'),
-            tempUrl: e.dataTransfer.getData('tempUrl'),
+            imageUrl: images[0].imageUrl,
+            tempUrl: images[0].tempUrl,
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
             placeholderStyle: { opacity: '1' },
           },
@@ -1677,8 +1729,10 @@ export default class Editor {
         this.updateObject({ object: newObject })
         this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
       }
-    } else if ('images,cliparts'.includes(type)) {
+    } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
+    } else if ('images'.includes(type)) {
+      this.createImages(e, objects)
     }
   }
   // #endregion [ObjectMethods]

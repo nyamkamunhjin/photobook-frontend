@@ -52,7 +52,17 @@ const MyProjects: FC = () => {
                 <button
                   className="btn-primary"
                   type="button"
-                  onClick={() => history.push(`/editor?project=${item.uuid}`)}
+                  onClick={() => {
+                    if (item.templateType?.name === 'photobook') {
+                      history.push(`/editor?project=${item.uuid}`)
+                    } else if (item.templateType?.name === 'canvas') {
+                      history.push(`/editor/canvas?project=${item.uuid}`)
+                    } else if (item.templateType?.name === 'frame') {
+                      history.push(`/editor/frame?project=${item.uuid}`)
+                    } else if (item.templateType?.name === 'photoprint') {
+                      history.push(`/editor/photoprint?project=${item.uuid}`)
+                    }
+                  }}
                 >
                   <FormattedMessage id="edit" />
                 </button>,

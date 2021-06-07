@@ -1,5 +1,6 @@
 export * from './editor-panel'
 export { default as FooterListTools } from './footer'
 export { default as SideBarPanel } from './sidebar'
+export { default as PrintPanel } from './print-panel'
 export { default as Header } from './header'
 export * from './objects'

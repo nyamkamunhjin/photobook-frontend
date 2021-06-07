@@ -30,6 +30,12 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/product/photoprint/template/:id',
+    component: LoadableLoader(() => import('pages/product/photoprint/template')),
+    exact: true,
+  },
+
+  {
     path: '/product/canvas/template/:id',
     component: LoadableLoader(() => import('pages/product/canvas/template')),
     exact: true,
@@ -44,6 +50,12 @@ const routes: RouteInterface[] = [
     component: LoadableLoader(() => import('pages/product/photobook')),
     exact: true,
   },
+  {
+    path: '/product/photoprint',
+    component: LoadableLoader(() => import('pages/product/photoprint')),
+    exact: true,
+  },
+
   {
     path: '/product/canvas',
     component: LoadableLoader(() => import('pages/product/canvas')),
@@ -84,6 +96,26 @@ const routes: RouteInterface[] = [
   {
     path: '/editor',
     component: LoadableLoader(() => import('pages/editor/editor')),
+    exact: true,
+  },
+  {
+    path: '/editor/canvas',
+    component: LoadableLoader(() => import('pages/editor/canvas')),
+    exact: true,
+  },
+  {
+    path: '/editor/frame',
+    component: LoadableLoader(() => import('pages/editor/frame')),
+    exact: true,
+  },
+  {
+    path: '/editor/photoprint',
+    component: LoadableLoader(() => import('pages/editor/photoprint')),
+    exact: true,
+  },
+  {
+    path: '/editor/print',
+    component: LoadableLoader(() => import('pages/editor/print')),
     exact: true,
   },
   {

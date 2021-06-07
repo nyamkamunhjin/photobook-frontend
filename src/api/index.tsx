@@ -892,12 +892,13 @@ export const getGoogleProfile = async () => {
   return response?.data
 }
 
-export const getGoogleImages = async () => {
+export const getGoogleImages = async (token?: string) => {
   const response = await BaseRequest({
-    url: `google/images`,
+    url: `google/images?nextToken=${token}`,
     method: 'GET',
   })
-  return response?.data?.mediaItems || []
+  console.log(response?.data)
+  return { list: response?.data.mediaItems, nextId: response?.data.nextPageToken }
 }
 // #endregion [Google]
 

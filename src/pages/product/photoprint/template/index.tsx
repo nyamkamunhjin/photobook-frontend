@@ -1,21 +1,19 @@
 import { useRequest } from 'ahooks'
 import { message } from 'antd'
 import React, { FC, useState } from 'react'
-import { getTemplate, listFrameMaterial, listPaperSize } from 'api'
-import { FrameLayoutOptions, Loading } from 'components'
+import { getTemplate, listPaperSize } from 'api'
+import { Loading, PhotoprintLayoutOptions } from 'components'
 import { useParams } from 'react-router'
 import WidthLimiter from 'layouts/main/components/width-limiter'
-import { FrameMaterial, PaperSize, Template } from 'interfaces'
+import { PaperSize } from 'interfaces'
 
 const ProductTemplate: FC = () => {
   const { id }: { id: string } = useParams()
   const [selectedShowCase, setSelectedShowCase] = useState<{ url: string; type: 'video' | 'image' }>()
   const [selectedState, setSelectedState] = useState<{
     paperSize?: PaperSize
-    frameMaterial?: FrameMaterial
   }>({
     paperSize: undefined,
-    frameMaterial: undefined,
   })
 
   const template = useRequest(() => getTemplate(parseInt(id, 10)), {
@@ -32,9 +30,7 @@ const ProductTemplate: FC = () => {
     },
   })
 
-  const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'frame' }))
-
-  const frameMaterials = useRequest(() => listFrameMaterial())
+  const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'photoprint' }))
 
   return (
     <WidthLimiter className="flex flex-col sm:flex-row min-h-screen">
@@ -62,36 +58,15 @@ const ProductTemplate: FC = () => {
                 />
               )}
             </div>
-            <div className="flex gap-4">
-              {template.data?.imageUrl && (
-                <button
-                  className="w-full"
-                  style={{ maxWidth: '200px' }}
-                  type="button"
-                  onClick={() => {
-                    if (template.data?.imageUrl) {
-                      setSelectedShowCase({ url: template.data.imageUrl, type: 'image' })
-                    }
-                  }}
-                >
-                  <img
-                    className="w-full"
-                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${(template.data as Template).imageUrl}`}
-                    alt="template"
-                  />
-                </button>
-              )}
-            </div>
             <div dangerouslySetInnerHTML={{ __html: template.data.description }} />
           </div>
           <div className="flex flex-col w-full sm:w-1/2 p-4">
             {paperSizes.loading ? (
               <Loading fill={false} />
             ) : (
-              <FrameLayoutOptions
+              <PhotoprintLayoutOptions
                 template={template.data}
                 paperSizes={paperSizes.data.list}
-                frameMaterials={frameMaterials.data}
                 selectedState={selectedState}
                 setSelectedState={setSelectedState}
               />

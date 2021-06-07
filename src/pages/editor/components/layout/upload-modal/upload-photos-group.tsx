@@ -9,6 +9,7 @@ interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
   linkPhoto: (images: string[]) => void
   syncPhoto: (images: UploadablePicture[]) => void
+  single?: boolean
 }
 
 interface Type {
@@ -16,7 +17,7 @@ interface Type {
   type: 'google' | 'facebook' | 'photos'
 }
 
-const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto }) => {
+const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto, single = false }) => {
   const [inputRef, setInputRef] = useState<any>(null)
   const [modal, setModal] = useState<Type>({
     visible: false,
@@ -49,10 +50,12 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto 
   const onPhotos = () => {
     setModal({ visible: true, type: 'photos' })
   }
-
+  const grid = single
+    ? 'UploadPhotosGroup grid grid-cols-1 md:grid-cols-4'
+    : 'UploadPhotosGroup grid grid-cols-1 md:grid-cols-2'
   return (
     <>
-      <div className="UploadPhotosGroup grid grid-cols-1 md:grid-cols-2">
+      <div className={grid}>
         <input
           type="file"
           multiple

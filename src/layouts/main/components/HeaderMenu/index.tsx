@@ -6,6 +6,7 @@ import { listCoverType, listHeaderAd, listTemplateCategory } from 'api'
 import { useRequest } from 'ahooks'
 import useRouter from 'components/router'
 import SubmenuPhotobook from './photobook'
+import SubmenuPhotoprint from './photoprint'
 import SubmenuCanvas from './canvas'
 
 const HeaderMenu: FC = () => {
@@ -73,6 +74,28 @@ const HeaderMenu: FC = () => {
           key="home"
         >
           <FormattedMessage id="canvas" />
+        </button>
+      </Tippy>
+      <Tippy
+        interactive
+        placement="bottom"
+        maxWidth="100%"
+        render={() => (
+          <div className="w-screen mx-auto" style={{ minWidth: '20rem' }}>
+            <SubmenuPhotoprint
+              categories={categories.data}
+              imageLeft={photobookAd.data?.find((each: any) => each.left)?.imageUrl}
+              imageRight={photobookAd.data?.find((each: any) => !each.left)?.imageUrl}
+            />
+          </div>
+        )}
+      >
+        <button
+          type="button"
+          className="text-gray-500 tracking-widest text-base font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+          key="home"
+        >
+          <FormattedMessage id="photoprint" />
         </button>
       </Tippy>
       <button

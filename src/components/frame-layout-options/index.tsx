@@ -1,6 +1,8 @@
 import React, { FC, useEffect } from 'react'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { FrameMaterial, PaperSize, Template } from 'interfaces'
+import { Link } from 'react-router-dom'
+import { CustomButton } from 'components'
 
 interface Props {
   template: Template
@@ -81,13 +83,18 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
               }}
             >
               <div className="flex flex-col">
-                <img src={each.tempUrl} alt="cover-material-color" />
+                <img src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`} alt="cover-material-color" />
                 <span>{each.name}</span>
               </div>
             </button>
           ))}
         </div>
       </div>
+      <Link to={`/editor/frame?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+        <CustomButton className="btn-primary">
+          <FormattedMessage id="start_book" />
+        </CustomButton>
+      </Link>
     </div>
   )
 }

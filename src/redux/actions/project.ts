@@ -9,8 +9,9 @@ import {
   updateProject as _updateProject,
   updateProjectSlides,
 } from 'api'
-import { BackgroundImage, Container, Image, PaperSize, PObject, Project, Slide, Template } from 'interfaces'
+import { BackgroundImage, Container, PaperSize, PObject, Project, Slide, Template } from 'interfaces'
 import { getS3Images } from 'utils/aws-lib'
+import { SinglePageEditor } from 'configs'
 import { generateDuplicatedSlide, generateNewSlide } from 'utils/transformer-lib'
 import {
   UPDATE_PROJECT,
@@ -111,7 +112,17 @@ export const updateProject = (projectId: number, props: { paperSizeId: number })
 // set current project
 export const setCurrentProject = (project: Project) => async (dispatch: any) => {
   try {
-    dispatch(setSlideStyle(`${project.paperSize?.width}x${project.paperSize?.height}`))
+    console.log(
+      'aaaaalog',
+      project.templateType?.name,
+      SinglePageEditor.includes(project.templateType?.name || 'photobook')
+    )
+    dispatch(
+      setSlideStyle(
+        `${project.paperSize?.width}x${project.paperSize?.height}`,
+        SinglePageEditor.includes(project.templateType?.name || 'photobook')
+      )
+    )
     dispatch({
       type: SET_CURRENT_PROJECT,
       payload: project,
@@ -162,12 +173,18 @@ export const saveProjectAttribute = (projectId: number, data: Object) => async (
 // #region [Slide]
 // set bgStyle
 export const setSlideStyle =
-  (paperSize = '14x11') =>
+  (paperSize = '14x11', isSingle = false) =>
   async (dispatch: any) => {
+    console.log('aaaaalog', isSingle)
     try {
       const [width, height] = paperSize.split('x') // 14x11
-      const slideWidth = parseFloat(width) * 100 * 2 + 30 // 30 is the book spine
+      let slideWidth = parseFloat(width) * 100 * 2 + 30 // 30 is the book spine
+      if (isSingle) {
+        slideWidth = parseFloat(width) * 100
+      }
+
       const slideHeight = parseFloat(height) * 100 // 11 * 100 = 1100
+      console.log('aaaaalog', slideWidth, slideHeight)
 
       const bgStyles = {
         'background-full': {
