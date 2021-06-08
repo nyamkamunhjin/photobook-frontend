@@ -236,7 +236,8 @@ export interface Template {
   coverMaterialId: number
   frameMaterialId?: number
   templateTypeId: number
-  price?: number
+  price: number
+  discountPrice?: number
   description?: string
   imageUrl?: string
   tempUrl?: string
