@@ -43,18 +43,13 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import { Header, BackgroundImages, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
-import Preview from './components/preview'
+import { Header, BackgroundSingleImages, SideButtons, PrintPanel, Toolbar } from './components/layout'
 import { Editor, renderBackground, renderObject } from './components/utils'
 import './components/styles/editor.scss'
 
 interface Props {
   getProjects: (id: number, paperSizeId: number, project: string) => Promise<string | undefined>
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
-  addNewSlide: (slideIndex: number, projectId: number) => Promise<void>
-  duplicateSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
-  deleteSlide: (projectId: number, slideIndex: number) => Promise<void>
-  reOrderSlide: (projectId: number, slides: Slide[]) => Promise<void>
   editor: EditorInterface
   project: ProjectInterface
   loadObjects: (objects: PObject[]) => void
@@ -75,10 +70,7 @@ interface Props {
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
-  addNewSlide,
-  duplicateSlide,
-  reOrderSlide,
-  deleteSlide,
+  editor,
   loadObjects,
   loadContainers,
   updateGroupContainer,
@@ -91,7 +83,6 @@ const BookEditor: React.FC<Props> = ({
   addLayout,
   addObject,
   removeObject,
-  editor,
   project: {
     currentProject,
     objects,
@@ -100,18 +91,13 @@ const BookEditor: React.FC<Props> = ({
     bgStyles,
     slideWidth,
     slideHeight,
-    layout,
     layouts,
     loading,
     fetching,
   },
 }) => {
-  const [template, setTemplate] = useQueryState('template', 1)
-  const [coverType, setCoverType] = useQueryState('coverType', 1)
-  const [paperSize, setPaperSize] = useQueryState('paperSize', 1)
-  const [bindingType, setBindingType] = useQueryState('bindingType', 1)
-  const [material, setMaterial] = useQueryState('material', 1)
-  const [color, setColor] = useQueryState('color', 1)
+  const [template] = useQueryState('template', 1)
+  const [paperSize] = useQueryState('paperSize', 1)
   const [uuid, setUuid] = useQueryState('project', '')
 
   const slideViewRef: any = useRef(null)
@@ -122,7 +108,6 @@ const BookEditor: React.FC<Props> = ({
   const scaledContainerRef = useRef<any>(null)
   const groupRef = useRef<any>(null)
   const [overflow, setOverflow] = useState<string>('hidden')
-  const [refreshing, setRefreshing] = useBoolean(false)
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
 
@@ -135,7 +120,6 @@ const BookEditor: React.FC<Props> = ({
   const [_textObjectIndex, setTextObjectIndex] = useState<number>(-1)
   const [_object, setObject] = useState<any>(null)
   const [_groupObjects, setGroupObjects] = useState<any>(null)
-  const [footerCollapse, setFooterCollapse] = useBoolean(false)
   const [_groupStyles, setGroupStyles] =
     useState<{
       left: any
@@ -143,7 +127,7 @@ const BookEditor: React.FC<Props> = ({
       width: any
       height: any
     }>()
-  const [_slideIndex, setSlideIndex] = useState<number>(0)
+  const _slideIndex = 0
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
@@ -191,7 +175,7 @@ const BookEditor: React.FC<Props> = ({
       canvasRef,
       setGroupStyles,
       _object,
-      double: true,
+      double: false,
     })
   }, [scale, slideHeight, slideWidth])
 
@@ -206,68 +190,6 @@ const BookEditor: React.FC<Props> = ({
       setIsTextEditing(false)
       setTextObjectIndex(_index)
     }
-  }
-
-  const nextSlide = () => {
-    if (_slideIndex < currentProject.slides.length - 1) {
-      changeSlideIndex(_slideIndex + 1)
-    }
-  }
-
-  const onAddSlide = (projectId: number, slideIndex: number) => {
-    setRefreshing.setTrue()
-    addNewSlide(projectId, slideIndex).then(() => {
-      changeSlideIndex(_slideIndex + 1)
-      setRefreshing.setFalse()
-    })
-  }
-
-  const onDuplicateSlide = (projectId: number, slideIndex: number) => {
-    setRefreshing.setTrue()
-    duplicateSlide(projectId, slideIndex, currentProject.slides[slideIndex]).then(() => {
-      changeSlideIndex(_slideIndex + 1)
-      setRefreshing.setFalse()
-    })
-  }
-
-  const onReOrderSlide = (projectId: number, slides: Slide[]) => {
-    setRefreshing.setTrue()
-    reOrderSlide(projectId, slides).then(() => {
-      setRefreshing.setFalse()
-      editors.deSelectObject()
-      setSlideIndex(0)
-    })
-  }
-
-  const onDeleteSlide = (projectId: number, slideIndex: number) => {
-    if (_slideIndex !== 0) {
-      setRefreshing.setTrue()
-      deleteSlide(projectId, slideIndex).then(() => {
-        setRefreshing.setFalse()
-        editors.deSelectObject()
-        setSlideIndex(_slideIndex - 1)
-      })
-    }
-  }
-
-  const prevSlide = () => {
-    if (_slideIndex !== 0) {
-      changeSlideIndex(_slideIndex - 1)
-    }
-  }
-
-  const changeSlideIndex = (index: number) => {
-    saveObjects()
-    editors.deSelectObject()
-    setSlideIndex(index)
-  }
-
-  const hasNext = () => {
-    return !(_slideIndex === currentProject.slides.length - 1)
-  }
-
-  const hasPrevious = () => {
-    return !(_slideIndex === 0)
   }
 
   const saveObjects = async () => {
@@ -367,10 +289,6 @@ const BookEditor: React.FC<Props> = ({
   }, [getProjects, template])
 
   useEffect(() => {
-    if (!loading) loadSlide()
-  }, [_slideIndex]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     if (!loading && !preview) {
       setSlidePosition()
       loadSlide()
@@ -443,10 +361,8 @@ const BookEditor: React.FC<Props> = ({
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
             createEclipse={() => editors.createEclipse(objects)}
-            changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
-            layout={layout}
-            type="photobook"
-            layouts={layouts}
+            settings={false}
+            type="canvas"
           />
           <div
             id="slide_container"
@@ -457,26 +373,8 @@ const BookEditor: React.FC<Props> = ({
           >
             <div id="slide" style={{ overflow }}>
               <div id="scaled_container" ref={scaledContainerRef}>
-                <div
-                  className="layout-drop layout-drop-left"
-                  onDragOver={editors.layoutDragOver}
-                  onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
-                />
-                <div
-                  className="layout-drop layout-drop-middle"
-                  onDragOver={editors.layoutDragOver}
-                  onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
-                />
-                <div
-                  className="layout-drop layout-drop-right"
-                  onDragOver={editors.layoutDragOver}
-                  onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
-                />
                 {!loading && (
-                  <BackgroundImages
+                  <BackgroundSingleImages
                     scale={scale}
                     editor={editor}
                     slideIndex={_slideIndex}
@@ -537,7 +435,7 @@ const BookEditor: React.FC<Props> = ({
                             </div>
                           )
                         })}
-                      </div>{' '}
+                      </div>
                     </>
                   )}
                 </div>
@@ -548,7 +446,7 @@ const BookEditor: React.FC<Props> = ({
                   onMouseDown={(e) => editors.selectionDragStart(e, containers)}
                 />
                 <div className="active-border" />
-                <div className="page-border" />
+                <div className="page-border-canvas" />
                 <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
                 <div id="magnetX" />
                 <div id="magnetY" />
@@ -594,59 +492,7 @@ const BookEditor: React.FC<Props> = ({
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage />}
-        <div className="EditorPanel">
-          {preview ? (
-            <Preview
-              slideIndex={_slideIndex}
-              nextSlide={nextSlide}
-              prevSlide={prevSlide}
-              hasNext={hasNext}
-              hasPrevious={hasPrevious}
-            />
-          ) : (
-            renderEditor
-          )}
-          <FooterListTools
-            scale={scale}
-            fitScale={fitScale}
-            setScale={setScale}
-            loading={loading || refreshing}
-            bgStyles={bgStyles}
-            collapse={{
-              state: footerCollapse,
-              action: setFooterCollapse,
-            }}
-            preview={{
-              state: preview,
-              action: setPreview,
-            }}
-            single={{
-              state: single,
-              action: setSingle,
-            }}
-            slideWidth={slideWidth}
-            slideHeight={slideHeight}
-            objects={objects}
-            containers={containers}
-            backgrounds={backgrounds}
-            deSelectObject={editors.deSelectObject}
-            slideIndex={_slideIndex}
-            currentProject={currentProject}
-            changeSlideIndex={changeSlideIndex}
-            addNewSlide={onAddSlide}
-            duplicateSlide={onDuplicateSlide}
-            reOrderSlide={onReOrderSlide}
-            deleteSlide={onDeleteSlide}
-            nextSlide={nextSlide}
-            prevSlide={prevSlide}
-            hasNext={hasNext}
-            hasPrevious={hasPrevious}
-            updateObject={updateObject}
-            updateHistory={updateHistory}
-            saveObjects={saveObjects}
-          />
-        </div>
+        <PrintPanel />
       </div>
     </div>
   )

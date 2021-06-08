@@ -33,7 +33,7 @@ import Cliparts from './tabs/cliparts'
 import Masks from './tabs/masks'
 import Frames from './tabs/frames'
 import Layouts from './tabs/layouts'
-import UploadPhotosGroup from './upload-photos-group'
+import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>

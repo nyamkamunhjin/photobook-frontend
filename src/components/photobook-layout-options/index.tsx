@@ -3,7 +3,6 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import Slider from 'react-alice-carousel'
 import { BindingType, CoverMaterial, CoverMaterialColor, CoverType, PaperSize, Template } from 'interfaces'
 import 'react-alice-carousel/lib/alice-carousel.css'
-import { Button } from 'antd'
 import { Link } from 'react-router-dom'
 import CustomButton from '../custom-button'
 

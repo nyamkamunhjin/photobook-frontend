@@ -6,6 +6,7 @@ import { listCoverType, listHeaderAd, listTemplateCategory } from 'api'
 import { useRequest } from 'ahooks'
 import useRouter from 'components/router'
 import SubmenuPhotobook from './photobook'
+import SubmenuPhotoprint from './photoprint'
 import SubmenuCanvas from './canvas'
 
 const HeaderMenu: FC = () => {
@@ -81,8 +82,7 @@ const HeaderMenu: FC = () => {
         maxWidth="100%"
         render={() => (
           <div className="w-screen mx-auto" style={{ minWidth: '20rem' }}>
-            <SubmenuPhotobook
-              coverTypes={coverTypes.data}
+            <SubmenuPhotoprint
               categories={categories.data}
               imageLeft={photobookAd.data?.find((each: any) => each.left)?.imageUrl}
               imageRight={photobookAd.data?.find((each: any) => !each.left)?.imageUrl}

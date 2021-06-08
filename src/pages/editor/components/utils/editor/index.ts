@@ -1714,13 +1714,13 @@ export default class Editor {
       } else {
         e.target.style.border = 'none'
         const index = objects.findIndex((o: any) => o.id === e.target.id)
-
+        const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
         const newObject = {
           ...objects[index],
           props: {
             ...objects[index].props,
-            imageUrl: e.dataTransfer.getData('imageUrl'),
-            tempUrl: e.dataTransfer.getData('tempUrl'),
+            imageUrl: images[0].imageUrl,
+            tempUrl: images[0].tempUrl,
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
             placeholderStyle: { opacity: '1' },
           },
