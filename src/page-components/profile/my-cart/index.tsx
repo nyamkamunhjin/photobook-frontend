@@ -137,7 +137,10 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">Premium Layflat Binding</span>
                 <span className="text-gray-500">Deluxe Hardcover</span>
                 <span className="text-gray-500">Glass Frame</span>
-                <span className="text-sm text-gray-700">{currencyFormat(item.project.price || 0)} ₮</span>
+                <div className="border-t border-gray-300">
+                  {/* <span className="text-sm text-gray-700">{item.userDiscount?.discountPercent}</span> */}
+                  <span className="text-sm text-gray-700">{currencyFormat(item.project.price || 0)} ₮</span>
+                </div>
               </div>
             </List.Item>
           )}
