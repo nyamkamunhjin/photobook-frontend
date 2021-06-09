@@ -128,3 +128,7 @@ export const filterArray = (arr: any[], obj: any, key: string) => {
     ? arr.filter((o) => obj[key] !== o[key]) // remove it
     : [...arr, obj] // or add it if not
 }
+
+export const currencyFormat = (number: number) => {
+  return Intl.NumberFormat().format(number)
+}

@@ -5,6 +5,7 @@ import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { OrderItem } from 'interfaces'
 import { listOrder } from 'api'
+import { currencyFormat } from 'utils'
 import OrderStatus from './order-status'
 
 const OrderHistory: React.FC = () => {
@@ -98,7 +99,7 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems }) => {
                 </span>
               </div>
               <div className="ml-auto flex flex-col text-right">
-                <span className="text-sm text-gray-700">{Intl.NumberFormat().format(item.project.price || 0)} ₮</span>
+                <span className="text-sm text-gray-700">{currencyFormat(item.project.price || 0)} ₮</span>
               </div>
             </List.Item>
           )}

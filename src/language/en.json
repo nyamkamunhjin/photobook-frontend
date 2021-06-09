@@ -170,6 +170,7 @@
   "additional_description": "Additional Description",
   "please_input_address": "Please input address",
   "please_input_additional_description": "Please input additional description",
+  "additional_notes": "Addtional notes on the shipping address",
 
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",

@@ -48,6 +48,7 @@ const ProductCanvas: FC = () => {
   const onRadioChange = (e: RadioChangeEvent) => setRowSize(e.target.value)
 
   useEffect(() => {
+    templates.pagination.changeCurrent(1)
     templates.refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory])

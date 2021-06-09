@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
 import { SelectValue } from 'antd/lib/select'
+import { currencyFormat } from 'utils'
 
 const MyCart: React.FC = () => {
   const intl = useIntl()
@@ -29,6 +30,7 @@ const MyCart: React.FC = () => {
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
   })
+
   const shoppingCart = useRequest(listShoppingCart, {
     manual: true,
   })
@@ -60,6 +62,7 @@ const MyCart: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  // get shopping cart price summary
   useEffect(() => {
     summary.run({
       isShipping: deliveryChecked,
@@ -134,7 +137,7 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">Premium Layflat Binding</span>
                 <span className="text-gray-500">Deluxe Hardcover</span>
                 <span className="text-gray-500">Glass Frame</span>
-                <span className="text-sm text-gray-700">{Intl.NumberFormat().format(item.project.price || 0)} ₮</span>
+                <span className="text-sm text-gray-700">{currencyFormat(item.project.price || 0)} ₮</span>
               </div>
             </List.Item>
           )}
@@ -192,21 +195,21 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="order_subtotal" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(price)} ₮</span>
+        <span className="font-light">{currencyFormat(price)} ₮</span>
       </div>
 
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="shipping_fee" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(shippingFee)} ₮</span>
+        <span className="font-light">{currencyFormat(shippingFee)} ₮</span>
       </div>
 
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="vat_fee" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(vatFee)} ₮</span>
+        <span className="font-light">{currencyFormat(vatFee)} ₮</span>
       </div>
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
@@ -221,7 +224,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="total" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(totalPrice)} ₮</span>
+        <span className="font-light">{currencyFormat(totalPrice)} ₮</span>
       </div>
       <CustomButton className="mt-4 btn-accept" onClick={() => onCreateOrder(shippingFee !== 0)}>
         <FormattedMessage id="order_now" />
