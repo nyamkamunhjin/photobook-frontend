@@ -27,6 +27,14 @@ export interface StyleType {
   zIndex?: string
   filter?: string
 }
+
+export interface ProjectCreate {
+  paperSizeId: number,
+  coverTypeId?: number,
+  bindingTypeId?: number
+  coverMaterialId?: number
+  coverColorId?: number
+}
 export interface RGB {
   r?: number
   b?: number

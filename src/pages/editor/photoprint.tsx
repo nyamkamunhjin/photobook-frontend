@@ -35,6 +35,7 @@ import {
   HistoryProps,
   ObjectType,
   PObject,
+  ProjectCreate,
   ProjectInterface,
   RootInterface,
   Slide,
@@ -56,7 +57,7 @@ import { Editor, renderBackground, renderObject } from './components/utils'
 import './components/styles/editor.scss'
 
 interface Props {
-  getProjects: (id: number, paperSizeId: number, project: string) => Promise<string | undefined>
+  getProjects: (id: number, params: ProjectCreate, project: string) => Promise<string | undefined>
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
   addNewSlide: (slideIndex: number, projectId: number) => Promise<void>
   duplicateSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
@@ -114,7 +115,7 @@ const BookEditor: React.FC<Props> = ({
   },
 }) => {
   const [template] = useQueryState('template', 1)
-  const [paperSize] = useQueryState('paperSize', 1)
+  const [paperSizeId] = useQueryState('paperSizeId', 1)
   const [uuid, setUuid] = useQueryState('project', '')
 
   const slideViewRef: any = useRef(null)
@@ -362,7 +363,7 @@ const BookEditor: React.FC<Props> = ({
       window.history.back()
       return
     }
-    getProjects(template, paperSize, uuid).then((id) => {
+    getProjects(template, { paperSizeId }, uuid).then((id) => {
       if (id) {
         setUuid(id)
       }

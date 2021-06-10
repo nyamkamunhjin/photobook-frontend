@@ -18,7 +18,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
 
   return (
     <WidthLimiter className="flex flex-wrap sm:flex-nowrap bg-white shadow-lg" style={{ minHeight: '25rem' }}>
-      <img className="w-52 object-cover" src={imageLeft} alt="photobook" />
+      {imageLeft && <img className="w-52 object-cover" src={imageLeft} alt="canvas" />}
 
       <div className="mx-4 p-4">
         <p className="font-semibold ">
@@ -72,7 +72,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
           )}
         </ul>
       </div>
-      <img className="w-52 object-cover ml-auto" src={imageRight} alt="photobook" />
+      {imageRight && <img className="w-52 object-cover ml-auto" src={imageRight} alt="canvas" />}
     </WidthLimiter>
   )
 }

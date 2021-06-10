@@ -34,6 +34,7 @@ import {
   FullLayout,
   HistoryProps,
   ObjectType,
+  ProjectCreate,
   PObject,
   ProjectInterface,
   RootInterface,
@@ -49,7 +50,7 @@ import { Editor, renderBackground, renderObject } from './components/utils'
 import './components/styles/editor.scss'
 
 interface Props {
-  getProjects: (id: number, paperSizeId: number, project: string) => Promise<string | undefined>
+  getProjects: (id: number, params: ProjectCreate, project: string) => Promise<string | undefined>
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
   addNewSlide: (slideIndex: number, projectId: number) => Promise<void>
   duplicateSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
@@ -106,12 +107,12 @@ const BookEditor: React.FC<Props> = ({
     fetching,
   },
 }) => {
-  const [template, setTemplate] = useQueryState('template', 1)
-  const [coverType, setCoverType] = useQueryState('coverType', 1)
-  const [paperSize, setPaperSize] = useQueryState('paperSize', 1)
-  const [bindingType, setBindingType] = useQueryState('bindingType', 1)
-  const [material, setMaterial] = useQueryState('material', 1)
-  const [color, setColor] = useQueryState('color', 1)
+  const [template] = useQueryState('template', 1)
+  const [coverTypeId] = useQueryState('coverType', 1)
+  const [paperSizeId] = useQueryState('paperSize', 1)
+  const [bindingTypeId] = useQueryState('bindingType', 1)
+  const [coverMaterialId] = useQueryState('material', 1)
+  const [coverColorId] = useQueryState('color', 1)
   const [uuid, setUuid] = useQueryState('project', '')
 
   const slideViewRef: any = useRef(null)
@@ -359,11 +360,13 @@ const BookEditor: React.FC<Props> = ({
       window.history.back()
       return
     }
-    getProjects(template, paperSize, uuid).then((id) => {
-      if (id) {
-        setUuid(id)
+    getProjects(template, { paperSizeId, coverColorId, coverMaterialId, coverTypeId, bindingTypeId }, uuid).then(
+      (id) => {
+        if (id) {
+          setUuid(id)
+        }
       }
-    })
+    )
   }, [getProjects, template])
 
   useEffect(() => {

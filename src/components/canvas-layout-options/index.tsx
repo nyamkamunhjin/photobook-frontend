@@ -49,9 +49,10 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           <Select
             className="w-full"
             onChange={(value) => {
-              setSelectedState({
+              setSelectedState((each) => ({
+                ...each,
                 paperMaterial: paperMaterials.find(({ id }) => id === value),
-              })
+              }))
             }}
           >
             {paperMaterials.map((each) => (
