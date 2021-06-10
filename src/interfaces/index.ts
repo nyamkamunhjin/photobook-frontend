@@ -236,7 +236,9 @@ export interface Slide {
 
 export interface Template {
   id: number
+  editable: boolean
   name: string
+  canvasType?: CanvasType
   paperMaterialId: number
   paperSizeId: number
   coverTypeId: number
@@ -252,6 +254,7 @@ export interface Template {
   featureImageUrl?: string
   tempFeatureUrl?: string
   slides: Slide[]
+  slidesSplit?: Slide
   paperMaterial?: PaperMaterial
   paperSize?: PaperSize
   coverType?: CoverType
@@ -265,6 +268,7 @@ export interface Template {
   layouts?: LayoutInterface[]
 }
 
+export type CanvasType = 'Single' | 'Multi' | 'Split'
 export interface PaperMaterial {
   id: number
   name: string
@@ -285,6 +289,7 @@ export interface PaperMaterial {
 export interface Project {
   id: number
   name?: string
+  canvasType?: CanvasType
   imageUrl?: string
   tempUrl?: string
   userId?: number

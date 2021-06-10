@@ -104,6 +104,11 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor/canvas/split',
+    component: LoadableLoader(() => import('pages/editor/canvas-split')),
+    exact: true,
+  },
+  {
     path: '/editor/frame',
     component: LoadableLoader(() => import('pages/editor/frame')),
     exact: true,

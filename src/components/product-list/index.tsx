@@ -43,7 +43,7 @@ const ProductList: FC<Props> = ({ templates, onRadioChange, rowSize }) => {
         </Radio.Group>
       </div>
       <div className="flex flex-wrap gap-2 p-1 mx-auto ">
-        {templates.loading ? <Loading /> : renderTemplates(templates.data.list)}
+        {templates.loading ? <Loading /> : renderTemplates(templates.data?.list || [])}
       </div>
     </>
   )

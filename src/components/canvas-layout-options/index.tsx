@@ -64,7 +64,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4" hidden={template.canvasType === 'Split'}>
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes.map((each: PaperSize) => (
@@ -91,11 +91,19 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           ))}
         </div>
       </div>
-      <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
-        <CustomButton className="btn-primary">
-          <FormattedMessage id="start_book" />
-        </CustomButton>
-      </Link>
+      {template.canvasType === 'Split' ? (
+        <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+          <CustomButton className="btn-primary">
+            <FormattedMessage id="start_book" />
+          </CustomButton>
+        </Link>
+      ) : (
+        <Link to={`/editor/canvas/split?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+          <CustomButton className="btn-primary">
+            <FormattedMessage id="start_book" />
+          </CustomButton>
+        </Link>
+      )}
     </div>
   )
 }

@@ -108,6 +108,7 @@ const BookEditor: React.FC<Props> = ({
     bgStyles,
     slideWidth,
     slideHeight,
+    layout,
     layouts,
     loading,
     fetching,

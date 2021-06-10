@@ -56,8 +56,9 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
         ...params,
         name: 'New Project',
         templateId: id,
-        slides: template.slides,
+        slides: template.canvasType === 'Split' ? [template.slidesSplit] : template.slides,
       })
+
       const project: Project = await getProject(newProject?.data.id)
       dispatch(setCurrentProject(project))
       dispatch({
