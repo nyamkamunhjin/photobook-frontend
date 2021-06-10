@@ -170,6 +170,7 @@
   "additional_description": "Additional Description",
   "please_input_address": "Please input address",
   "please_input_additional_description": "Please input additional description",
+  "additional_notes": "Addtional notes on the shipping address",
 
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",
@@ -284,5 +285,8 @@
   "about_us": "About Us",
   "gift_card": "Gift Card",
   "framedprint": "Framed Print",
-  "photoprint": "Photo Print"
+  "photoprint": "Photo Print",
+  "paper_material_type": "Paper material type",
+  "duplicate": "Duplicate",
+  "remove": "Remove"
 }

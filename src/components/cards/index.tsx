@@ -1,12 +1,12 @@
 import React, { FC } from 'react'
 import { Template } from 'interfaces'
 import { Link } from 'react-router-dom'
+import { currencyFormat } from '../../utils'
 
 interface Props {
   template: Template
   rowSize?: 1 | 2 | 3 | 4 | 6
 }
-console.log(process.env)
 
 const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
   return (
@@ -26,8 +26,21 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
           />
         </div>
         <div className="flex flex-col items-center">
-          <p className="text-black">{template.name}</p>
-          <p className="text-black">{template.price} ₮</p>
+          <span className="text-gray-700 text-sm">{template.name}</span>
+          {template.discountPrice && (
+            <span className="text-gray-700 font-light ">
+              <span className="text-sm font-semibold line-through">{currencyFormat(template.price)}</span> ₮{' '}
+              <span className="text-bg font-semibold text-red-400">
+                (-{Math.round((1 - template.discountPrice / template.price) * 100)} %)
+              </span>
+            </span>
+          )}
+          <span className="font-light">
+            <span className="text-sm font-semibold">
+              {currencyFormat(template.discountPrice || template.price || 0)}
+            </span>{' '}
+            ₮
+          </span>
         </div>
       </article>
     </Link>

@@ -236,7 +236,8 @@ export interface Template {
   coverMaterialId: number
   frameMaterialId?: number
   templateTypeId: number
-  price?: number
+  price: number
+  discountPrice?: number
   description?: string
   imageUrl?: string
   tempUrl?: string
@@ -497,6 +498,66 @@ export type CartItem = {
   userDiscountId: number | null
   voucherId: number | null
   giftCardId: number | null
+  templateDiscount?: TemplateDiscount
+  userDiscount?: UserDiscount
+  voucher?: Voucher
+  giftCard?: GiftCard
+}
+
+/**
+ * Model UserDiscount
+ */
+
+export type UserDiscount = {
+  id: number
+  expireDate: Date
+  isUsed: boolean
+  userId: number
+  templateId: number
+  discountPercent: number
+  createdAt: Date
+}
+
+/**
+ * Model TemplateDiscount
+ */
+
+export type TemplateDiscount = {
+  id: number
+  expireDate: Date
+  templateId: number
+  discountPercent: number
+  createdAt: Date
+}
+
+/**
+ * Model Voucher
+ */
+
+export type Voucher = {
+  id: number
+  templateId: number
+  userId: number
+  discountPercent: number
+  createdAt: Date
+  isUsed: boolean
+  expireDate: Date
+}
+
+/**
+ * Model GiftCard
+ */
+
+export type GiftCard = {
+  id: number
+  imageUrl: string | null
+  code: string
+  activatedUserId: number | null
+  boughtUserId: number
+  discountAmount: number
+  isUsed: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export type Payment = {
