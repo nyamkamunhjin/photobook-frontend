@@ -138,6 +138,12 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">Deluxe Hardcover</span>
                 <span className="text-gray-500">Glass Frame</span>
                 <div className="border-t border-gray-300 flex flex-col">
+                  <span className="text-gray-500">
+                    <FormattedMessage id="applied_discounts" />:{' '}
+                    <span className="">
+                      {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                    </span>
+                  </span>
                   {item.discountedPrice !== 0 && (
                     <div className="flex justify-end items-center gap-1">
                       <span className="text-xs line-through">

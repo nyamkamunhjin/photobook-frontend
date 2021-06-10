@@ -129,6 +129,11 @@
   "order_name": "Order Name",
   "status": "Status",
   "total": "Total",
+  "applied_discount": "Applied Discount",
+  "user_discount": "User Discount",
+  "template_discount": "Template Discount",
+  "gift_card_discount": "Gift Card Discount",
+  "voucher_discount": "Voucher Discount",
 
   "unconfirmed": "Unconfirmed",
   "confirmed": "Confirmed",

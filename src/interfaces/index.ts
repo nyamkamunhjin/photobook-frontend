@@ -501,6 +501,8 @@ export type OrderItem = {
   project: Project
 }
 
+type DiscountTypes = 'template_discount' | 'user_discount' | 'gift_card_discount' | 'voucher_discount'
+
 export type CartItem = {
   id: number
   projectId: number
@@ -517,6 +519,7 @@ export type CartItem = {
   giftCard?: GiftCard
   price: number
   discountedPrice: number
+  appliedDiscountTypes: DiscountTypes[]
 }
 
 /**
