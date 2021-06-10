@@ -92,13 +92,13 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
         </div>
       </div>
       {template.canvasType === 'Split' ? (
-        <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+        <Link to={`/editor/canvas/split?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
           <CustomButton className="btn-primary">
             <FormattedMessage id="start_book" />
           </CustomButton>
         </Link>
       ) : (
-        <Link to={`/editor/canvas/split?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+        <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
           <CustomButton className="btn-primary">
             <FormattedMessage id="start_book" />
           </CustomButton>
