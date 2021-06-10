@@ -37,7 +37,7 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
           )}
           <span className="font-light">
             <span className="text-sm font-semibold">
-              {currencyFormat(template.discountPrice || 0) || currencyFormat(template.price)}
+              {currencyFormat(template.discountPrice || template.price || 0)}
             </span>{' '}
             ₮
           </span>
