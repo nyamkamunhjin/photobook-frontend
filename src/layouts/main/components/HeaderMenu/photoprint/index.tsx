@@ -16,7 +16,9 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
 
   return (
     <WidthLimiter className="flex flex-wrap sm:flex-nowrap bg-white  shadow" style={{ minHeight: '25rem' }}>
-      <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="photoprint" />
+      {imageLeft && (
+        <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="photoprint" />
+      )}
       <div className="mx-4 p-4">
         <p className="font-semibold ">
           <FormattedMessage id="categories" />
@@ -43,11 +45,13 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
           )}
         </ul>
       </div>
-      <img
-        className="w-52 object-cover ml-auto"
-        src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageRight}`}
-        alt="photobook"
-      />
+      {imageRight && (
+        <img
+          className="w-52 object-cover ml-auto"
+          src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageRight}`}
+          alt="photoprint"
+        />
+      )}
     </WidthLimiter>
   )
 }

@@ -9,7 +9,7 @@ import {
   updateProject as _updateProject,
   updateProjectSlides,
 } from 'api'
-import { BackgroundImage, Container, PaperSize, PObject, Project, Slide, Template } from 'interfaces'
+import { BackgroundImage, Container, PaperSize, ProjectCreate, PObject, Project, Slide, Template } from 'interfaces'
 import { getS3Images } from 'utils/aws-lib'
 import { SinglePageEditor } from 'configs'
 import { generateDuplicatedSlide, generateNewSlide } from 'utils/transformer-lib'
@@ -47,17 +47,18 @@ import {
 } from './types'
 
 // #region [Project]
-export const getProjects = (id: number, paperSizeId: number, uuid: string) => async (dispatch: any) => {
+export const getProjects = (id: number, params: ProjectCreate, uuid: string) => async (dispatch: any) => {
   try {
     if (uuid.length === 0) {
       dispatch({ type: CLEAR_PROJECT })
       const template: Template = await getTemplate(id)
       const newProject = await createProject({
+        ...params,
         name: 'New Project',
         templateId: id,
-        paperSizeId,
-        slides: template.slides,
+        slides: template.canvasType === 'Split' ? [template.slidesSplit] : template.slides,
       })
+
       const project: Project = await getProject(newProject?.data.id)
       dispatch(setCurrentProject(project))
       dispatch({
@@ -90,6 +91,7 @@ export const getProjects = (id: number, paperSizeId: number, uuid: string) => as
   }
   return undefined
 }
+
 // update project
 export const updateProject = (projectId: number, props: { paperSizeId: number }) => async (dispatch: any) => {
   try {

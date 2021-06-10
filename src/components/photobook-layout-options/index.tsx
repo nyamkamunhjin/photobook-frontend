@@ -73,7 +73,13 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
               } `}
               key={each.id}
               onClick={() => {
-                setSelectedState({ paperSize: each })
+                setSelectedState({
+                  paperSize: each,
+                  coverType: each.coverTypes?.[0],
+                  bindingType: each.coverTypes?.[0]?.bindingTypes?.[0],
+                  coverMaterial: each.coverTypes?.[0]?.coverMaterials?.[0],
+                  coverMaterialColor: each.coverTypes?.[0]?.coverMaterials?.[0]?.coverMaterialColors?.[0],
+                })
               }}
             >
               <div className="flex flex-col">
@@ -90,7 +96,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4" hidden={selectedState.paperSize?.coverTypes?.length === 0}>
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_type' })}</span>
         <div className="flex flex-wrap gap-4">
           {selectedState.paperSize?.coverTypes?.map((each: CoverType) => (
@@ -104,9 +110,9 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
                 setSelectedState((prev) => ({
                   ...prev,
                   coverType: each,
-                  bindingType: undefined,
-                  coverMaterial: undefined,
-                  coverMaterialColor: undefined,
+                  bindingType: each.bindingTypes?.[0],
+                  coverMaterial: each.coverMaterials?.[0],
+                  coverMaterialColor: each.coverMaterials?.[0]?.coverMaterialColors?.[0],
                 }))
               }}
             >
@@ -119,7 +125,10 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div
+        className="space-y-4"
+        hidden={!selectedState.coverType?.bindingTypes || selectedState.coverType?.bindingTypes?.length === 0}
+      >
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'binding_type' })}</span>
         <div className="flex flex-wrap gap-4">
           {selectedState.coverType?.bindingTypes?.map((each: BindingType) => (
@@ -141,7 +150,10 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
           ))}
         </div>
       </div>
-      <div className="space-y-4">
+      <div
+        className="space-y-4"
+        hidden={!selectedState.coverType?.coverMaterials || selectedState.coverType?.coverMaterials?.length === 0}
+      >
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_material' })}</span>
         <div className="flex flex-wrap gap-4">
           {selectedState.coverType?.coverMaterials?.map((each: CoverMaterial) => (
@@ -152,7 +164,11 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
               } `}
               key={each.id}
               onClick={() => {
-                setSelectedState((prev) => ({ ...prev, coverMaterial: each }))
+                setSelectedState((prev) => ({
+                  ...prev,
+                  coverMaterial: each,
+                  coverMaterialColor: each.coverMaterialColors?.[0],
+                }))
               }}
             >
               <div className="flex flex-col">
@@ -164,7 +180,13 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
         </div>
       </div>
 
-      <div className="space-y-4" hidden={selectedState.coverMaterial?.coverMaterialColors.length === 0}>
+      <div
+        className="space-y-4"
+        hidden={
+          !selectedState.coverMaterial?.coverMaterialColors ||
+          selectedState.coverMaterial?.coverMaterialColors.length === 0
+        }
+      >
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_material_color' })}</span>
         <div className="flex flex-wrap gap-4">
           <Slider

@@ -1,6 +1,6 @@
 import { Modal, Input, Form } from 'antd'
 import React, { FC, useEffect } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { CustomButton, Loading } from 'components'
 import { createShippingAddress, getShippingAddress, updateShippingAddress } from 'api'
 import { useRequest } from 'ahooks'
@@ -13,6 +13,7 @@ interface Props {
 }
 
 const ShippingAddressModal: FC<Props> = ({ id, setId, type, setType }) => {
+  const intl = useIntl()
   const shippingAddress = useRequest(getShippingAddress, {
     manual: true,
     onSuccess: () => {
@@ -153,12 +154,12 @@ const ShippingAddressModal: FC<Props> = ({ id, setId, type, setType }) => {
                 message: <FormattedMessage id="wrong_additional_description" />,
               },
               {
-                required: true,
+                // required: true,
                 message: <FormattedMessage id="please_input_additional_description" />,
               },
             ]}
           >
-            <Input.TextArea />
+            <Input.TextArea placeholder={intl.formatMessage({ id: 'additional_notes' })} />
           </Form.Item>
         </Form>
       ) : (

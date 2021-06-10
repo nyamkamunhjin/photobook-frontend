@@ -24,3 +24,5 @@ export const VerticalLayout = {
 }
 
 export const SinglePageEditor = 'canvas,frame,photoprint'
+
+export const CanvasFormat = ['Single', 'Multi', 'Split']

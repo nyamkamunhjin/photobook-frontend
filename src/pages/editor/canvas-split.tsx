@@ -44,16 +44,9 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import {
-  Header,
-  BackgroundSingleImages,
-  FooterListTools,
-  SideButtons,
-  SideBarPanel,
-  Toolbar,
-} from './components/layout'
+import { Header, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
-import { Editor, renderBackground, renderObject } from './components/utils'
+import { Editor, renderObject } from './components/utils'
 import './components/styles/editor.scss'
 
 interface Props {
@@ -83,18 +76,12 @@ interface Props {
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
-  addNewSlide,
-  duplicateSlide,
-  reOrderSlide,
-  deleteSlide,
   editor,
   loadObjects,
   loadContainers,
   updateGroupContainer,
   saveProjectAttribute,
-  updateBackground,
   updateObject,
-  setBackgrounds,
   updateHistory,
   loadBackgrounds,
   addLayout,
@@ -108,14 +95,13 @@ const BookEditor: React.FC<Props> = ({
     bgStyles,
     slideWidth,
     slideHeight,
-    layout,
     layouts,
     loading,
     fetching,
   },
 }) => {
   const [template] = useQueryState('template', 1)
-  const [paperSizeId] = useQueryState('paperSizeId', 1)
+  const [paperSizeId] = useQueryState('paperSize', 1)
   const [uuid, setUuid] = useQueryState('project', '')
 
   const slideViewRef: any = useRef(null)
@@ -126,7 +112,6 @@ const BookEditor: React.FC<Props> = ({
   const scaledContainerRef = useRef<any>(null)
   const groupRef = useRef<any>(null)
   const [overflow, setOverflow] = useState<string>('hidden')
-  const [refreshing, setRefreshing] = useBoolean(false)
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
 
@@ -147,7 +132,7 @@ const BookEditor: React.FC<Props> = ({
       width: any
       height: any
     }>()
-  const [_slideIndex, setSlideIndex] = useState<number>(0)
+  const _slideIndex = 0
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
@@ -210,68 +195,6 @@ const BookEditor: React.FC<Props> = ({
       setIsTextEditing(false)
       setTextObjectIndex(_index)
     }
-  }
-
-  const nextSlide = () => {
-    if (_slideIndex < currentProject.slides.length - 1) {
-      changeSlideIndex(_slideIndex + 1)
-    }
-  }
-
-  const onAddSlide = (projectId: number, slideIndex: number) => {
-    setRefreshing.setTrue()
-    addNewSlide(projectId, slideIndex).then(() => {
-      changeSlideIndex(_slideIndex + 1)
-      setRefreshing.setFalse()
-    })
-  }
-
-  const onDuplicateSlide = (projectId: number, slideIndex: number) => {
-    setRefreshing.setTrue()
-    duplicateSlide(projectId, slideIndex, currentProject.slides[slideIndex]).then(() => {
-      changeSlideIndex(_slideIndex + 1)
-      setRefreshing.setFalse()
-    })
-  }
-
-  const onReOrderSlide = (projectId: number, slides: Slide[]) => {
-    setRefreshing.setTrue()
-    reOrderSlide(projectId, slides).then(() => {
-      setRefreshing.setFalse()
-      editors.deSelectObject()
-      setSlideIndex(0)
-    })
-  }
-
-  const onDeleteSlide = (projectId: number, slideIndex: number) => {
-    if (_slideIndex !== 0) {
-      setRefreshing.setTrue()
-      deleteSlide(projectId, slideIndex).then(() => {
-        setRefreshing.setFalse()
-        editors.deSelectObject()
-        setSlideIndex(_slideIndex - 1)
-      })
-    }
-  }
-
-  const prevSlide = () => {
-    if (_slideIndex !== 0) {
-      changeSlideIndex(_slideIndex - 1)
-    }
-  }
-
-  const changeSlideIndex = (index: number) => {
-    saveObjects()
-    editors.deSelectObject()
-    setSlideIndex(index)
-  }
-
-  const hasNext = () => {
-    return !(_slideIndex === currentProject.slides.length - 1)
-  }
-
-  const hasPrevious = () => {
-    return !(_slideIndex === 0)
   }
 
   const saveObjects = async () => {
@@ -395,32 +318,6 @@ const BookEditor: React.FC<Props> = ({
     }
   }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    if (editor.dragStart) {
-      if (editor.type === 'backgrounds') {
-        const backgroundDrops: any = document.querySelectorAll('.background-drop')
-        backgroundDrops.forEach((background: any) => {
-          background.style.display = 'block'
-        })
-      } else if (editor.type === 'layouts') {
-        const layoutDrops: any = document.querySelectorAll('.layout-drop')
-        layoutDrops.forEach((_layout: any) => {
-          _layout.style.display = 'block'
-        })
-      }
-    } else if (editor.type === 'backgrounds') {
-      const backgroundDrops: any = document.querySelectorAll('.background-drop')
-      backgroundDrops.forEach((background: any) => {
-        background.style.display = 'none'
-      })
-    } else if (editor.type === 'layouts') {
-      const layoutDrops: any = document.querySelectorAll('.layout-drop')
-      layoutDrops.forEach((_layout: any) => {
-        _layout.style.display = 'none'
-      })
-    }
-  }, [editor.dragStart, editor.type])
-
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
@@ -459,30 +356,9 @@ const BookEditor: React.FC<Props> = ({
           >
             <div id="slide" style={{ overflow }}>
               <div id="scaled_container" ref={scaledContainerRef}>
-                {!loading && (
-                  <BackgroundSingleImages
-                    scale={scale}
-                    editor={editor}
-                    slideIndex={_slideIndex}
-                    backgrounds={backgrounds}
-                    deSelectObject={editors.deSelectObject}
-                    setBackgrounds={setBackgrounds}
-                    updateBackground={updateBackground}
-                    updateHistory={updateHistory}
-                    onBackgroundDropDragOver={editors.onBackgroundDropDragOver}
-                    onBackgroundDropDragLeave={editors.onBackgroundDropDragLeave}
-                  />
-                )}
                 <div ref={canvasRef} id="canvas_container">
                   {!loading && (
                     <>
-                      <div id="background">
-                        {renderBackground({
-                          backgrounds,
-                          bgStyles,
-                          updateBackground,
-                        })}
-                      </div>
                       <div id="container">
                         {objects.map((o: PObject, i: number) => {
                           return (

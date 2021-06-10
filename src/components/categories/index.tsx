@@ -2,6 +2,7 @@ import { Menu } from 'antd'
 import SubMenu from 'antd/lib/menu/SubMenu'
 import React, { FC } from 'react'
 import { Category } from 'interfaces'
+import { FormattedMessage } from 'react-intl'
 import { Loading } from '..'
 
 interface Props {
@@ -36,18 +37,25 @@ const recursiveMenuGenerator: (categories: Category[], subCategories?: number[])
 }
 
 const ProductCategories: FC<Props> = ({ onMenuClick, categories, selectedCategory }) => {
-  return categories.loading ? (
-    <Loading />
-  ) : (
-    <Menu
-      mode="inline"
-      defaultOpenKeys={['1']}
-      defaultSelectedKeys={[selectedCategory.toString()]}
-      onClick={onMenuClick}
-    >
-      <Menu.Item key="all">All categories</Menu.Item>
-      {recursiveMenuGenerator(categories.data.list)}
-    </Menu>
+  return (
+    <div>
+      <h2 className="text-2xl font-bold">
+        <FormattedMessage id="categories" />
+      </h2>
+      {categories.loading ? (
+        <Loading />
+      ) : (
+        <Menu
+          mode="inline"
+          defaultOpenKeys={['1']}
+          defaultSelectedKeys={[selectedCategory.toString()]}
+          onClick={onMenuClick}
+        >
+          <Menu.Item key="all">All categories</Menu.Item>
+          {recursiveMenuGenerator(categories.data.list)}
+        </Menu>
+      )}
+    </div>
   )
 }
 

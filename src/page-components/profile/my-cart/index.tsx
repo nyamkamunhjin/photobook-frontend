@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
 import { SelectValue } from 'antd/lib/select'
+import { currencyFormat } from 'utils'
 
 const MyCart: React.FC = () => {
   const intl = useIntl()
@@ -29,6 +30,7 @@ const MyCart: React.FC = () => {
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
   })
+
   const shoppingCart = useRequest(listShoppingCart, {
     manual: true,
   })
@@ -60,6 +62,7 @@ const MyCart: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  // get shopping cart price summary
   useEffect(() => {
     summary.run({
       isShipping: deliveryChecked,
@@ -134,7 +137,25 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">Premium Layflat Binding</span>
                 <span className="text-gray-500">Deluxe Hardcover</span>
                 <span className="text-gray-500">Glass Frame</span>
-                <span className="text-sm text-gray-700">{Intl.NumberFormat().format(item.project.price || 0)} ₮</span>
+                <div className="border-t border-gray-300 flex flex-col">
+                  <span className="text-gray-500">
+                    <FormattedMessage id="applied_discounts" />:{' '}
+                    <span className="">
+                      {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                    </span>
+                  </span>
+                  {item.discountedPrice !== 0 && (
+                    <div className="flex justify-end items-center gap-1">
+                      <span className="text-xs line-through">
+                        {currencyFormat(item.discountedPrice + item.price)} ₮
+                      </span>
+                      <span className="text-red-500">
+                        (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-sm text-gray-700">{currencyFormat(item.price)} ₮</span>
+                </div>
               </div>
             </List.Item>
           )}
@@ -166,6 +187,7 @@ export default MyCart
 interface OrderSummaryProps {
   price: number
   vatFee: number
+  discountedPrice: number
   totalPrice: number
   daysToDeliver: number
   shippingFee: number
@@ -175,11 +197,13 @@ interface OrderSummaryProps {
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   price,
   vatFee,
+  discountedPrice,
   totalPrice,
   daysToDeliver,
   shippingFee,
   onCreateOrder,
 }) => {
+  const actualPrice = price + discountedPrice
   return (
     <div className="flex flex-col gap-2 bg-gray-100 max-w-xs w-full p-4">
       <div className="flex justify-between">
@@ -187,26 +211,34 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <FormattedMessage id="order_summary" />
         </span>
       </div>
+
       <hr className="border-t border-solid border-gray-300" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="order_subtotal" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(price)} ₮</span>
+        <span className="font-light">{currencyFormat(actualPrice)} ₮</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-sm font-light text-gray-700">
+          <FormattedMessage id="total_discount" />
+        </span>
+        <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
       </div>
 
+      <hr className="border-t border-solid border-gray-300" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="shipping_fee" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(shippingFee)} ₮</span>
+        <span className="font-light">{currencyFormat(shippingFee)} ₮</span>
       </div>
 
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="vat_fee" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(vatFee)} ₮</span>
+        <span className="font-light">{currencyFormat(vatFee)} ₮</span>
       </div>
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
@@ -221,7 +253,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="total" />
         </span>
-        <span className="font-light">{Intl.NumberFormat().format(totalPrice)} ₮</span>
+        <span className="font-light">{currencyFormat(totalPrice)} ₮</span>
       </div>
       <CustomButton className="mt-4 btn-accept" onClick={() => onCreateOrder(shippingFee !== 0)}>
         <FormattedMessage id="order_now" />

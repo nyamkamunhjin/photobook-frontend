@@ -27,6 +27,14 @@ export interface StyleType {
   zIndex?: string
   filter?: string
 }
+
+export interface ProjectCreate {
+  paperSizeId: number,
+  coverTypeId?: number,
+  bindingTypeId?: number
+  coverMaterialId?: number
+  coverColorId?: number
+}
 export interface RGB {
   r?: number
   b?: number
@@ -228,7 +236,9 @@ export interface Slide {
 
 export interface Template {
   id: number
+  editable: boolean
   name: string
+  canvasType?: CanvasType
   paperMaterialId: number
   paperSizeId: number
   coverTypeId: number
@@ -244,6 +254,7 @@ export interface Template {
   featureImageUrl?: string
   tempFeatureUrl?: string
   slides: Slide[]
+  slidesSplit?: Slide
   paperMaterial?: PaperMaterial
   paperSize?: PaperSize
   coverType?: CoverType
@@ -257,6 +268,7 @@ export interface Template {
   layouts?: LayoutInterface[]
 }
 
+export type CanvasType = 'Single' | 'Multi' | 'Split'
 export interface PaperMaterial {
   id: number
   name: string
@@ -277,6 +289,7 @@ export interface PaperMaterial {
 export interface Project {
   id: number
   name?: string
+  canvasType?: CanvasType
   imageUrl?: string
   tempUrl?: string
   userId?: number
@@ -488,6 +501,8 @@ export type OrderItem = {
   project: Project
 }
 
+type DiscountTypes = 'template_discount' | 'user_discount' | 'gift_card_discount' | 'voucher_discount'
+
 export type CartItem = {
   id: number
   projectId: number
@@ -498,6 +513,69 @@ export type CartItem = {
   userDiscountId: number | null
   voucherId: number | null
   giftCardId: number | null
+  templateDiscount?: TemplateDiscount
+  userDiscount?: UserDiscount
+  voucher?: Voucher
+  giftCard?: GiftCard
+  price: number
+  discountedPrice: number
+  appliedDiscountTypes: DiscountTypes[]
+}
+
+/**
+ * Model UserDiscount
+ */
+
+export type UserDiscount = {
+  id: number
+  expireDate: Date
+  isUsed: boolean
+  userId: number
+  templateId: number
+  discountPercent: number
+  createdAt: Date
+}
+
+/**
+ * Model TemplateDiscount
+ */
+
+export type TemplateDiscount = {
+  id: number
+  expireDate: Date
+  templateId: number
+  discountPercent: number
+  createdAt: Date
+}
+
+/**
+ * Model Voucher
+ */
+
+export type Voucher = {
+  id: number
+  templateId: number
+  userId: number
+  discountPercent: number
+  createdAt: Date
+  isUsed: boolean
+  expireDate: Date
+}
+
+/**
+ * Model GiftCard
+ */
+
+export type GiftCard = {
+  id: number
+  imageUrl: string | null
+  code: string
+  activatedUserId: number | null
+  boughtUserId: number
+  discountAmount: number
+  isUsed: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export type Payment = {
