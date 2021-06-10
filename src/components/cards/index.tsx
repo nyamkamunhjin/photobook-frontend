@@ -27,7 +27,7 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
         </div>
         <div className="flex flex-col items-center">
           <span className="text-gray-700 text-sm">{template.name}</span>
-          {template.discountPrice && (
+          {typeof template.discountPrice === 'number' && (
             <span className="text-gray-700 font-light ">
               <span className="text-sm font-semibold line-through">{currencyFormat(template.price)}</span> ₮{' '}
               <span className="text-bg font-semibold text-red-400">
@@ -36,10 +36,7 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
             </span>
           )}
           <span className="font-light">
-            <span className="text-sm font-semibold">
-              {currencyFormat(template.discountPrice || template.price || 0)}
-            </span>{' '}
-            ₮
+            <span className="text-sm font-semibold">{currencyFormat(template.discountPrice || template.price)}</span> ₮
           </span>
         </div>
       </article>
