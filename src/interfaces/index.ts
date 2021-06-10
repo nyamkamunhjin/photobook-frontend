@@ -502,6 +502,8 @@ export type CartItem = {
   userDiscount?: UserDiscount
   voucher?: Voucher
   giftCard?: GiftCard
+  price: number
+  discountedPrice: number
 }
 
 /**

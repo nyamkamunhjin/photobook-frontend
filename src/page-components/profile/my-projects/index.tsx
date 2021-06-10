@@ -38,7 +38,7 @@ const MyProjects: FC = () => {
       <div>
         <List
           itemLayout="horizontal"
-          dataSource={projects.data?.list}
+          dataSource={projects.data?.list || []}
           loading={projects.loading}
           pagination={{
             ...projects.pagination,

@@ -137,9 +137,18 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">Premium Layflat Binding</span>
                 <span className="text-gray-500">Deluxe Hardcover</span>
                 <span className="text-gray-500">Glass Frame</span>
-                <div className="border-t border-gray-300">
-                  {/* <span className="text-sm text-gray-700">{item.userDiscount?.discountPercent}</span> */}
-                  <span className="text-sm text-gray-700">{currencyFormat(item.project.price || 0)} ₮</span>
+                <div className="border-t border-gray-300 flex flex-col">
+                  {item.discountedPrice !== 0 && (
+                    <div className="flex justify-end items-center gap-1">
+                      <span className="text-xs line-through">
+                        {currencyFormat(item.discountedPrice + item.price)} ₮
+                      </span>
+                      <span className="text-red-500">
+                        (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-sm text-gray-700">{currencyFormat(item.price)} ₮</span>
                 </div>
               </div>
             </List.Item>
@@ -172,6 +181,7 @@ export default MyCart
 interface OrderSummaryProps {
   price: number
   vatFee: number
+  discountedPrice: number
   totalPrice: number
   daysToDeliver: number
   shippingFee: number
@@ -181,11 +191,13 @@ interface OrderSummaryProps {
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   price,
   vatFee,
+  discountedPrice,
   totalPrice,
   daysToDeliver,
   shippingFee,
   onCreateOrder,
 }) => {
+  const actualPrice = price + discountedPrice
   return (
     <div className="flex flex-col gap-2 bg-gray-100 max-w-xs w-full p-4">
       <div className="flex justify-between">
@@ -193,14 +205,22 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <FormattedMessage id="order_summary" />
         </span>
       </div>
+
       <hr className="border-t border-solid border-gray-300" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="order_subtotal" />
         </span>
-        <span className="font-light">{currencyFormat(price)} ₮</span>
+        <span className="font-light">{currencyFormat(actualPrice)} ₮</span>
+      </div>
+      <div className="flex justify-between">
+        <span className="text-sm font-light text-gray-700">
+          <FormattedMessage id="total_discount" />
+        </span>
+        <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
       </div>
 
+      <hr className="border-t border-solid border-gray-300" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="shipping_fee" />

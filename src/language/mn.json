@@ -116,8 +116,9 @@
 
   "order_summary": "Order summary",
   "shipping_fee": "Shipping fee",
-  "vat_fee": "Vat Fee",
+  "vat_fee": "Vat fee",
   "order_subtotal": "Order subtotal",
+  "total_discount": "Total discount",
   "order_now": "Order now",
   "delivery_date": "Delivery date",
   "delivery": "Delivery",
