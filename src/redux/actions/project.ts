@@ -1,4 +1,3 @@
-import { Storage } from 'aws-amplify'
 import {
   createProject,
   getPaperSize,

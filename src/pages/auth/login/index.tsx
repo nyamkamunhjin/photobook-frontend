@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Input, Button, notification } from 'antd'
+import { Form, Input, notification } from 'antd'
 import { useDispatch } from 'react-redux'
 import { FacebookFilled, GoogleOutlined } from '@ant-design/icons'
 import { FormattedMessage, useIntl } from 'react-intl'

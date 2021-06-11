@@ -39,7 +39,7 @@
     "no-use-before-define": 0,
     "no-param-reassign": 0,
     "import/no-unresolved": 0,
-    "no-console": 1,
+    "no-console": "off",
     "camelcase": "off",
     "react/jsx-curly-newline": "off",
     "react-hooks/rules-of-hooks": "error",
