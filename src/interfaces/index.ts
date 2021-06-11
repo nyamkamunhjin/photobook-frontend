@@ -29,8 +29,8 @@ export interface StyleType {
 }
 
 export interface ProjectCreate {
-  paperSizeId: number,
-  coverTypeId?: number,
+  paperSizeId: number
+  coverTypeId?: number
   bindingTypeId?: number
   coverMaterialId?: number
   coverColorId?: number
