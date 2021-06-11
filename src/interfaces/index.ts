@@ -232,6 +232,14 @@ export interface Slide {
   containers: Container[]
   backgrounds: BackgroundImage[]
   objects: PObject[]
+  object?: PObject
+  createdAt?: Date
+}
+
+export interface ImageSlide {
+  slideId: string
+  name: string
+  object: PObject[]
 }
 
 export interface Template {

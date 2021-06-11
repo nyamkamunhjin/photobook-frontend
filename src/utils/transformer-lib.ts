@@ -367,6 +367,18 @@ export const generateNewSlide = () => ({
   backgrounds: [],
 })
 
+export const generateNewImage = (image: string) => ({
+  slideId: uuidv4(),
+  object: {
+    id: uuidv4(),
+    className: 'object',
+    props: {
+      imageStyle: {},
+      imageUrl: image,
+    },
+  },
+})
+
 export const generateDuplicatedSlide = (slide: Slide) => ({
   ...slide,
   slideId: uuidv4(),

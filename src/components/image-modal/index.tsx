@@ -41,7 +41,7 @@ const ImageModal: React.FC<Props> = ({ children, loading, onCancel, type = 'defa
   return (
     <Modal
       {...props}
-      style={{ top: '1rem' }}
+      style={{ top: '1rem', height: 450 }}
       width={calcWidth()}
       closable
       maskClosable={false}

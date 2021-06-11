@@ -31,20 +31,20 @@ import {
 } from 'utils/transformer-lib'
 
 interface Props {
-  setTextObjectIndex: (index: number) => void
+  setTextObjectIndex?: (index: number) => void
   setObjectIndex: (index: number) => void
   setOverflow: (overflow: string) => void
-  setIsTextEditing: (text: boolean) => void
+  setIsTextEditing?: (text: boolean) => void
   setGroupObjects?: (object: any) => void
   setGroupStyles?: (object: any) => void
   setObjectType: (object: ObjectType) => void
-  updateGroupContainer: (props: { containers: Container[] }) => void
+  updateGroupContainer?: (props: { containers: Container[] }) => void
   updateObject: (props: { object: PObject }) => void
   loadBackgrounds?: (backgrounds: Object[]) => void
   updateHistory: (historyType: string, props: HistoryProps) => void
   addLayout?: (props: { objects: Object[]; layout: FullLayout }) => void
-  addObject: (props: { object: Object }) => void
-  removeObject: (props: { object: Object; container: Object }) => void
+  addObject?: (props: { object: Object }) => void
+  removeObject?: (props: { object: Object; container: Object }) => void
   setObject: (object: any) => void
   scaledContainerRef: any
   slideContainerRef?: any
@@ -62,7 +62,7 @@ interface Props {
   _objectType?: ObjectType
   _border?: number
   _treshhold?: number
-  _isTextEditing: boolean
+  _isTextEditing?: boolean
   _groupObjects: any
   _object?: any
   _groupStyles: any
@@ -116,7 +116,7 @@ export default class Editor {
   overflow: string
   setOverflow: any
 
-  _isTextEditing: boolean
+  _isTextEditing = false
   setIsTextEditing: any
 
   setObjectType: any
@@ -136,7 +136,6 @@ export default class Editor {
     this.updateHistory = props.updateHistory
     this.updateObject = props.updateObject
     this.addLayout = props.addLayout
-    this._isTextEditing = props._isTextEditing
     this.setIsTextEditing = props.setIsTextEditing
     this.scale = props.scale
     this.setGroupObjects = props.setGroupObjects
@@ -144,8 +143,11 @@ export default class Editor {
     this.slideViewRef = props.slideViewRef
     this.scaledContainerRef = props.scaledContainerRef
     this._groupStyles = props._groupStyles
-    if (props._objectType) this._objectType = props._objectType
     this.overflow = props.overflow
+    if (props._objectType) this._objectType = props._objectType
+    if (props._isTextEditing !== undefined) {
+      this._isTextEditing = props._isTextEditing
+    }
     if (props.slideContainerRef) {
       this.slideContainerRef = props.slideContainerRef
     }

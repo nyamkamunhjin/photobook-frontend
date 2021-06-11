@@ -44,7 +44,7 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import { Header, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
+import { Header, FooterListTools, SideBarPanel } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderObject } from './components/utils'
 import './components/styles/editor.scss'

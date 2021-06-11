@@ -6,6 +6,7 @@ import {
   getTemplate,
   listImageCategoryByProject,
   updateProject as _updateProject,
+  updateProjectPrintSlides,
   updateProjectSlides,
 } from 'api'
 import { BackgroundImage, Container, PaperSize, ProjectCreate, PObject, Project, Slide, Template } from 'interfaces'
@@ -64,6 +65,46 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
         type: GET_IMAGES,
         payload: project.images,
       })
+      return project.uuid
+    } else {
+      dispatch({ type: CLEAR_PROJECT })
+      const project: Project = await getProjectByUuid(uuid)
+      const imageCategories = await listImageCategoryByProject(project.templateId)
+      const images = await getS3Images(project.images || [])
+      dispatch(setCurrentProject(project))
+      dispatch({
+        type: GET_CATEGORIES,
+        payload: imageCategories,
+      })
+
+      dispatch({
+        type: GET_IMAGES,
+        payload: images,
+      })
+      return uuid
+    }
+  } catch (err) {
+    dispatch({
+      type: PROJECTS_ERROR,
+      payload: { msg: err },
+    })
+  }
+  return undefined
+}
+
+// #region [getPrintProject]
+export const getPrintProject = (id: number, params: ProjectCreate, uuid: string) => async (dispatch: any) => {
+  try {
+    if (uuid.length === 0) {
+      dispatch({ type: CLEAR_PROJECT })
+      const newProject = await createProject({
+        ...params,
+        name: 'New Print',
+        templateId: 1,
+        slides: [],
+      })
+      const project: Project = await getProject(newProject?.data.id)
+      dispatch(setCurrentProject(project))
       return project.uuid
     } else {
       dispatch({ type: CLEAR_PROJECT })
@@ -261,6 +302,59 @@ export const loadBackgrounds = (backgrounds: Object[]) => async (dispatch: any) 
     console.error('LOAD Background', err)
     dispatch({
       type: LOAD_ERROR,
+      payload: { msg: err },
+    })
+  }
+}
+// Add new slide
+export const addNewPrintSlide = (projectId: number, imageUrls: string[]) => async (dispatch: any) => {
+  try {
+    const newSlide = await updateProjectPrintSlides(projectId, {
+      push: imageUrls,
+    })
+
+    dispatch({
+      type: NEW_SLIDE,
+      payload: { slide: newSlide, slideIndex: 0 },
+    })
+  } catch (err) {
+    dispatch({
+      type: SLIDES_ERROR,
+      payload: { msg: err },
+    })
+  }
+}
+// Duplicate slide
+export const duplicatePrintSlide = (projectId: number, slideIndex: number, slide: Slide) => async (dispatch: any) => {
+  try {
+    const newSlide = generateDuplicatedSlide(slide)
+    await updateProjectSlides(projectId, {
+      insert: [newSlide, slideIndex + 1],
+    })
+    dispatch({
+      type: NEW_SLIDE,
+      payload: { slide: newSlide, slideIndex: slideIndex + 1 },
+    })
+  } catch (err) {
+    dispatch({
+      type: SLIDES_ERROR,
+      payload: { msg: err },
+    })
+  }
+}
+// delete printslidea
+export const deletePrintSlide = (projectId: number, slideIndex: number) => async (dispatch: any) => {
+  try {
+    await updateProjectSlides(projectId, {
+      pop: slideIndex,
+    })
+    dispatch({
+      type: DELETE_SLIDE,
+      payload: slideIndex,
+    })
+  } catch (err) {
+    dispatch({
+      type: SLIDES_ERROR,
       payload: { msg: err },
     })
   }

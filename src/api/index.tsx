@@ -408,6 +408,15 @@ export const updateProjectSlides = async (id: number, data: Object) => {
   return response
 }
 
+export const updateProjectPrintSlides = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `project/${id}/print/slides`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
 export const getProject = async (id: string) => {
   const response = await BaseRequest({
     url: `project/${id}`,
@@ -897,7 +906,6 @@ export const getGoogleImages = async (token?: string) => {
     url: `google/images?nextToken=${token}`,
     method: 'GET',
   })
-  console.log(response?.data)
   return { list: response?.data.mediaItems, nextId: response?.data.nextPageToken }
 }
 // #endregion [Google]

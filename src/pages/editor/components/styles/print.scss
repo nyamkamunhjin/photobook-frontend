@@ -1,0 +1,17 @@
+.controller_container {
+  flex: 0 0 80px;
+  height: 80px;
+  display: flex;
+}
+
+.wrapper_container {
+  position: relative;
+  display: flex;
+  flex: 1;
+  width: 100%;
+  padding: 10px 55px;
+}
+
+.advanced_container {
+  margin: auto;
+}

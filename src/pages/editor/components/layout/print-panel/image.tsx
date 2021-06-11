@@ -20,12 +20,21 @@ interface Props extends React.HTMLProps<HTMLImageElement> {
   placeholderStyle?: Object
 }
 
+const transformers = {
+  n: 't',
+  s: 'b',
+  e: 'r',
+  w: 'l',
+  ne: 'tr',
+  nw: 'tl',
+  se: 'br',
+  sw: 'bl',
+}
 const Image: React.FC<Props> = ({
   object,
   updateObject,
   style,
   className,
-  tempUrl,
   edit = true,
   imageUrl,
   imageStyle,
@@ -156,22 +165,19 @@ const Image: React.FC<Props> = ({
       <img
         ref={imageRef}
         alt="object"
+        draggable={false}
         className="image"
         data-imageurl={imageUrl}
         style={{
           ...imageStyle,
           filter: _filter,
-          // WebkitMaskSize: `${width - _borderWidth * 2}px ${height - _borderWidth * 2}px`,
           WebkitMaskSize: 'contain',
           WebkitMaskRepeat: 'no-repeat',
+          objectFit: 'contain',
           ...(object?.props?.maskStyle || {}),
         }}
         src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-      />
-      <PlusSquareOutlined
-        className="plus"
-        style={{ display: imageStyle.display === 'none' && edit ? 'block' : 'none' }}
       />
       {imageUrl && willBlur && (
         <Tooltip title="It will be blurred">
@@ -180,7 +186,11 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
-      {/* <div style={{borderColor, borderWidth, opacity}} className="frame"></div> */}
+      {Object.keys(transformers).map((t: string) => {
+        const cursor = `${t}-resize`
+        const resize = transformers[t]
+        return <div key={t} style={{ cursor }} className={`resize ${resize}`} />
+      })}
       <div
         style={{
           visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
