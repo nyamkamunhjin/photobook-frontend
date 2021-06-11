@@ -1086,3 +1086,28 @@ export const createOrder = async (data: { isShipping: boolean; address?: number 
   return response
 }
 // #endregion [Order]
+
+// #region [Voucher]
+export const listVoucher = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `voucher/user?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getVoucher = async (id: string) => {
+  const response = await BaseRequest({
+    url: `voucher/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+// #endregion [Voucher]

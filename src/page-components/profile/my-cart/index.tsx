@@ -138,12 +138,14 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">Deluxe Hardcover</span>
                 <span className="text-gray-500">Glass Frame</span>
                 <div className="border-t border-gray-300 flex flex-col">
-                  <span className="text-gray-500">
-                    <FormattedMessage id="applied_discounts" />:{' '}
-                    <span className="">
-                      {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                  {item.appliedDiscountTypes.length > 0 && (
+                    <span className="text-gray-500">
+                      <FormattedMessage id="applied_discounts" />:{' '}
+                      <span className="">
+                        {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                      </span>
                     </span>
-                  </span>
+                  )}
                   {item.discountedPrice !== 0 && (
                     <div className="flex justify-end items-center gap-1">
                       <span className="text-xs line-through">
@@ -219,12 +221,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         </span>
         <span className="font-light">{currencyFormat(actualPrice)} ₮</span>
       </div>
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="total_discount" />
-        </span>
-        <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
-      </div>
+      {discountedPrice !== 0 && (
+        <div className="flex justify-between">
+          <span className="text-sm font-light text-gray-700">
+            <FormattedMessage id="total_discount" />
+          </span>
+          <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
+        </div>
+      )}
 
       <hr className="border-t border-solid border-gray-300" />
       <div className="flex justify-between">
