@@ -294,5 +294,6 @@
   "photoprint": "Photo Print",
   "paper_material_type": "Paper material type",
   "duplicate": "Duplicate",
-  "remove": "Remove"
+  "remove": "Remove",
+  "format": "Format"
 }

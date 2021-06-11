@@ -322,31 +322,7 @@ const BookEditor: React.FC<Props> = ({
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
         <div id="editor_container" ref={editorContainerRef}>
-          <Toolbar
-            object={_object}
-            objectType={_objectType}
-            index={_index}
-            objects={objects}
-            updateObject={updateObject}
-            updateHistory={updateHistory}
-            moveResizers={editors.moveResizers}
-            removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
-            rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
-            rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
-            flipObject={() => editors.onFlipObject(_index, objects)}
-            sendForward={() => editors.onSendForward(_index, objects)}
-            sendBackward={() => editors.onSendBackward(_index, objects)}
-            removeObject={() => editors.onRemoveObject(containers, objects, _index)}
-          />
           <div id="selection" hidden ref={selectionRef} />
-          <SideButtons
-            createImage={(e) => editors.createImage(e, objects)}
-            createText={() => editors.createText(objects)}
-            createSquare={() => editors.createSquare(objects)}
-            createEclipse={() => editors.createEclipse(objects)}
-            settings={false}
-            type="canvas"
-          />
           <div
             id="slide_container"
             onMouseDown={(e) => editors.onSlideMouseDown(e, _index, containers)}
@@ -367,12 +343,8 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={o.style as React.CSSProperties}
                               className={o.className}
-                              onMouseDown={(e) => editors.startDrag(e, o, i, objects)}
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
-                              onDragOver={editors.onDragObjectOver}
-                              onDragLeave={(e) => editors.onDragObjectLeave(e, _index)}
-                              onDoubleClick={(e) => editors.onObjectDoubleClick(e, o, i)}
                               onInput={(e) => editors.updateText(_index, objects, e)}
                               onPaste={(e) => editors.updateText(_index, objects, e)}
                               onBlur={(e) => {
@@ -454,7 +426,17 @@ const BookEditor: React.FC<Props> = ({
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasFrames={false} hasLayout={false} hasImage />}
+        {!preview && (
+          <SideBarPanel
+            layoutGroups={layouts}
+            hasBackground={false}
+            hasFrames={false}
+            hasLayout={false}
+            hasMask={false}
+            hasClipArt={false}
+            hasImage
+          />
+        )}
         <div className="EditorPanel">
           {preview ? <Preview slideIndex={_slideIndex} /> : renderEditor}
           <FooterListTools

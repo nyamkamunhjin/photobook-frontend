@@ -56,7 +56,11 @@ const MyProjects: FC = () => {
                     if (item.templateType?.name === 'photobook') {
                       history.push(`/editor?project=${item.uuid}`)
                     } else if (item.templateType?.name === 'canvas') {
-                      history.push(`/editor/canvas?project=${item.uuid}`)
+                      if (item.canvasType === 'Split') {
+                        history.push(`/editor/canvas/split?project=${item.uuid}`)
+                      } else {
+                        history.push(`/editor/canvas?project=${item.uuid}`)
+                      }
                     } else if (item.templateType?.name === 'frame') {
                       history.push(`/editor/frame?project=${item.uuid}`)
                     } else if (item.templateType?.name === 'photoprint') {
