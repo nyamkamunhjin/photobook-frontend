@@ -568,6 +568,7 @@ export type Voucher = {
   createdAt: Date
   isUsed: boolean
   expireDate: Date
+  template?: Template
 }
 
 /**

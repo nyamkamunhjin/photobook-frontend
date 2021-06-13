@@ -135,6 +135,9 @@
   "gift_card_discount": "Gift Card discount",
   "voucher_discount": "Voucher discount",
   "vouchers": "Vouchers",
+  "discount": "Discount",
+  "used": "Used",
+  "not_used": "Not Used",
 
   "unconfirmed": "Unconfirmed",
   "confirmed": "Confirmed",
