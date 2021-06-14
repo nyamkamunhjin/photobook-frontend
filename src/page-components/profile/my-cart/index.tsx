@@ -1,5 +1,5 @@
 import { useRequest } from 'ahooks'
-import { List, Popconfirm, InputNumber, Checkbox, Select, notification } from 'antd'
+import { List, Popconfirm, InputNumber, Checkbox, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import {
@@ -8,25 +8,33 @@ import {
   getShoppingCartSummary,
   listShippingAddress,
   listShoppingCart,
+  listVoucher,
   updateCartItem,
 } from 'api'
-import { CartItem, RootInterface, ShippingAddress } from 'interfaces'
+import { CartItem, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
 import { SelectValue } from 'antd/lib/select'
 import { currencyFormat } from 'utils'
+import CartAddress from './cart-address'
+import OrderSummary from './order-summary'
+import CartVoucher from './cart-voucher'
 
 const MyCart: React.FC = () => {
   const intl = useIntl()
   const history = useHistory()
   const [deliveryChecked, setDeliveryChecked] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
+  const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
 
   const user = useSelector((state: RootInterface) => state.auth.user)
   const shippingAddresses = useRequest(() =>
     listShippingAddress({ current: 0, pageSize: 100 }, { userId: user?.id.toString() })
   )
+
+  const vouchers = useRequest(listVoucher)
+
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
   })
@@ -110,7 +118,7 @@ const MyCart: React.FC = () => {
                   cancelText={<FormattedMessage id="no" />}
                 >
                   <CustomButton className="btn-cancel" type="button">
-                    <FormattedMessage id="delete" />
+                    <FormattedMessage id="remove" />
                   </CustomButton>
                 </Popconfirm>,
               ]}
@@ -121,10 +129,33 @@ const MyCart: React.FC = () => {
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.project.imageUrl}`}
                   alt="project"
                 />
-                <span className="font-semibold text-base">
-                  {item.project.name}{' '}
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-base">
+                    {item.project.name} <span className="text-xs text-gray-500">({item.project.template?.name})</span>
+                  </span>
                   <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
-                </span>
+
+                  {item.voucher && (
+                    <div className="flex flex-col items-start">
+                      <span>
+                        <FormattedMessage id="voucher" />: {item.voucherId}
+                      </span>
+                      <CustomButton
+                        className="btn-cancel"
+                        onClick={() => {
+                          updateCartItem(item.id, {
+                            voucherId: null,
+                          }).then(() => {
+                            notification.success({ message: intl.formatMessage({ id: 'voucher_removed' }) })
+                            shoppingCart.refresh()
+                          })
+                        }}
+                      >
+                        <FormattedMessage id="remove_voucher" />
+                      </CustomButton>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="ml-auto flex flex-col text-right">
                 {/* <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
@@ -165,17 +196,23 @@ const MyCart: React.FC = () => {
       </div>
       {shoppingCart.data?.cartItems.length > 0 && (
         <div className="flex flex-col lg:flex-row justify-between gap-4 mt-8">
-          <div className="w-full">
+          <div className="flex flex-col gap-2 w-full">
             <Checkbox checked={deliveryChecked} onChange={(e) => setDeliveryChecked(e.target.checked)}>
               <FormattedMessage id="delivery" />
             </Checkbox>
             {deliveryChecked && (
-              <Address
+              <CartAddress
                 shippingAddresses={shippingAddresses.data?.list}
                 selected={selectedAddress}
                 setSelected={setSelectedAddress}
               />
             )}
+            <CartVoucher
+              vouchers={vouchers.data}
+              selected={selectedVoucher}
+              setSelected={setSelectedVoucher}
+              refresh={() => shoppingCart.refresh()}
+            />
           </div>
           <OrderSummary {...summary.data} onCreateOrder={() => onCreateOrder(deliveryChecked)} />
         </div>
@@ -185,115 +222,3 @@ const MyCart: React.FC = () => {
 }
 
 export default MyCart
-
-interface OrderSummaryProps {
-  price: number
-  vatFee: number
-  discountedPrice: number
-  totalPrice: number
-  daysToDeliver: number
-  shippingFee: number
-  onCreateOrder: (shipping: boolean) => void
-}
-
-const OrderSummary: React.FC<OrderSummaryProps> = ({
-  price,
-  vatFee,
-  discountedPrice,
-  totalPrice,
-  daysToDeliver,
-  shippingFee,
-  onCreateOrder,
-}) => {
-  const actualPrice = price + discountedPrice
-  return (
-    <div className="flex flex-col gap-2 bg-gray-100 max-w-xs w-full p-4">
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="order_summary" />
-        </span>
-      </div>
-
-      <hr className="border-t border-solid border-gray-300" />
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="order_subtotal" />
-        </span>
-        <span className="font-light">{currencyFormat(actualPrice)} ₮</span>
-      </div>
-      {discountedPrice !== 0 && (
-        <div className="flex justify-between">
-          <span className="text-sm font-light text-gray-700">
-            <FormattedMessage id="total_discount" />
-          </span>
-          <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
-        </div>
-      )}
-
-      <hr className="border-t border-solid border-gray-300" />
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="shipping_fee" />
-        </span>
-        <span className="font-light">{currencyFormat(shippingFee)} ₮</span>
-      </div>
-
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="vat_fee" />
-        </span>
-        <span className="font-light">{currencyFormat(vatFee)} ₮</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="delivery_date" />
-        </span>
-        <span className="font-light">
-          {daysToDeliver} <FormattedMessage id="day" />
-        </span>
-      </div>
-      <hr className="border-t border-solid border-gray-300" />
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
-          <FormattedMessage id="total" />
-        </span>
-        <span className="font-light">{currencyFormat(totalPrice)} ₮</span>
-      </div>
-      <CustomButton className="mt-4 btn-accept" onClick={() => onCreateOrder(shippingFee !== 0)}>
-        <FormattedMessage id="order_now" />
-      </CustomButton>
-    </div>
-  )
-}
-
-interface ShippingAddressProps {
-  shippingAddresses: ShippingAddress[]
-  selected: SelectValue
-  setSelected: React.Dispatch<React.SetStateAction<SelectValue>>
-}
-
-const Address: React.FC<ShippingAddressProps> = ({ shippingAddresses, selected, setSelected }) => {
-  return (
-    <div className="flex flex-col gap-4 w-full">
-      <Select value={selected} onChange={setSelected}>
-        {shippingAddresses?.map((item) => (
-          <Select.Option key={item.id} value={item.id}>
-            <div className="flex flex-col gap-2">
-              <span className="text-sm text-gray-500">{item.address}</span>
-              <span className="font-semibold text-xs">
-                <FormattedMessage id="delivery_first_name" />: {item.firstName}
-              </span>
-              <span className="font-semibold text-xs">
-                <FormattedMessage id="delivery_last_name" />: {item.lastName}
-              </span>
-              <span className="font-semibold text-xs">
-                <FormattedMessage id="delivery_company_name" />: {item.companyName}
-              </span>
-              <span>{item.description}</span>
-            </div>
-          </Select.Option>
-        ))}
-      </Select>
-    </div>
-  )
-}

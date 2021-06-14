@@ -1,15 +1,20 @@
 import { RootInterface } from 'interfaces'
+import { Badge } from 'antd'
 import React, { FC } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useSelector } from 'react-redux'
+import { HiOutlineShoppingCart } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
-import { useRouter } from 'components'
+import { CustomButton, useRouter } from 'components'
+import { useRequest } from 'ahooks'
 import { UserInfo } from './components'
 import HeaderMenu from './components/HeaderMenu'
+import { listShoppingCart } from '../../api'
 
 const Topbar: FC = () => {
   const user = useSelector((state: RootInterface) => state.auth.user)
   const router = useRouter()
+  const shoppingCart = useRequest(listShoppingCart)
   return (
     <header className="shadow-md z-10 bg-white">
       <div className="px-4 mx-auto w-full max-w-7xl">
@@ -28,7 +33,19 @@ const Topbar: FC = () => {
                 </button>
               </>
             )}
-            {user && <UserInfo avatarUrl={user.avatarUrl} />}
+            {user && (
+              <div className="flex items-center">
+                <Badge count={shoppingCart.data?.cartItems?.length} size="small">
+                  <CustomButton
+                    className="text-xl focus:outline-none"
+                    onClick={() => router.push('/profile?tab=my_cart')}
+                  >
+                    <HiOutlineShoppingCart />
+                  </CustomButton>
+                </Badge>
+                <UserInfo avatarUrl={user.avatarUrl} />
+              </div>
+            )}
           </div>
         </div>
         <div className="mx-auto">

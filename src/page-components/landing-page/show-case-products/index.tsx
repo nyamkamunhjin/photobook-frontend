@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import WidthLimiter from 'layouts/main/components/width-limiter'
+import { FormattedMessage } from 'react-intl'
 
 interface Props {
   cards: CardProps[]
@@ -7,16 +8,16 @@ interface Props {
 
 const ShowCaseProducts: FC<Props> = ({ cards }) => {
   return (
-    <WidthLimiter className="flex flex-col justify-center items-center p-4 py-10 space-y-4">
+    <WidthLimiter className="flex flex-col justify-center items-center p-4 py-10 gap-4 h-96">
       <div className="flex justify-center gap-4">
         <button className="btn-text text-base font-light" type="button">
-          New
+          <FormattedMessage id="new" />
         </button>
         <button className="btn-text text-base font-light" type="button">
-          Popular
+          <FormattedMessage id="popular" />
         </button>
         <button className="btn-text text-base font-light" type="button">
-          Special
+          <FormattedMessage id="special" />
         </button>
       </div>
       <div className="flex flex-wrap md:flex-nowrap justify-center gap-10">

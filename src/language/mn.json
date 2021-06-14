@@ -138,6 +138,11 @@
   "discount": "Discount",
   "used": "Used",
   "not_used": "Not Used",
+  "voucher": "Voucher",
+  "expire_date": "Expire Date",
+  "discount_percent": "Discount Percent",
+  "remove_voucher": "Remove Voucher",
+  "voucher_removed": "Voucher Removed",
 
   "unconfirmed": "Unconfirmed",
   "confirmed": "Confirmed",

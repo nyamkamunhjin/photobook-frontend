@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User, Voucher } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -1115,6 +1115,14 @@ export const getVoucher = async (id: string) => {
   const response = await BaseRequest({
     url: `voucher/${id}`,
     method: 'GET',
+  })
+  return response?.data
+}
+
+export const addVoucherToCartItem = async (id: string) => {
+  const response = await BaseRequest({
+    url: `voucher/apply/${id}`,
+    method: 'PUT',
   })
   return response?.data
 }

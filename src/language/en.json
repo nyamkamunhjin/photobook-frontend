@@ -109,6 +109,10 @@
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
+  "new": "New",
+  "popular": "Popular",
+  "special": "Special",
+
   "order_history": "Order History",
   "my_projects": "My Projects",
   "my_cart": "My Cart",
@@ -138,6 +142,11 @@
   "discount": "Discount",
   "used": "Used",
   "not_used": "Not Used",
+  "voucher": "Voucher",
+  "expire_date": "Expire Date",
+  "discount_percent": "Discount Percent",
+  "remove_voucher": "Remove Voucher",
+  "voucher_removed": "Voucher Removed",
 
   "unconfirmed": "Unconfirmed",
   "confirmed": "Confirmed",

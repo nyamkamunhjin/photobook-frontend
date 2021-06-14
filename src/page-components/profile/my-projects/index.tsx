@@ -83,7 +83,7 @@ const MyProjects: FC = () => {
                   cancelText={<FormattedMessage id="no" />}
                 >
                   <CustomButton className="btn-cancel" type="button">
-                    <FormattedMessage id="delete" />
+                    <FormattedMessage id="remove" />
                   </CustomButton>
                 </Popconfirm>,
                 <CustomButton
