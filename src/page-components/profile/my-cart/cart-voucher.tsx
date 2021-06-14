@@ -21,12 +21,16 @@ const CartVoucher: React.FC<Props> = ({ vouchers, selected, setSelected, refresh
       <Select
         value={selected}
         onChange={(value) => {
-          setSelected(value)
           console.log(value)
+          setSelected(value)
           if (value) {
-            addVoucherToCartItem(value as string).then(() => {
-              refresh()
-            })
+            addVoucherToCartItem(value as string)
+              .then((res) => {
+                if (res) refresh()
+              })
+              .catch(() => {
+                setSelected(undefined)
+              })
           }
         }}
         allowClear

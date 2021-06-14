@@ -109,6 +109,10 @@
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
+  "new": "New",
+  "popular": "Popular",
+  "special": "Special",
+
   "order_history": "Order History",
   "my_projects": "My Projects",
   "my_cart": "My Cart",
