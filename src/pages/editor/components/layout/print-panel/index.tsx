@@ -51,7 +51,7 @@ const PrintPanel: React.FC<Props> = ({
   duplicatePrintSlide,
   deletePrintSlide,
   currentProject,
-  image: { images, loading },
+  image: { loading },
 }) => {
   const paperSizes = useRequest<PaperSize[]>(listPaperSize)
   const paperMaterials = useRequest<PaperMaterial[]>(listPaperMaterial)
@@ -97,20 +97,20 @@ const PrintPanel: React.FC<Props> = ({
     await unlinkImages(_images, currentProject.id)
   }
 
-  const uploadedImages = images.filter((image) => image.type === 'images')
   return (
     <div className="CenterPanel" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
-      <Grid
-        loading={loading}
-        images={uploadedImages}
-        uploadPhoto={uploadPhoto}
-        syncPhoto={syncPhoto}
-        linkPhoto={linkPhoto}
-        unlinkPhoto={unlinkPhoto}
-        paperSizes={paperSizes.data}
-        paperMaterials={paperMaterials.data}
-        currentProject={currentProject}
-      />
+      {currentProject.slides.length > 0 && (
+        <Grid
+          loading={loading}
+          uploadPhoto={uploadPhoto}
+          syncPhoto={syncPhoto}
+          linkPhoto={linkPhoto}
+          unlinkPhoto={unlinkPhoto}
+          paperSizes={paperSizes.data}
+          paperMaterials={paperMaterials.data}
+          currentProject={currentProject}
+        />
+      )}
       <div className="TabView">
         <div className="UserPhotoList">
           <div className="LibraryItemsListContainer">

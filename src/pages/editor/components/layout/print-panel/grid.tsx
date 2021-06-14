@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState } from 'react'
-import { Modal, Button, Select, InputNumber } from 'antd'
+import { Modal, Button, Select } from 'antd'
 import { CgZoomIn, CgZoomOut } from 'react-icons/cg'
 import { useLocalStorageState, useThrottleFn } from 'ahooks'
-import { Image, PaperMaterial, PaperSize, PObject, Project, Slide, UploadablePicture } from 'interfaces'
+import { PaperMaterial, PaperSize, Project, Slide, UploadablePicture } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
-import Spinner from 'components/spinner'
+import { Spinner } from 'components'
 import { filterArray } from 'utils'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 import Images from './images'
@@ -13,7 +13,6 @@ import Editor from './editor'
 
 interface Props {
   loading: boolean
-  images: Image[]
   paperSizes?: PaperSize[]
   paperMaterials?: PaperMaterial[]
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -87,6 +86,8 @@ const Grid: React.FC<Props> = ({
         return slides
     }
   }
+
+  console.log('aahhaa', slides)
   return loading ? (
     <Spinner />
   ) : (
@@ -173,7 +174,7 @@ const Grid: React.FC<Props> = ({
           slideIndex={slideIndex}
           onCancel={() => setSlideIndex(-1)}
           visible={slideIndex !== -1}
-          object={getItems()[slideIndex]}
+          object={slides[slideIndex]}
         />
       )}
     </div>

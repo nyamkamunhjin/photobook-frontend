@@ -10,7 +10,6 @@ import {
   saveProject as _saveProject,
   saveProjectAttribute as _saveProjectAttribute,
   addNewSlide as _addNewSlide,
-  deleteSlide as _deleteSlide,
   updateHistory as _updateHistory,
   addLayout as _addLayout,
   addObject as _addObject,
@@ -68,12 +67,12 @@ interface Props {
   updateBackground: (props: { background: BackgroundImage }) => void
   saveProjectAttribute: (projectId: number, props: Object) => void
   updateObject: (props: { object: PObject }) => void
+  removeObject: (props: { object: Object; container: Object }) => void
   updateHistory: (historyType: string, props: HistoryProps) => void
   setBackgrounds: (props: { backgrounds: BackgroundImage[] }) => void
   loadBackgrounds: (backgrounds: Object[]) => void
   addLayout: (props: { objects: Object[]; layout: FullLayout }) => void
   addObject: (props: { object: Object }) => void
-  removeObject: (props: { object: Object; container: Object }) => void
 }
 
 const BookEditor: React.FC<Props> = ({
@@ -555,7 +554,6 @@ export default connect(mapStateToProps, {
   getProjects: _getProjects,
   saveProject: _saveProject,
   addNewSlide: _addNewSlide,
-  deleteSlide: _deleteSlide,
   loadObjects: _loadObjects,
   loadContainers: _loadContainers,
   loadBackgrounds: _loadBackgrounds,

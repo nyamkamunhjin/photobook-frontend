@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable @typescript-eslint/ban-types */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Select, InputNumber } from 'antd'
 import { PaperMaterial, PaperSize, PObject, Slide } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
@@ -20,11 +20,11 @@ interface Props {
 
 const Images: React.FC<Props> = ({ height, objects, toggle, paperSizes, paperMaterials, selectedObjects, onEdit }) => {
   const [popVisible, setPopVisible] = useState(-1)
+  const srcHeight = 57
   const maxWidth = 1000
   const maxHeight = 1000
   const srcWidth = 57 + height
-
-  const ratio = srcWidth / maxWidth
+  const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
   return (
     <>
       {objects.map((object, key) => (
@@ -46,6 +46,9 @@ const Images: React.FC<Props> = ({ height, objects, toggle, paperSizes, paperMat
             <div style={{ width: maxWidth * ratio, height: maxHeight * ratio }}>
               <div id="canvas_container" style={{ transform: 'scale(' + ratio + ')', transformOrigin: '0 0' }}>
                 <Image
+                  slideId={object.slideId}
+                  scaleX={srcWidth / maxWidth}
+                  scaleY={srcHeight / maxHeight}
                   object={object.object || ({} as PObject)}
                   resolution={{
                     width: Number(object.object?.style?.width),

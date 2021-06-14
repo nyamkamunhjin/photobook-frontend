@@ -20,6 +20,13 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
         <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="photoprint" />
       )}
       <div className="mx-4 p-4">
+        <button
+          className="focus:outline-none font-semibold"
+          type="button"
+          onClick={() => router.replace(`/editor/print?template=2`)}
+        >
+          <FormattedMessage id="print" />
+        </button>
         <p className="font-semibold ">
           <FormattedMessage id="categories" />
         </p>

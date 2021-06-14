@@ -1,6 +1,9 @@
 export type DomType = HTMLElement
 
 export type ObjectType = 'image' | 'object' | 'text' | 'shape' | ''
+
+export type ToolsType = 'transform' | 'orientation' | 'rotate' | 'flip' | 'filters' | 'brightness'  |'constrast' | 'saturation' | 'size' | 'paper' | 'image_brightness' | 'amount' | 'reset' | 'remove'
+
 export interface StyleType {
   display?: string
   filterName?: string
@@ -81,11 +84,18 @@ export interface MoveResizerInterface {
   left: string
   type: string
 }
+export interface Cropper {
+  top: number
+  left: number
+  width: number
+  height: number
+}
 export interface ObjectProps {
   className: string
   imageStyle: StyleType
   maskStyle?: StyleType
   maskImage?: string
+  cropStyle?: Cropper
   textStyle?: StyleType
   frameStyle?: StyleType
   frameImage?: string
