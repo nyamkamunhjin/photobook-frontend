@@ -2,14 +2,16 @@
 /* eslint-disable consistent-return */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { EditorInterface, PObject, ProjectInterface, RootInterface, Slide, ToolsType } from 'interfaces'
+import { PObject, RootInterface, Slide, ToolsType } from 'interfaces'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { ImageModal } from 'components'
+import { useLocalStorageState } from 'ahooks'
 import {
   saveProject as _saveProject,
   deleteSlide as _deleteSlide,
   updateObject as _updateObject,
 } from 'redux/actions/project'
+import { getSlides } from 'utils/image-lib'
 import Tools from './tools'
 import Image from './image'
 import '../../styles/print.scss'
@@ -18,6 +20,7 @@ interface Props {
   updateObject: (props: { object: PObject }) => void
   deleteSlide: (projectId: number, slideIndex: number) => Promise<void>
   object: Slide
+  slides: Slide[]
   slideIndex: number
   prevSlide?: () => void
   nextSlide?: () => void
@@ -33,17 +36,20 @@ const Editor: React.FC<Props> = ({
   hasNext,
   hasPrevious,
   visible,
-  object,
   onCancel,
   updateObject,
+  slideIndex,
+  slides,
   deleteSlide,
 }) => {
   const maxWidth = 1000
   const maxHeight = 1000
   const srcHeight = 500 + 100
+  const [sort] = useLocalStorageState('sort', 'a-z')
   const [selected, setSelected] = useState<ToolsType>('transform')
   const srcWidth = maxWidth * (srcHeight / maxHeight)
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
+  const object = getSlides(sort, slides)[slideIndex]
   // states
   return (
     <ImageModal
@@ -100,8 +106,11 @@ const Editor: React.FC<Props> = ({
     </ImageModal>
   )
 }
+const mapStateToProps = (state: RootInterface) => ({
+  slides: state.project.currentProject.slides,
+})
 
-export default connect(null, {
+export default connect(mapStateToProps, {
   saveProject: _saveProject,
   deleteSlide: _deleteSlide,
   updateObject: _updateObject,

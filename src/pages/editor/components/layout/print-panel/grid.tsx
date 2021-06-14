@@ -7,6 +7,7 @@ import { PaperMaterial, PaperSize, Project, Slide, UploadablePicture } from 'int
 import { FormattedMessage } from 'react-intl'
 import { Spinner } from 'components'
 import { filterArray } from 'utils'
+import { getSlides } from 'utils/image-lib'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 import Images from './images'
 import Editor from './editor'
@@ -34,7 +35,7 @@ const Grid: React.FC<Props> = ({
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [selectedSlides, setSelectedSlides] = useState<Slide[]>()
   const [slideIndex, setSlideIndex] = useState<number>(-1)
-  const [sort, setSort] = useState('a-z')
+  const [sort, setSort] = useLocalStorageState('sort', 'a-z')
   const [zoom, setZoom] = useLocalStorageState('zoom', 1)
   const showModal = () => {
     setModalVisible(true)
@@ -69,25 +70,7 @@ const Grid: React.FC<Props> = ({
       wait: 100,
     }
   )
-  const getItems = () => {
-    switch (sort) {
-      case 'a-z':
-        return slides.sort((a, b) => a.slideId.localeCompare(b.slideId))
-      case 'z-a': {
-        return slides.sort((b, a) => a.slideId.localeCompare(b.slideId))
-      }
-      // case 'earlier': {
-      //   return slides.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-      // }
-      // case 'recently': {
-      //   return slides.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-      // }
-      default:
-        return slides
-    }
-  }
 
-  console.log('aahhaa', slides)
   return loading ? (
     <Spinner />
   ) : (
@@ -163,7 +146,7 @@ const Grid: React.FC<Props> = ({
           saveObjects={() => console.log('aa')}
           paperSizes={paperSizes}
           paperMaterials={paperMaterials}
-          objects={getItems()}
+          objects={getSlides(sort, slides)}
           selectedObjects={selectedSlides || []}
           toggle={toggle}
           height={(zoom || 1) * 80}
