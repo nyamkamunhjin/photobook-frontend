@@ -346,7 +346,7 @@ const MyInfo: FC = () => {
                       })
                     }}
                   >
-                    <FormattedMessage id="delete" />
+                    <FormattedMessage id="remove" />
                   </CustomButton>,
                 ]}
               >

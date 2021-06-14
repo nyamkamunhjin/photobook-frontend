@@ -1,17 +1,16 @@
 import { useRequest } from 'ahooks'
 import { List } from 'antd'
-import { FormItemPrefixContext } from 'antd/lib/form/context'
 import React, { FC } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { listVoucher } from '../../../../api'
-import { Voucher } from '../../../../interfaces'
+import { listVoucher } from 'api'
+import { Voucher } from 'interfaces'
 
 interface Props {
   test?: string
 }
 
 const VoucherList: FC<Props> = () => {
-  const shippingAddresses = useRequest(
+  const vouchers = useRequest(
     ({ current, pageSize }, pageNumber) => listVoucher({ current, pageSize }, {}, pageNumber),
     {
       paginated: true,
@@ -25,11 +24,11 @@ const VoucherList: FC<Props> = () => {
       <hr className="my-1" />
 
       <List
-        dataSource={shippingAddresses.data?.list || []}
-        loading={shippingAddresses.loading}
+        dataSource={vouchers.data?.list || []}
+        loading={vouchers.loading}
         pagination={{
-          ...shippingAddresses.pagination,
-          onChange: shippingAddresses.pagination.changeCurrent,
+          ...vouchers.pagination,
+          onChange: vouchers.pagination.changeCurrent,
         }}
         renderItem={(item: Voucher) => {
           const isExpired = new Date(item.expireDate) < new Date()
@@ -44,7 +43,7 @@ const VoucherList: FC<Props> = () => {
                 <img
                   className="w-20 h-20"
                   // eslint-disable-next-line react/jsx-curly-brace-presence
-                  src={item.template?.imageUrl}
+                  src={item.template?.imageUrl || ''}
                   alt="template"
                 />
                 <div className="flex flex-col items-start justify-between">
