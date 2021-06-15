@@ -43,6 +43,7 @@ const ImageModal: React.FC<Props> = ({ children, loading, onCancel, type = 'defa
       {...props}
       style={{ top: '1rem', height: 450 }}
       width={calcWidth()}
+      keyboard={false}
       closable
       maskClosable={false}
       onCancel={onCancel}

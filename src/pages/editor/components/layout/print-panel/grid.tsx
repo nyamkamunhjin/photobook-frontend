@@ -143,7 +143,6 @@ const Grid: React.FC<Props> = ({
       <div className="ImportedPhotos">
         <Images
           onEdit={(index) => setSlideIndex(index)}
-          saveObjects={() => console.log('aa')}
           paperSizes={paperSizes}
           paperMaterials={paperMaterials}
           objects={getSlides(sort, slides)}
@@ -155,6 +154,8 @@ const Grid: React.FC<Props> = ({
       {slideIndex !== -1 && (
         <Editor
           slideIndex={slideIndex}
+          paperSizes={paperSizes}
+          paperMaterials={paperMaterials}
           onCancel={() => setSlideIndex(-1)}
           visible={slideIndex !== -1}
           object={slides[slideIndex]}

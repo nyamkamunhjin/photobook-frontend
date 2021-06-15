@@ -53,8 +53,8 @@ const PrintPanel: React.FC<Props> = ({
   currentProject,
   image: { loading },
 }) => {
-  const paperSizes = useRequest<PaperSize[]>(listPaperSize)
-  const paperMaterials = useRequest<PaperMaterial[]>(listPaperMaterial)
+  const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'print' }))
+  const paperMaterials = useRequest(() => listPaperMaterial({ current: 0, pageSize: 100 }, { templateTypes: 'print' }))
   const [props, { isHovering }] = useDrop({
     onFiles: (files) => {
       uploadImages()
@@ -96,7 +96,6 @@ const PrintPanel: React.FC<Props> = ({
     await uploadImages()
     await unlinkImages(_images, currentProject.id)
   }
-
   return (
     <div className="CenterPanel" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
       {currentProject.slides.length > 0 && (
@@ -106,8 +105,8 @@ const PrintPanel: React.FC<Props> = ({
           syncPhoto={syncPhoto}
           linkPhoto={linkPhoto}
           unlinkPhoto={unlinkPhoto}
-          paperSizes={paperSizes.data}
-          paperMaterials={paperMaterials.data}
+          paperSizes={paperSizes.data?.list || []}
+          paperMaterials={paperMaterials.data?.list || []}
           currentProject={currentProject}
         />
       )}

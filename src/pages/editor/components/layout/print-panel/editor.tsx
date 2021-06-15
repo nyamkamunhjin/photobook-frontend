@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { PObject, RootInterface, Slide, ToolsType } from 'interfaces'
+import { PaperMaterial, PaperSize, PObject, RootInterface, Slide, ToolsType } from 'interfaces'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { ImageModal } from 'components'
 import { useLocalStorageState } from 'ahooks'
@@ -19,6 +19,8 @@ import '../../styles/print.scss'
 interface Props {
   updateObject: (props: { object: PObject }) => void
   deleteSlide: (projectId: number, slideIndex: number) => Promise<void>
+  paperSizes?: PaperSize[]
+  paperMaterials?: PaperMaterial[]
   object: Slide
   slides: Slide[]
   slideIndex: number
@@ -40,7 +42,8 @@ const Editor: React.FC<Props> = ({
   updateObject,
   slideIndex,
   slides,
-  deleteSlide,
+  paperSizes,
+  paperMaterials,
 }) => {
   const maxWidth = 1000
   const maxHeight = 1000
@@ -65,6 +68,7 @@ const Editor: React.FC<Props> = ({
           <div id="canvas_container" style={{ transform: 'scale(' + ratio + ')', transformOrigin: '0 0' }}>
             <Image
               object={object.object || ({} as PObject)}
+              disabled={selected !== 'transform'}
               slideId={object.slideId}
               resolution={{
                 width: Number(object.object?.style?.width),
@@ -97,6 +101,8 @@ const Editor: React.FC<Props> = ({
       <Tools
         slideId={object.slideId}
         updateObject={updateObject}
+        paperSizes={paperSizes}
+        paperMaterials={paperMaterials}
         object={object.object as PObject}
         select={{
           state: selected,

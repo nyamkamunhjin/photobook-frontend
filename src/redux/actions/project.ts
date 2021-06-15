@@ -518,22 +518,20 @@ export const updateGroupContainer = (props: { containers: Container[] }) => asyn
 }
 
 // updateObject
-export const updateObject =
-  (props: { object: Object }, slideId = undefined) =>
-  async (dispatch: any) => {
-    try {
-      dispatch({
-        type: UPDATE_OBJECT,
-        payload: { ...props, slideId },
-      })
-    } catch (err) {
-      console.error(err)
-      dispatch({
-        type: SLIDES_ERROR,
-        payload: { msg: err },
-      })
-    }
+export const updateObject = (props: { object: Object }, slideId?: string) => async (dispatch: any) => {
+  try {
+    dispatch({
+      type: UPDATE_OBJECT,
+      payload: { ...props, slideId },
+    })
+  } catch (err) {
+    console.error(err)
+    dispatch({
+      type: SLIDES_ERROR,
+      payload: { msg: err },
+    })
   }
+}
 
 // addLayout
 export const addLayout = (props: { objects: Object[] }) => async (dispatch: any) => {

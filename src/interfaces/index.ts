@@ -2,7 +2,7 @@ export type DomType = HTMLElement
 
 export type ObjectType = 'image' | 'object' | 'text' | 'shape' | ''
 
-export type ToolsType = 'transform' | 'orientation' | 'rotate' | 'flip' | 'filters' | 'brightness'  |'constrast' | 'saturation' | 'size' | 'paper' | 'image_brightness' | 'amount' | 'reset' | 'remove'
+export type ToolsType = 'transform' | 'orientation' | 'rotate' | 'flip' | 'filters' | 'brightness'  |'contrast' | 'saturation' | 'size' | 'paper' | 'image_brightness' | 'amount' | 'reset' | 'remove'
 
 export interface StyleType {
   display?: string
@@ -96,6 +96,9 @@ export interface ObjectProps {
   maskStyle?: StyleType
   maskImage?: string
   cropStyle?: Cropper
+  paperSize?: PaperSize
+  quantity?: number
+  paperMaterial?: PaperMaterial
   textStyle?: StyleType
   frameStyle?: StyleType
   frameImage?: string

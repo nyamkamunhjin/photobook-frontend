@@ -2,8 +2,8 @@
 /* eslint-disable consistent-return */
 import React, { useState } from 'react'
 import { Slider } from 'antd'
-import { Cropper, PObject, ToolsType } from 'interfaces'
-import { IconButton } from 'components'
+import { Cropper, PaperMaterial, PaperSize, PObject, ToolsType } from 'interfaces'
+import { IconButton, InputNumber } from 'components'
 import { FormattedMessage } from 'react-intl'
 import { VscMirror, VscMove, VscRefresh } from 'react-icons/vsc'
 import { RiEraserFill } from 'react-icons/ri'
@@ -19,6 +19,8 @@ import { ParseNumber } from 'utils'
 interface Props {
   slideId: string
   updateObject: (props: { object: PObject }, slideId?: string) => void
+  paperSizes?: PaperSize[]
+  paperMaterials?: PaperMaterial[]
   object: PObject
   select: {
     state: ToolsType
@@ -26,19 +28,123 @@ interface Props {
   }
 }
 
-const changeFilter = (filter: string) => {
-  alert(filter)
-  return true
-}
+const Tools: React.FC<Props> = ({ select, object, slideId, updateObject, paperSizes, paperMaterials }) => {
+  const { paperSize, cropStyle, imageStyle, paperMaterial } = object?.props
 
-const changeColor = (type: string, value: number) => {
-  return true
-}
-
-const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
-  const imageStyle = object?.props.imageStyle
-  const cropStyle = object?.props.cropStyle
+  const { brightness = 100, contrast = 100, saturation = 100 } = imageStyle || {}
   const filterImage = 'https://static.canva.com/web/images/8fb86fd892c98e7f5a66b92b94bf0fa1.jpg'
+
+  const onRotate = (angle: string) => {
+    let { rotateAngle = 0, transform = 'rotate(0deg)' } = object.props.imageStyle
+    if (!transform.match(/rotate\(([^)]+)\)/)) {
+      transform += ' rotate(0deg)'
+    }
+    if (angle === 'left') {
+      rotateAngle -= 90
+    } else {
+      rotateAngle += 90
+    }
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            imageStyle: {
+              ...object.props.imageStyle,
+              rotateAngle,
+              transform: transform.replace(/rotate\(([^)]+)\)/, `rotate(${rotateAngle}deg)`),
+            },
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onPaperSize = (size: PaperSize) => {
+    const max = Math.max(ParseNumber(cropStyle?.width), ParseNumber(cropStyle?.height))
+    const max2 = Math.max(size.height, size.width)
+    const min2 = Math.min(size.height, size.width)
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            paperSize: size,
+            cropStyle: {
+              ...(cropStyle as Cropper),
+              height: (max * min2) / max2,
+            },
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onPaperMaterial = (material: PaperMaterial) => {
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            paperMaterial: material,
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onFilter = (filter: string) => {
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            imageStyle: {
+              ...object.props.imageStyle,
+              ...filters[filter].style,
+              filterName: filter,
+            },
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onQuantity = (quantity: any) => {
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            quantity,
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onColor = (type: string, value: number) => {
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            imageStyle: {
+              ...object.props.imageStyle,
+              [type]: value,
+            },
+          },
+        },
+      },
+      slideId
+    )
+  }
   const onOrientation = (position: string) => {
     let width = ParseNumber(cropStyle?.width)
     let height = ParseNumber(cropStyle?.height)
@@ -61,6 +167,44 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
               ...(object.props?.cropStyle as Cropper),
               width,
               height,
+            },
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onFlip = (position: string) => {
+    let { transform = 'scaleX(1) scaleY(1)' } = object.props.imageStyle
+    if (!transform.match(/scaleX\(([^)]+)\)/)) {
+      transform += ' scaleX(1)'
+    }
+    if (!transform.match(/scaleY\(([^)]+)\)/)) {
+      transform += ' scaleY(1)'
+    }
+    const scaleX = transform.match(/scaleX\(([^)]+)\)/) || ['scaleX(1)']
+    const scaleY = transform.match(/scaleY\(([^)]+)\)/) || ['scaleY(1)']
+    if (position === 'vertically') {
+      if (scaleY && scaleY[0] === 'scaleY(1)') {
+        transform = transform.replace(/scaleY\(([^)]+)\)/, 'scaleY(-1)')
+      } else {
+        transform = transform.replace(/scaleY\(([^)]+)\)/, 'scaleY(1)')
+      }
+    } else if (scaleX && scaleX[0] === 'scaleX(1)') {
+      transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(-1)')
+    } else {
+      transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(1)')
+    }
+    console.log('wtfend', transform)
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            imageStyle: {
+              ...object.props.imageStyle,
+              transform,
             },
           },
         },
@@ -100,45 +244,48 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
             </IconButton>
           </div>
         </div>
-        <div
-          hidden={select.state !== 'rotate'}
-          className={`${select.state === 'rotate' ? 'button selected' : 'button'}`}
-        >
-          <IconButton icon={<GrRotateLeft size={25} />}>
-            <FormattedMessage id="controller.rotate.left" />
-          </IconButton>
-          <IconButton icon={<GrRotateRight size={25} />}>
-            <FormattedMessage id="controller.rotate.right" />
-          </IconButton>
+        <div hidden={select.state !== 'rotate'} className="flex">
+          <div onClick={() => onRotate('left')} className="button">
+            <IconButton icon={<GrRotateLeft size={25} />}>
+              <FormattedMessage id="controller.rotate.left" />
+            </IconButton>
+          </div>
+          <div
+            onClick={() => onRotate('right')}
+            className={`${
+              ParseNumber(cropStyle?.width) > ParseNumber(cropStyle?.height) ? 'button selected' : 'button'
+            }`}
+          >
+            <IconButton icon={<GrRotateRight size={25} />}>
+              <FormattedMessage id="controller.rotate.right" />
+            </IconButton>
+          </div>
         </div>
-        <div hidden={select.state !== 'flip'} className={`${select.state === 'flip' ? 'button selected' : 'button'}`}>
-          <IconButton icon={<CgEditFlipH size={25} />}>
-            <FormattedMessage id="controller.flip.horizontally" />
-          </IconButton>
-          <IconButton icon={<CgEditFlipV size={25} />}>
-            <FormattedMessage id="controller.flip.vertically" />
-          </IconButton>
+        <div hidden={select.state !== 'flip'} className="flex">
+          <div onClick={() => onFlip('horizontally')} className="button">
+            <IconButton icon={<CgEditFlipH size={25} />}>
+              <FormattedMessage id="controller.flip.horizontally" />
+            </IconButton>
+          </div>
+          <div onClick={() => onFlip('vertically')} className="button">
+            <IconButton icon={<CgEditFlipV size={25} />}>
+              <FormattedMessage id="controller.flip.vertically" />
+            </IconButton>
+          </div>
         </div>
-        <div
-          hidden={select.state !== 'filters'}
-          className={`${select.state === 'filters' ? 'button selected' : 'button'}`}
-          onClick={() => select.action('filters')}
-        >
+        <div hidden={select.state !== 'filters'}>
           <div className="filters">
             {Object.keys(filters).map((k: string) => (
-              <span
-                style={imageStyle?.filterName === k ? { backgroundColor: '#d3d3d3' } : {}}
-                key={k}
-                onClick={() => changeFilter(k)}
-              >
+              <div className={imageStyle?.filterName === k ? 'selected' : ''} key={k} onClick={() => onFilter(k)}>
                 <img
                   alt={k}
+                  draggable={false}
                   style={{ ...filters[k].style }}
                   className={`filter-icon ${filters[k]}`}
                   src={filterImage}
                 />
                 <span className="filter-name">{k}</span>
-              </span>
+              </div>
             ))}
           </div>
         </div>
@@ -147,15 +294,15 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
           className={`${select.state === 'brightness' ? 'button selected' : 'button'}`}
         >
           <div className="w-1/3">
-            <Slider onChange={(value: number) => changeColor('brightness', value)} min={-100} max={100} />
+            <Slider value={brightness} onChange={(value: number) => onColor('brightness', value)} min={0} max={200} />
           </div>
         </div>
         <div
-          hidden={select.state !== 'constrast'}
-          className={`${select.state === 'constrast' ? 'button selected' : 'button'}`}
+          hidden={select.state !== 'contrast'}
+          className={`${select.state === 'contrast' ? 'button selected' : 'button'}`}
         >
           <div className="w-1/3">
-            <Slider onChange={(value: number) => changeColor('constrast', value)} min={-100} max={100} />
+            <Slider value={contrast} onChange={(value: number) => onColor('contrast', value)} min={0} max={200} />
           </div>
         </div>
         <div
@@ -163,8 +310,43 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
           className={`${select.state === 'saturation' ? 'button selected' : 'button'}`}
         >
           <div className="w-1/3">
-            <Slider onChange={(value: number) => changeColor('saturation', value)} min={-100} max={100} />
+            <Slider value={saturation} onChange={(value: number) => onColor('saturation', value)} min={0} max={200} />
           </div>
+        </div>
+        <div hidden={select.state !== 'size'}>
+          <div className="choice">
+            {paperSizes?.map((each: PaperSize) => (
+              <div
+                className={each?.id === paperSize?.id ? 'selected' : ''}
+                key={each.id}
+                onClick={() => onPaperSize(each)}
+              >
+                <span className="filter-name">{each.size}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div hidden={select.state !== 'paper'}>
+          <div className="choice">
+            {paperMaterials?.map((each: PaperMaterial) => (
+              <div
+                className={each?.id === paperMaterial?.id ? 'selected' : ''}
+                key={each.id}
+                onClick={() => onPaperMaterial(each)}
+              >
+                <span className="filter-name">{each.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div hidden={select.state !== 'amount'}>
+          <InputNumber
+            onChange={(e) => onQuantity(e)}
+            size="small"
+            bordered={false}
+            defaultValue={object?.props.quantity || 1}
+            value={object?.props.quantity || 1}
+          />
         </div>
       </div>
       <div className="controller_container">
@@ -217,11 +399,11 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
           </IconButton>
         </div>
         <div
-          className={`${select.state === 'constrast' ? 'button selected' : 'button'}`}
-          onClick={() => select.action('constrast')}
+          className={`${select.state === 'contrast' ? 'button selected' : 'button'}`}
+          onClick={() => select.action('contrast')}
         >
           <IconButton icon={<ImContrast size={20} />}>
-            <FormattedMessage id="controller.constrast" />
+            <FormattedMessage id="controller.contrast" />
           </IconButton>
         </div>
         <div
@@ -237,7 +419,7 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
           style={{ flex: 2 }}
           onClick={() => select.action('size')}
         >
-          <IconButton icon={<div style={{ fontSize: 13 }}>4R (4 x 6)</div>}>
+          <IconButton icon={<div style={{ fontSize: 13 }}>{object.props.paperSize?.size}</div>}>
             <FormattedMessage id="controller.size" />
           </IconButton>
         </div>
@@ -246,30 +428,17 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject }) => {
           onClick={() => select.action('paper')}
           style={{ flex: 2 }}
         >
-          <IconButton icon={<div style={{ fontSize: 13, textTransform: 'none' }}>FUJIFILM Crystal(Gloss)</div>}>
-            <FormattedMessage id="controller.paper" />
-          </IconButton>
-        </div>
-        <div
-          className={`${select.state === 'image_brightness' ? 'button selected' : 'button'}`}
-          onClick={() => select.action('image_brightness')}
-          style={{ flex: 2 }}
-        >
           <IconButton
-            icon={
-              <div style={{ fontSize: 13, textTransform: 'none' }}>
-                <FormattedMessage id="yes" />
-              </div>
-            }
+            icon={<div style={{ fontSize: 13, textTransform: 'none' }}>{object.props.paperMaterial?.name}</div>}
           >
-            <FormattedMessage id="controller.image_brightnessing" />
+            <FormattedMessage id="controller.paper" />
           </IconButton>
         </div>
         <div
           className={`${select.state === 'amount' ? 'button selected' : 'button'}`}
           onClick={() => select.action('amount')}
         >
-          <IconButton icon={<div style={{ fontSize: 13 }}>1</div>}>
+          <IconButton icon={<div style={{ fontSize: 13 }}>{object.props.quantity || 1}</div>}>
             <FormattedMessage id="controller.amount" />
           </IconButton>
         </div>

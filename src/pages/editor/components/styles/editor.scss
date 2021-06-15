@@ -102,47 +102,6 @@
   .ImportedPhotos {
     width: 100%;
   }
-  .ImageContainer {
-    margin: 10px !important;
-    justify-content: flex-start !important;
-    flex-direction: column;
-    background: #fff;
-    border: 1px solid #e7e7e7;
-    border-radius: 4px;
-    &.active {
-      border: 3px solid #4480aa !important;
-      cursor: pointer;
-    }
-
-    img {
-      padding: 3px;
-      background-color: #f9f9f9;
-      margin: 0 !important;
-      border: none !important;
-      transition: 0.1s;
-      max-width: 100% !important;
-      max-height: 60% !important;
-      object-fit: contain;
-
-      &:hover {
-        border: none !important;
-        cursor: pointer;
-      }
-    }
-
-    .header {
-      white-space: nowrap;
-      width: 90%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding: 2px;
-      color: #4a4a4a;
-      font-size: 9px;
-      border-bottom: 1px solid #d3d3d3;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-    }
-  }
 }
 
 .SideBarPanel {
