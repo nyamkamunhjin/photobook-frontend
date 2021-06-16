@@ -14,6 +14,7 @@ export const REMOVE_ALERT = 'REMOVE_ALERT'
 
 export const GET_SLIDES = 'GET_SLIDES'
 export const NEW_SLIDE = 'NEW_SLIDE'
+export const NEW_SLIDES = 'NEW_SLIDES'
 export const DUPLICATE_SLIDE = 'DUPLICATE_SLIDE'
 export const REORDER_SLIDE = 'REORDER_SLIDE'
 export const DELETE_SLIDE = 'DELETE_SLIDE'

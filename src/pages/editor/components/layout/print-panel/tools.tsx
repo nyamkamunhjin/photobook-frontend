@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable consistent-return */
-import React, { useState } from 'react'
+import React from 'react'
 import { Slider } from 'antd'
 import { Cropper, PaperMaterial, PaperSize, PObject, ToolsType } from 'interfaces'
 import { IconButton, InputNumber } from 'components'
@@ -167,6 +167,22 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject, paperSi
               ...(object.props?.cropStyle as Cropper),
               width,
               height,
+            },
+          },
+        },
+      },
+      slideId
+    )
+  }
+  const onReset = () => {
+    updateObject(
+      {
+        object: {
+          ...object,
+          props: {
+            ...object.props,
+            cropStyle: {
+              ...(object.props?.cropStyle as Cropper),
             },
           },
         },
@@ -347,6 +363,26 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject, paperSi
             defaultValue={object?.props.quantity || 1}
             value={object?.props.quantity || 1}
           />
+        </div>
+        <div hidden={select.state !== 'reset'}>
+          <div className="choice">
+            <FormattedMessage id="controller.reset.message" />
+            <div className="ml-5" onClick={onReset}>
+              <span className="filter-name">
+                <FormattedMessage id="controller.reset" />
+              </span>
+            </div>
+          </div>
+        </div>
+        <div hidden={select.state !== 'remove'}>
+          <div className="choice">
+            <FormattedMessage id="controller.remove.message" />
+            <div className="ml-5" onClick={onReset}>
+              <span className="filter-name">
+                <FormattedMessage id="controller.remove" />
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div className="controller_container">

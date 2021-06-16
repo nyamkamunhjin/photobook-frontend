@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category, User, Voucher } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'

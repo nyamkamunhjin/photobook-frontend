@@ -330,5 +330,7 @@
   "controller.rotate.left": "Left",
   "controller.rotate.right": "Right",
   "controller.flip.horizontally": "Flip Horizontailly",
-  "controller.flip.vertically": "Flip Vertically"
+  "controller.flip.vertically": "Flip Vertically",
+  "controller.reset.message": "This will undo all the changes you made to this photo. Are you sure?",
+  "controller.remove.message": "You are going to delete this photo from your project. Are you sure?"
 }
