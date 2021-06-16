@@ -56,7 +56,11 @@ const MyProjects: FC = () => {
                     if (item.templateType?.name === 'photobook') {
                       history.push(`/editor?project=${item.uuid}`)
                     } else if (item.templateType?.name === 'canvas') {
-                      history.push(`/editor/canvas?project=${item.uuid}`)
+                      if (item.canvasType === 'Split') {
+                        history.push(`/editor/canvas/split?project=${item.uuid}`)
+                      } else {
+                        history.push(`/editor/canvas?project=${item.uuid}`)
+                      }
                     } else if (item.templateType?.name === 'frame') {
                       history.push(`/editor/frame?project=${item.uuid}`)
                     } else if (item.templateType?.name === 'photoprint') {
@@ -79,7 +83,7 @@ const MyProjects: FC = () => {
                   cancelText={<FormattedMessage id="no" />}
                 >
                   <CustomButton className="btn-cancel" type="button">
-                    <FormattedMessage id="delete" />
+                    <FormattedMessage id="remove" />
                   </CustomButton>
                 </Popconfirm>,
                 <CustomButton
@@ -99,7 +103,7 @@ const MyProjects: FC = () => {
                 </CustomButton>,
               ]}
             >
-              <div className="flex">
+              <div className="flex gap-2">
                 <img
                   className="w-28 h-28 rounded"
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}

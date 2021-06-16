@@ -10,17 +10,7 @@ interface Props extends ModalProps {
   cancelDisable?: boolean
 }
 
-const ImageModal: React.FC<Props> = ({
-  children,
-  loading,
-  okText,
-  cancelText,
-  onCancel,
-  type = 'default',
-  okDisable = false,
-  cancelDisable = false,
-  ...props
-}) => {
+const ImageModal: React.FC<Props> = ({ children, loading, onCancel, type = 'default', ...props }) => {
   const screens = Grid.useBreakpoint()
 
   const calcWidth = () => {
@@ -51,18 +41,21 @@ const ImageModal: React.FC<Props> = ({
   return (
     <Modal
       {...props}
-      style={{ top: '1rem' }}
+      style={{ top: '1rem', height: 450 }}
       width={calcWidth()}
+      keyboard={false}
       closable
       maskClosable={false}
       onCancel={onCancel}
       footer={null}
     >
-      {children}) : (
-      <Spin spinning>
-        <div style={{ height: 150 }} />
-      </Spin>
-      )
+      {!loading ? (
+        children
+      ) : (
+        <Spin spinning>
+          <div style={{ height: 150 }} />
+        </Spin>
+      )}
     </Modal>
   )
 }

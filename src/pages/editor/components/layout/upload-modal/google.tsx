@@ -2,7 +2,7 @@
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Spin } from 'antd'
 import { getGoogleImages, getGoogleProfile } from 'api'
-import { GooglePicture, GoogleProfile, GoogleResponse, UploadablePicture } from 'interfaces'
+import { GooglePicture, GoogleProfile, UploadablePicture } from 'interfaces'
 import React, { useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 

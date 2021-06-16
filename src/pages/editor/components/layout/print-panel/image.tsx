@@ -1,113 +1,273 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import React, { useEffect, useRef, useState } from 'react'
 import { Tooltip } from 'antd'
-import { InfoCircleOutlined, PlusSquareOutlined } from '@ant-design/icons'
-import { BsArrowsMove } from 'react-icons/bs'
-import { PObject, SlideObject } from 'interfaces'
-import { imageOnError } from 'utils'
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Cropper, PObject, SlideObject } from 'interfaces'
+import { imageOnError, ParseNumber } from 'utils'
+import { useThrottleFn } from 'ahooks'
+import { centerToTL, degToRadian, getLength, getNewStyle, tLToCenter } from 'utils/transformer-lib'
 
 interface Props extends React.HTMLProps<HTMLImageElement> {
   object: SlideObject
-  updateObject?: (props: { object: PObject }) => void
+  scaleX: number
+  scaleY: number
+  updateObject?: (props: { object: PObject }, slideId: string | undefined) => void
+  slideId: string
   style: any
   className: string
-  edit?: boolean
   tempUrl?: string
   imageUrl?: string
   imageStyle?: any
   updateUrl?: (url: string) => void
   resolution: { width: number; height: number }
   placeholderStyle?: Object
+  disabled?: boolean
 }
 
+const transformers = {
+  n: 'bl',
+  s: 'br',
+  e: 'tr',
+  w: 'tl',
+}
 const Image: React.FC<Props> = ({
+  slideId,
   object,
-  updateObject,
+  scaleX,
+  scaleY,
   style,
   className,
-  tempUrl,
-  edit = true,
   imageUrl,
   imageStyle,
   updateUrl,
-  resolution: { width, height },
-  placeholderStyle,
+  resolution,
+  updateObject,
+  disabled = false,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
-  const [overflow, setOverflow] = useState<string>('hidden')
+  const { run } = useThrottleFn(
+    ({ t, l, w, h, rotateAngle }: { t: number; l: number; w: number; h: number; rotateAngle: number }) => {
+      const resizers: any = document.querySelectorAll('.wrapper_container .resizer')
+      resizers.forEach((r: any) => {
+        const resize = getPosition(r.className.split(' ')[1], { width: w, top: t, left: l, height: h })
+        r.style.left = ParseNumber(resize.left) + 'px'
+        r.style.top = ParseNumber(resize.top) + 'px'
+      })
+    },
+    { wait: 50 }
+  )
 
-  const imageReposition = (e: any) => {
+  const moveCropper = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault()
     document.body.style.cursor = 'grab'
-    const circle = e.target
-    circle.style.display = 'none'
-    setOverflow('unset')
-
-    const _object = document.getElementById(object.id) as HTMLElement
-    const placeholder = _object.firstChild as HTMLElement
-    const image = placeholder.childNodes[2] as HTMLElement
-
-    const { width: pWidth, height: pHeight } = getComputedStyle(placeholder)
-
-    let startX = e.clientX
-    let startY = e.clientY
+    const cropper = e?.target as HTMLElement
+    const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
+    const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
+    let startX = e.clientX / scaleX
+    let startY = e.clientY / scaleY
 
     const onMouseMove = (sube: any) => {
+      sube.preventDefault()
       const { clientX, clientY } = sube
-      const deltaX = clientX - startX
-      const deltaY = clientY - startY
-
-      const { top, left, width: _width, height: _height } = getComputedStyle(image)
-
-      let t = parseFloat(top)
-      let l = parseFloat(left)
-
-      const heightDiff = parseFloat(pHeight) - parseFloat(_height)
-      const widthDiff = parseFloat(pWidth) - parseFloat(_width)
-
-      t += deltaY
-      l += deltaX
-
-      if (Math.abs(t) < 10) t = 0
-      if (Math.abs(l) < 10) l = 0
-
-      if (t <= 0 && Math.abs(t) <= Math.abs(heightDiff)) {
-        image.style.top = t + 'px'
+      const { rotateAngle = 0 } = object.props.imageStyle
+      const deltaX = startX - clientX / scaleX
+      const deltaY = startY - clientY / scaleY
+      startX = clientX / scaleX
+      startY = clientY / scaleY
+      let t = cropper.offsetTop - deltaY
+      let l = cropper.offsetLeft - deltaX
+      if (t < 0) {
+        t = 0
+      } else if (t > originalHeight) {
+        t = originalHeight
       }
-
-      if (l <= 0 && Math.abs(l) <= Math.abs(widthDiff)) {
-        image.style.left = l + 'px'
+      if (l < imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth) {
+        l = imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth
+      } else if (l > originalWidth) {
+        l = originalWidth
       }
-
-      startX = clientX
-      startY = clientY
+      cropper.style.top = t + 'px'
+      cropper.style.left = l + 'px'
+      run({ t, l, w: cropper.offsetWidth, h: cropper.offsetHeight, rotateAngle })
     }
 
     const onMouseUp = () => {
-      if (!updateObject) return
       document.body.style.cursor = 'default'
-      circle.style.display = 'flex'
-      setOverflow('hidden')
 
-      const { top, left } = object.props.imageStyle
-      const newTop = parseFloat(image.style.top)
-      const newLeft = parseFloat(image.style.left)
+      const { top, left } = object.props.cropStyle as Cropper
+      const newTop = parseFloat(cropper.style.top)
+      const newLeft = parseFloat(cropper.style.left)
       if (parseFloat(top + '') !== newTop || parseFloat(left + '') !== newLeft) {
-        updateObject({
-          object: {
-            ...object,
-            props: {
-              ...object.props,
-              imageStyle: {
-                ...object.props.imageStyle,
-                top: newTop,
-                left: newLeft,
+        if (updateObject) {
+          updateObject(
+            {
+              object: {
+                ...object,
+                props: {
+                  ...object.props,
+                  cropStyle: {
+                    ...(object.props?.cropStyle as Cropper),
+                    top: newTop,
+                    left: newLeft,
+                  },
+                },
               },
             },
-          },
-        })
+            slideId
+          )
+        }
       }
 
+      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mousemove', onMouseMove)
+    }
+
+    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('mousemove', onMouseMove)
+  }
+
+  const resizeCropper = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, type: string) => {
+    e.preventDefault()
+    document.body.style.cursor = 'grab'
+    const cropper = document.querySelector('.wrapper_container .cropper') as HTMLElement
+    const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
+    const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
+    const startX = e.clientX / scaleX
+    const startY = e.clientY / scaleY
+    if (!cropper) {
+      return
+    }
+    const { top: t, left: l, width: w, height: h } = getComputedStyle(cropper)
+
+    const { rotateAngle = 0 } = object.props.imageStyle
+    const {
+      position: { centerX, centerY },
+      size: { width, height },
+    } = tLToCenter({
+      top: parseFloat(t),
+      left: parseFloat(l),
+      width: parseFloat(w),
+      height: parseFloat(h),
+    })
+    const rect = { width, height, centerX, centerY, rotateAngle }
+    let _isMouseDown = true
+    const resizeObject = ({
+      top,
+      left,
+      width: _width,
+      height: _height,
+    }: {
+      top: number
+      left: number
+      width: number
+      height: number
+    }) => {
+      let _t = top
+      let _l = left
+      const _w = _width
+      const _h = _height
+      if (_t < 0) {
+        _t = 0
+      } else if (_t > originalHeight) {
+        _t = originalHeight
+      }
+
+      if (_l < imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth) {
+        _l = imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth
+      } else if (_l > originalWidth) {
+        _l = originalWidth
+      }
+
+      // if (_t + _h <= originalHeight) {
+      cropper.style.top = _t + 'px'
+      cropper.style.left = _l + 'px'
+      cropper.style.width = _w + 'px'
+      cropper.style.height = _h + 'px'
+      run({ t: _t, l: _l, w: _w, h: _h, rotateAngle })
+      // }
+    }
+    const onResize = (
+      length: number,
+      alpha: number,
+      _rect: {
+        width: number
+        height: number
+        centerX: number
+        centerY: number
+        rotateAngle: number
+      },
+      isShiftKey: boolean
+    ) => {
+      const minWidth = 20 / scaleX
+      const minHeight = 20 / scaleY
+
+      const beta = alpha - degToRadian(_rect.rotateAngle)
+      const deltaW = length * Math.cos(beta)
+      const deltaH = length * Math.sin(beta)
+      const ratio = isShiftKey ? _rect.width / _rect.height : undefined
+      const {
+        position: { centerX: newCenterX, centerY: newCenterY },
+        size: { width: newWidth, height: newHeight },
+      } = getNewStyle(type, { ..._rect, rotateAngle: _rect.rotateAngle }, deltaW, deltaH, ratio, minWidth, minHeight)
+
+      resizeObject(
+        centerToTL({
+          centerX: newCenterX,
+          centerY: newCenterY,
+          width: newWidth,
+          height: newHeight,
+          rotateAngle: rect.rotateAngle,
+        })
+      )
+    }
+    const onMouseMove = (sube: any) => {
+      if (!_isMouseDown) return
+      sube.preventDefault()
+      const clientX = sube.clientX / scaleX
+      const clientY = sube.clientY / scaleY
+      const deltaX = clientX - startX
+      const deltaY = clientY - startY
+      const alpha = Math.atan2(deltaY, deltaX)
+      const deltaL = getLength(deltaX, deltaY)
+      onResize(deltaL, alpha, rect, true)
+    }
+    const onMouseUp = () => {
+      _isMouseDown = false
+      document.body.style.cursor = 'default'
+
+      const { top, left, width: _width, height: _height } = object.props.cropStyle as Cropper
+      const newTop = parseFloat(cropper.style.top)
+      const newLeft = parseFloat(cropper.style.left)
+      const newWidth = parseFloat(cropper.style.width)
+      const newHeight = parseFloat(cropper.style.height)
+      if (
+        ParseNumber(top) !== newTop ||
+        ParseNumber(left) !== newLeft ||
+        ParseNumber(_height) !== newHeight ||
+        ParseNumber(_width) !== newWidth
+      ) {
+        if (updateObject) {
+          updateObject(
+            {
+              object: {
+                ...object,
+                props: {
+                  ...object.props,
+                  cropStyle: {
+                    ...(object.props?.cropStyle as Cropper),
+                    top: newTop,
+                    left: newLeft,
+                    height: newHeight,
+                    width: newWidth,
+                  },
+                },
+              },
+            },
+            slideId
+          )
+        }
+      }
       window.removeEventListener('mouseup', onMouseUp)
       window.removeEventListener('mousemove', onMouseMove)
     }
@@ -120,58 +280,83 @@ const Image: React.FC<Props> = ({
     const originalWidth = imageRef.current.naturalWidth
     const originalHeight = imageRef.current.naturalHeight
 
-    const widthRatio = width / originalWidth
-    const heightRatio = height / originalHeight
+    const widthRatio = resolution.width / originalWidth
+    const heightRatio = resolution.height / originalHeight
 
     if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
       return false
     }
-
     return true
+  }
+
+  const getPosition = (resizer: string, cropper?: Cropper) => {
+    switch (resizer) {
+      case 'bl':
+        return {
+          top: ParseNumber(cropper?.top) + ParseNumber(cropper?.height) - 10,
+          left: ParseNumber(cropper?.left) - 10,
+        }
+      case 'br':
+        return {
+          top: ParseNumber(cropper?.top) + ParseNumber(cropper?.height) - 10,
+          left: ParseNumber(cropper?.left) + ParseNumber(cropper?.width) - 10,
+        }
+      case 'tr':
+        return {
+          left: ParseNumber(cropper?.left) + ParseNumber(cropper?.width) - 10,
+          top: ParseNumber(cropper?.top) - 10,
+        }
+      case 'tl':
+        return {
+          left: ParseNumber(cropper?.left) - 10,
+          top: ParseNumber(cropper?.top) - 10,
+        }
+      default:
+        return {}
+    }
   }
 
   useEffect(() => {
     setWillBlur(checkRatio())
-  }, [width, height]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [resolution]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const { cropStyle, imageStyle: imgStyle } = object.props
+
+    run({
+      t: ParseNumber(cropStyle?.top),
+      h: ParseNumber(cropStyle?.height),
+      l: ParseNumber(cropStyle?.left),
+      w: ParseNumber(cropStyle?.width),
+      rotateAngle: imgStyle.rotateAngle || 0,
+    })
+  }, [object.props.cropStyle])
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
-  const { rgb, opacity = '100%' } = object?.props?.frameStyle || {}
-
-  const borderColor = rgb ? `rgba(${rgb.r},${rgb.g},${rgb.b},${opacity})` : '#000'
+  const cropper = object.props.cropStyle
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
-
   return (
     <div
       className={className}
       style={{
         ...style,
-        ...(object?.props?.frameStyle || {}),
-        overflow,
+        overflow: 'hidden',
         borderStyle: 'solid',
-        borderColor,
       }}
     >
-      <div className="border" />
-      <div className="background" style={placeholderStyle} hidden={!edit} />
       <img
         ref={imageRef}
         alt="object"
+        draggable={false}
         className="image"
         data-imageurl={imageUrl}
         style={{
           ...imageStyle,
           filter: _filter,
-          // WebkitMaskSize: `${width - _borderWidth * 2}px ${height - _borderWidth * 2}px`,
-          WebkitMaskSize: 'contain',
-          WebkitMaskRepeat: 'no-repeat',
-          ...(object?.props?.maskStyle || {}),
+          objectFit: 'contain',
         }}
         src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-      />
-      <PlusSquareOutlined
-        className="plus"
-        style={{ display: imageStyle.display === 'none' && edit ? 'block' : 'none' }}
       />
       {imageUrl && willBlur && (
         <Tooltip title="It will be blurred">
@@ -180,16 +365,29 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
-      {/* <div style={{borderColor, borderWidth, opacity}} className="frame"></div> */}
+
       <div
+        className="cropper"
+        id="cropper"
+        onMouseDown={moveCropper}
         style={{
-          visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
+          left: cropper?.left,
+          top: cropper?.top,
+          width: cropper?.width,
+          height: cropper?.height,
+          pointerEvents: disabled ? 'none' : 'visible',
         }}
-        onMouseDown={(e) => imageReposition(e)}
-        className="image-center"
-      >
-        <BsArrowsMove className="drag-icon" />
-      </div>
+      />
+      {Object.keys(transformers).map((t: string) => {
+        return (
+          <div
+            key={t}
+            onMouseDown={(e) => resizeCropper(e, transformers[t])}
+            className={`resizer ${transformers[t]}`}
+            style={{ pointerEvents: disabled ? 'none' : 'visible', display: disabled ? 'none' : 'block' }}
+          />
+        )
+      })}
     </div>
   )
 }

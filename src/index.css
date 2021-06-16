@@ -55,3 +55,7 @@ code {
   border-width: 0px !important;
   background: transparent !important;
 }
+
+.ant-input-number-input {
+  text-align: center !important;
+}

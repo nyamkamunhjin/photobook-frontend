@@ -1,15 +1,38 @@
 import React, { FC } from 'react'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 
+const data: Feature[] = [
+  {
+    icon: 'ICON',
+    text: 'Онцгой мөчүүдээ зургийн цомогт бичиж үлдээ.',
+  },
+  {
+    icon: 'ICON',
+    text: 'Алмайран харж байсан зургаа ханан дээрээ өндөр нягтаршилтайгаар хэвлүүлэн хар',
+  },
+  {
+    icon: 'ICON',
+    text: 'Ус, нар, салхи шороонд 200 жил болсон ч гандахгүй фото хэвлэл.',
+  },
+  {
+    icon: 'ICON',
+    text: 'Танд Станд хэвлэл маш яаралтай хэрэгтэй болсон уу.',
+  },
+  {
+    icon: 'ICON',
+    text: 'Манай сайтаар үйлчлүүлэхэд танд мэргэжлийн хүнд програм дээр ажиллах, дизайны чадварууд огт шаардлагагүй.',
+  },
+  {
+    icon: 'ICON',
+    text: 'Брошур танилцуулга гэх мэт  зөвхөн олон тоогоор хэвлэгдэх боломжтой зүйлийг ч нэг ширхгээр хэвлэнэ.',
+  },
+]
+
 const Features: FC = () => {
   return (
-    <WidthLimiter className="flex flex-wrap gap-4 px-4 py-8">
-      {Array.from(Array(6).keys()).map((a) => (
-        <Feature
-          key={`feature${a}`}
-          icon="ICON"
-          text="Брошур танилцуулга гэх мэт зөвхөн олон тоогоор хэвлэгдэх боломжтой зүйлийг ч нэг ширхгээр хэвлэнэ"
-        />
+    <WidthLimiter className="flex flex-wrap gap-4 px-4 py-8 h-96">
+      {data.map((each) => (
+        <Feature key={`feature${each.text}`} icon={each.icon} text={each.text} />
       ))}
     </WidthLimiter>
   )

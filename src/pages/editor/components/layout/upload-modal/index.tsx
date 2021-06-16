@@ -1,7 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: off */
 import { Button, Grid, Modal, Spin } from 'antd'
 import { ModalProps } from 'antd/lib/modal'
-import { UploadablePicture } from 'interfaces'
 import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import Facebook from './facebook'
@@ -20,7 +19,6 @@ interface Props extends ModalProps {
 
 const UploadModal: React.FC<Props> = ({
   name,
-  children,
   loading,
   okText,
   cancelText,

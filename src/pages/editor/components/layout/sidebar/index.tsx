@@ -51,12 +51,18 @@ interface Props {
   hasFrames?: boolean
   hasImage?: boolean
   hasLayout?: boolean
+  hasClipArt?: boolean
+  hasMask?: boolean
+  hasBackground?: boolean
 }
 
 const SideBarPanel: React.FC<Props> = ({
   hasImage,
   hasLayout = true,
   hasFrames = true,
+  hasBackground = true,
+  hasClipArt = true,
+  hasMask = true,
   addImages,
   uploadImages,
   linkImages,
@@ -245,13 +251,21 @@ const SideBarPanel: React.FC<Props> = ({
               <FormattedMessage id="images" />
             </div>
           </div>
-          <div onClick={() => switchTab('backgrounds')} className={'HeaderItem ' + isActive('backgrounds')}>
+          <div
+            hidden={!hasBackground}
+            onClick={() => switchTab('backgrounds')}
+            className={'HeaderItem ' + isActive('backgrounds')}
+          >
             <PictureOutlined style={{ fontSize: 24 }} />
             <div className="title">
               <FormattedMessage id="backgrounds" />
             </div>
           </div>
-          <div onClick={() => switchTab('cliparts')} className={'HeaderItem ' + isActive('cliparts') + isDisabled()}>
+          <div
+            hidden={!hasClipArt}
+            onClick={() => switchTab('cliparts')}
+            className={'HeaderItem ' + isActive('cliparts') + isDisabled()}
+          >
             <StarOutlined style={{ fontSize: 24 }} />
             <div className="title">
               <FormattedMessage id="cliparts" />
@@ -267,7 +281,11 @@ const SideBarPanel: React.FC<Props> = ({
               <FormattedMessage id="layouts" />
             </div>
           </div>
-          <div onClick={() => switchTab('masks')} className={'HeaderItem ' + isActive('masks') + isDisabled()}>
+          <div
+            hidden={!hasMask}
+            onClick={() => switchTab('masks')}
+            className={'HeaderItem ' + isActive('masks') + isDisabled()}
+          >
             <BgColorsOutlined style={{ fontSize: 24 }} />
             <div className="title">
               <FormattedMessage id="masks" />

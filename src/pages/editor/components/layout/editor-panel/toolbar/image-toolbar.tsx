@@ -7,53 +7,11 @@ import { GiFairyWand } from 'react-icons/gi'
 import { VscZoomIn, VscZoomOut, VscScreenFull } from 'react-icons/vsc'
 import { BsSubtract } from 'react-icons/bs'
 import { InputNumber, Slider, Tooltip } from 'antd'
-import { FilterMap, PObject } from 'interfaces'
+import { PObject } from 'interfaces'
 import { ColorResult, SketchPicker } from 'react-color'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
-
-const filters: FilterMap = {
-  none: {
-    label: 'filter-none',
-    style: {
-      filter: ' ',
-      WebkitFilter: 'none',
-    },
-  },
-  blur: {
-    label: 'filter-blur',
-    style: {
-      filter: 'blur(10px) ',
-      WebkitFilter: 'blur(10px)',
-    },
-  },
-  lomo: {
-    label: 'filter-lomo',
-    style: {
-      filter: 'hue-rotate(40deg) contrast(1.2) ',
-      WebkitFilter: 'hue-rotate(40deg) contrast(1.2)',
-    },
-  },
-  sepia: {
-    label: 'filter-sepia',
-    style: {
-      filter: 'sepia(60%) ',
-    },
-  },
-  invert: {
-    label: 'filter-invert',
-    style: {
-      filter: 'drop-shadow(16px 16px 20px red) invert(75%) ',
-    },
-  },
-  gray: {
-    label: 'filter-b&w',
-    style: {
-      WebkitFilter: 'grayscale(100%)',
-      filter: 'grayscale(100%) ',
-    },
-  },
-}
+import { filters } from 'configs'
 
 interface Props {
   index: number

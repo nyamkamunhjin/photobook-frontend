@@ -408,6 +408,15 @@ export const updateProjectSlides = async (id: number, data: Object) => {
   return response
 }
 
+export const updateProjectPrintSlides = async (id: number, data: Object) => {
+  const response = await BaseRequest({
+    url: `project/${id}/print/slides`,
+    method: 'PUT',
+    data,
+  })
+  return response
+}
+
 export const getProject = async (id: string) => {
   const response = await BaseRequest({
     url: `project/${id}`,
@@ -897,7 +906,6 @@ export const getGoogleImages = async (token?: string) => {
     url: `google/images?nextToken=${token}`,
     method: 'GET',
   })
-  console.log(response?.data)
   return { list: response?.data.mediaItems, nextId: response?.data.nextPageToken }
 }
 // #endregion [Google]
@@ -1086,3 +1094,72 @@ export const createOrder = async (data: { isShipping: boolean; address?: number 
   return response
 }
 // #endregion [Order]
+
+// #region [Voucher]
+export const listVoucher = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `voucher/user?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getVoucher = async (id: string) => {
+  const response = await BaseRequest({
+    url: `voucher/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const addVoucherToCartItem = async (id: string) => {
+  const response = await BaseRequest({
+    url: `voucher/apply/${id}`,
+    method: 'PUT',
+  })
+  return response?.data
+}
+// #endregion [Voucher]
+
+// #region [GiftCard]
+export const listGiftCard = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `gift-card/user?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getGiftCard = async (id: string) => {
+  const response = await BaseRequest({
+    url: `gift-card/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const addGiftCardToShoppingCart = async (id: string, type: 'attach' | 'detach') => {
+  const response = await BaseRequest({
+    url: `gift-card/attach/${id}`,
+    method: 'PUT',
+    data: {
+      actionType: type,
+    },
+  })
+  return response?.data
+}
+// #endregion [GiftCard]

@@ -1,6 +1,6 @@
 import { CustomButton, useRouter } from 'components'
 import React, { useState } from 'react'
-import { Form, Input, Button, notification } from 'antd'
+import { Form, Input, notification } from 'antd'
 import { useDispatch } from 'react-redux'
 import './style.css'
 import { FormattedMessage, useIntl } from 'react-intl'

@@ -1,217 +1,195 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable @typescript-eslint/ban-types */
+
 import React, { useState } from 'react'
-import { Modal, Button, Select, InputNumber } from 'antd'
-import { CgZoomIn, CgZoomOut } from 'react-icons/cg'
-import { useLocalStorageState, useThrottleFn } from 'ahooks'
-import { Image, PaperMaterial, PaperSize, UploadablePicture } from 'interfaces'
+import { Select } from 'antd'
+import { useDispatch } from 'react-redux'
+import { Cropper, PaperMaterial, PaperSize, PObject, Slide } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
-import Spinner from 'components/spinner'
-import { filterArray } from 'utils'
-import UploadPhotosGroup from '../upload-modal/upload-photos-group'
+import { InputNumber } from 'components'
+import { saveProject as _saveProject, deleteSlide as _deleteSlide, updateObject } from 'redux/actions/project'
+import { ParseNumber } from 'utils'
+import Image from './image'
 
 interface Props {
-  loading: boolean
-  images: Image[]
+  toggle: any
+  onEdit: (index: number) => void
+  objects: Slide[]
+  selectedObjects: Slide[]
+  height: number
   paperSizes?: PaperSize[]
   paperMaterials?: PaperMaterial[]
-  uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
-  syncPhoto: (images: UploadablePicture[]) => void
-  linkPhoto: (images: string[]) => void
-  unlinkPhoto: (images: string[]) => void
 }
 
-const Images: React.FC<Props> = ({
-  loading,
-  images,
-  uploadPhoto,
-  syncPhoto,
-  linkPhoto,
-  paperSizes,
-  paperMaterials,
-}) => {
-  const [modalVisible, setModalVisible] = useState<boolean>(false)
+const Images: React.FC<Props> = ({ height, objects, toggle, paperSizes, paperMaterials, selectedObjects, onEdit }) => {
+  const dispatch = useDispatch()
   const [popVisible, setPopVisible] = useState(-1)
-  const [selectedImages, setSelectedImages] = useState<Image[]>()
-  const [sort, setSort] = useState('a-z')
-  const [zoom, setZoom] = useLocalStorageState('zoom', 1)
-  const showModal = () => {
-    setModalVisible(true)
+  const srcHeight = height + 20
+  const maxWidth = 1000
+  const maxHeight = 1000
+  const srcWidth = srcHeight + height
+  const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
+  const onPaperSize = (id: number, object: Slide) => {
+    const size = paperSizes?.find((a) => a.id === id)
+    if (!size) {
+      return
+    }
+    const { cropStyle } = (object.object as PObject)?.props
+    const max = Math.max(ParseNumber(cropStyle?.width), ParseNumber(cropStyle?.height))
+    const max2 = Math.max(size.height, size.width)
+    const min2 = Math.min(size.height, size.width)
+    dispatch(
+      updateObject(
+        {
+          object: {
+            ...object.object,
+            props: {
+              ...object.object?.props,
+              paperSize: size,
+              cropStyle: {
+                ...(cropStyle as Cropper),
+                height: (max * min2) / max2,
+              },
+            },
+          },
+        },
+        object.slideId
+      )
+    )
   }
 
-  const handleOk = () => {
-    setModalVisible(false)
+  const onPaperMaterial = (id: number, object: Slide) => {
+    const material = paperMaterials?.find((a) => a.id === id)
+    if (!material) {
+      return
+    }
+    dispatch(
+      updateObject(
+        {
+          object: {
+            ...object.object,
+            props: {
+              ...object.object?.props,
+              paperMaterial: material,
+            },
+          },
+        },
+        object.slideId
+      )
+    )
+  }
+  const onQuantity = (quantity: any, object: Slide) => {
+    dispatch(
+      updateObject(
+        {
+          object: {
+            ...object.object,
+            props: {
+              ...object.object?.props,
+              quantity,
+            },
+          },
+        },
+        object.slideId
+      )
+    )
   }
 
-  const handleCancel = () => {
-    setModalVisible(false)
-  }
-  const onZoomOut = () => {
-    if ((zoom || 1) > 1) {
-      setZoom((zoom || 1) - 1)
-    }
-  }
-  const onZoomIn = () => {
-    if ((zoom || 1) <= 2) {
-      setZoom((zoom || 1) + 1)
-    }
-  }
-  const toggle = useThrottleFn(
-    (image: Image, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (event.shiftKey || (event.shiftKey && selectedImages?.some((each) => each.id === image.id))) {
-        setSelectedImages(filterArray(selectedImages || [], image, 'id'))
-      } else {
-        setSelectedImages([image])
-      }
-    },
-    {
-      wait: 100,
-    }
-  )
-
-  const getItems = () => {
-    switch (sort) {
-      case 'a-z':
-        return images.sort((a, b) => a.name.localeCompare(b.name))
-      case 'z-a': {
-        return images.sort((b, a) => a.name.localeCompare(b.name))
-      }
-      case 'earlier': {
-        return images.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-      }
-      case 'recently': {
-        return images.sort((b, a) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-      }
-      default:
-        return images
-    }
-  }
-
-  const _zoom = (zoom || 1) * 80
-  return loading ? (
-    <Spinner />
-  ) : (
-    <div className="Images">
-      <div className="AddMorePhotos flex flex-col">
-        <div className="flex justify-between">
-          <div className="flex flex-col justify-center p-2">
-            <span className="text-xs mb-1 flex-none">
-              <FormattedMessage id="image.sort" />
-            </span>
-            <div className="w-full">
-              <Select defaultValue={sort} size="small" onChange={(e) => setSort(e)} className="min-w-full">
-                <Select.Option value="a-z">
-                  <FormattedMessage id="sort.a-z" />
-                </Select.Option>
-                <Select.Option value="z-a">
-                  <FormattedMessage id="sort.z-a" />
-                </Select.Option>
-                <Select.Option value="earlier">
-                  <FormattedMessage id="sort.earlier" />
-                </Select.Option>
-                <Select.Option value="recently">
-                  <FormattedMessage id="sort.recently" />
-                </Select.Option>
+  return (
+    <>
+      {objects.map((object, key) => (
+        <div
+          key={`images${object.slideId}`}
+          onClick={(e) => toggle.run(object, e)}
+          onMouseEnter={() => setPopVisible(key)}
+          onMouseLeave={() => setPopVisible(-1)}
+        >
+          <div
+            className={
+              selectedObjects?.some((each) => each.slideId === object.slideId)
+                ? 'image-container active'
+                : 'image-container'
+            }
+            style={{ width: 60 + height, height: 100 + height }}
+          >
+            <div className="header">{object.slideId}</div>
+            <div className="m-auto overflow-hidden" style={{ width: maxWidth * ratio, height: maxHeight * ratio }}>
+              <div className="canvas_container" style={{ transform: 'scale(' + ratio + ')', transformOrigin: '0 0' }}>
+                <Image
+                  slideId={object.slideId}
+                  scaleX={srcWidth / maxWidth}
+                  scaleY={srcHeight / maxHeight}
+                  object={object.object || ({} as PObject)}
+                  resolution={{
+                    width: Number(object.object?.style?.width),
+                    height: Number(object.object?.style.height),
+                  }}
+                  style={object.object?.style}
+                  className={object.object?.className || 'object'}
+                  draggable={false}
+                  alt={object.object?.id}
+                  imageUrl={object.object?.props.imageUrl}
+                  imageStyle={object.object?.props.imageStyle}
+                  updateObject={(a, e) => dispatch(updateObject(a, e))}
+                  placeholderStyle={object.object?.props.placeholderStyle}
+                />
+              </div>
+            </div>
+            <div className="m-auto text-center">
+              <Select
+                style={{ fontSize: 9 }}
+                value={object.object?.props.paperSize?.id}
+                size="small"
+                onChange={(e) => onPaperSize(e, object)}
+                bordered={false}
+                className="w-1/2"
+              >
+                {paperSizes?.map((each) => (
+                  <Select.Option key={`${object.slideId}${each.id}size`} value={each.id}>
+                    {each.size}
+                  </Select.Option>
+                ))}
+              </Select>
+              <Select
+                onChange={(e) => onPaperMaterial(e, object)}
+                value={object.object?.props.paperMaterial?.id}
+                size="small"
+                bordered={false}
+                className="w-1/2"
+              >
+                {paperMaterials?.map((each) => (
+                  <Select.Option key={`${object.slideId}${each.id}material`} value={each.id}>
+                    {each.name}
+                  </Select.Option>
+                ))}
               </Select>
             </div>
-          </div>
-          <div className="flex flex-col justify-center p-2 flex-none">
-            <Button type="dashed" style={{ width: '100%' }} onClick={showModal}>
-              <FormattedMessage id="image.add_new" />
-            </Button>
-            <Modal title="Upload" visible={modalVisible} onOk={handleOk} onCancel={handleCancel}>
-              <UploadPhotosGroup
-                uploadPhoto={(e) => {
-                  uploadPhoto(e)
-                  handleCancel()
-                }}
-                syncPhoto={(e) => {
-                  syncPhoto(e)
-                  handleCancel()
-                }}
-                linkPhoto={(e) => {
-                  linkPhoto(e)
-                  handleCancel()
-                }}
+            <div className="flex flex-row mb-2 m-auto">
+              <InputNumber
+                onChange={(e) => onQuantity(e, object)}
+                size="small"
+                bordered={false}
+                value={object.object?.props.quantity || 1}
               />
-            </Modal>
+            </div>
           </div>
-          <div className="flex flex-col justify-end p-2 flex-none">
-            <span className="text-xs mb-1">
-              <FormattedMessage id="image.thumbs" />
-            </span>
-            <div className="flex">
-              <div
-                onClick={onZoomOut}
-                className="rounded p-1 shadow-sm border border-gray-300 rounded-r-none cursor-pointer"
-              >
-                <CgZoomOut className={zoom === 1 ? 'text-gray-300' : 'text-gray-500'} />
-              </div>
-              <div
-                onClick={onZoomIn}
-                className="rounded p-1 shadow-sm border border-gray-300 rounded-l-none cursor-pointer"
-              >
-                <CgZoomIn className={zoom === 3 ? 'text-gray-300' : 'text-gray-500'} />
-              </div>
+          <div
+            className="flex justify-around bg-white p-1 rounded-2xl"
+            style={key === popVisible ? { opacity: 1 } : { opacity: 0 }}
+          >
+            <div className="cursor-pointer">
+              <FormattedMessage id="duplicate" />
+            </div>
+            <div className="cursor-pointer" onClick={() => onEdit(popVisible)}>
+              <FormattedMessage id="edit" />
+            </div>
+            <div className="cursor-pointer">
+              <FormattedMessage id="remove" />
             </div>
           </div>
         </div>
-      </div>
-      <div className="ImportedPhotos">
-        {getItems().map((image: Image, key: number) => {
-          return (
-            <>
-              <div onMouseEnter={() => setPopVisible(key)} onMouseLeave={() => setPopVisible(-1)}>
-                <div
-                  className={
-                    selectedImages?.some((each) => each.id === image.id) ? 'ImageContainer active' : 'ImageContainer'
-                  }
-                  style={{ width: 60 + _zoom, height: 100 + _zoom }}
-                  key={`images${image.imageUrl}`}
-                >
-                  <div className="header">{image.imageUrl}</div>
-                  <img
-                    draggable={false}
-                    className="w-full"
-                    alt={image.tempUrl}
-                    src={image.tempUrl}
-                    onClick={(e) => toggle.run(image, e)}
-                  />
-                  <div className="flex flex-row justify-center">
-                    <Select size="small" bordered={false} className="w-1/3 min-w-14">
-                      {paperSizes?.map((each) => (
-                        <Select.Option value={each.id}>{each.size}</Select.Option>
-                      ))}
-                    </Select>
-                    <Select size="small" bordered={false} className="w-1/3 min-w-14">
-                      {paperMaterials?.map((each) => (
-                        <Select.Option value={each.id}>{each.name}</Select.Option>
-                      ))}
-                    </Select>
-                  </div>
-                  <div className="flex flex-row mb-2">
-                    <InputNumber size="small" />
-                  </div>
-                </div>
-                <div
-                  className="flex justify-between bg-white p-1 rounded-2xl"
-                  style={key === popVisible ? { opacity: 1 } : { opacity: 0 }}
-                >
-                  <div className="cursor-pointer">
-                    <FormattedMessage id="duplicate" />
-                  </div>
-                  <div className="cursor-pointer">
-                    <FormattedMessage id="edit" />
-                  </div>
-                  <div className="cursor-pointer">
-                    <FormattedMessage id="remove" />
-                  </div>
-                </div>
-              </div>
-            </>
-          )
-        })}
-      </div>
-    </div>
+      ))}
+    </>
   )
 }
 

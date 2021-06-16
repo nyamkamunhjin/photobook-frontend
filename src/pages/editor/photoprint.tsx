@@ -59,10 +59,6 @@ import './components/styles/editor.scss'
 interface Props {
   getProjects: (id: number, params: ProjectCreate, project: string) => Promise<string | undefined>
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
-  addNewSlide: (slideIndex: number, projectId: number) => Promise<void>
-  duplicateSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
-  deleteSlide: (projectId: number, slideIndex: number) => Promise<void>
-  reOrderSlide: (projectId: number, slides: Slide[]) => Promise<void>
   editor: EditorInterface
   project: ProjectInterface
   loadObjects: (objects: PObject[]) => void
@@ -83,10 +79,6 @@ interface Props {
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
-  addNewSlide,
-  duplicateSlide,
-  reOrderSlide,
-  deleteSlide,
   editor,
   loadObjects,
   loadContainers,
@@ -108,7 +100,6 @@ const BookEditor: React.FC<Props> = ({
     bgStyles,
     slideWidth,
     slideHeight,
-    layout,
     layouts,
     loading,
     fetching,
@@ -126,7 +117,6 @@ const BookEditor: React.FC<Props> = ({
   const scaledContainerRef = useRef<any>(null)
   const groupRef = useRef<any>(null)
   const [overflow, setOverflow] = useState<string>('hidden')
-  const [refreshing, setRefreshing] = useBoolean(false)
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
 
@@ -147,7 +137,7 @@ const BookEditor: React.FC<Props> = ({
       width: any
       height: any
     }>()
-  const [_slideIndex, setSlideIndex] = useState<number>(0)
+  const _slideIndex = 0
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
@@ -210,68 +200,6 @@ const BookEditor: React.FC<Props> = ({
       setIsTextEditing(false)
       setTextObjectIndex(_index)
     }
-  }
-
-  const nextSlide = () => {
-    if (_slideIndex < currentProject.slides.length - 1) {
-      changeSlideIndex(_slideIndex + 1)
-    }
-  }
-
-  const onAddSlide = (projectId: number, slideIndex: number) => {
-    setRefreshing.setTrue()
-    addNewSlide(projectId, slideIndex).then(() => {
-      changeSlideIndex(_slideIndex + 1)
-      setRefreshing.setFalse()
-    })
-  }
-
-  const onDuplicateSlide = (projectId: number, slideIndex: number) => {
-    setRefreshing.setTrue()
-    duplicateSlide(projectId, slideIndex, currentProject.slides[slideIndex]).then(() => {
-      changeSlideIndex(_slideIndex + 1)
-      setRefreshing.setFalse()
-    })
-  }
-
-  const onReOrderSlide = (projectId: number, slides: Slide[]) => {
-    setRefreshing.setTrue()
-    reOrderSlide(projectId, slides).then(() => {
-      setRefreshing.setFalse()
-      editors.deSelectObject()
-      setSlideIndex(0)
-    })
-  }
-
-  const onDeleteSlide = (projectId: number, slideIndex: number) => {
-    if (_slideIndex !== 0) {
-      setRefreshing.setTrue()
-      deleteSlide(projectId, slideIndex).then(() => {
-        setRefreshing.setFalse()
-        editors.deSelectObject()
-        setSlideIndex(_slideIndex - 1)
-      })
-    }
-  }
-
-  const prevSlide = () => {
-    if (_slideIndex !== 0) {
-      changeSlideIndex(_slideIndex - 1)
-    }
-  }
-
-  const changeSlideIndex = (index: number) => {
-    saveObjects()
-    editors.deSelectObject()
-    setSlideIndex(index)
-  }
-
-  const hasNext = () => {
-    return !(_slideIndex === currentProject.slides.length - 1)
-  }
-
-  const hasPrevious = () => {
-    return !(_slideIndex === 0)
   }
 
   const saveObjects = async () => {

@@ -19,32 +19,34 @@ import lodash from 'lodash'
 import { ADD_LAYOUT, UPDATE_GROUP_CONTAINER, UPDATE_OBJECT } from 'redux/actions/types'
 import { arraysEqual, debounce, getRotationScaler, ParseNumber } from 'utils'
 import {
+  calculateCenter,
   centerToTL,
   degToRadian,
   diffRect,
   getAngle,
   getLength,
   getNewStyle,
+  getRotatedPosition,
   layoutPositionsToImage,
   layoutPositionsToText,
   tLToCenter,
 } from 'utils/transformer-lib'
 
 interface Props {
-  setTextObjectIndex: (index: number) => void
+  setTextObjectIndex?: (index: number) => void
   setObjectIndex: (index: number) => void
   setOverflow: (overflow: string) => void
-  setIsTextEditing: (text: boolean) => void
+  setIsTextEditing?: (text: boolean) => void
   setGroupObjects?: (object: any) => void
   setGroupStyles?: (object: any) => void
   setObjectType: (object: ObjectType) => void
-  updateGroupContainer: (props: { containers: Container[] }) => void
+  updateGroupContainer?: (props: { containers: Container[] }) => void
   updateObject: (props: { object: PObject }) => void
   loadBackgrounds?: (backgrounds: Object[]) => void
   updateHistory: (historyType: string, props: HistoryProps) => void
   addLayout?: (props: { objects: Object[]; layout: FullLayout }) => void
-  addObject: (props: { object: Object }) => void
-  removeObject: (props: { object: Object; container: Object }) => void
+  addObject?: (props: { object: Object }) => void
+  removeObject?: (props: { object: Object; container: Object }) => void
   setObject: (object: any) => void
   scaledContainerRef: any
   slideContainerRef?: any
@@ -62,7 +64,7 @@ interface Props {
   _objectType?: ObjectType
   _border?: number
   _treshhold?: number
-  _isTextEditing: boolean
+  _isTextEditing?: boolean
   _groupObjects: any
   _object?: any
   _groupStyles: any
@@ -116,7 +118,7 @@ export default class Editor {
   overflow: string
   setOverflow: any
 
-  _isTextEditing: boolean
+  _isTextEditing = false
   setIsTextEditing: any
 
   setObjectType: any
@@ -136,7 +138,6 @@ export default class Editor {
     this.updateHistory = props.updateHistory
     this.updateObject = props.updateObject
     this.addLayout = props.addLayout
-    this._isTextEditing = props._isTextEditing
     this.setIsTextEditing = props.setIsTextEditing
     this.scale = props.scale
     this.setGroupObjects = props.setGroupObjects
@@ -144,8 +145,11 @@ export default class Editor {
     this.slideViewRef = props.slideViewRef
     this.scaledContainerRef = props.scaledContainerRef
     this._groupStyles = props._groupStyles
-    if (props._objectType) this._objectType = props._objectType
     this.overflow = props.overflow
+    if (props._objectType) this._objectType = props._objectType
+    if (props._isTextEditing !== undefined) {
+      this._isTextEditing = props._isTextEditing
+    }
     if (props.slideContainerRef) {
       this.slideContainerRef = props.slideContainerRef
     }
@@ -1665,7 +1669,7 @@ export default class Editor {
         const {
           options,
           rect: { w, h },
-        } = this.calculateCenter({ top, left, width, height }, this._rotateAngle)
+        } = calculateCenter({ top, left, width, height }, this._rotateAngle)
 
         const activeBorder = document.querySelector('.active-border')
         this.showActiveBorder(activeBorder, options, w, h, this._rotateAngle)
@@ -1909,35 +1913,6 @@ export default class Editor {
     document.addEventListener('mousemove', onMouseMove)
     document.addEventListener('mouseup', onMouseUp)
   }
-  public getRotatedPosition = ({
-    x,
-    y,
-    cx,
-    cy,
-    theta,
-  }: {
-    x: number
-    y: number
-    cx: number
-    cy: number
-    theta: number
-  }) => {
-    if (!theta) theta = 0
-
-    // translate point to origin
-    const tempX = x - cx
-    const tempY = y - cy
-
-    // applying rotation
-    const rotatedX = tempX * Math.cos(theta) - tempY * Math.sin(theta)
-    const rotatedY = tempX * Math.sin(theta) + tempY * Math.cos(theta)
-
-    // translated back
-    x = rotatedX + cx
-    y = rotatedY + cy
-
-    return { x: x * this.scale, y: y * this.scale }
-  }
   public onRotateLeftObject = (_index: number, objects: PObject[]) => {
     if (_index > -1) {
       const rotateAngle = (objects[_index]?.style.rotateAngle || 0) - 90
@@ -2089,10 +2064,11 @@ export default class Editor {
   ) => {
     if (!this.slideViewRef.current) return
 
-    const { x } = this.getRotatedPosition({
+    const { x } = getRotatedPosition({
       ...options,
       x: l + w / 2,
       y: t + h / 2,
+      scale: this.scale,
     })
 
     const { width } = getComputedStyle(toolbar)
@@ -2155,7 +2131,7 @@ export default class Editor {
     const {
       options,
       rect: { t, l, w, h },
-    } = this.calculateCenter(styles, angle)
+    } = calculateCenter(styles, angle)
 
     // ---
 
@@ -2174,10 +2150,11 @@ export default class Editor {
       return
     }
 
-    const { x, y } = this.getRotatedPosition({
+    const { x, y } = getRotatedPosition({
       ...options,
       x: l + w / 2,
       y: t - this._rotaterDistance / this.scale,
+      scale: this.scale,
     })
 
     const scaledDimensions = 20
@@ -2197,47 +2174,48 @@ export default class Editor {
       r.style.height = scaledDimensions + 'px'
 
       if (r.classList.contains('tl')) {
-        const _position = this.getRotatedPosition({ ...options })
+        const _position = getRotatedPosition({ ...options, scale: this.scale })
         r.style.left = _position.x - midpoint + 'px'
         r.style.top = _position.y - midpoint + 'px'
         r.style.display = objectType === 'text' ? 'none' : 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('tr')) {
-        const _position = this.getRotatedPosition({ ...options, x: l + w })
+        const _position = getRotatedPosition({ ...options, x: l + w, scale: this.scale })
         r.style.left = _position.x - midpoint + 'px'
         r.style.top = _position.y - midpoint + 'px'
         r.style.display = objectType === 'text' ? 'none' : 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('bl')) {
-        const _position = this.getRotatedPosition({ ...options, y: t + h })
+        const _position = getRotatedPosition({ ...options, y: t + h, scale: this.scale })
         r.style.left = _position.x - midpoint + 'px'
         r.style.top = _position.y - midpoint + 'px'
         r.style.display = objectType === 'text' ? 'none' : 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('br')) {
-        const _position = this.getRotatedPosition({ ...options, x: l + w, y: t + h })
+        const _position = getRotatedPosition({ ...options, x: l + w, y: t + h, scale: this.scale })
         r.style.left = _position.x - midpoint + 'px'
         r.style.top = _position.y - midpoint + 'px'
         r.style.display = objectType === 'text' ? 'none' : 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('t')) {
-        const _position = this.getRotatedPosition({ ...options, x: l + w / 2 })
+        const _position = getRotatedPosition({ ...options, x: l + w / 2, scale: this.scale })
         r.style.left = _position.x - midpoint + 'px'
         r.style.top = _position.y - midpoint + 'px'
         r.style.display = objectType === 'text' ? 'none' : 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('b')) {
-        const _position = this.getRotatedPosition({
+        const _position = getRotatedPosition({
           ...options,
           x: l + w / 2,
           y: t + h,
+          scale: this.scale,
         })
         r.style.left = _position.x - midpoint + 'px'
         r.style.top = _position.y - midpoint + 'px'
         r.style.display = objectType === 'text' ? 'none' : 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('l')) {
-        const _position = this.getRotatedPosition({ ...options, y: t + h / 2 })
+        const _position = getRotatedPosition({ ...options, y: t + h / 2, scale: this.scale })
 
         if (objectType === 'text') {
           r.style.width = 4 + 'px'
@@ -2251,10 +2229,11 @@ export default class Editor {
         r.style.display = 'block'
         if (_position.y > maxY) maxY = _position.y
       } else if (r.classList.contains('r')) {
-        const _position = this.getRotatedPosition({
+        const _position = getRotatedPosition({
           ...options,
           x: l + w,
           y: t + h / 2,
+          scale: this.scale,
         })
 
         if (objectType === 'text') {
@@ -2402,7 +2381,7 @@ export default class Editor {
   // #endregion [ResizeMethods]
   // #region [Border]
   public showActiveBorder = (border: any, options: any, w: number, h: number, angle?: number) => {
-    const { x, y } = this.getRotatedPosition({ ...options })
+    const { x, y } = getRotatedPosition({ ...options, scale: this.scale })
     if (border) {
       border.style.left = x + 'px'
       border.style.top = y + 'px'
@@ -2478,28 +2457,6 @@ export default class Editor {
   }
   // #endregion [backgroundMethods]
   // #region [Methods]
-  public calculateCenter = (styles: { top: any; left: any; width: any; height: any }, angle: any) => {
-    const t = parseFloat(styles.top)
-    const l = parseFloat(styles.left)
-    const w = parseFloat(styles.width)
-    const h = parseFloat(styles.height)
-
-    const theta = degToRadian(angle)
-
-    // center of square coordinates
-    const cx = l + w / 2
-    const cy = t + h / 2
-
-    return {
-      options: { x: l, y: t, cx, cy, theta },
-      rect: {
-        t,
-        l,
-        w,
-        h,
-      },
-    }
-  }
   public onSlideMouseDown = (e: any, _index: number, containers: Container[]) => {
     if (e.target.classList.contains('image-center')) return
 

@@ -7,13 +7,15 @@ import { useParams } from 'react-router'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 import { FrameMaterial, PaperSize, Template } from 'interfaces'
 
+type SelectedState = {
+  paperSize?: PaperSize | undefined
+  frameMaterial?: FrameMaterial | undefined
+}
+
 const ProductTemplate: FC = () => {
   const { id }: { id: string } = useParams()
   const [selectedShowCase, setSelectedShowCase] = useState<{ url: string; type: 'video' | 'image' }>()
-  const [selectedState, setSelectedState] = useState<{
-    paperSize?: PaperSize
-    frameMaterial?: FrameMaterial
-  }>({
+  const [selectedState, setSelectedState] = useState<SelectedState>({
     paperSize: undefined,
     frameMaterial: undefined,
   })

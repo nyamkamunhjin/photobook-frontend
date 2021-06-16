@@ -55,11 +55,13 @@ export const linkImages = (keys: string[], id: number) => async (dispatch: any) 
       type: ADD_IMAGES,
       payload: actions,
     })
+    return actions
   } catch (err) {
     dispatch({
       type: IMAGE_ERROR,
       payload: { msg: err },
     })
+    return null
   }
 }
 

@@ -9,6 +9,7 @@ import { loadUser } from 'redux/actions/auth'
 import { CustomButton } from 'components'
 import { useRequest } from 'ahooks'
 import ShippingAddressModal from './shipping-address-modal'
+import VoucherList from './voucher-list'
 
 const MyInfo: FC = () => {
   const intl = useIntl()
@@ -74,7 +75,7 @@ const MyInfo: FC = () => {
       <span className="font-semibold text-xl bo">
         <FormattedMessage id="my_info" />
       </span>
-      <div className="border-b-2 my-2 border-gray-300" />
+      <hr className="my-1" />
       <div className="mt-4 flex flex-col gap-2">
         <Form
           className="w-full"
@@ -273,7 +274,7 @@ const MyInfo: FC = () => {
           <FormattedMessage id="social_accounts" />
         </span>
 
-        <div className="border-b-2 my-2 border-gray-300" />
+        <hr className="my-1" />
 
         <div className="w-full flex flex-col gap-2 mb-4">
           <span className="text-xl">Google</span>
@@ -302,7 +303,7 @@ const MyInfo: FC = () => {
           <FormattedMessage id="addresses" />
         </span>
 
-        <div className="border-b-2 my-2 border-gray-300" />
+        <hr className="my-1" />
         <div className="flex flex-col">
           <CustomButton
             className="btn-accept ml-auto mr-4 my-2"
@@ -345,7 +346,7 @@ const MyInfo: FC = () => {
                       })
                     }}
                   >
-                    <FormattedMessage id="delete" />
+                    <FormattedMessage id="remove" />
                   </CustomButton>,
                 ]}
               >
@@ -383,6 +384,7 @@ const MyInfo: FC = () => {
           setType={setShippingType}
         />
       )}
+      <VoucherList />
     </div>
   )
 }

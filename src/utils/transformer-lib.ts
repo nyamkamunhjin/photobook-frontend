@@ -367,6 +367,18 @@ export const generateNewSlide = () => ({
   backgrounds: [],
 })
 
+export const generateNewImage = (image: string) => ({
+  slideId: uuidv4(),
+  object: {
+    id: uuidv4(),
+    className: 'object',
+    props: {
+      imageStyle: {},
+      imageUrl: image,
+    },
+  },
+})
+
 export const generateDuplicatedSlide = (slide: Slide) => ({
   ...slide,
   slideId: uuidv4(),
@@ -439,6 +451,60 @@ export const diffRect = (a: OElement, b: OElement, index: number) => {
     .value()
 }
 
+export const getRotatedPosition = ({
+  x,
+  y,
+  cx,
+  cy,
+  theta,
+  scale,
+}: {
+  x: number
+  y: number
+  cx: number
+  cy: number
+  theta: number
+  scale: number
+}) => {
+  if (!theta) theta = 0
+
+  // translate point to origin
+  const tempX = x - cx
+  const tempY = y - cy
+
+  // applying rotation
+  const rotatedX = tempX * Math.cos(theta) - tempY * Math.sin(theta)
+  const rotatedY = tempX * Math.sin(theta) + tempY * Math.cos(theta)
+
+  // translated back
+  x = rotatedX + cx
+  y = rotatedY + cy
+
+  return { x: x * scale, y: y * scale }
+}
+
+export const calculateCenter = (styles: { top: any; left: any; width: any; height: any }, angle: any) => {
+  const t = parseFloat(styles.top)
+  const l = parseFloat(styles.left)
+  const w = parseFloat(styles.width)
+  const h = parseFloat(styles.height)
+
+  const theta = degToRadian(angle)
+
+  // center of square coordinates
+  const cx = l + w / 2
+  const cy = t + h / 2
+
+  return {
+    options: { x: l, y: t, cx, cy, theta },
+    rect: {
+      t,
+      l,
+      w,
+      h,
+    },
+  }
+}
 // case ALIGNMENT_PROPS.tt: return calc(rectA.top-rectB.top);
 // case ALIGNMENT_PROPS.bb: return calc(rectB.bottom-rectA.bottom);
 // case ALIGNMENT_PROPS.rr: return calc(rectB.right-rectA.right);

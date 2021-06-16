@@ -11,7 +11,7 @@ interface Review {
 interface Feature {
   icon: React.ReactNode
   text: string
-  subText: string
+  subText?: string | undefined
 }
 
 interface Props {
@@ -22,16 +22,16 @@ interface Props {
 const SocialProof: FC<Props> = ({ reviews, features }) => {
   return (
     <div className="flex justify-center items-center bg-blue-50">
-      <WidthLimiter className="flex flex-col justify-center items-center py-6 px-2">
+      <WidthLimiter className="flex flex-col justify-start items-center py-6 px-2">
         <p className="font-semibold text-gray-800 text-xl">What our Customers Are Saying</p>
-        <Carousel className="w-96 md:w-full max-w-lg" autoplay autoplaySpeed={4000}>
+        <Carousel className="w-96 md:w-full max-w-lg overflow-hidden" autoplay autoplaySpeed={4000}>
           {reviews.map(({ author, text }) => (
             <Review key={author} author={author} text={text} />
           ))}
         </Carousel>
-        <div className="flex flex-wrap justify-evenly py-10">
+        <div className="flex justify-evenly py-10 gap-4">
           {features.map(({ icon, subText, text }) => (
-            <Content key={subText} icon={icon} subText={subText} text={text} />
+            <Content key={text} icon={icon} subText={subText} text={text} />
           ))}
         </div>
       </WidthLimiter>
@@ -59,8 +59,8 @@ const Content: FC<Feature> = ({ icon, text, subText }) => {
     <figure className="flex flex-col w-full max-w-xs items-center">
       <div>{icon}</div>
       <figcaption className="text-center">
-        <div className="font-semibold text-gray-700 text-sm">{text}</div>
-        <div className="text-gray-600 text-xs">{subText}</div>
+        <p className="font-semibold text-gray-700 text-sm whitespace-nowrap">{text}</p>
+        {subText && <p className="text-gray-600 text-xs">{subText}</p>}
       </figcaption>
     </figure>
   )

@@ -1,6 +1,23 @@
 export type DomType = HTMLElement
 
 export type ObjectType = 'image' | 'object' | 'text' | 'shape' | ''
+
+export type ToolsType =
+  | 'transform'
+  | 'orientation'
+  | 'rotate'
+  | 'flip'
+  | 'filters'
+  | 'brightness'
+  | 'contrast'
+  | 'saturation'
+  | 'size'
+  | 'paper'
+  | 'image_brightness'
+  | 'amount'
+  | 'reset'
+  | 'remove'
+
 export interface StyleType {
   display?: string
   filterName?: string
@@ -29,8 +46,8 @@ export interface StyleType {
 }
 
 export interface ProjectCreate {
-  paperSizeId: number,
-  coverTypeId?: number,
+  paperSizeId: number
+  coverTypeId?: number
   bindingTypeId?: number
   coverMaterialId?: number
   coverColorId?: number
@@ -81,11 +98,21 @@ export interface MoveResizerInterface {
   left: string
   type: string
 }
+export interface Cropper {
+  top: number
+  left: number
+  width: number
+  height: number
+}
 export interface ObjectProps {
   className: string
   imageStyle: StyleType
   maskStyle?: StyleType
   maskImage?: string
+  cropStyle?: Cropper
+  paperSize?: PaperSize
+  quantity?: number
+  paperMaterial?: PaperMaterial
   textStyle?: StyleType
   frameStyle?: StyleType
   frameImage?: string
@@ -232,6 +259,14 @@ export interface Slide {
   containers: Container[]
   backgrounds: BackgroundImage[]
   objects: PObject[]
+  object?: PObject
+  createdAt?: Date
+}
+
+export interface ImageSlide {
+  slideId: string
+  name: string
+  object: PObject[]
 }
 
 export interface Template {
@@ -516,7 +551,6 @@ export type CartItem = {
   templateDiscount?: TemplateDiscount
   userDiscount?: UserDiscount
   voucher?: Voucher
-  giftCard?: GiftCard
   price: number
   discountedPrice: number
   appliedDiscountTypes: DiscountTypes[]
@@ -560,22 +594,24 @@ export type Voucher = {
   createdAt: Date
   isUsed: boolean
   expireDate: Date
+  template?: Template
 }
 
 /**
  * Model GiftCard
  */
-
 export type GiftCard = {
   id: number
   imageUrl: string | null
   code: string
   activatedUserId: number | null
+  shoppingCartId: number | null
   boughtUserId: number
+  remainingAmount: number
   discountAmount: number
-  isUsed: boolean
   createdAt: Date
   updatedAt: Date
+  orderId: number | null
 }
 
 export type Payment = {

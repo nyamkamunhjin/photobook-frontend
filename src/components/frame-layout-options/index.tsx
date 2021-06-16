@@ -9,8 +9,8 @@ interface Props {
   paperSizes: PaperSize[]
   frameMaterials: FrameMaterial[]
   selectedState: {
-    paperSize?: PaperSize
-    frameMaterial?: FrameMaterial
+    paperSize?: PaperSize | undefined
+    frameMaterial?: FrameMaterial | undefined
   }
   setSelectedState: React.Dispatch<
     React.SetStateAction<{

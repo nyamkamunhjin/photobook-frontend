@@ -204,18 +204,32 @@ const updateGroupContainerHandler = (state: ProjectInterface, action: any) => {
 const updateObjectHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
 
-  const { object } = payload
-
+  const { object, slideId } = payload
+  console.log(slideId)
   console.log('update object')
   console.log('object')
   console.log(object)
-
+  if (slideId) {
+    state.currentProject.slides = state.currentProject.slides.map((s: Slide) => {
+      if (s.slideId === slideId) {
+        return { ...s, object }
+      }
+      return s
+    })
+    console.log(state.currentProject.slides)
+    return {
+      ...state,
+      object,
+      loading: false,
+    }
+  }
   return {
     ...state,
     objects: state.objects.map((x: any) => {
       if (x.id === object.id) return object
       return x
     }),
+    object,
     loading: false,
   }
 }
