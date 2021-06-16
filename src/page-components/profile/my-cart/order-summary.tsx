@@ -10,6 +10,10 @@ interface OrderSummaryProps {
   totalPrice: number
   daysToDeliver: number
   shippingFee: number
+  giftCardUpdate: {
+    update: boolean
+    usedAmount: number
+  }
   onCreateOrder: (shipping: boolean) => void
 }
 
@@ -20,6 +24,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   totalPrice,
   daysToDeliver,
   shippingFee,
+  giftCardUpdate,
   onCreateOrder,
 }) => {
   const actualPrice = price + discountedPrice
@@ -70,6 +75,22 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         </span>
       </div>
       <hr className="border-t border-solid border-gray-300" />
+      {giftCardUpdate?.update && (
+        <>
+          <div className="flex justify-between">
+            <span className="text-sm font-light text-gray-700">
+              <FormattedMessage id="price" />
+            </span>
+            <span className="font-light">{currencyFormat(giftCardUpdate.usedAmount + totalPrice)} ₮</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm font-light text-gray-700">
+              <FormattedMessage id="gift_card_discount" />
+            </span>
+            <span className="font-light text-red-500">{currencyFormat(-giftCardUpdate.usedAmount)} ₮</span>
+          </div>
+        </>
+      )}
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="total" />

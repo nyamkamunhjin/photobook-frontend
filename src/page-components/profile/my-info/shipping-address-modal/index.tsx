@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Modal, Input, Form } from 'antd'
 import React, { FC, useEffect } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'

@@ -1127,3 +1127,39 @@ export const addVoucherToCartItem = async (id: string) => {
   return response?.data
 }
 // #endregion [Voucher]
+
+// #region [GiftCard]
+export const listGiftCard = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `gift-card/user?${query}`,
+    method: 'GET',
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getGiftCard = async (id: string) => {
+  const response = await BaseRequest({
+    url: `gift-card/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const addGiftCardToShoppingCart = async (id: string, type: 'attach' | 'detach') => {
+  const response = await BaseRequest({
+    url: `gift-card/attach/${id}`,
+    method: 'PUT',
+    data: {
+      actionType: type,
+    },
+  })
+  return response?.data
+}
+// #endregion [GiftCard]

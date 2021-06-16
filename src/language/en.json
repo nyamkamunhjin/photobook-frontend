@@ -139,6 +139,11 @@
   "gift_card_discount": "Gift Card discount",
   "voucher_discount": "Voucher discount",
   "vouchers": "Vouchers",
+
+  "credits": "Credits",
+  "added_gift_card": "Added Gift Card",
+  "removed_gift_card": "Removed Gift Card",
+
   "discount": "Discount",
   "used": "Used",
   "not_used": "Not Used",

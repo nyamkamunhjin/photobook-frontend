@@ -103,7 +103,7 @@ const MyProjects: FC = () => {
                 </CustomButton>,
               ]}
             >
-              <div className="flex">
+              <div className="flex gap-2">
                 <img
                   className="w-28 h-28 rounded"
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}

@@ -139,6 +139,11 @@
   "gift_card_discount": "Gift Card discount",
   "voucher_discount": "Voucher discount",
   "vouchers": "Vouchers",
+
+  "credits": "Credits",
+  "added_gift_card": "Added Gift Card",
+  "removed_gift_card": "Removed Gift Card",
+
   "discount": "Discount",
   "used": "Used",
   "not_used": "Not Used",
@@ -330,6 +335,10 @@
   "controller.rotate.left": "Left",
   "controller.rotate.right": "Right",
   "controller.flip.horizontally": "Flip Horizontailly",
+<<<<<<< HEAD
   "controller.flip.vertically": "Flip Vertically",
   "controller.reset.message": "This will undo all the changes you made to this photo. Are you sure?"
+=======
+  "controller.flip.vertically": "Flip Vertically"
+>>>>>>> 62b00e61a8ecd58fb69b0104458ec154d435fa9d
 }
