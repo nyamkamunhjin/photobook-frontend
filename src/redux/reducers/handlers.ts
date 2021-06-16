@@ -79,6 +79,16 @@ const newSlideHandler = (state: ProjectInterface, action: any) => {
   }
 }
 
+const newSlidesHandler = (state: ProjectInterface, action: any) => {
+  console.log('aaaaaaaaaaaaaaaaahahhahah sda')
+  const { payload } = action
+  state.currentProject.slides = [...state.currentProject.slides, ...payload.slides]
+  return {
+    ...state,
+    loading: false,
+  }
+}
+
 const reOrderSlideHandler = (state: ProjectInterface, action: any) => {
   const {
     payload: { slides },
@@ -588,6 +598,7 @@ export default {
   saveProjectHandler,
   saveProjectAttHandler,
   newSlideHandler,
+  newSlidesHandler,
   deleteSlideHandler,
   loadObjectsHandler,
   loadContainersHandler,

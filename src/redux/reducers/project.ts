@@ -4,6 +4,7 @@ import {
   PROJECTS_ERROR,
   SAVE_PROJECT,
   NEW_SLIDE,
+  NEW_SLIDES,
   SLIDES_ERROR,
   DELETE_SLIDE,
   UPDATE_HISTORY,
@@ -175,6 +176,7 @@ handlers[SET_SLIDE_DIMENSION] = projectHandlers.setSlideDimensionHandler
 handlers[SAVE_PROJECT] = projectHandlers.saveProjectHandler
 handlers[SAVE_PROJECT_ATTR] = projectHandlers.saveProjectAttHandler
 handlers[NEW_SLIDE] = projectHandlers.newSlideHandler
+handlers[NEW_SLIDES] = projectHandlers.newSlidesHandler
 handlers[DUPLICATE_SLIDE] = projectHandlers.newSlideHandler
 handlers[REORDER_SLIDE] = projectHandlers.reOrderSlideHandler
 handlers[DELETE_SLIDE] = projectHandlers.deleteSlideHandler
