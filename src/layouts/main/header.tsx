@@ -1,20 +1,22 @@
 import { RootInterface } from 'interfaces'
 import { Badge } from 'antd'
-import React, { FC } from 'react'
+import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { HiOutlineShoppingCart } from 'react-icons/hi'
+import { listShoppingCart } from 'api'
 import { Link } from 'react-router-dom'
 import { CustomButton, useRouter } from 'components'
 import { useRequest } from 'ahooks'
 import { UserInfo } from './components'
 import HeaderMenu from './components/HeaderMenu'
-import { listShoppingCart } from '../../api'
 
-const Topbar: FC = () => {
+const Topbar: React.FC = () => {
   const user = useSelector((state: RootInterface) => state.auth.user)
   const router = useRouter()
-  const shoppingCart = useRequest(listShoppingCart)
+  const shoppingCart = useRequest(listShoppingCart, {
+    refreshDeps: [router],
+  })
   return (
     <header className="shadow-md z-10 bg-white">
       <div className="px-4 mx-auto w-full max-w-7xl">

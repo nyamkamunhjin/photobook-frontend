@@ -109,6 +109,10 @@
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
+  "new": "New",
+  "popular": "Popular",
+  "special": "Special",
+
   "order_history": "Order History",
   "my_projects": "My Projects",
   "my_cart": "My Cart",
@@ -135,6 +139,11 @@
   "gift_card_discount": "Gift Card discount",
   "voucher_discount": "Voucher discount",
   "vouchers": "Vouchers",
+
+  "credits": "Credits",
+  "added_gift_card": "Added Gift Card",
+  "removed_gift_card": "Removed Gift Card",
+
   "discount": "Discount",
   "used": "Used",
   "not_used": "Not Used",
@@ -305,5 +314,26 @@
   "paper_material_type": "Paper material type",
   "duplicate": "Duplicate",
   "remove": "Remove",
-  "format": "Format"
+  "format": "Format",
+  "controller.transform": "Transorm",
+  "controller.orientation": "Orientation",
+  "controller.rotate": "Rotate",
+  "controller.flip": "Flip",
+  "controller.filters": "Filters",
+  "controller.brightness": "Brightness",
+  "controller.contrast": "contrast",
+  "controller.saturation": "Saturation",
+  "controller.size": "Size",
+  "controller.paper": "Paper",
+  "controller.image_brightnessing": "Image brightnessing",
+  "controller.amount": "Amount",
+  "controller.reset": "Reset",
+  "controller.remove": "Remove",
+  "controller.transform.message": "Please use frame on the picture abote to crop photo",
+  "controller.orientation.horizontal": "Horizontal",
+  "controller.orientation.vertical": "Vertical",
+  "controller.rotate.left": "Left",
+  "controller.rotate.right": "Right",
+  "controller.flip.horizontally": "Flip Horizontailly",
+  "controller.flip.vertically": "Flip Vertically"
 }

@@ -2,7 +2,21 @@ export type DomType = HTMLElement
 
 export type ObjectType = 'image' | 'object' | 'text' | 'shape' | ''
 
-export type ToolsType = 'transform' | 'orientation' | 'rotate' | 'flip' | 'filters' | 'brightness'  |'contrast' | 'saturation' | 'size' | 'paper' | 'image_brightness' | 'amount' | 'reset' | 'remove'
+export type ToolsType =
+  | 'transform'
+  | 'orientation'
+  | 'rotate'
+  | 'flip'
+  | 'filters'
+  | 'brightness'
+  | 'contrast'
+  | 'saturation'
+  | 'size'
+  | 'paper'
+  | 'image_brightness'
+  | 'amount'
+  | 'reset'
+  | 'remove'
 
 export interface StyleType {
   display?: string
@@ -537,7 +551,6 @@ export type CartItem = {
   templateDiscount?: TemplateDiscount
   userDiscount?: UserDiscount
   voucher?: Voucher
-  giftCard?: GiftCard
   price: number
   discountedPrice: number
   appliedDiscountTypes: DiscountTypes[]
@@ -587,17 +600,18 @@ export type Voucher = {
 /**
  * Model GiftCard
  */
-
 export type GiftCard = {
   id: number
   imageUrl: string | null
   code: string
   activatedUserId: number | null
+  shoppingCartId: number | null
   boughtUserId: number
+  remainingAmount: number
   discountAmount: number
-  isUsed: boolean
   createdAt: Date
   updatedAt: Date
+  orderId: number | null
 }
 
 export type Payment = {

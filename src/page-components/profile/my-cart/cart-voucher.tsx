@@ -15,7 +15,7 @@ interface Props {
 const CartVoucher: React.FC<Props> = ({ vouchers, selected, setSelected, refresh }) => {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <span className="text-xs">
+      <span className="text-sm font-semibold">
         <FormattedMessage id="voucher" />
       </span>
       <Select

@@ -6,6 +6,7 @@ import {
   createOrder,
   deleteCartItem,
   getShoppingCartSummary,
+  listGiftCard,
   listShippingAddress,
   listShoppingCart,
   listVoucher,
@@ -20,6 +21,7 @@ import { currencyFormat } from 'utils'
 import CartAddress from './cart-address'
 import OrderSummary from './order-summary'
 import CartVoucher from './cart-voucher'
+import CartGiftCard from './cart-giftcard'
 
 const MyCart: React.FC = () => {
   const intl = useIntl()
@@ -27,6 +29,7 @@ const MyCart: React.FC = () => {
   const [deliveryChecked, setDeliveryChecked] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
+  const [selectedGiftCard, setSelectedGiftCard] = useState<SelectValue>()
 
   const user = useSelector((state: RootInterface) => state.auth.user)
   const shippingAddresses = useRequest(() =>
@@ -34,6 +37,7 @@ const MyCart: React.FC = () => {
   )
 
   const vouchers = useRequest(listVoucher)
+  const giftCards = useRequest(listGiftCard)
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
@@ -41,6 +45,11 @@ const MyCart: React.FC = () => {
 
   const shoppingCart = useRequest(listShoppingCart, {
     manual: true,
+    onSuccess: (res) => {
+      if (res?.giftCardId) {
+        setSelectedGiftCard(res?.giftCardId)
+      }
+    },
   })
 
   const onCreateOrder = (shipping: boolean) => {
@@ -123,9 +132,9 @@ const MyCart: React.FC = () => {
                 </Popconfirm>,
               ]}
             >
-              <div className="flex">
+              <div className="flex gap-2">
                 <img
-                  className="w-28 h-28 rounded"
+                  className="w-28 h-28 rounded "
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.project.imageUrl}`}
                   alt="project"
                 />
@@ -146,7 +155,7 @@ const MyCart: React.FC = () => {
                           updateCartItem(item.id, {
                             voucherId: null,
                           }).then(() => {
-                            notification.success({ message: intl.formatMessage({ id: 'voucher_removed' }) })
+                            notification.info({ message: intl.formatMessage({ id: 'voucher_removed' }) })
                             shoppingCart.refresh()
                           })
                         }}
@@ -158,16 +167,16 @@ const MyCart: React.FC = () => {
                 </div>
               </div>
               <div className="ml-auto flex flex-col text-right">
-                {/* <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
+                <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
                 <span className="text-gray-500">{item.project.paperSize?.size}</span>
                 <span className="text-gray-500">{item.project.bindingType?.name}</span>
                 <span className="text-gray-500">{item.project.coverType?.name}</span>
-                <span className="text-gray-500">{item.project.frameMaterial?.name}</span> */}
-                <span className="text-gray-500">Photo printing</span>
+                <span className="text-gray-500">{item.project.frameMaterial?.name}</span>
+                {/* <span className="text-gray-500">Photo printing</span>
                 <span className="text-gray-500">20x30 large</span>
                 <span className="text-gray-500">Premium Layflat Binding</span>
                 <span className="text-gray-500">Deluxe Hardcover</span>
-                <span className="text-gray-500">Glass Frame</span>
+                <span className="text-gray-500">Glass Frame</span> */}
                 <div className="border-t border-gray-300 flex flex-col">
                   {item.appliedDiscountTypes.length > 0 && (
                     <span className="text-gray-500">
@@ -196,7 +205,7 @@ const MyCart: React.FC = () => {
       </div>
       {shoppingCart.data?.cartItems.length > 0 && (
         <div className="flex flex-col lg:flex-row justify-between gap-4 mt-8">
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full justify-evenly">
             <Checkbox checked={deliveryChecked} onChange={(e) => setDeliveryChecked(e.target.checked)}>
               <FormattedMessage id="delivery" />
             </Checkbox>
@@ -211,6 +220,12 @@ const MyCart: React.FC = () => {
               vouchers={vouchers.data}
               selected={selectedVoucher}
               setSelected={setSelectedVoucher}
+              refresh={() => shoppingCart.refresh()}
+            />
+            <CartGiftCard
+              giftCards={giftCards.data}
+              selected={selectedGiftCard}
+              setSelected={setSelectedGiftCard}
               refresh={() => shoppingCart.refresh()}
             />
           </div>

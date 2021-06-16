@@ -13,6 +13,9 @@ interface ShippingAddressProps {
 const CartAddress: React.FC<ShippingAddressProps> = ({ shippingAddresses, selected, setSelected }) => {
   return (
     <div className="flex flex-col gap-4 w-full">
+      <span className="text-sm font-semibold">
+        <FormattedMessage id="delivery" />
+      </span>
       <Select value={selected} onChange={setSelected}>
         {shippingAddresses?.map((item) => (
           <Select.Option key={item.id} value={item.id}>
