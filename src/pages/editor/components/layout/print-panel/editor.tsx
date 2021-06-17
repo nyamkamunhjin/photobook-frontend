@@ -6,6 +6,7 @@ import { PaperMaterial, PaperSize, PObject, RootInterface, Slide, ToolsType } fr
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { ImageModal } from 'components'
 import { useLocalStorageState } from 'ahooks'
+import { useWindow } from 'hooks'
 import {
   saveProject as _saveProject,
   deleteSlide as _deleteSlide,
@@ -45,9 +46,10 @@ const Editor: React.FC<Props> = ({
   paperSizes,
   paperMaterials,
 }) => {
+  const [height] = useWindow()
   const maxWidth = 1000
   const maxHeight = 1000
-  const srcHeight = 500 + 100
+  const srcHeight = height / 3
   const [sort] = useLocalStorageState('sort', 'a-z')
   const [selected, setSelected] = useState<ToolsType>('transform')
   const srcWidth = maxWidth * (srcHeight / maxHeight)
@@ -57,7 +59,7 @@ const Editor: React.FC<Props> = ({
   return (
     <ImageModal
       className="h-screen"
-      bodyStyle={{ height: 800, padding: '10px 0px' }}
+      bodyStyle={{ height: '90vh', padding: '10px 0px' }}
       type="wide"
       loading={false}
       visible={visible}

@@ -8,7 +8,7 @@ const Button: React.FC<ButtonProps> = ({ icon, children, loading, ...rest }) => 
   <>
     <div {...rest} className="antd-btn-icon ant-btn-text uppercase text-xs text-center m-2 cursor-pointer">
       <div className="flex justify-center">{icon && loading ? <LoadingOutlined /> : icon}</div>
-      <div> {children && children}</div>
+      <div className="title"> {children && children}</div>
     </div>
   </>
 )

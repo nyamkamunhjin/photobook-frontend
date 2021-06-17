@@ -20,6 +20,8 @@ interface Props {
   syncPhoto: (images: UploadablePicture[]) => void
   linkPhoto: (images: string[]) => void
   unlinkPhoto: (images: string[]) => void
+  duplicatePhoto: (object: Slide) => void
+  removePhoto: (object: Slide) => void
   currentProject: Project
 }
 
@@ -28,6 +30,8 @@ const Grid: React.FC<Props> = ({
   uploadPhoto,
   syncPhoto,
   linkPhoto,
+  duplicatePhoto,
+  removePhoto,
   currentProject: { slides },
   paperSizes,
   paperMaterials,
@@ -58,6 +62,13 @@ const Grid: React.FC<Props> = ({
       setZoom((zoom || 1) + 1)
     }
   }
+  const onDuplicate = (object: Slide) => {
+    duplicatePhoto(object)
+  }
+  const onRemove = (object: Slide) => {
+    removePhoto(object)
+  }
+
   const toggle = useThrottleFn(
     (slide: Slide, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (event.shiftKey || (event.shiftKey && selectedSlides?.some((each) => each.slideId === slide.slideId))) {
@@ -143,6 +154,8 @@ const Grid: React.FC<Props> = ({
       <div className="ImportedPhotos">
         <Images
           onEdit={(index) => setSlideIndex(index)}
+          onDuplicate={(index) => onDuplicate(slides[index])}
+          onRemove={(index) => onRemove(slides[index])}
           paperSizes={paperSizes}
           paperMaterials={paperMaterials}
           objects={getSlides(sort, slides)}

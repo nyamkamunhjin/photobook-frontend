@@ -89,6 +89,11 @@
   }
 }
 .controller_container {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
   height: 80px;
   overflow-x: scroll;
   overflow-y: hidden;
@@ -112,9 +117,26 @@
     * {
       color: #4480aa;
     }
+    .title::before {
+      content: '';
+      height: 4px;
+      width: 4px;
+      border-radius: 50px;
+      top: 16px;
+      z-index: 100000;
+      top: 45px;
+      margin-left: -8px;
+      position: absolute;
+      background-color: #4480aa;
+    }
   }
 }
 .option_container {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
   height: 80px;
   width: 100%;
   position: absolute;
@@ -182,6 +204,11 @@
   }
 }
 .wrapper_container {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
   position: relative;
   display: flex;
   flex: 1;

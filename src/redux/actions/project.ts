@@ -17,6 +17,7 @@ import {
   UPDATE_PROJECT,
   PROJECTS_ERROR,
   SAVE_PROJECT,
+  NEW_SLIDES,
   SLIDES_ERROR,
   NEW_SLIDE,
   DELETE_SLIDE,
@@ -309,13 +310,13 @@ export const loadBackgrounds = (backgrounds: Object[]) => async (dispatch: any) 
 // Add new slide
 export const addNewPrintSlide = (projectId: number, imageUrls: string[]) => async (dispatch: any) => {
   try {
-    const newSlide = await updateProjectPrintSlides(projectId, {
+    const result = await updateProjectPrintSlides(projectId, {
       push: imageUrls,
     })
-
+    console.log('aaaaaaaaaaaa', result?.data.actions)
     dispatch({
-      type: NEW_SLIDE,
-      payload: { slide: newSlide, slideIndex: 0 },
+      type: NEW_SLIDES,
+      payload: { slides: result?.data.actions || [] },
     })
   } catch (err) {
     dispatch({
@@ -325,7 +326,7 @@ export const addNewPrintSlide = (projectId: number, imageUrls: string[]) => asyn
   }
 }
 // Duplicate slide
-export const duplicatePrintSlide = (projectId: number, slideIndex: number, slide: Slide) => async (dispatch: any) => {
+export const duplicatePrintSlide = (projectId: number, slideIndex: string, slide: Slide) => async (dispatch: any) => {
   try {
     const newSlide = generateDuplicatedSlide(slide)
     await updateProjectSlides(projectId, {
@@ -343,7 +344,7 @@ export const duplicatePrintSlide = (projectId: number, slideIndex: number, slide
   }
 }
 // delete printslidea
-export const deletePrintSlide = (projectId: number, slideIndex: number) => async (dispatch: any) => {
+export const deletePrintSlide = (projectId: number, slideIndex: string) => async (dispatch: any) => {
   try {
     await updateProjectSlides(projectId, {
       pop: slideIndex,

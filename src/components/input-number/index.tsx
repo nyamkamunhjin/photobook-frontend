@@ -14,9 +14,10 @@ const CustomInputNumber: React.FC<InputNumberProps> = ({ className = '', value =
         <div>
           <CgMathMinus
             className="cursor-pointer"
+            color={ivalue <= 1 ? '#e7e7e7' : '#4a4a4a'}
             size={15}
             onClick={() => {
-              if (onChange) {
+              if (onChange && ivalue > 1) {
                 onChange(ivalue - 1)
                 setIValue(ivalue - 1)
               }
@@ -30,6 +31,7 @@ const CustomInputNumber: React.FC<InputNumberProps> = ({ className = '', value =
               setIValue(v as number)
             }
           }}
+          min={1}
           value={ivalue}
           className={`${className} border-none`}
           {...rest}

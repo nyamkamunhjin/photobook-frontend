@@ -36,6 +36,11 @@
   font-weight: 700;
 
   .HeaderView {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none;
     background: #fff;
     color: rgb(109, 118, 134);
     height: 60px;

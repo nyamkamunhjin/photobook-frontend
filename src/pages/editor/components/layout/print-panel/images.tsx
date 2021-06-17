@@ -14,6 +14,8 @@ import Image from './image'
 interface Props {
   toggle: any
   onEdit: (index: number) => void
+  onDuplicate: (index: number) => void
+  onRemove: (index: number) => void
   objects: Slide[]
   selectedObjects: Slide[]
   height: number
@@ -21,7 +23,17 @@ interface Props {
   paperMaterials?: PaperMaterial[]
 }
 
-const Images: React.FC<Props> = ({ height, objects, toggle, paperSizes, paperMaterials, selectedObjects, onEdit }) => {
+const Images: React.FC<Props> = ({
+  height,
+  objects,
+  toggle,
+  paperSizes,
+  paperMaterials,
+  selectedObjects,
+  onEdit,
+  onDuplicate,
+  onRemove,
+}) => {
   const dispatch = useDispatch()
   const [popVisible, setPopVisible] = useState(-1)
   const srcHeight = height + 20
@@ -177,13 +189,13 @@ const Images: React.FC<Props> = ({ height, objects, toggle, paperSizes, paperMat
             className="flex justify-around bg-white p-1 rounded-2xl"
             style={key === popVisible ? { opacity: 1 } : { opacity: 0 }}
           >
-            <div className="cursor-pointer">
+            <div className="cursor-pointer" onClick={() => onDuplicate(popVisible)}>
               <FormattedMessage id="duplicate" />
             </div>
             <div className="cursor-pointer" onClick={() => onEdit(popVisible)}>
               <FormattedMessage id="edit" />
             </div>
-            <div className="cursor-pointer">
+            <div className="cursor-pointer" onClick={() => onRemove(popVisible)}>
               <FormattedMessage id="remove" />
             </div>
           </div>

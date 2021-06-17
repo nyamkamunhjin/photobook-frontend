@@ -17,16 +17,7 @@ import {
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage } from 'react-intl'
 import { listPaperMaterial, listPaperSize } from 'api'
-import {
-  Image,
-  ImageInterface,
-  PaperMaterial,
-  PaperSize,
-  Project,
-  RootInterface,
-  Slide,
-  UploadablePicture,
-} from 'interfaces'
+import { Image, ImageInterface, Project, ProjectInterface, RootInterface, Slide, UploadablePicture } from 'interfaces'
 
 import Grid from './grid'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
@@ -37,10 +28,10 @@ interface Props {
   unlinkImages: (images: string[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   addNewPrintSlide: (projectId: number, imageUrl: string[]) => Promise<void>
-  duplicatePrintSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
-  deletePrintSlide: (projectId: number, slideIndex: number) => Promise<void>
+  duplicatePrintSlide: (projectId: number, slideIndex: string, duplicatedSlide: Slide) => Promise<void>
+  deletePrintSlide: (projectId: number, slideIndex: string) => Promise<void>
   image: ImageInterface
-  currentProject: Project
+  project: ProjectInterface
 }
 const PrintPanel: React.FC<Props> = ({
   addImages,
@@ -50,7 +41,7 @@ const PrintPanel: React.FC<Props> = ({
   addNewPrintSlide,
   duplicatePrintSlide,
   deletePrintSlide,
-  currentProject,
+  project: { currentProject, loading: projectLoading },
   image: { loading },
 }) => {
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'print' }))
@@ -92,6 +83,13 @@ const PrintPanel: React.FC<Props> = ({
       )
     }
   }
+  const duplicatePhoto = async (object: Slide) => {
+    await duplicatePrintSlide(currentProject.id, object.slideId, object)
+  }
+  const removePhoto = async (object: Slide) => {
+    await deletePrintSlide(currentProject.id, object.slideId)
+  }
+
   const unlinkPhoto = async (_images: string[]) => {
     await uploadImages()
     await unlinkImages(_images, currentProject.id)
@@ -100,10 +98,12 @@ const PrintPanel: React.FC<Props> = ({
     <div className="CenterPanel" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
       {currentProject.slides.length > 0 && (
         <Grid
-          loading={loading}
+          loading={loading || projectLoading}
           uploadPhoto={uploadPhoto}
           syncPhoto={syncPhoto}
           linkPhoto={linkPhoto}
+          duplicatePhoto={duplicatePhoto}
+          removePhoto={removePhoto}
           unlinkPhoto={unlinkPhoto}
           paperSizes={paperSizes.data?.list || []}
           paperMaterials={paperMaterials.data?.list || []}
@@ -133,7 +133,7 @@ const PrintPanel: React.FC<Props> = ({
 
 const mapStateToProps = (state: RootInterface) => ({
   image: state.image,
-  currentProject: state.project.currentProject,
+  project: state.project,
 })
 
 export default connect(mapStateToProps, {
