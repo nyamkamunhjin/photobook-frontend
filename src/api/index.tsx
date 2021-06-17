@@ -990,7 +990,7 @@ export const listShoppingCart = async () => {
     method: 'GET',
   })
 
-  response?.data.cartItems.forEach(async (record: any) => {
+  response?.data?.cartItems.forEach(async (record: any) => {
     record.project.tempUrl = await Storage.get(record.project.imageUrl, { expires: 60 * 60 * 24 * 7 })
   })
 
@@ -1163,3 +1163,47 @@ export const addGiftCardToShoppingCart = async (id: string, type: 'attach' | 'de
   return response?.data
 }
 // #endregion [GiftCard]
+
+// #region [GiftCardType]
+export const listGiftCardType = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `gift-card-type?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getGiftCardType = async (id: string) => {
+  const response = await BaseRequest({
+    url: `gift-card-type/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const addGiftCardTypeToShoppingCart = async (id: string, type: 'attach' | 'detach') => {
+  const response = await BaseRequest({
+    url: `gift-card-type/attach/${id}`,
+    method: 'PUT',
+    data: {
+      actionType: type,
+    },
+  })
+  return response?.data
+}
+// #endregion [GiftCardType]

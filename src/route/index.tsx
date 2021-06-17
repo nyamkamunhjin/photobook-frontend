@@ -133,6 +133,11 @@ const routes: RouteInterface[] = [
     component: LoadableLoader(() => import('pages/auth/login')),
     exact: true,
   },
+  {
+    path: '/gift-card',
+    component: LoadableLoader(() => import('pages/gift-card')),
+    exact: true,
+  },
   // {
   //   path: '/templates',
   //   component: LoadableLoader(() => import('pages/templates')),
