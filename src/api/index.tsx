@@ -401,7 +401,7 @@ export const updateProject = async (id: number, data: Object) => {
 
 export const updateProjectSlides = async (id: number, data: Object) => {
   const response = await BaseRequest({
-    url: `project/${id}/slides`,
+    url: `project/${id}/print/slides`,
     method: 'PUT',
     data,
   })

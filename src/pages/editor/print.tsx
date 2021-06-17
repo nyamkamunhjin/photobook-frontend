@@ -169,7 +169,7 @@ const BookEditor: React.FC<Props> = ({
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
-      <div className="EditorOnePageView">
+      <div className="EditorPrintWrapper">
         <PrintPanel />
       </div>
     </div>
