@@ -20,8 +20,8 @@ interface Props {
   syncPhoto: (images: UploadablePicture[]) => void
   linkPhoto: (images: string[]) => void
   unlinkPhoto: (images: string[]) => void
-  duplicatePhoto: (index: number) => void
-  removePhoto: (index: number) => void
+  duplicatePhoto: (object: Slide) => void
+  removePhoto: (object: Slide) => void
   currentProject: Project
 }
 
@@ -63,10 +63,10 @@ const Grid: React.FC<Props> = ({
     }
   }
   const onDuplicate = (object: Slide) => {
-    console.log(object)
+    duplicatePhoto(object)
   }
   const onRemove = (object: Slide) => {
-    console.log(object)
+    removePhoto(object)
   }
 
   const toggle = useThrottleFn(

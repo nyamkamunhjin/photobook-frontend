@@ -6,7 +6,7 @@ import {
   createOrder,
   deleteCartItem,
   getShoppingCartSummary,
-  listGiftCard,
+  listActivatedGiftCard,
   listShippingAddress,
   listShoppingCart,
   listVoucher,
@@ -37,7 +37,7 @@ const MyCart: React.FC = () => {
   )
 
   const vouchers = useRequest(listVoucher)
-  const giftCards = useRequest(listGiftCard)
+  const giftCards = useRequest(listActivatedGiftCard)
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,

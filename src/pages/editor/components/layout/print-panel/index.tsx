@@ -28,8 +28,8 @@ interface Props {
   unlinkImages: (images: string[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   addNewPrintSlide: (projectId: number, imageUrl: string[]) => Promise<void>
-  duplicatePrintSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
-  deletePrintSlide: (projectId: number, slideIndex: number) => Promise<void>
+  duplicatePrintSlide: (projectId: number, slideIndex: string, duplicatedSlide: Slide) => Promise<void>
+  deletePrintSlide: (projectId: number, slideIndex: string) => Promise<void>
   image: ImageInterface
   project: ProjectInterface
 }
@@ -83,11 +83,11 @@ const PrintPanel: React.FC<Props> = ({
       )
     }
   }
-  const duplicatePhoto = async () => {
-    console.log('a')
+  const duplicatePhoto = async (object: Slide) => {
+    await duplicatePrintSlide(currentProject.id, object.slideId, object)
   }
-  const removePhoto = async () => {
-    console.log('a')
+  const removePhoto = async (object: Slide) => {
+    await deletePrintSlide(currentProject.id, object.slideId)
   }
 
   const unlinkPhoto = async (_images: string[]) => {
