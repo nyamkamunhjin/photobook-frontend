@@ -1,16 +1,19 @@
 import { useRequest } from 'ahooks'
-import { List } from 'antd'
+import { List, notification } from 'antd'
 import React, { FC } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { listBoughtGiftCard } from 'api'
-import { GiftCard, Voucher } from 'interfaces'
-import { currencyFormat } from '../../../../utils'
+import { GiftCard } from 'interfaces'
+import { currencyFormat } from 'utils'
+import { HiOutlineClipboardCopy } from 'react-icons/hi'
+import { CustomButton } from 'components'
 
 interface Props {
   test?: string
 }
 
 const BoughtGiftCards: FC<Props> = () => {
+  const intl = useIntl()
   const giftCards = useRequest(
     ({ current, pageSize }, pageNumber) => listBoughtGiftCard({ current, pageSize }, {}, pageNumber),
     {
@@ -47,8 +50,17 @@ const BoughtGiftCards: FC<Props> = () => {
                     {currencyFormat(item.remainingAmount)} ₮ / {currencyFormat(item.discountAmount)} ₮
                   </span>
                 </div>
-                <span className="ml-auto self-center">
+                <span className="flex gap-2 ml-auto self-center">
                   <FormattedMessage id="code" />: <span className="filter blur-sm hover:blur-0">{item.code}</span>
+                  <CustomButton
+                    className="text-base text-gray-500 hover:text-gray-800 focus:outline-none"
+                    onClick={() => {
+                      navigator.clipboard.writeText(item.code)
+                      notification.success({ message: intl.formatMessage({ id: 'copied_to_clipboard' }) })
+                    }}
+                  >
+                    <HiOutlineClipboardCopy />
+                  </CustomButton>
                 </span>
               </div>
             </List.Item>

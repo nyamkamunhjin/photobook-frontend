@@ -13,6 +13,7 @@
   "true": "Yes",
   "no": "No",
   "yes": "Yes",
+  "copied_to_clipboard": "Copied to clipboard",
 
   "create": "Create",
   "delete": "Delete",
@@ -137,6 +138,7 @@
   "user_discount": "User discount",
   "template_discount": "Template discount",
   "gift_card_discount": "Gift Card discount",
+
   "voucher_discount": "Voucher discount",
   "vouchers": "Vouchers",
 
@@ -145,6 +147,10 @@
   "removed_gift_card": "Removed Gift Card",
   "bought_gift_card": "Bought Gift Card",
   "activated_gift_card": "Activated Gift Card",
+  "buy_gift_cards": "Buy Gift Cards",
+  "wrong_gift_card_code": "Wrong Gift Card Code.",
+  "activate_gift_card": "Activate Gift Card",
+  "activate": "Activate",
 
   "discount": "Discount",
   "used": "Used",

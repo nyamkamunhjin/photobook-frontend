@@ -1194,6 +1194,14 @@ export const buyGiftCard = async (giftCardTypeId: number) => {
   return response?.data
 }
 
+export const activateGiftCard = async (code: string) => {
+  const response = await BaseRequest({
+    url: `gift-card/${code}`,
+    method: 'PUT',
+  })
+  return response?.data
+}
+
 export const addGiftCardToShoppingCart = async (id: string, type: 'attach' | 'detach') => {
   const response = await BaseRequest({
     url: `gift-card/attach/${id}`,
