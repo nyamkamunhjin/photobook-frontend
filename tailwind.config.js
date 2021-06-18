@@ -47,6 +47,7 @@ module.exports = {
     extend: {
       borderStyle: ['hover', 'focus'],
       borderWidth: ['hover', 'focus'],
+      blur: ['hover', 'focus'],
     },
   },
   plugins: [

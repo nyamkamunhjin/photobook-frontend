@@ -10,6 +10,8 @@ import { CustomButton } from 'components'
 import { useRequest } from 'ahooks'
 import ShippingAddressModal from './shipping-address-modal'
 import VoucherList from './voucher-list'
+import BoughtGiftCards from './bought-gift-cards'
+import ActivatedGiftCards from './activated-gift-cards'
 
 const MyInfo: FC = () => {
   const intl = useIntl()
@@ -385,6 +387,8 @@ const MyInfo: FC = () => {
         />
       )}
       <VoucherList />
+      <BoughtGiftCards />
+      <ActivatedGiftCards />
     </div>
   )
 }

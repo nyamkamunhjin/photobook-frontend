@@ -143,6 +143,8 @@
   "credits": "Credits",
   "added_gift_card": "Added Gift Card",
   "removed_gift_card": "Removed Gift Card",
+  "bought_gift_card": "Bought Gift Card",
+  "activated_gift_card": "Activated Gift Card",
 
   "discount": "Discount",
   "used": "Used",
