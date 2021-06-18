@@ -22,7 +22,7 @@ const HeaderMenu: FC = () => {
     <nav className="flex gap-4 justify-center items-center h-12">
       <button
         type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
         onClick={() => router.replace('/')}
       >
         <FormattedMessage id="home" />
@@ -45,7 +45,7 @@ const HeaderMenu: FC = () => {
       >
         <button
           type="button"
-          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
           key="home"
         >
           <FormattedMessage id="photobook" />
@@ -70,7 +70,7 @@ const HeaderMenu: FC = () => {
       >
         <button
           type="button"
-          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
           key="home"
         >
           <FormattedMessage id="canvas" />
@@ -92,7 +92,7 @@ const HeaderMenu: FC = () => {
       >
         <button
           type="button"
-          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
           key="home"
         >
           <FormattedMessage id="photoprint" />
@@ -100,14 +100,14 @@ const HeaderMenu: FC = () => {
       </Tippy>
       <button
         type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
         onClick={() => router.replace('/')}
       >
         <FormattedMessage id="about_us" />
       </button>
       <button
         type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-blue-400 hover:border-b-2 transition-transform"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
         onClick={() => router.replace('/gift-card')}
       >
         <FormattedMessage id="gift_card" />
