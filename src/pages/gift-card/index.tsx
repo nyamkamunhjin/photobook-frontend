@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CustomButton, ProductWrapper, useRouter } from 'components'
+import { CustomButton, useRouter } from 'components'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 import { useRequest } from 'ahooks'
 import { activateGiftCard, buyGiftCard, listGiftCardType } from 'api'
@@ -10,24 +10,25 @@ import { Input, notification } from 'antd'
 const GiftCards: React.FC = () => {
   const giftCardTypes = useRequest(listGiftCardType)
   return (
-    <ProductWrapper bannerImageUrl="1623985460961-thumb_8044457_cover_header.jpeg">
-      <WidthLimiter className="flex flex-col justify-center items-center gap-10">
-        <div className="w-full p-4 flex flex-col justify-center items-center bg-blue-50 h-80">
-          <p className="text-xl font-semibold">
-            <FormattedMessage id="activate_gift_card" />
-          </p>
-          <ActivateGiftCard />
+    /* disable ad image */
+    // <ProductWrapper bannerImageUrl="1623985460961-thumb_8044457_cover_header.jpeg">
+    <WidthLimiter className="flex flex-col justify-center items-center gap-10">
+      <div className="w-full p-4 flex flex-col justify-center items-center bg-blue-50 h-80">
+        <p className="text-xl font-semibold">
+          <FormattedMessage id="activate_gift_card" />
+        </p>
+        <ActivateGiftCard />
+      </div>
+      <div className="flex flex-col justify-center items-center">
+        <p className="text-xl font-semibold">
+          <FormattedMessage id="buy_gift_cards" />
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 mb-96">
+          {giftCardTypes.data && giftCardTypes.data.map((each: any) => <GiftCard {...each} />)}
         </div>
-        <div className="flex flex-col justify-center items-center">
-          <p className="text-xl font-semibold">
-            <FormattedMessage id="buy_gift_cards" />
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 mb-96">
-            {giftCardTypes.data && giftCardTypes.data.map((each: any) => <GiftCard {...each} />)}
-          </div>
-        </div>
-      </WidthLimiter>
-    </ProductWrapper>
+      </div>
+    </WidthLimiter>
+    // </ProductWrapper>
   )
 }
 
