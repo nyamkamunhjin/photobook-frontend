@@ -16,6 +16,7 @@ const Topbar: React.FC = () => {
   const router = useRouter()
   const shoppingCart = useRequest(listShoppingCart, {
     refreshDeps: [router],
+    throttleInterval: 500,
   })
   return (
     <header className="shadow-md z-10 bg-white">

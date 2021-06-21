@@ -1163,3 +1163,59 @@ export const addGiftCardToShoppingCart = async (id: string, type: 'attach' | 'de
   return response?.data
 }
 // #endregion [GiftCard]
+
+// #region Payment
+
+export const listPaymentTypes = async (data: { isShipping: boolean }) => {
+  const response = await BaseRequest({
+    url: 'payment-types',
+    method: 'GET',
+    data,
+  })
+  return response?.data
+}
+
+export const paymentCheckOrganization = async (value: string) => {
+  const response = await BaseRequest({
+    url: `payment/organization/check/${value}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const paymentSocialPay = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/socialpay/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const paymentQPay = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/qpay/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const checkPaymentQPay = async (id: string) => {
+  const response = await BaseRequest({
+    url: `payment/qpay/check`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const paymentBank = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/bank/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+// #endregion
