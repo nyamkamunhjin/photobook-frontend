@@ -79,7 +79,7 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
       }
     >
       <Button type="link" className={styles.avatar} onClick={() => setVisible((prev) => !prev)}>
-        <Avatar shape="square" size="small" src={avatarUrl} style={{ backgroundColor: '#0666b3' }} alt="user-avatar" />
+        <Avatar size="small" src={avatarUrl} style={{ backgroundColor: '#0666b3' }} alt="user-avatar" />
       </Button>
     </Popover>
   )

@@ -609,6 +609,7 @@ export type Voucher = {
  */
 export type GiftCard = {
   id: number
+  name: string
   imageUrl: string | null
   code: string
   activatedUserId: number | null

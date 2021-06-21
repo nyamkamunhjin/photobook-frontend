@@ -990,7 +990,7 @@ export const listShoppingCart = async () => {
     method: 'GET',
   })
 
-  response?.data.cartItems.forEach(async (record: any) => {
+  response?.data?.cartItems.forEach(async (record: any) => {
     record.project.tempUrl = await Storage.get(record.project.imageUrl, { expires: 60 * 60 * 24 * 7 })
   })
 
@@ -1129,15 +1129,46 @@ export const addVoucherToCartItem = async (id: string) => {
 // #endregion [Voucher]
 
 // #region [GiftCard]
-export const listGiftCard = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+export const listBoughtGiftCard = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
   let query = params && data ? buildQuery(params, data) : ''
   if (offset && params && params.current !== 1) {
     query += `&offset=${JSON.stringify(offset)}`
   }
 
   const response = await BaseRequest({
-    url: `gift-card/user?${query}`,
+    url: `gift-card/user-bought?${query}`,
     method: 'GET',
+  })
+
+  response?.data.forEach((each: any) => {
+    each.imageUrl = `${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const listActivatedGiftCard = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `gift-card/user-activated?${query}`,
+    method: 'GET',
+  })
+
+  response?.data.forEach((each: any) => {
+    each.imageUrl = `${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`
   })
 
   if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
@@ -1148,6 +1179,25 @@ export const getGiftCard = async (id: string) => {
   const response = await BaseRequest({
     url: `gift-card/${id}`,
     method: 'GET',
+  })
+  return response?.data
+}
+
+export const buyGiftCard = async (giftCardTypeId: number) => {
+  const response = await BaseRequest({
+    url: `gift-card`,
+    method: 'POST',
+    data: {
+      giftCardTypeId,
+    },
+  })
+  return response?.data
+}
+
+export const activateGiftCard = async (code: string) => {
+  const response = await BaseRequest({
+    url: `gift-card/${code}`,
+    method: 'PUT',
   })
   return response?.data
 }

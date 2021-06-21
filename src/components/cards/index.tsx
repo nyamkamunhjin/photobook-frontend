@@ -18,7 +18,7 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
       <article>
         <div>
           <img
-            className="w-full rounded"
+            className="w-full rounde"
             src={`${process.env.REACT_APP_PUBLIC_IMAGE}${template.imageUrl}`}
             alt={template.name}
             width={300}
