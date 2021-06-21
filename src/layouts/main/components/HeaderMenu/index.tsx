@@ -112,6 +112,13 @@ const HeaderMenu: FC = () => {
       >
         <FormattedMessage id="gift_card" />
       </button>
+      <button
+        type="button"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
+        onClick={() => router.replace('/photo-trade')}
+      >
+        <FormattedMessage id="photo_trade" />
+      </button>
     </nav>
   )
 }

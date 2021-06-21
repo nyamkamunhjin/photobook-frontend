@@ -689,3 +689,14 @@ export interface UploadablePicture {
 }
 
 export type Locales = 'mn' | 'en'
+
+export type TradePhoto = {
+  id: number
+  userId: number
+  price: number
+  photoName: string
+  description: string
+  imageUrl: string
+  sellCount: number
+  user: User
+}

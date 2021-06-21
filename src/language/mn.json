@@ -151,6 +151,7 @@
   "wrong_gift_card_code": "Wrong Gift Card Code.",
   "activate_gift_card": "Activate Gift Card",
   "activate": "Activate",
+  "photo_by": "Photo by",
 
   "discount": "Discount",
   "used": "Used",
@@ -318,6 +319,7 @@
   "sort.recently": "Recently",
   "about_us": "About Us",
   "gift_card": "Gift Card",
+  "photo_trade": "Photo Trade",
   "framedprint": "Framed Print",
   "photoprint": "Photo Print",
   "print": "Print",

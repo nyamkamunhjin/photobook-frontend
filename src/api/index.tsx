@@ -1247,3 +1247,41 @@ export const getGiftCardType = async (id: string) => {
 }
 
 // #endregion [GiftCardType]
+
+// #region [TradePhoto]
+export const listTradePhoto = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `trade-photo?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getTradePhoto = async (id: string) => {
+  const response = await BaseRequest({
+    url: `trade-photo/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const buyPhoto = async (id: string) => {
+  const response = await BaseRequest({
+    url: `trade-photo/${id}`,
+    method: 'PUT',
+  })
+  return response?.data
+}
+
+// #endregion [TradePhoto]
