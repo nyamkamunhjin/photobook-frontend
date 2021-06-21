@@ -62,3 +62,156 @@ code {
 .ant-input-number-input {
   text-align: center !important;
 }
+
+@keyframes spinners {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.spinners div {
+  left: 127.21499999999999px;
+  top: 65.535px;
+  position: absolute;
+  animation: spinners linear 2.6315789473684212s infinite;
+  background: #1d0e0b;
+  width: 2.57px;
+  height: 7.709999999999999px;
+  border-radius: 0px / 0px;
+  transform-origin: 1.285px 62.964999999999996px;
+}
+.spinners div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -2.517162471395881s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(2) {
+  transform: rotate(15.652173913043478deg);
+  animation-delay: -2.402745995423341s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(3) {
+  transform: rotate(31.304347826086957deg);
+  animation-delay: -2.2883295194508007s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(4) {
+  transform: rotate(46.95652173913044deg);
+  animation-delay: -2.1739130434782608s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(5) {
+  transform: rotate(62.608695652173914deg);
+  animation-delay: -2.059496567505721s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(6) {
+  transform: rotate(78.26086956521739deg);
+  animation-delay: -1.9450800915331807s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(7) {
+  transform: rotate(93.91304347826087deg);
+  animation-delay: -1.8306636155606406s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(8) {
+  transform: rotate(109.56521739130434deg);
+  animation-delay: -1.7162471395881007s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(9) {
+  transform: rotate(125.21739130434783deg);
+  animation-delay: -1.6018306636155606s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(10) {
+  transform: rotate(140.8695652173913deg);
+  animation-delay: -1.4874141876430205s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(11) {
+  transform: rotate(156.52173913043478deg);
+  animation-delay: -1.3729977116704806s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(12) {
+  transform: rotate(172.17391304347825deg);
+  animation-delay: -1.2585812356979404s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(13) {
+  transform: rotate(187.82608695652175deg);
+  animation-delay: -1.1441647597254003s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(14) {
+  transform: rotate(203.47826086956522deg);
+  animation-delay: -1.0297482837528604s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(15) {
+  transform: rotate(219.1304347826087deg);
+  animation-delay: -0.9153318077803203s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(16) {
+  transform: rotate(234.7826086956522deg);
+  animation-delay: -0.8009153318077803s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(17) {
+  transform: rotate(250.43478260869566deg);
+  animation-delay: -0.6864988558352403s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(18) {
+  transform: rotate(266.0869565217391deg);
+  animation-delay: -0.5720823798627002s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(19) {
+  transform: rotate(281.7391304347826deg);
+  animation-delay: -0.45766590389016015s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(20) {
+  transform: rotate(297.39130434782606deg);
+  animation-delay: -0.34324942791762014s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(21) {
+  transform: rotate(313.04347826086956deg);
+  animation-delay: -0.22883295194508008s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(22) {
+  transform: rotate(328.69565217391306deg);
+  animation-delay: -0.11441647597254004s;
+  background: #1d0e0b;
+}
+.spinners div:nth-child(23) {
+  transform: rotate(344.3478260869565deg);
+  animation-delay: 0s;
+  background: #1d0e0b;
+}
+.spinner-container {
+  display: inline-block;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.spinners {
+  width: 100%;
+  height: 100%;
+  position: abs;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.spinners div {
+  box-sizing: content-box;
+}

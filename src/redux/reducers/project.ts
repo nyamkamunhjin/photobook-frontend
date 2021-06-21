@@ -19,6 +19,7 @@ import {
   REORDER_SLIDE,
   SET_SLIDE_DIMENSION,
   SET_CURRENT_PROJECT,
+  DELETE_SLIDE_BY_ID,
   SAVE_PROJECT_ATTR,
   UPDATE_CONTAINER,
   UPDATE_GROUP_CONTAINER,
@@ -180,6 +181,7 @@ handlers[NEW_SLIDES] = projectHandlers.newSlidesHandler
 handlers[DUPLICATE_SLIDE] = projectHandlers.newSlideHandler
 handlers[REORDER_SLIDE] = projectHandlers.reOrderSlideHandler
 handlers[DELETE_SLIDE] = projectHandlers.deleteSlideHandler
+handlers[DELETE_SLIDE_BY_ID] = projectHandlers.deleteSlideByIdHandler
 handlers[LOAD_OBJECTS] = projectHandlers.loadObjectsHandler
 handlers[LOAD_CONTAINERS] = projectHandlers.loadContainersHandler
 handlers[LOAD_BACKGROUNDS] = projectHandlers.loadBackgroundsHandler

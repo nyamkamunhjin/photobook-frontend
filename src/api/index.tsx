@@ -401,7 +401,7 @@ export const updateProject = async (id: number, data: Object) => {
 
 export const updateProjectSlides = async (id: number, data: Object) => {
   const response = await BaseRequest({
-    url: `project/${id}/slides`,
+    url: `project/${id}/print/slides`,
     method: 'PUT',
     data,
   })
@@ -1248,6 +1248,53 @@ export const getGiftCardType = async (id: string) => {
 
 // #endregion [GiftCardType]
 
+// #region Payment
+
+export const listPaymentTypes = async (data: { isShipping: boolean }) => {
+  const response = await BaseRequest({
+    url: 'payment-types',
+    method: 'GET',
+    data,
+  })
+  return response?.data
+}
+
+export const paymentCheckOrganization = async (value: string) => {
+  const response = await BaseRequest({
+    url: `payment/organization/check/${value}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const paymentSocialPay = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/socialpay/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const paymentQPay = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/qpay/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const checkPaymentQPay = async (id: string) => {
+  const response = await BaseRequest({
+    url: `payment/qpay/check`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [GiftCardType]
+
 // #region [TradePhoto]
 export const listTradePhoto = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
   let query = params && data ? buildQuery(params, data) : ''
@@ -1284,4 +1331,14 @@ export const buyPhoto = async (id: string) => {
   return response?.data
 }
 
+export const paymentBank = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/bank/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
 // #endregion [TradePhoto]
+// #endregion

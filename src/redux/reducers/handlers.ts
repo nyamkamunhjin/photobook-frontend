@@ -72,7 +72,11 @@ const saveProjectAttHandler = (state: ProjectInterface, action: any) => {
 
 const newSlideHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
-  Insert(state.currentProject.slides, payload.slideIndex, payload.slide)
+  if (payload.slideIndex === undefined || typeof payload.slideIndex !== 'number') {
+    state.currentProject.slides = [...state.currentProject.slides, payload.slide]
+  } else {
+    Insert(state.currentProject.slides, payload.slideIndex, payload.slide)
+  }
   return {
     ...state,
     loading: false,
@@ -111,7 +115,14 @@ const duplicateSlideHandler = (state: ProjectInterface, action: any) => {
     loading: false,
   }
 }
-
+const deleteSlideByIdHandler = (state: ProjectInterface, action: any) => {
+  const { payload } = action
+  state.currentProject.slides = state.currentProject.slides.filter((each) => each.slideId !== payload)
+  return {
+    ...state,
+    loading: false,
+  }
+}
 const deleteSlideHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
   state.currentProject.slides.splice(payload, 1)
@@ -600,6 +611,7 @@ export default {
   newSlideHandler,
   newSlidesHandler,
   deleteSlideHandler,
+  deleteSlideByIdHandler,
   loadObjectsHandler,
   loadContainersHandler,
   loadBackgroundsHandler,

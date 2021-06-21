@@ -17,7 +17,7 @@ import {
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage } from 'react-intl'
 import { listPaperMaterial, listPaperSize } from 'api'
-import { Image, ImageInterface, Project, ProjectInterface, RootInterface, Slide, UploadablePicture } from 'interfaces'
+import { Image, ImageInterface, ProjectInterface, RootInterface, Slide, UploadablePicture } from 'interfaces'
 
 import Grid from './grid'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
@@ -95,7 +95,7 @@ const PrintPanel: React.FC<Props> = ({
     await unlinkImages(_images, currentProject.id)
   }
   return (
-    <div className="CenterPanel" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
+    <div className="center-panel" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
       {currentProject.slides.length > 0 && (
         <Grid
           loading={loading || projectLoading}

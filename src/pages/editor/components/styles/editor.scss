@@ -72,7 +72,9 @@
     }
   }
 }
+.EditorPrintWrapper {
 
+}
 .EditorOnePageView,
 .EditorPreview {
   display: flex;
@@ -90,13 +92,12 @@
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-.CenterPanel {
+.center-panel {
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 50000;
-  height: 100vh;
   width: 100%;
   .Images {
     height: auto;
