@@ -30,13 +30,13 @@ interface BaseRequestProps {
 const catchError = (err: any, isMe: boolean) => {
   // const isLogin = window.location.pathname.startsWith('/auth/signin')
   if (isMe) {
-    localStorage.removeItem('token')
+    // localStorage.removeItem('token')
     localStorage.removeItem('refresh')
     message.warn({ content: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
     // if (!isLogin) window.location.replace('/auth/signin')
   } else if (err.response) {
     if (err.response.status === 401) {
-      localStorage.removeItem('token')
+      // localStorage.removeItem('token')
       localStorage.removeItem('refresh')
       // message.warn({ content: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
       // if (!isLogin) window.location.replace('/auth/signin')

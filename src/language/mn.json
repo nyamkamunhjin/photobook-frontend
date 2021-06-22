@@ -105,6 +105,7 @@
   "frame_material": "Frame Material",
 
   "cover_material_color": "Color",
+  "payment_amount_vat_included": "Payment Amount Vat Included",
 
   "upload": "Upload",
   "prompt.name": "Нэр оруулна уу",

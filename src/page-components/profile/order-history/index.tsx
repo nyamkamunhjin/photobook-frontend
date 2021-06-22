@@ -43,6 +43,13 @@ const OrderHistory: React.FC = () => {
       render: (value) => value || <FormattedMessage id="no" />,
     },
     {
+      title: () => <FormattedMessage id="payment_amount_vat_included" />,
+      dataIndex: 'paymentAmount',
+      key: 'paymentAmount',
+      align: 'center',
+      render: (value) => `${currencyFormat(value)} ₮`,
+    },
+    {
       title: () => <FormattedMessage id="status" />,
       dataIndex: 'status',
       key: 'status',
@@ -99,7 +106,7 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems }) => {
                 </span>
               </div>
               <div className="ml-auto flex flex-col text-right">
-                <span className="text-sm text-gray-700">{currencyFormat(item.project.price || 0)} ₮</span>
+                <span className="text-sm text-gray-700">{currencyFormat((item.amount || 0) * item.quantity)} ₮</span>
               </div>
             </List.Item>
           )}

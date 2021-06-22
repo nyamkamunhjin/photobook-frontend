@@ -13,6 +13,7 @@ import {
   listPaymentTypes,
   updateCartItem,
 } from 'api'
+
 import { CartItem, PaymentType, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
@@ -43,7 +44,8 @@ const MyCart: React.FC = () => {
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
-    debounceInterval: 100,
+    debounceInterval: 1500,
+    // throttleInterval: 1000,
   })
 
   const shoppingCart = useRequest(listShoppingCart, {
@@ -113,6 +115,10 @@ const MyCart: React.FC = () => {
                   onChange={(value) => {
                     updateCartItem(item.id, {
                       quantity: value,
+                    }).then((res) => {
+                      if (res) {
+                        summary.refresh()
+                      }
                     })
                   }}
                 />,

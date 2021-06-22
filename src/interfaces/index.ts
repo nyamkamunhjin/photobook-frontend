@@ -540,6 +540,7 @@ export type OrderItem = {
   voucherId: number | null
   giftCardId: number | null
   orderId: number | null
+  amount: number
   project: Project
 }
 
@@ -556,6 +557,7 @@ export type CartItem = {
   voucherId: number | null
   giftCardId: number | null
   templateDiscount?: TemplateDiscount
+  amount: number
   userDiscount?: UserDiscount
   voucher?: Voucher
   price: number
