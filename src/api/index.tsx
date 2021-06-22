@@ -921,6 +921,17 @@ export const listLandingPageHero = async () => {
 
 // #endregion [LandingPageHero]
 
+// #region [LandingPageFeature]
+export const listLandingPageFeature = async () => {
+  const response = await BaseRequest({
+    url: `landing/feature`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageFeature]
+
 // #region [LandingPageReview]
 export const listLandingPageReview = async () => {
   const response = await BaseRequest({

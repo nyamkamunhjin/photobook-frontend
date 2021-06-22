@@ -1,7 +1,13 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import React from 'react'
 import { useRequest } from 'ahooks'
-import { listLandingPageHero, listLandingPageImageCarousel, listLandingPageReview, listLandingPageShowCase } from 'api'
+import {
+  listLandingPageFeature,
+  listLandingPageHero,
+  listLandingPageImageCarousel,
+  listLandingPageReview,
+  listLandingPageShowCase,
+} from 'api'
 import { Features, Hero, ImageCarousel, ShowCaseProducts, SocialProof } from 'page-components/landing-page'
 import { ReactComponent as Hour24 } from 'assets/icons/landing-page-icons/24-hours.svg'
 import { ReactComponent as Shipped } from 'assets/icons/landing-page-icons/shipped.svg'
@@ -36,12 +42,13 @@ const Home: React.FC = () => {
   const showCases = useRequest(listLandingPageShowCase)
   const imageCarousels = useRequest(listLandingPageImageCarousel)
   const reviews = useRequest(listLandingPageReview)
+  const features = useRequest(listLandingPageFeature)
   return (
     <>
       {hero.data && <Hero datas={hero.data} />}
       {showCases.data && <ShowCaseProducts cards={showCases.data} />}
       {imageCarousels.data && <ImageCarousel datas={imageCarousels.data} />}
-      <Features />
+      {features.data && <Features datas={features.data} />}
       {reviews.data && <SocialProof reviews={reviews.data} features={datas} />}
     </>
   )
