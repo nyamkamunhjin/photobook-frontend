@@ -1,34 +1,35 @@
 import React, { useState } from 'react'
-import { CustomButton, useRouter } from 'components'
+import { CustomButton, useRouter, ProductWrapper } from 'components'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 import { useRequest } from 'ahooks'
-import { activateGiftCard, buyGiftCard, listGiftCardType } from 'api'
+import { activateGiftCard, buyGiftCard, listGiftCardType, listProductAd } from 'api'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { currencyFormat } from 'utils'
 import { Input, notification } from 'antd'
 
 const GiftCards: React.FC = () => {
   const giftCardTypes = useRequest(listGiftCardType)
+  const ad = useRequest(() => listProductAd('gift-card'))
+
   return (
-    /* disable ad image */
-    // <ProductWrapper bannerImageUrl="1623985460961-thumb_8044457_cover_header.jpeg">
-    <WidthLimiter className="flex flex-col justify-center items-center gap-10">
-      <div className="w-full p-4 flex flex-col justify-center items-center bg-blue-50 h-80">
-        <p className="text-xl font-semibold">
-          <FormattedMessage id="activate_gift_card" />
-        </p>
-        <ActivateGiftCard />
-      </div>
-      <div className="flex flex-col justify-center items-center">
-        <p className="text-xl font-semibold">
-          <FormattedMessage id="buy_gift_cards" />
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 mb-96">
-          {giftCardTypes.data && giftCardTypes.data.map((each: any) => <GiftCard {...each} />)}
+    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === 'gift-card')?.imageUrl}>
+      <WidthLimiter className="flex flex-col justify-center items-center gap-10">
+        <div className="w-full p-4 flex flex-col justify-center items-center bg-blue-50 h-80">
+          <p className="text-xl font-semibold">
+            <FormattedMessage id="activate_gift_card" />
+          </p>
+          <ActivateGiftCard />
         </div>
-      </div>
-    </WidthLimiter>
-    // </ProductWrapper>
+        <div className="flex flex-col justify-center items-center w-full">
+          <p className="text-xl font-semibold">
+            <FormattedMessage id="buy_gift_cards" />
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 mb-96 w-full max-w-4xl">
+            {giftCardTypes.data && giftCardTypes.data.map((each: any) => <GiftCard {...each} />)}
+          </div>
+        </div>
+      </WidthLimiter>
+    </ProductWrapper>
   )
 }
 
@@ -49,13 +50,16 @@ const GiftCard: React.FC<GiftCard> = ({ id, imageUrl, name, description, discoun
   return (
     <div
       className="flex flex-grow flex-col w-full bg-gray-50 rounded-lg shadow-lg transform hover:-translate-y-1 hover:shadow-2xl transition-all ease-out"
-      style={{ maxWidth: '384px' }}
+      // style={{ maxWidth: '384px' }}
     >
-      <img
-        className="h-32 object-cover rounded-t-lg"
-        src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
-        alt="gift-card"
-      />
+      <div className="aspect-w-11 aspect-h-6">
+        <img
+          className="object-cover rounded-t-lg"
+          src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
+          alt="gift-card"
+        />
+      </div>
+
       <div className="flex flex-col p-2">
         <span className="text-base font-bold">{name}</span>
         <span> {description}</span>

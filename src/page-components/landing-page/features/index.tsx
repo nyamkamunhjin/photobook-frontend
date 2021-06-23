@@ -7,7 +7,7 @@ interface Props {
 
 const Features: FC<Props> = ({ datas }) => {
   return (
-    <WidthLimiter className="flex flex-wrap gap-4 px-4 py-8 h-96">
+    <WidthLimiter className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 py-8 h-96">
       {datas.map((each) => (
         <Feature key={`feature${each.text}`} imageUrl={each.imageUrl} text={each.text} />
       ))}

@@ -32,7 +32,7 @@ const SocialProof: FC<Props> = ({ reviews, features }) => {
             <Review key={author} author={author} text={text} />
           ))}
         </Carousel>
-        <div className="flex justify-evenly py-10 gap-4">
+        <div className="flex flex-wrap justify-evenly py-10 gap-4">
           {features.map(({ icon, subText, text }) => (
             <Content key={text} icon={icon} subText={subText} text={text} />
           ))}

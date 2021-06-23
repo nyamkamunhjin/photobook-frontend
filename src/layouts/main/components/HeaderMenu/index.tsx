@@ -19,7 +19,7 @@ const HeaderMenu: FC = () => {
   const photobookAd = useRequest(() => listHeaderAd('photobook'))
 
   return (
-    <nav className="flex gap-4 justify-center items-center h-12">
+    <nav className="flex flex-wrap gap-4 justify-center items-center pb-4 bg-white">
       <button
         type="button"
         className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
