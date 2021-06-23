@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User, TradePhoto } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -1334,6 +1334,15 @@ export const getTradePhoto = async (id: string) => {
   return response?.data
 }
 
+export const uploadPhoto = async (data: Partial<TradePhoto>) => {
+  const response = await BaseRequest({
+    url: `trade-photo`,
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
 export const buyPhoto = async (id: string) => {
   const response = await BaseRequest({
     url: `trade-photo/${id}`,
@@ -1341,6 +1350,7 @@ export const buyPhoto = async (id: string) => {
   })
   return response?.data
 }
+// #endregion [TradePhoto]
 
 export const paymentBank = async (data: Object) => {
   const response = await BaseRequest({
@@ -1351,5 +1361,4 @@ export const paymentBank = async (data: Object) => {
   return response?.data
 }
 
-// #endregion [TradePhoto]
 // #endregion

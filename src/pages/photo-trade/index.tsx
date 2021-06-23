@@ -3,11 +3,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { buyPhoto, getTradePhoto, listTradePhoto } from 'api'
 import Masonry from 'react-masonry-css'
 import { TradePhoto } from 'interfaces'
-import './style.scss'
+import Zoom from 'react-medium-image-zoom'
 import { CustomButton, Loading } from 'components'
 import { Modal, notification, Image } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { currencyFormat } from 'utils'
+import './style.scss'
+import 'react-medium-image-zoom/dist/styles.css'
+import UploadPhoto from './upload-photo'
 
 const PhotoTrade: React.FC = () => {
   const intl = useIntl()
@@ -17,8 +20,8 @@ const PhotoTrade: React.FC = () => {
     (data: any) =>
       listTradePhoto(
         {
-          current: (data?.list?.length || 0) / 10,
-          pageSize: 10,
+          current: (data?.list?.length || 0) / 20,
+          pageSize: 20,
         },
         {}
       ),
@@ -42,12 +45,7 @@ const PhotoTrade: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col gap-4 items-center" ref={containerRef}>
-      {/* <Pagination
-        className="ml-auto"
-        {...(tradePhotos.pagination as any)}
-        pageSize={20}
-        onShowSizeChange={tradePhotos.pagination.onChange}
-      /> */}
+      <UploadPhoto />
       <Masonry breakpointCols={3} className="my-masonry-grid" columnClassName="my-masonry-grid_column">
         {!tradePhotos.data?.loading ? (
           tradePhotos.data?.list.map((each: TradePhoto) => (
@@ -60,7 +58,7 @@ const PhotoTrade: React.FC = () => {
             >
               <Image
                 className="w-full h-auto"
-                src={each.imageUrl}
+                src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`}
                 alt={each.photoName}
                 fallback="/logo.png"
                 preview={false}
@@ -87,12 +85,14 @@ const PhotoTrade: React.FC = () => {
           footer={<div />}
         >
           <div className="flex items-start p-2 gap-2 min-h-screen">
-            <Image
-              className="w-full"
-              preview={false}
-              src={tradePhoto.data?.imageUrl}
-              alt={tradePhoto.data?.photoName}
-            />
+            <Zoom>
+              <Image
+                className="w-full"
+                preview={false}
+                src={`${process.env.REACT_APP_PUBLIC_IMAGE}${tradePhoto.data?.imageUrl}`}
+                alt={tradePhoto.data?.photoName}
+              />
+            </Zoom>
             <div className="w-full flex flex-col gap-4 p-2 items-start">
               <span className="text-4xl mt-0 pt-0">{tradePhoto.data?.photoName}</span>
               <p className="text-base">{tradePhoto.data?.description}</p>

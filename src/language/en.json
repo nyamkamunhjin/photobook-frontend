@@ -108,6 +108,7 @@
   "payment_amount_vat_included": "Payment Amount Vat Included",
 
   "upload": "Upload",
+  "upload_photo": "Upload Photo",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
@@ -188,6 +189,9 @@
   "please_input_avatar_url": "Please input avatar url",
   "please_input_email": "Please input email",
   "please_input_phone_number": "Please input phone number",
+
+  "required": "Required",
+  "photo_name": "Photo Name",
 
   "connect_facebook": "Connect Facebook",
   "connect_google": "Connect Google",
