@@ -106,7 +106,7 @@ const MyInfo: FC = () => {
                   message: <FormattedMessage id="wrong_first_name" />,
                 },
                 {
-                  required: true,
+                  // required: true,
                   message: <FormattedMessage id="please_input_first_name" />,
                 },
               ]}
@@ -127,7 +127,7 @@ const MyInfo: FC = () => {
                   message: <FormattedMessage id="wrong_last_name" />,
                 },
                 {
-                  required: true,
+                  // required: true,
                   message: <FormattedMessage id="please_input_last_name" />,
                 },
               ]}
@@ -149,7 +149,7 @@ const MyInfo: FC = () => {
                 message: <FormattedMessage id="wrong_avatar_url" />,
               },
               {
-                required: true,
+                // required: true,
                 message: <FormattedMessage id="please_input_avatar_url" />,
               },
             ]}
@@ -171,7 +171,7 @@ const MyInfo: FC = () => {
                   message: <FormattedMessage id="wrong_email" />,
                 },
                 {
-                  required: true,
+                  // required: true,
                   message: <FormattedMessage id="please_input_email" />,
                 },
               ]}
@@ -217,12 +217,12 @@ const MyInfo: FC = () => {
                 message: <FormattedMessage id="wrong_phone_number" />,
               },
               {
-                required: true,
+                // required: true,
                 message: <FormattedMessage id="please_input_phone_number" />,
               },
             ]}
           >
-            <InputNumber className="w-full" />
+            <InputNumber className="" />
           </Form.Item>
           <Form.Item
             name="password"

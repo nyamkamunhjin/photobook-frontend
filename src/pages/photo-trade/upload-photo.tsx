@@ -3,38 +3,52 @@ import React, { useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { CustomButton } from 'components'
 import { uploadPhoto } from 'api'
-// import { UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined } from '@ant-design/icons'
 import { TradePhoto } from 'interfaces'
-// import { s3Upload } from 'utils/aws-lib'
+import { s3Upload } from 'utils/aws-lib'
+import { useRequest } from 'ahooks'
 
 const UploadPhoto: React.FC = () => {
   const [visible, setVisible] = useState(false)
   const [file, setFile] = useState<File>()
   const intl = useIntl()
+  const [loading, setLoading] = useState(false)
+  const request = useRequest(uploadPhoto, {
+    manual: true,
+  })
+
   const onFinish = (values: Partial<TradePhoto>) => {
     // console.log(values)
-    // if (!file) {
-    //   notification.error({ message: intl.formatMessage({ id: 'image.validation' }) })
-    // } else {
-    // s3Upload(file).then((imageUrl) => {
-    //   // uploadPhoto({ ...values, imageUrl }).then((res) => {
-    //   //   if (res) notification.success({ message: intl.formatMessage({ id: 'success!' }) })
-    //   // })
-    //   alert(imageUrl)
-    // })
-    // }
+    setLoading(true)
+    if (!file) {
+      notification.error({ message: intl.formatMessage({ id: 'image.validation' }) })
+    } else {
+      s3Upload(file)
+        .then((imageUrl) => {
+          request.run({ ...values, imageUrl }).then((res) => {
+            if (res) {
+              notification.success({ message: intl.formatMessage({ id: 'success!' }) })
+              setVisible(false)
+            }
+          })
+          // alert(imageUrl)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
 
-    uploadPhoto(values).then((res) => {
-      if (res) {
-        notification.success({ message: intl.formatMessage({ id: 'success!' }) })
-      }
-    })
+    // uploadPhoto(values).then((res) => {
+    //   if (res) {
+    //     notification.success({ message: intl.formatMessage({ id: 'success!' }) })
+    //   }
+    // })
   }
 
-  // const onHandleFile = (f: File) => {
-  //   setFile(f)
-  //   return false
-  // }
+  const onHandleFile = (f: File) => {
+    setFile(f)
+    return false
+  }
 
   return (
     <div>
@@ -49,7 +63,7 @@ const UploadPhoto: React.FC = () => {
         onCancel={() => setVisible(false)}
         footer={<div />}
       >
-        <div className="flex items-start p-2 gap-2 min-h-screen">
+        <div className="flex items-start p-2 gap-2">
           <Form className="w-full" name="basic" size="large" onFinish={onFinish} layout="vertical">
             <Form.Item
               label={<FormattedMessage id="photo_name" />}
@@ -81,7 +95,7 @@ const UploadPhoto: React.FC = () => {
               label={intl.formatMessage({ id: 'image' })}
               hasFeedback
             >
-              {/* <Upload
+              <Upload
                 listType="picture-card"
                 onRemove={() => setFile(undefined)}
                 beforeUpload={onHandleFile}
@@ -92,12 +106,12 @@ const UploadPhoto: React.FC = () => {
                     <FormattedMessage id="upload" />
                   </CustomButton>
                 )}
-              </Upload> */}
-              <Input />
+              </Upload>
+              {/* <Input /> */}
             </Form.Item>
 
             <Form.Item>
-              <CustomButton className="btn-accept" type="submit">
+              <CustomButton className="btn-accept" type="submit" loading={loading}>
                 <FormattedMessage id="upload" />
               </CustomButton>
             </Form.Item>

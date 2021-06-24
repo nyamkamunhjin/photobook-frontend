@@ -8,10 +8,11 @@ import OrderHistory from 'page-components/profile/order-history'
 import MyProjects from 'page-components/profile/my-projects'
 import MyInfo from 'page-components/profile/my-info'
 import MyCart from 'page-components/profile/my-cart'
+import PhotoTrade from 'page-components/profile/photo-trade'
 import { useSelector } from 'react-redux'
 
-type tabState = 'order_history' | 'my_projects' | 'my_cart' | 'my_info'
-const tabStates: tabState[] = ['order_history', 'my_projects', 'my_cart', 'my_info']
+type tabState = 'order_history' | 'my_projects' | 'my_cart' | 'my_info' | 'photo_trade'
+const tabStates: tabState[] = ['order_history', 'my_projects', 'my_cart', 'my_info', 'photo_trade']
 
 const Profile: FC = () => {
   const user = useSelector((state: RootInterface) => state.auth.user)
@@ -27,6 +28,8 @@ const Profile: FC = () => {
         return <MyInfo />
       case 'my_cart':
         return <MyCart />
+      case 'photo_trade':
+        return <PhotoTrade />
       default:
         return <OrderHistory />
     }
