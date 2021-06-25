@@ -224,6 +224,9 @@
   "sign_up_success": "Sign up success",
   "sign_up_error": "Sign up error",
 
+  "purchased_photos": "Purchased Photos",
+  "selling_photos": "Selling Photos",
+
   "type": "Type",
   "brightness": "brightness",
   "contrast": "Contrast",

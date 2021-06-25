@@ -101,7 +101,7 @@ const HeaderMenu: FC = () => {
       <button
         type="button"
         className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
-        onClick={() => router.replace('/')}
+        onClick={() => router.replace('/about-us')}
       >
         <FormattedMessage id="about_us" />
       </button>

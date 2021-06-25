@@ -1,6 +1,6 @@
 import { RootInterface } from 'interfaces'
 import { Badge } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { HiOutlineShoppingCart } from 'react-icons/hi'
@@ -15,9 +15,16 @@ const Topbar: React.FC = () => {
   const user = useSelector((state: RootInterface) => state.auth.user)
   const router = useRouter()
   const shoppingCart = useRequest(listShoppingCart, {
-    refreshDeps: [router],
     throttleInterval: 500,
+    manual: true,
   })
+
+  useEffect(() => {
+    if (user) {
+      shoppingCart.run()
+    }
+  }, [user, router])
+
   return (
     <header className="shadow-md z-10 bg-white">
       <div className="px-4 mx-auto w-full max-w-7xl">

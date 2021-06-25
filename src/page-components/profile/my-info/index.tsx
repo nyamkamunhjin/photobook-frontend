@@ -1,4 +1,4 @@
-import { Form, Input, notification, InputNumber, List } from 'antd'
+import { Form, Input, notification, List } from 'antd'
 import React, { FC, useState, useEffect } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
@@ -74,13 +74,14 @@ const MyInfo: FC = () => {
 
   return (
     <div className="p-2">
-      <span className="font-semibold text-xl bo">
+      <span className="font-semibold text-xl">
         <FormattedMessage id="my_info" />
       </span>
       <hr className="my-1" />
       <div className="mt-4 flex flex-col gap-2">
         <Form
           className="w-full"
+          size="large"
           layout="vertical"
           onFinish={onFinish}
           initialValues={{
@@ -91,6 +92,27 @@ const MyInfo: FC = () => {
             phoneNumber: user?.phoneNumber && parseInt(user.phoneNumber, 10),
           }}
         >
+          <Form.Item
+            className="flex-1"
+            name="avatarUrl"
+            label={
+              <span className="font-semibold text-gray-500">
+                <FormattedMessage id="avatar_url" />
+              </span>
+            }
+            rules={[
+              {
+                type: 'string',
+                message: <FormattedMessage id="wrong_avatar_url" />,
+              },
+              {
+                // required: true,
+                message: <FormattedMessage id="please_input_avatar_url" />,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
           <div className="flex gap-4">
             <Form.Item
               className="flex-1"
@@ -135,27 +157,6 @@ const MyInfo: FC = () => {
               <Input />
             </Form.Item>
           </div>
-          <Form.Item
-            className="flex-1"
-            name="avatarUrl"
-            label={
-              <span className="font-semibold text-gray-500">
-                <FormattedMessage id="avatar_url" />
-              </span>
-            }
-            rules={[
-              {
-                type: 'string',
-                message: <FormattedMessage id="wrong_avatar_url" />,
-              },
-              {
-                // required: true,
-                message: <FormattedMessage id="please_input_avatar_url" />,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
           <div className="flex gap-2 items-center">
             <Form.Item
               className="w-full"
@@ -178,53 +179,51 @@ const MyInfo: FC = () => {
             >
               <Input />
             </Form.Item>
-            {user?.email &&
-              (user?.emailConfirmed ? (
-                <CustomButton
-                  className="btn-text cursor-default whitespace-nowrap"
-                  icon={<HiCheck className="text-xl text-green-300" />}
-                  iconPosition="right"
-                >
-                  <FormattedMessage id="email_verified" />
-                </CustomButton>
-              ) : (
-                <CustomButton
-                  className="btn-primary whitespace-nowrap"
-                  onClick={() => {
-                    verifyEmail().then(() => {
-                      notification.info({
-                        message: intl.formatMessage({
-                          id: 'email_verification_sent',
-                        }),
-                      })
-                    })
-                  }}
-                >
-                  <FormattedMessage id="verify_email" />
-                </CustomButton>
-              ))}
+            <Form.Item
+              className="w-full"
+              name="phoneNumber"
+              label={
+                <span className="font-semibold text-gray-500">
+                  <FormattedMessage id="phone_number" />
+                </span>
+              }
+              rules={[
+                {
+                  // type: 'number',
+                  message: <FormattedMessage id="wrong_phone_number" />,
+                },
+              ]}
+            >
+              <Input className="w-full text-left" />
+            </Form.Item>
           </div>
-          <Form.Item
-            name="phoneNumber"
-            label={
-              <span className="font-semibold text-gray-500">
-                <FormattedMessage id="phone_number" />
-              </span>
-            }
-            rules={[
-              {
-                type: 'number',
-                message: <FormattedMessage id="wrong_phone_number" />,
-              },
-              {
-                // required: true,
-                message: <FormattedMessage id="please_input_phone_number" />,
-              },
-            ]}
-          >
-            <InputNumber className="" />
-          </Form.Item>
-          <Form.Item
+          {user?.email &&
+            (user?.emailConfirmed ? (
+              <CustomButton
+                className="btn-text cursor-default whitespace-nowrap"
+                icon={<HiCheck className="text-xl text-green-300" />}
+                iconPosition="right"
+              >
+                <FormattedMessage id="email_verified" />
+              </CustomButton>
+            ) : (
+              <CustomButton
+                className="btn-primary whitespace-nowrap"
+                onClick={() => {
+                  verifyEmail().then(() => {
+                    notification.info({
+                      message: intl.formatMessage({
+                        id: 'email_verification_sent',
+                      }),
+                    })
+                  })
+                }}
+              >
+                <FormattedMessage id="verify_email" />
+              </CustomButton>
+            ))}
+
+          {/* <Form.Item
             name="password"
             label={
               <span className="font-semibold text-gray-500">
@@ -264,7 +263,7 @@ const MyInfo: FC = () => {
             ]}
           >
             <Input.Password />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item>
             <CustomButton className="btn-accept w-full" loading={updateLoading} type="submit">
               <FormattedMessage id="update" />

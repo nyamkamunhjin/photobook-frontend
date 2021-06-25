@@ -759,11 +759,11 @@ export const signIn = async (email: string, password: string) => {
   return response
 }
 
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (data: any) => {
   const response = await BaseRequest({
     url: `auth/signup`,
     method: 'POST',
-    data: { email, password },
+    data,
   })
   return response
 }
@@ -1326,7 +1326,7 @@ export const listTradePhoto = async (params?: PaginatedParams[0], data?: Record<
   return response?.data
 }
 
-export const listUserTradePhoto = async (
+export const listUserSellingPhotos = async (
   params?: PaginatedParams[0],
   data?: Record<string, unknown>,
   offset?: number
@@ -1337,7 +1337,30 @@ export const listUserTradePhoto = async (
   }
 
   const response = await BaseRequest({
-    url: `trade-photo/user?${query}`,
+    url: `trade-photo/user-selling-photos?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const listUserPurchasedPhotos = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `trade-photo/user-bought-photos?${query}`,
     method: 'GET',
   })
 
