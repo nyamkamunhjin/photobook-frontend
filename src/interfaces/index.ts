@@ -18,6 +18,13 @@ export type ToolsType =
   | 'reset'
   | 'remove'
 
+export type PaymentMethods = 'Ecommerce' | 'Bank'
+
+export type VatType = 'organization' | 'personal'
+
+export type Bank = 'socialpay' | 'qpay' | 'bank'
+
+export type Locales = 'mn' | 'en'
 export interface StyleType {
   display?: string
   filterName?: string
@@ -533,6 +540,7 @@ export type OrderItem = {
   voucherId: number | null
   giftCardId: number | null
   orderId: number | null
+  amount: number
   project: Project
 }
 
@@ -549,6 +557,7 @@ export type CartItem = {
   voucherId: number | null
   giftCardId: number | null
   templateDiscount?: TemplateDiscount
+  amount: number
   userDiscount?: UserDiscount
   voucher?: Voucher
   price: number
@@ -617,12 +626,74 @@ export type GiftCard = {
 
 export type Payment = {
   id: number
-  type: string | null
-  paymentResponse: string | null
+  paymentCode: string
+  orgCode?: string
   paymentAmount: number
+  paymentVat: number
+  shippingFee: number
+  totalAmount: number
   paidAmount: number
-  createdAt: Date
+  paymentTypeId: number
+  isSuccess: boolean
+  isNotify: boolean
+}
+
+export interface PaymentType {
+  id: number
+  name: string
+  nameMn?: string
+  enabled: boolean
+  method: PaymentMethods
+  description?: string
+  account?: string
+  createAt: Date
   updatedAt: Date
+  Payment?: Payment[]
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface BankResponse extends Payment {}
+
+export interface KhanbankResponse {
+  errorCode: string
+  formUrl: string
+  orderId: string
+}
+
+export interface TDBResponse {
+  url: string
+  trans_amount: number
+  trans_number: string
+}
+
+export interface QPayResponse {
+  qPay_QRcode: string
+  qPay_QRimage: string
+  qPay_url: string
+  message: string
+  name: string
+  payment_id: number
+  customer_id: string
+}
+export interface SocialPayResponse {
+  checksum: string
+  invoice: string
+  transactionId: string
+}
+
+export interface PaymentCondition {
+  bank: Bank
+  visible: boolean
+  response: SocialPayResponse | QPayResponse | BankResponse
+}
+export interface OrganizationCode {
+  citypayer: boolean
+  found: boolean
+  name: string
+  lastReceiptDate?: Date
+  receiptFound: boolean
+  vatpayer: boolean
+  vatpayerRegisteredDate?: Date
 }
 
 export type ShippingAddress = {
@@ -688,4 +759,13 @@ export interface UploadablePicture {
   id?: string
 }
 
-export type Locales = 'mn' | 'en'
+export type TradePhoto = {
+  id: number
+  userId: number
+  price: number
+  photoName: string
+  description: string
+  imageUrl: string
+  sellCount: number
+  user: User
+}

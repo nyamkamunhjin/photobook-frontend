@@ -20,6 +20,7 @@ import {
   NEW_SLIDES,
   SLIDES_ERROR,
   NEW_SLIDE,
+  DELETE_SLIDE_BY_ID,
   DELETE_SLIDE,
   REDO,
   REDO_ERROR,
@@ -330,11 +331,11 @@ export const duplicatePrintSlide = (projectId: number, slideIndex: string, slide
   try {
     const newSlide = generateDuplicatedSlide(slide)
     await updateProjectSlides(projectId, {
-      insert: [newSlide, slideIndex + 1],
+      duplicate: newSlide,
     })
     dispatch({
       type: NEW_SLIDE,
-      payload: { slide: newSlide, slideIndex: slideIndex + 1 },
+      payload: { slide: newSlide, slideIndex: undefined },
     })
   } catch (err) {
     dispatch({
@@ -344,14 +345,14 @@ export const duplicatePrintSlide = (projectId: number, slideIndex: string, slide
   }
 }
 // delete printslidea
-export const deletePrintSlide = (projectId: number, slideIndex: string) => async (dispatch: any) => {
+export const deletePrintSlide = (projectId: number, slideId: string) => async (dispatch: any) => {
   try {
     await updateProjectSlides(projectId, {
-      pop: slideIndex,
+      pop: slideId,
     })
     dispatch({
-      type: DELETE_SLIDE,
-      payload: slideIndex,
+      type: DELETE_SLIDE_BY_ID,
+      payload: slideId,
     })
   } catch (err) {
     dispatch({

@@ -10,9 +10,11 @@ import {
   listShippingAddress,
   listShoppingCart,
   listVoucher,
+  listPaymentTypes,
   updateCartItem,
 } from 'api'
-import { CartItem, RootInterface } from 'interfaces'
+
+import { CartItem, PaymentType, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
@@ -30,6 +32,7 @@ const MyCart: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
   const [selectedGiftCard, setSelectedGiftCard] = useState<SelectValue>()
+  const paymentTypes = useRequest<PaymentType>(listPaymentTypes)
 
   const user = useSelector((state: RootInterface) => state.auth.user)
   const shippingAddresses = useRequest(() =>
@@ -41,10 +44,13 @@ const MyCart: React.FC = () => {
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
+    debounceInterval: 1500,
+    // throttleInterval: 1000,
   })
 
   const shoppingCart = useRequest(listShoppingCart, {
     manual: true,
+    throttleInterval: 500,
     onSuccess: (res) => {
       if (res?.giftCardId) {
         setSelectedGiftCard(res?.giftCardId)
@@ -109,8 +115,10 @@ const MyCart: React.FC = () => {
                   onChange={(value) => {
                     updateCartItem(item.id, {
                       quantity: value,
-                    }).then(() => {
-                      shoppingCart.refresh()
+                    }).then((res) => {
+                      if (res) {
+                        summary.refresh()
+                      }
                     })
                   }}
                 />,

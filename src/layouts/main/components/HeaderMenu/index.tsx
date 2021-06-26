@@ -19,7 +19,7 @@ const HeaderMenu: FC = () => {
   const photobookAd = useRequest(() => listHeaderAd('photobook'))
 
   return (
-    <nav className="flex gap-4 justify-center items-center h-12">
+    <nav className="flex flex-wrap gap-4 justify-center items-center pb-4 bg-white">
       <button
         type="button"
         className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
@@ -101,7 +101,7 @@ const HeaderMenu: FC = () => {
       <button
         type="button"
         className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
-        onClick={() => router.replace('/')}
+        onClick={() => router.replace('/about-us')}
       >
         <FormattedMessage id="about_us" />
       </button>
@@ -111,6 +111,13 @@ const HeaderMenu: FC = () => {
         onClick={() => router.replace('/gift-card')}
       >
         <FormattedMessage id="gift_card" />
+      </button>
+      <button
+        type="button"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-white hover:border-blue-300 border-b-2 transition-transform"
+        onClick={() => router.replace('/photo-trade')}
+      >
+        <FormattedMessage id="photo_trade" />
       </button>
     </nav>
   )

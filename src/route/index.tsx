@@ -138,6 +138,16 @@ const routes: RouteInterface[] = [
     component: LoadableLoader(() => import('pages/gift-card')),
     exact: true,
   },
+  {
+    path: '/photo-trade',
+    component: LoadableLoader(() => import('pages/photo-trade')),
+    exact: true,
+  },
+  {
+    path: '/about-us',
+    component: LoadableLoader(() => import('pages/about-us')),
+    exact: true,
+  },
   // {
   //   path: '/templates',
   //   component: LoadableLoader(() => import('pages/templates')),

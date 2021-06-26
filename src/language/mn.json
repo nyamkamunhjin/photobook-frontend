@@ -105,8 +105,10 @@
   "frame_material": "Frame Material",
 
   "cover_material_color": "Color",
+  "payment_amount_vat_included": "Payment Amount Vat Included",
 
   "upload": "Upload",
+  "upload_photo": "Upload Photo",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
@@ -151,6 +153,7 @@
   "wrong_gift_card_code": "Wrong Gift Card Code.",
   "activate_gift_card": "Activate Gift Card",
   "activate": "Activate",
+  "photo_by": "Photo by",
 
   "discount": "Discount",
   "used": "Used",
@@ -187,6 +190,9 @@
   "please_input_email": "Please input email",
   "please_input_phone_number": "Please input phone number",
 
+  "required": "Required",
+  "photo_name": "Photo Name",
+
   "connect_facebook": "Connect Facebook",
   "connect_google": "Connect Google",
   "social_accounts": "Social Accounts",
@@ -204,6 +210,7 @@
   "please_input_address": "Please input address",
   "please_input_additional_description": "Please input additional description",
   "additional_notes": "Addtional notes on the shipping address",
+  "what_our_customers_are_saying": "What our customers are saying",
 
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",
@@ -317,6 +324,7 @@
   "sort.recently": "Recently",
   "about_us": "About Us",
   "gift_card": "Gift Card",
+  "photo_trade": "Photo Trade",
   "framedprint": "Framed Print",
   "photoprint": "Photo Print",
   "print": "Print",

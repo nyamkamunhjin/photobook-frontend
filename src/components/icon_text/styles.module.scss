@@ -1,0 +1,26 @@
+.row {
+  border-radius: 5px;
+  padding: 8px 16px;
+  width: 100%;
+}
+
+.right {
+  float: right;
+}
+
+.title {
+  font-weight: bold;
+  padding: 10px 0;
+  margin-left: 10px;
+}
+.description {
+  height: 65px;
+  line-height: 18px !important;
+  font-size: 15px;
+  color: var(--primary);
+  font-size: 12px;
+  padding: 10px 20px;
+  background-color: rgb(248, 248, 248);
+  border-radius: 10px;
+  font-weight: bold;
+}

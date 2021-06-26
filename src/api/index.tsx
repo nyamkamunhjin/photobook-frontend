@@ -1,7 +1,7 @@
 import { Storage } from 'aws-amplify'
 import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { buildQuery } from 'utils'
-import { ImageCategory, Image, LayoutInterface, Category, User } from 'interfaces'
+import { ImageCategory, Image, LayoutInterface, Category, User, TradePhoto } from 'interfaces'
 
 // #region [Import]
 import { message } from 'antd'
@@ -30,13 +30,13 @@ interface BaseRequestProps {
 const catchError = (err: any, isMe: boolean) => {
   // const isLogin = window.location.pathname.startsWith('/auth/signin')
   if (isMe) {
-    localStorage.removeItem('token')
+    // localStorage.removeItem('token')
     localStorage.removeItem('refresh')
     message.warn({ content: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
     // if (!isLogin) window.location.replace('/auth/signin')
   } else if (err.response) {
     if (err.response.status === 401) {
-      localStorage.removeItem('token')
+      // localStorage.removeItem('token')
       localStorage.removeItem('refresh')
       // message.warn({ content: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
       // if (!isLogin) window.location.replace('/auth/signin')
@@ -401,7 +401,7 @@ export const updateProject = async (id: number, data: Object) => {
 
 export const updateProjectSlides = async (id: number, data: Object) => {
   const response = await BaseRequest({
-    url: `project/${id}/slides`,
+    url: `project/${id}/print/slides`,
     method: 'PUT',
     data,
   })
@@ -759,11 +759,11 @@ export const signIn = async (email: string, password: string) => {
   return response
 }
 
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (data: any) => {
   const response = await BaseRequest({
     url: `auth/signup`,
     method: 'POST',
-    data: { email, password },
+    data,
   })
   return response
 }
@@ -920,6 +920,17 @@ export const listLandingPageHero = async () => {
 }
 
 // #endregion [LandingPageHero]
+
+// #region [LandingPageFeature]
+export const listLandingPageFeature = async () => {
+  const response = await BaseRequest({
+    url: `landing/feature`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [LandingPageFeature]
 
 // #region [LandingPageReview]
 export const listLandingPageReview = async () => {
@@ -1247,3 +1258,153 @@ export const getGiftCardType = async (id: string) => {
 }
 
 // #endregion [GiftCardType]
+
+// #region Payment
+
+export const listPaymentTypes = async (data: { isShipping: boolean }) => {
+  const response = await BaseRequest({
+    url: 'payment-types',
+    method: 'GET',
+    data,
+  })
+  return response?.data
+}
+
+export const paymentCheckOrganization = async (value: string) => {
+  const response = await BaseRequest({
+    url: `payment/organization/check/${value}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const paymentSocialPay = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/socialpay/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const paymentQPay = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/qpay/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const checkPaymentQPay = async (id: string) => {
+  const response = await BaseRequest({
+    url: `payment/qpay/check`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+// #endregion [GiftCardType]
+
+// #region [TradePhoto]
+export const listTradePhoto = async (params?: PaginatedParams[0], data?: Record<string, unknown>, offset?: number) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `trade-photo?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const listUserSellingPhotos = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `trade-photo/user-selling-photos?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const listUserPurchasedPhotos = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `trade-photo/user-bought-photos?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+export const getTradePhoto = async (id: string) => {
+  const response = await BaseRequest({
+    url: `trade-photo/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const uploadPhoto = async (data: Partial<TradePhoto>) => {
+  const response = await BaseRequest({
+    url: `trade-photo`,
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+export const buyPhoto = async (id: string) => {
+  const response = await BaseRequest({
+    url: `trade-photo/${id}`,
+    method: 'PUT',
+  })
+  return response?.data
+}
+// #endregion [TradePhoto]
+
+export const paymentBank = async (data: Object) => {
+  const response = await BaseRequest({
+    url: 'payment/bank/create',
+    method: 'POST',
+    data,
+  })
+  return response?.data
+}
+
+// #endregion

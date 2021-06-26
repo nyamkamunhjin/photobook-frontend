@@ -16,9 +16,8 @@ const Signup: React.FC = () => {
 
   const onFinish = (values: any) => {
     setLoading(true)
-    const { email, password } = values
 
-    signUp(email, password)
+    signUp(values)
       .then(() => {
         dispatch({
           type: REGISTER_SUCCESS,
@@ -41,15 +40,51 @@ const Signup: React.FC = () => {
   return (
     <div className="w-full h-screen bg-gray-100">
       <div className="w-96 bg-white rounded-lg p-6 shadow-md mx-auto mt-10">
-        <Form
-          name="basic"
-          layout="vertical"
-          initialValues={{
-            email: 'admin@example.com',
-            password: 'FERNANDOtorres_9',
-          }}
-          onFinish={(values) => onFinish(values)}
-        >
+        <Form name="basic" layout="vertical" onFinish={(values) => onFinish(values)}>
+          <div className="flex gap-4">
+            <Form.Item
+              className="flex-1"
+              name="firstName"
+              label={
+                <span className="font-semibold text-gray-500">
+                  <FormattedMessage id="first_name" />
+                </span>
+              }
+              rules={[
+                {
+                  type: 'string',
+                  message: <FormattedMessage id="wrong_first_name" />,
+                },
+                {
+                  // required: true,
+                  message: <FormattedMessage id="please_input_first_name" />,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              className="flex-1"
+              name="lastName"
+              label={
+                <span className="font-semibold text-gray-500">
+                  <FormattedMessage id="last_name" />
+                </span>
+              }
+              rules={[
+                {
+                  type: 'string',
+                  message: <FormattedMessage id="wrong_last_name" />,
+                },
+                {
+                  // required: true,
+                  message: <FormattedMessage id="please_input_last_name" />,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </div>
           <Form.Item
             label={
               <span className="font-semibold text-gray-500">
@@ -70,6 +105,31 @@ const Signup: React.FC = () => {
             }
             name="password"
             rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            dependencies={['password']}
+            label={
+              <span className="font-semibold text-gray-500">
+                <FormattedMessage id="confirm_password" />
+              </span>
+            }
+            rules={[
+              {
+                required: true,
+                message: <FormattedMessage id="please_input_confirm_password" />,
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('The two passwords that you entered do not match!'))
+                },
+              }),
+            ]}
           >
             <Input.Password />
           </Form.Item>

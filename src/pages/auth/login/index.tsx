@@ -38,9 +38,9 @@ const Login: React.FC = () => {
           type: LOGIN_SUCCESS,
           payload: user,
         })
-        notification.success({
-          message: intl.formatMessage({ id: 'sign_in_success' }),
-        })
+        // notification.success({
+        //   message: intl.formatMessage({ id: 'sign_in_success' }),
+        // })
         dispatch(loadUser())
         router.push('/')
       })

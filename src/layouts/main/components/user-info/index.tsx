@@ -64,6 +64,16 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
           >
             <FormattedMessage id="my_info" />
           </button>
+          <button
+            className="btn-primary"
+            type="button"
+            onClick={() => {
+              setVisible(false)
+              history.push('/profile?tab=photo_trade')
+            }}
+          >
+            <FormattedMessage id="photo_trade" />
+          </button>
 
           <button
             className="btn-cancel"
@@ -71,6 +81,7 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
             onClick={() => {
               setVisible(false)
               dispatch({ type: LOGOUT })
+              history.push('/')
             }}
           >
             <FormattedMessage id="log-out" />
