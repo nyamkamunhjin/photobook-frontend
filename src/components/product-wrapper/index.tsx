@@ -17,7 +17,7 @@ const ProductWrapper: FC<Props> = ({ bannerImageUrl, children }) => {
           />
         )}
       </div>
-      <div>{children}</div>
+      <div className="pt-8">{children}</div>
     </div>
   )
 }

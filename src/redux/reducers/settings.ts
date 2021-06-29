@@ -4,7 +4,7 @@ import { COLLAPSE, FULLSCREEN, CLEAR, LOCALE } from '../actions/types'
 const defaultSettings: SettingsInterface = {
   collapse: false,
   fullScreen: false,
-  locale: 'en',
+  locale: 'mn',
 }
 
 export type Action =

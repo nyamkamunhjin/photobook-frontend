@@ -8,7 +8,7 @@ import { listShoppingCart } from 'api'
 import { Link } from 'react-router-dom'
 import { CustomButton, useRouter } from 'components'
 import { useRequest } from 'ahooks'
-import { UserInfo } from './components'
+import { LanguageSwitch, UserInfo } from './components'
 import HeaderMenu from './components/HeaderMenu'
 
 const Topbar: React.FC = () => {
@@ -54,6 +54,7 @@ const Topbar: React.FC = () => {
                   </CustomButton>
                 </Badge>
                 <UserInfo avatarUrl={user.avatarUrl} />
+                <LanguageSwitch />
               </div>
             )}
           </div>
