@@ -27,7 +27,7 @@ const PhotoTrade: React.FC = () => {
     (data: any) =>
       listTradePhoto(
         {
-          current: (data?.list?.length || 0) / 20,
+          current: (data?.list?.length + 1 || 0) / 20,
           pageSize: 20,
         },
         {}
