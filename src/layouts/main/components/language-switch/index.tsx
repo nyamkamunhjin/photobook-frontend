@@ -1,9 +1,10 @@
 import { Button, Popover } from 'antd'
-import { Locales } from 'interfaces'
-import { useDispatch } from 'react-redux'
+import { Locales, RootInterface } from 'interfaces'
+import { useDispatch, useSelector } from 'react-redux'
 import React, { ReactNode } from 'react'
 import { ReactComponent as ENFlag } from 'assets/flags/en.svg'
 import { ReactComponent as MNFlag } from 'assets/flags/mn.svg'
+import { CustomButton } from '../../../../components'
 // import { useIntl } from 'react-intl'
 
 interface LangData {
@@ -17,19 +18,20 @@ const languageData: LangData[] = [
   {
     locale: 'en',
     name: 'English',
-    id: 'us',
-    icon: <ENFlag />,
+    id: 'en',
+    icon: <ENFlag className="w-6" />,
   },
   {
     locale: 'mn',
     name: 'Монгол',
     id: 'mn',
-    icon: <MNFlag />,
+    icon: <MNFlag className="w-6" />,
   },
 ]
 
 const LanguageSwitch: React.FC<unknown> = () => {
   const dispatch = useDispatch()
+  const lang = useSelector((state: RootInterface) => state.settings.locale)
   // const intl = useIntl()
 
   return (
@@ -41,17 +43,17 @@ const LanguageSwitch: React.FC<unknown> = () => {
           <ul className="sub-popover">
             {languageData.map((language) => (
               <li key={language.id}>
-                <Button
-                  block
-                  type="link"
-                  className="media flex-row"
-                  icon={language.icon}
+                <CustomButton
+                  className="btn grid place-items-center w-full"
                   onClick={() => {
-                    dispatch({ type: 'lang' })
+                    dispatch({ type: 'LOCALE', locale: language.id })
                   }}
                 >
-                  <span className="language-text">{language.name}</span>
-                </Button>
+                  <div className="flex flex-col justify-center items-center w-full">
+                    {language.icon}
+                    <span className="text-center">{language.name}</span>
+                  </div>
+                </CustomButton>
               </li>
             ))}
           </ul>
@@ -60,7 +62,7 @@ const LanguageSwitch: React.FC<unknown> = () => {
       trigger="click"
     >
       <span className="pointer flex-row align-items-center">
-        <img height="24px" src="/flags/mn.svg" alt="mn-flag" />
+        {lang === 'en' ? <ENFlag className="w-6" /> : <MNFlag className="w-6" />}
       </span>
     </Popover>
   )

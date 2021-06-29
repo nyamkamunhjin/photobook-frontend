@@ -18,7 +18,9 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
 
   return (
     <WidthLimiter className="flex flex-wrap sm:flex-nowrap bg-white shadow-lg" style={{ minHeight: '25rem' }}>
-      {imageLeft && <img className="w-52 object-cover" src={imageLeft} alt="canvas" />}
+      {imageLeft && (
+        <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="canvas" />
+      )}
 
       <div className="mx-4 p-4">
         <p className="font-semibold ">
@@ -72,7 +74,13 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
           )}
         </ul>
       </div>
-      {imageRight && <img className="w-52 object-cover ml-auto" src={imageRight} alt="canvas" />}
+      {imageRight && (
+        <img
+          className="w-52 object-cover ml-auto"
+          src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageRight}`}
+          alt="canvas"
+        />
+      )}
     </WidthLimiter>
   )
 }

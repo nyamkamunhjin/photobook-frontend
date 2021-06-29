@@ -2,7 +2,7 @@ import { useAntdTable } from 'ahooks'
 import { List, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table/interface'
 import React from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { OrderItem } from 'interfaces'
 import { listOrder } from 'api'
 import { currencyFormat } from 'utils'
@@ -67,7 +67,9 @@ const OrderHistory: React.FC = () => {
         scroll={{ x: '100%' }}
         columns={columnsOrder}
         expandable={{
-          expandedRowRender: ({ orderItems }) => <OrderItemsInfo orderItems={orderItems} />,
+          expandedRowRender: ({ orderItems, giftCardDiscountAmount }) => (
+            <OrderItemsInfo orderItems={orderItems} giftCardDiscountAmount={giftCardDiscountAmount} />
+          ),
         }}
         {...tableProps}
         dataSource={tableProps.dataSource.map((each) => {
@@ -83,18 +85,33 @@ export default OrderHistory
 
 interface OrderItemProps {
   orderItems?: OrderItem[]
+  giftCardDiscountAmount: number
 }
 
-const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems }) => {
+const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems, giftCardDiscountAmount }) => {
+  const intl = useIntl()
+
   return (
     <>
       {orderItems && (
         <List
           itemLayout="horizontal"
           dataSource={orderItems}
+          footer={
+            <div className="flex justify-end">
+              {giftCardDiscountAmount > 0 && (
+                <span>
+                  <span className="font-bold">
+                    <FormattedMessage id="gift_card_discount" />
+                  </span>
+                  : <span className="font-bold text-red-500">-{currencyFormat(giftCardDiscountAmount)} ₮</span>
+                </span>
+              )}
+            </div>
+          }
           renderItem={(item) => (
             <List.Item className="flex flex-wrap gap-4 rounded p-2 hover:bg-gray-50" key={item.id}>
-              <div className="flex">
+              <div className="flex gap-2">
                 <img
                   className="w-28 h-28 rounded"
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.project.imageUrl}`}
@@ -105,8 +122,24 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems }) => {
                   <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
                 </span>
               </div>
-              <div className="ml-auto flex flex-col text-right">
-                <span className="text-sm text-gray-700">{currencyFormat((item.amount || 0) * item.quantity)} ₮</span>
+              <div className="border-t border-gray-300 flex flex-col">
+                {item.appliedDiscountTypes.length > 0 && (
+                  <span className="text-gray-500">
+                    <FormattedMessage id="applied_discounts" />:{' '}
+                    <span className="">
+                      {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                    </span>
+                  </span>
+                )}
+                {item.discountedPrice !== 0 && (
+                  <div className="flex justify-end items-center gap-1">
+                    <span className="text-xs line-through">{currencyFormat(item.discountedPrice + item.price)} ₮</span>
+                    <span className="text-red-500">
+                      (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
+                    </span>
+                  </div>
+                )}
+                <span className="text-sm text-gray-700 text-right">{currencyFormat(item.price)} ₮</span>
               </div>
             </List.Item>
           )}

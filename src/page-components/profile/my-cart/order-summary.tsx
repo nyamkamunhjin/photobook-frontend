@@ -30,8 +30,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const actualPrice = price + discountedPrice
   return (
     <div className="flex flex-col gap-2 bg-gray-100 max-w-xs w-full p-4">
-      <div className="flex justify-between">
-        <span className="text-sm font-light text-gray-700">
+      <div className="flex justify-between mb-2">
+        <span className="text-sm font-bold text-gray-700">
           <FormattedMessage id="order_summary" />
         </span>
       </div>

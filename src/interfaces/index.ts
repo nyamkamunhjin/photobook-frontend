@@ -542,6 +542,12 @@ export type OrderItem = {
   orderId: number | null
   amount: number
   project: Project
+  voucher?: Voucher
+  userDiscount?: UserDiscount
+  templateDiscount?: TemplateDiscount
+  price: number
+  discountedPrice: number
+  appliedDiscountTypes: DiscountTypes[]
 }
 
 type DiscountTypes = 'template_discount' | 'user_discount' | 'gift_card_discount' | 'voucher_discount'
