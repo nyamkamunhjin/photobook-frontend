@@ -5,6 +5,7 @@
   "login": "Нэвтрэх",
   "success!": "Success",
   "loading!": "Loading...",
+  "click_to_load_more": "Click to load more",
   "close": "Close",
   "save": "Save",
   "cancel": "Cancel",
@@ -108,7 +109,7 @@
   "payment_amount_vat_included": "Payment Amount Vat Included",
 
   "upload": "Upload",
-  "upload_photo": "Upload Photo",
+  "sell_photo": "Sell Photo",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
@@ -228,6 +229,7 @@
 
   "purchased_photos": "Purchased Photos",
   "selling_photos": "Selling Photos",
+  "you_have_no_selling_photos": "You have no selling photos.",
 
   "type": "Type",
   "brightness": "brightness",

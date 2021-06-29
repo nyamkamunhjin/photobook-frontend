@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useRequest } from 'ahooks'
 import React, { useEffect, useRef, useState } from 'react'
 import { buyPhoto, getTradePhoto, listTradePhoto } from 'api'
@@ -5,12 +6,18 @@ import Masonry from 'react-masonry-css'
 import { TradePhoto } from 'interfaces'
 import Zoom from 'react-medium-image-zoom'
 import { CustomButton, Loading } from 'components'
-import { Modal, notification, Image } from 'antd'
+import { Modal, notification } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { currencyFormat } from 'utils'
 import './style.scss'
 import 'react-medium-image-zoom/dist/styles.css'
-import UploadPhoto from './upload-photo'
+
+const breakpointColumnsObj = {
+  default: 4,
+  1100: 3,
+  700: 2,
+  500: 1,
+}
 
 const PhotoTrade: React.FC = () => {
   const intl = useIntl()
@@ -45,24 +52,24 @@ const PhotoTrade: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col gap-4 items-center" ref={containerRef}>
-      <UploadPhoto />
-      <Masonry breakpointCols={3} className="my-masonry-grid" columnClassName="my-masonry-grid_column">
-        {!tradePhotos.data?.loading ? (
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="my-masonry-grid"
+        columnClassName="my-masonry-grid_column"
+      >
+        {!tradePhotos.loading ? (
           tradePhotos.data?.list.map((each: TradePhoto) => (
             <CustomButton
               key={each.id}
-              className="w-full focus:outline-none"
+              className="w-full focus:outline-none bg-gray-50"
               onClick={() => {
                 setId(each.id)
               }}
             >
-              <Image
-                className="w-full h-auto"
+              <img
+                className="w-full bg-cover"
                 src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`}
                 alt={each.photoName}
-                fallback="/logo.png"
-                preview={false}
-                loading="lazy"
               />
             </CustomButton>
           ))
@@ -71,8 +78,16 @@ const PhotoTrade: React.FC = () => {
         )}
       </Masonry>
       {!tradePhotos.noMore && (
-        <CustomButton className="btn-primary" onClick={tradePhotos.loadMore} disabled={tradePhotos.loadingMore}>
-          {tradePhotos.loadingMore ? 'Loading more...' : 'Click to load more'}
+        <CustomButton
+          className="btn-primary"
+          onClick={tradePhotos.loadMore}
+          disabled={tradePhotos.data?.list.length === 0}
+        >
+          {tradePhotos.loadingMore
+            ? intl.formatMessage({ id: 'loading!' })
+            : tradePhotos.data?.list.length === 0
+            ? ''
+            : intl.formatMessage({ id: 'click_to_load_more' })}
         </CustomButton>
       )}
       {tradePhoto.data && (
@@ -84,11 +99,10 @@ const PhotoTrade: React.FC = () => {
           onCancel={() => setId(undefined)}
           footer={<div />}
         >
-          <div className="flex items-start p-2 gap-2 min-h-screen">
-            <Zoom>
-              <Image
+          <div className="flex flex-col items-start p-2 gap-2 min-h-screen">
+            <Zoom wrapStyle={{ width: '100%' }}>
+              <img
                 className="w-full"
-                preview={false}
                 src={`${process.env.REACT_APP_PUBLIC_IMAGE}${tradePhoto.data?.imageUrl}`}
                 alt={tradePhoto.data?.photoName}
               />

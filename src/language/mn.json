@@ -5,6 +5,7 @@
   "login": "Нэвтрэх",
   "success!": "Амжилттай",
   "loading!": "Уншиж байна",
+  "click_to_load_more": "Цааш нь...",
   "close": "Хаах",
   "save": "Хадгалах",
   "cancel": "Цуцлах",
@@ -105,10 +106,10 @@
   "frame_material": "Жаазны материал",
 
   "cover_material_color": "Хавтасны өнгө",
-  "payment_amount_vat_included": "НӨАТ-тэй дүн",
+  "payment_amount_vat_included": "НӨАТ-тэй үнэ",
 
   "upload": "Оруулах",
-  "upload_photo": "Зураг оруулах",
+  "sell_photo": "Зураг зарах",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
@@ -118,6 +119,7 @@
 
   "purchased_photos": "Худалдаж авсан зураг",
   "selling_photos": "Зарж байгаа зураг",
+  "you_have_no_selling_photos": "Таньд одоогоор зарж байгаа зураг байхгүй байна.",
 
   "order_history": "Захиалгын түүх",
   "my_projects": "Миний төслүүд",
@@ -273,7 +275,7 @@
   "back": "Буцах",
   "parent": "Parent",
   "material": "Материал",
-  "quantity": "Тоо хэмжээ",
+  "quantity": "Хэмжээ",
   "price": "Үнэ",
   "description": "Тайлбар",
   "choose_source_to": "Choose source to",

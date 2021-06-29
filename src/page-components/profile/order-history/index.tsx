@@ -30,17 +30,10 @@ const OrderHistory: React.FC = () => {
     },
     {
       title: () => <FormattedMessage id="price" />,
-      dataIndex: 'totalAmount',
-      key: 'totalAmount',
+      dataIndex: 'amount',
+      key: 'amount',
       align: 'center',
       render: (text) => <span>{text} ₮</span>,
-    },
-    {
-      title: () => <FormattedMessage id="shipping" />,
-      dataIndex: 'address',
-      key: 'address',
-      align: 'center',
-      render: (value) => value || <FormattedMessage id="no" />,
     },
     {
       title: () => <FormattedMessage id="payment_amount_vat_included" />,
@@ -48,6 +41,13 @@ const OrderHistory: React.FC = () => {
       key: 'paymentAmount',
       align: 'center',
       render: (value) => `${currencyFormat(value)} ₮`,
+    },
+    {
+      title: () => <FormattedMessage id="shipping" />,
+      dataIndex: 'address',
+      key: 'address',
+      align: 'center',
+      render: (value) => value || <FormattedMessage id="no" />,
     },
     {
       title: () => <FormattedMessage id="status" />,
@@ -117,10 +117,15 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems, giftCardDiscount
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.project.imageUrl}`}
                   alt="project"
                 />
-                <span className="font-semibold text-base">
-                  {item.project.name}{' '}
-                  <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
-                </span>
+                <div className="flex flex-col gap-2">
+                  <span className="font-semibold text-base">
+                    {item.project.name}{' '}
+                    <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
+                  </span>
+                  <span className="">
+                    <FormattedMessage id="quantity" />: <span className="font-semibold">{item.quantity}</span>
+                  </span>
+                </div>
               </div>
               <div className="border-t border-gray-300 flex flex-col">
                 {item.appliedDiscountTypes.length > 0 && (
@@ -134,7 +139,7 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems, giftCardDiscount
                 {item.discountedPrice !== 0 && (
                   <div className="flex justify-end items-center gap-1">
                     <span className="text-xs line-through">{currencyFormat(item.discountedPrice + item.price)} ₮</span>
-                    <span className="text-red-500">
+                    <span className="font-bold text-red-500">
                       (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
                     </span>
                   </div>

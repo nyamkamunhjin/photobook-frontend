@@ -53,10 +53,10 @@ const UploadPhoto: React.FC = () => {
   return (
     <div>
       <CustomButton className="btn-primary" onClick={() => setVisible((prev) => !prev)}>
-        <FormattedMessage id="upload_photo" />
+        <FormattedMessage id="sell_photo" />
       </CustomButton>
       <Modal
-        title={<FormattedMessage id="upload_photo" />}
+        title={<FormattedMessage id="sell_photo" />}
         className="w-full max-w-6xl"
         centered
         visible={visible}
