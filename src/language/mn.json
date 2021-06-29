@@ -129,6 +129,7 @@
   "vat_fee": "НӨАТ",
   "order_subtotal": "Захиалгын төлбөр",
   "total_discount": "Нийт хөнгөлөлт",
+  "discounted_price": "Хөнгөлсөн дүн",
   "order_now": "Захиалах",
   "delivery_date": "Хүргэлтийн өдөр",
   "delivery": "Хүргэлт",
@@ -141,7 +142,7 @@
   "total": "Нийт",
   "applied_discounts": "Ашигласан хөнгөлөлтүүд",
   "user_discount": "Хэрэглэгчийн хөнгөлөлт",
-  "template_discount": "Темплейт хөнгөлөлт",
+  "template_discount": "Template хөнгөлөлт",
   "gift_card_discount": "Бэлгийн картын хөнгөлөлт",
 
   "voucher_discount": "Ваучер хөнгөлөлт",
@@ -176,6 +177,7 @@
 
   "edit": "Өөрчлөх",
   "add_to_cart": "Сагсруу нэмэх",
+  "added_to_cart": "Сагсруу нэмлээ",
   "order": "Захиалга",
 
   "first_name": "Нэр",
