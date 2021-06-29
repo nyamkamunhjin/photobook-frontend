@@ -8,9 +8,9 @@ import Zoom from 'react-medium-image-zoom'
 import { CustomButton, Loading } from 'components'
 import { Modal, notification } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { currencyFormat } from 'utils'
 import './style.scss'
 import 'react-medium-image-zoom/dist/styles.css'
+import { currencyFormat } from '../../utils'
 
 const breakpointColumnsObj = {
   default: 4,
