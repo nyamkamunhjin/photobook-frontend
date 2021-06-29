@@ -44,7 +44,7 @@ const MyCart: React.FC = () => {
       vouchers.mutate(
         res.filter((each: Voucher) => {
           if (each.isUsed) return false
-          if (new Date(each.expireDate) > new Date()) return false
+          if (new Date(each.expireDate) <= new Date()) return false
           return true
         })
       )

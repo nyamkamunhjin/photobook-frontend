@@ -27,7 +27,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   giftCardUpdate,
   onCreateOrder,
 }) => {
-  const actualPrice = price + discountedPrice
+  const actualPrice = price + discountedPrice + (giftCardUpdate?.usedAmount || 0)
   return (
     <div className="flex flex-col gap-2 bg-gray-100 max-w-xs w-full p-4">
       <div className="flex justify-between mb-2">
@@ -44,12 +44,36 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <span className="font-light">{currencyFormat(actualPrice)} ₮</span>
       </div>
       {discountedPrice !== 0 && (
-        <div className="flex justify-between">
-          <span className="text-sm font-light text-gray-700">
-            <FormattedMessage id="total_discount" />
-          </span>
-          <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
-        </div>
+        <>
+          <div className="flex justify-between">
+            <span className="text-sm font-light text-gray-700">
+              <FormattedMessage id="total_discount" />
+            </span>
+            <span className="font-light text-red-500">-{currencyFormat(discountedPrice)} ₮</span>
+          </div>
+          {giftCardUpdate?.update && (
+            <>
+              {/* <div className="flex justify-between">
+                <span className="text-sm font-light text-gray-700">
+                  <FormattedMessage id="price" />
+                </span>
+                <span className="font-light">{currencyFormat(giftCardUpdate.usedAmount + totalPrice)} ₮</span>
+              </div> */}
+              <div className="flex justify-between">
+                <span className="text-sm font-light text-gray-700">
+                  <FormattedMessage id="gift_card_discount" />
+                </span>
+                <span className="font-light text-red-500">{currencyFormat(-giftCardUpdate.usedAmount)} ₮</span>
+              </div>
+            </>
+          )}
+          <div className="flex justify-between">
+            <span className="text-sm font-light text-gray-700">
+              <FormattedMessage id="discounted_price" />
+            </span>
+            <span className="font-light text-gray-700">{currencyFormat(price)} ₮</span>
+          </div>
+        </>
       )}
 
       <hr className="border-t border-solid border-gray-300" />
@@ -75,7 +99,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         </span>
       </div>
       <hr className="border-t border-solid border-gray-300" />
-      {giftCardUpdate?.update && (
+      {/* {giftCardUpdate?.update && (
         <>
           <div className="flex justify-between">
             <span className="text-sm font-light text-gray-700">
@@ -90,7 +114,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             <span className="font-light text-red-500">{currencyFormat(-giftCardUpdate.usedAmount)} ₮</span>
           </div>
         </>
-      )}
+      )} */}
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="total" />

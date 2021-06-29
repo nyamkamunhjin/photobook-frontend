@@ -1,7 +1,7 @@
 import { useRequest } from 'ahooks'
-import { List, Popconfirm } from 'antd'
+import { List, message, Popconfirm } from 'antd'
 import React, { FC, useEffect } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { createCartItem, deleteProject, listProject } from 'api'
 import { Project, RootInterface } from 'interfaces'
 import { useSelector } from 'react-redux'
@@ -10,6 +10,7 @@ import { CustomButton } from 'components'
 
 const MyProjects: FC = () => {
   const history = useHistory()
+  const intl = useIntl()
   const user = useSelector((state: RootInterface) => state.auth.user)
   const projects = useRequest(
     ({ current, pageSize }, { userId }, pageNumber) => listProject({ current, pageSize }, { userId }, pageNumber),
@@ -93,8 +94,8 @@ const MyProjects: FC = () => {
                     if (user) {
                       createCartItem({
                         project: item.id,
-                      }).then(() => {
-                        history.push('/profile?tab=my_cart')
+                      }).then((res) => {
+                        if (res) message.success(intl.formatMessage({ id: 'added_to_cart' }))
                       })
                     }
                   }}
