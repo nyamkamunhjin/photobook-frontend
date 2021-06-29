@@ -105,7 +105,7 @@
   "frame_material": "Жаазны материал",
 
   "cover_material_color": "Хавтасны өнгө",
-  "payment_amount_vat_included": "НӨАТ нэмэгдэж орсон",
+  "payment_amount_vat_included": "НӨАТ-тэй дүн",
 
   "upload": "Оруулах",
   "upload_photo": "Зураг оруулах",
@@ -115,6 +115,9 @@
   "new": "Шинэ",
   "popular": "Эрэлттэй",
   "special": "Онцгой",
+
+  "purchased_photos": "Худалдаж авсан зураг",
+  "selling_photos": "Зарж байгаа зураг",
 
   "order_history": "Захиалгын түүх",
   "my_projects": "Миний төслүүд",
@@ -136,7 +139,7 @@
   "order_name": "Захиалгын нэр",
   "status": "Төлөв",
   "total": "Нийт",
-  "applied_discounts": "Ашиглах хөнгөлөлтүүд",
+  "applied_discounts": "Ашигласан хөнгөлөлтүүд",
   "user_discount": "Хэрэглэгчийн хөнгөлөлт",
   "template_discount": "Темплейт хөнгөлөлт",
   "gift_card_discount": "Бэлгийн картын хөнгөлөлт",
@@ -147,7 +150,7 @@
   "credits": "Дүн",
   "added_gift_card": "Бэлгийн карт нэмлээ",
   "removed_gift_card": "Бэлгийн карт хаслаа",
-  "bought_gift_card": "Бэлгийн карт авлаа",
+  "bought_gift_card": "Авсан бэлгийн карт",
   "activated_gift_card": "Идэвхижүүлсэн бэлгийн карт",
   "buy_gift_cards": "Бэлгийн карт авах",
   "wrong_gift_card_code": "Бэлгийн картны код буруу байна.",
@@ -322,7 +325,7 @@
   "sort.z-a": "Зургийн нэрээр z-a",
   "sort.earlier": "Earlier",
   "sort.recently": "Recently",
-  "about_us": "Бидний тухайн",
+  "about_us": "Бидний тухай",
   "gift_card": "Бэлгийн карт",
   "photo_trade": "Зургийн худалдаа",
   "framedprint": "Жааз хэвлэл",

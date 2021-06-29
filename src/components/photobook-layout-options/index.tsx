@@ -61,7 +61,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
 
   return (
     <div className="flex flex-col gap-4">
-      <span className="text-2xl">{template.name}</span>
+      <span className="text-3xl font-bold">{template.name}</span>
       <div className="space-y-4">
         <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">

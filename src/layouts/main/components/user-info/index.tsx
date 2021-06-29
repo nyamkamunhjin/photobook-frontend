@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl'
 import { LOGOUT } from 'redux/actions/types'
 import { useHistory } from 'react-router'
 import styles from './styles.module.scss'
+import { CustomButton } from '../../../../components'
 
 interface Props {
   avatarUrl: string | null
@@ -89,9 +90,9 @@ const UserInfo: React.FC<Props> = ({ avatarUrl }) => {
         </div>
       }
     >
-      <Button type="link" className={styles.avatar} onClick={() => setVisible((prev) => !prev)}>
+      <CustomButton className="focus:outline-none" onClick={() => setVisible((prev) => !prev)}>
         <Avatar size="small" src={avatarUrl} style={{ backgroundColor: '#0666b3' }} alt="user-avatar" />
-      </Button>
+      </CustomButton>
     </Popover>
   )
 }

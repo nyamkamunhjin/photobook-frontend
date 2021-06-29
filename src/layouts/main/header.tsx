@@ -44,7 +44,8 @@ const Topbar: React.FC = () => {
               </>
             )}
             {user && (
-              <div className="flex items-center">
+              <div className="flex items-center gap-3">
+                <LanguageSwitch />
                 <Badge count={shoppingCart.data?.cartItems?.length} size="small">
                   <CustomButton
                     className="text-xl focus:outline-none"
@@ -54,7 +55,6 @@ const Topbar: React.FC = () => {
                   </CustomButton>
                 </Badge>
                 <UserInfo avatarUrl={user.avatarUrl} />
-                <LanguageSwitch />
               </div>
             )}
           </div>

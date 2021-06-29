@@ -43,7 +43,7 @@ const VoucherList: FC<Props> = () => {
                 <img
                   className="w-20 h-20"
                   // eslint-disable-next-line react/jsx-curly-brace-presence
-                  src={item.template?.imageUrl || ''}
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.template?.imageUrl || ''}`}
                   alt="template"
                 />
                 <div className="flex flex-col items-start justify-between">

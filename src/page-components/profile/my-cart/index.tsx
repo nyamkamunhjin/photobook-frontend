@@ -14,7 +14,7 @@ import {
   updateCartItem,
 } from 'api'
 
-import { CartItem, PaymentType, RootInterface } from 'interfaces'
+import { CartItem, GiftCard, PaymentType, RootInterface, Voucher } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
@@ -39,8 +39,22 @@ const MyCart: React.FC = () => {
     listShippingAddress({ current: 0, pageSize: 100 }, { userId: user?.id.toString() })
   )
 
-  const vouchers = useRequest(listVoucher)
-  const giftCards = useRequest(listActivatedGiftCard)
+  const vouchers = useRequest(listVoucher, {
+    onSuccess: (res) => {
+      vouchers.mutate(
+        res.filter((each: Voucher) => {
+          if (each.isUsed) return false
+          if (new Date(each.expireDate) > new Date()) return false
+          return true
+        })
+      )
+    },
+  })
+  const giftCards = useRequest(listActivatedGiftCard, {
+    onSuccess: (res) => {
+      giftCards.mutate(res.filter((each: GiftCard) => each.remainingAmount > 0))
+    },
+  })
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
