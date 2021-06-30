@@ -120,6 +120,8 @@
   "purchased_photos": "Худалдаж авсан зураг",
   "selling_photos": "Зарж байгаа зураг",
   "you_have_no_selling_photos": "Таньд одоогоор зарж байгаа зураг байхгүй байна.",
+  "search_by_user": "Зурагчнаар хайх",
+  "search_by_word": "Үгээр хайх",
 
   "order_history": "Захиалгын түүх",
   "my_projects": "Миний төслүүд",
