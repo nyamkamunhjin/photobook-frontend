@@ -95,7 +95,7 @@ const PrintPanel: React.FC<Props> = ({
     await unlinkImages(_images, currentProject.id)
   }
   return (
-    <div className="center-panel" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
+    <div className="center-panel h-full" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
       {currentProject.slides.length > 0 && (
         <Grid
           loading={loading || projectLoading}
