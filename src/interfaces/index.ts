@@ -764,14 +764,17 @@ export interface UploadablePicture {
   mimeType: string
   id?: string
 }
-
 export type TradePhoto = {
   id: number
   userId: number
-  price: number
   photoName: string
+  tag: string[]
+  price: number
   description: string
+  status: TradePhotoApproveType
   imageUrl: string
   sellCount: number
   user: User
 }
+
+export type TradePhotoApproveType = 'approved' | 'pending' | 'declined'
