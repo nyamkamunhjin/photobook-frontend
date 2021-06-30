@@ -154,7 +154,7 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   ) : (
-    <div className="AdvancedEditorWrapper">
+    <div className="AdvancedEditorWrapper h-full">
       <Header
         deSelectObject={editors.deSelectObject}
         onPreview={() => {
@@ -169,7 +169,7 @@ const BookEditor: React.FC<Props> = ({
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
-      <div className="EditorPrintWrapper">
+      <div className="EditorPrintWrapper h-full">
         <PrintPanel />
       </div>
     </div>
