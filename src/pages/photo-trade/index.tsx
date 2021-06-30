@@ -27,10 +27,11 @@ const PhotoTrade: React.FC = () => {
     (data: any) =>
       listTradePhoto(
         {
-          current: (data?.list?.length + 1 || 0) / 20,
-          pageSize: 20,
+          current: 0,
+          pageSize: 30,
         },
-        {}
+        {},
+        data?.list?.length || 0
       ),
     {
       // debounceInterval: 500,
@@ -51,7 +52,7 @@ const PhotoTrade: React.FC = () => {
   }, [id])
 
   return (
-    <div className="p-4 flex flex-col gap-4 items-center" ref={containerRef}>
+    <div className="p-4 flex flex-col gap-4 items-center overflow-y-auto h-screen hide-scroll" ref={containerRef}>
       <Masonry
         breakpointCols={breakpointColumnsObj}
         className="my-masonry-grid"
@@ -78,14 +79,10 @@ const PhotoTrade: React.FC = () => {
         )}
       </Masonry>
       {!tradePhotos.noMore && (
-        <CustomButton
-          className="btn-primary"
-          onClick={tradePhotos.loadMore}
-          disabled={tradePhotos.data?.list.length === 0}
-        >
+        <CustomButton className="btn-primary" onClick={tradePhotos.loadMore} disabled={tradePhotos.noMore}>
           {tradePhotos.loadingMore
             ? intl.formatMessage({ id: 'loading!' })
-            : tradePhotos.data?.list.length === 0
+            : tradePhotos.noMore
             ? ''
             : intl.formatMessage({ id: 'click_to_load_more' })}
         </CustomButton>
