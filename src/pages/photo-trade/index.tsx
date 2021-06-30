@@ -103,28 +103,25 @@ const PhotoTrade: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-col gap-4 items-center overflow-y-auto h-screen hide-scroll w-full" ref={containerRef}>
-        <Masonry
-          breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
-        >
+        <div className="flex flex-wrap gap-2">
           {!tradePhotos.loading &&
             tradePhotos.data?.list.map((each: TradePhoto) => (
-              <CustomButton
+              <button
+                className="flex-grow flex-shrink focus:outline-none bg-green-200 overflow-hidden"
                 key={each.id}
-                className="w-full focus:outline-none bg-gray-50"
                 onClick={() => {
                   setId(each.id)
                 }}
+                type="button"
               >
                 <img
-                  className="w-full bg-cover"
+                  className="w-full h-52 object-cover"
                   src={`${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`}
                   alt={each.photoName}
                 />
-              </CustomButton>
+              </button>
             ))}
-        </Masonry>
+        </div>
         {!tradePhotos.noMore && (
           <CustomButton className="btn-primary" onClick={tradePhotos.loadMore} disabled={tradePhotos.noMore}>
             {tradePhotos.loadingMore
