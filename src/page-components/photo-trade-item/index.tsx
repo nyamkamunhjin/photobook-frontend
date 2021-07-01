@@ -6,7 +6,7 @@ import { CustomButton } from 'components'
 import { buyPhoto } from 'api'
 import { currencyFormat } from 'utils'
 import { notification } from 'antd'
-import { TradePhotoCategory } from '../../interfaces'
+import { TradePhotoCategory } from 'interfaces'
 
 interface Props {
   tradePhoto: any
@@ -16,7 +16,7 @@ const PhotoTradeItem: FC<Props> = ({ tradePhoto }) => {
   const intl = useIntl()
   return (
     <div className="flex flex-col items-start min-h-screen ">
-      <div className="w-full py-20 px-24 bg-gray-200 shadow-inner">
+      <div className="w-full py-20 px-24 bg-gray-100 shadow-inner">
         <Zoom wrapStyle={{ width: '100%' }}>
           <img
             className="w-full shadow-2xl focus:outline-none"
@@ -85,7 +85,7 @@ const PhotoTradeItem: FC<Props> = ({ tradePhoto }) => {
           </div>
           <div className="flex p-6">
             <CustomButton
-              className="w-full bg-black text-white py-4 px-3 rounded-xl text-lg font-semibold component-hover"
+              className="w-full bg-black text-white py-4 px-3 focus:outline-none rounded-xl text-lg font-semibold component-hover"
               onClick={() =>
                 buyPhoto(tradePhoto.data?.id).then((res) => {
                   if (res) notification.success({ message: intl.formatMessage({ id: 'success!' }) })

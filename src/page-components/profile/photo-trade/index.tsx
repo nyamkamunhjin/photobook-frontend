@@ -82,7 +82,7 @@ const PhotoTrade: React.FC = () => {
               <span className="text-base text-gray-500">
                 <FormattedMessage id="you_have_no_selling_photos" />
               </span>
-              <UploadPhoto />
+              {/* <UploadPhoto /> */}
             </div>
           )}
         >
@@ -107,9 +107,9 @@ const PhotoTrade: React.FC = () => {
                   </Zoom>
 
                   <div className="flex flex-col gap-2 self-start">
-                    <div className="w-full flex items-center gap-2">
+                    <div className="flex gap-2">
                       <span className="font-medium text-base">{item.photoName}</span>
-                      <PhotoTradeStatus className="ml-auto" status={item.status} />
+                      <PhotoTradeStatus className="" status={item.status} />
                     </div>
 
                     <span className="w-full max-w-xs truncate">{item.description}</span>
