@@ -2,7 +2,6 @@
 import { useRequest } from 'ahooks'
 import React, { useEffect, useRef, useState } from 'react'
 import { buyPhoto, getTradePhoto, listTradePhoto } from 'api'
-import Masonry from 'react-masonry-css'
 import { TradePhoto } from 'interfaces'
 import Zoom from 'react-medium-image-zoom'
 import { CustomButton } from 'components'
@@ -11,13 +10,6 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import './style.scss'
 import 'react-medium-image-zoom/dist/styles.css'
 import { currencyFormat } from '../../utils'
-
-const breakpointColumnsObj = {
-  default: 4,
-  1100: 3,
-  700: 2,
-  500: 1,
-}
 
 const PhotoTrade: React.FC = () => {
   const intl = useIntl()
