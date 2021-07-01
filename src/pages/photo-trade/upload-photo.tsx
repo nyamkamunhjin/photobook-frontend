@@ -1,12 +1,13 @@
-import { Modal, Form, Input, notification, InputNumber, Upload } from 'antd'
+import { Modal, Form, Input, notification, InputNumber, Upload, Select } from 'antd'
 import React, { useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { CustomButton } from 'components'
-import { uploadPhoto } from 'api'
+import { listTradePhotoCategory, uploadPhoto } from 'api'
 import { UploadOutlined } from '@ant-design/icons'
-import { TradePhoto } from 'interfaces'
+import { TradePhoto, TradePhotoCategory } from 'interfaces'
 import { s3Upload } from 'utils/aws-lib'
 import { useRequest } from 'ahooks'
+import { currencyFormat } from '../../utils'
 
 const UploadPhoto: React.FC = () => {
   const [visible, setVisible] = useState(false)
@@ -17,8 +18,9 @@ const UploadPhoto: React.FC = () => {
     manual: true,
   })
 
+  const tradePhotoCategories = useRequest(listTradePhotoCategory)
+
   const onFinish = (values: Partial<TradePhoto>) => {
-    // console.log(values)
     setLoading(true)
     if (!file) {
       notification.error({ message: intl.formatMessage({ id: 'image.validation' }) })
@@ -31,18 +33,11 @@ const UploadPhoto: React.FC = () => {
               setVisible(false)
             }
           })
-          // alert(imageUrl)
         })
         .finally(() => {
           setLoading(false)
         })
     }
-
-    // uploadPhoto(values).then((res) => {
-    //   if (res) {
-    //     notification.success({ message: intl.formatMessage({ id: 'success!' }) })
-    //   }
-    // })
   }
 
   const onHandleFile = (f: File) => {
@@ -57,7 +52,7 @@ const UploadPhoto: React.FC = () => {
       </CustomButton>
       <Modal
         title={<FormattedMessage id="sell_photo" />}
-        className="w-full max-w-6xl"
+        className="w-full max-w-3xl"
         centered
         visible={visible}
         onCancel={() => setVisible(false)}
@@ -86,7 +81,28 @@ const UploadPhoto: React.FC = () => {
               name="price"
               rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
             >
-              <InputNumber />
+              <InputNumber formatter={(value) => `${currencyFormat(value as number)} ₮`} />
+            </Form.Item>
+
+            <Form.Item
+              label={<FormattedMessage id="categories" />}
+              name="categories"
+              rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
+            >
+              <Select mode="multiple">
+                {tradePhotoCategories.data?.map((each: TradePhotoCategory) => (
+                  <Select.Option key={each.id} value={each.id}>
+                    {each.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label={<FormattedMessage id="tag" />}
+              name="tag"
+              rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
+            >
+              <Select mode="tags" />
             </Form.Item>
 
             <Form.Item

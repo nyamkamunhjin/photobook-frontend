@@ -14,7 +14,7 @@ const GiftCards: React.FC = () => {
   return (
     <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === 'gift-card')?.imageUrl}>
       <WidthLimiter className="flex flex-col justify-center items-center gap-10">
-        <div className="w-full p-4 flex flex-col justify-center items-center bg-blue-50 h-80">
+        <div className="w-full p-4 flex flex-col justify-center items-center bg-blue-50 h-80 shadow-sm">
           <p className="text-xl font-semibold">
             <FormattedMessage id="activate_gift_card" />
           </p>
@@ -49,7 +49,7 @@ const GiftCard: React.FC<GiftCard> = ({ id, imageUrl, name, description, discoun
   const router = useRouter()
   return (
     <div
-      className="flex flex-grow flex-col w-full bg-gray-50 rounded-lg shadow-lg transform hover:-translate-y-1 hover:shadow-2xl transition-all ease-out"
+      className="flex flex-grow flex-col w-full bg-gray-50 rounded-lg component-hover"
       // style={{ maxWidth: '384px' }}
     >
       <div className="aspect-w-11 aspect-h-6">

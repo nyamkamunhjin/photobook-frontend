@@ -44,7 +44,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       <span className="text-3xl font-bold">{template.name}</span>
 
       <div className="space-y-4">
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_material_type' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_material_type' })}</span>
         <div className="flex flex-wrap gap-4">
           <Select
             className="w-full"
@@ -57,7 +57,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           >
             {paperMaterials.map((each) => (
               <Select.Option key={each.id} value={each.id}>
-                <span className="font-semibold text-gray-700 text-base">{`${each.name} - ${each.paperType}`}</span>
+                <span className="font-normal text-gray-700 text-base">{`${each.name} - ${each.paperType}`}</span>
               </Select.Option>
             ))}
           </Select>
@@ -65,7 +65,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       </div>
 
       <div className="space-y-4" hidden={template.canvasType === 'Split'}>
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes.map((each: PaperSize) => (
             <button

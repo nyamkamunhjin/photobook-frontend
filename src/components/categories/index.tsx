@@ -39,7 +39,7 @@ const recursiveMenuGenerator: (categories: Category[], subCategories?: number[])
 const ProductCategories: FC<Props> = ({ onMenuClick, categories, selectedCategory }) => {
   return (
     <div>
-      <h2 className="text-2xl font-bold">
+      <h2 className="text-2xl">
         <FormattedMessage id="categories" />
       </h2>
       {categories.loading ? (

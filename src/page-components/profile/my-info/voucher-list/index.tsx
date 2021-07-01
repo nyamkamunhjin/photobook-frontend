@@ -24,6 +24,7 @@ const VoucherList: FC<Props> = () => {
       <hr className="my-1" />
 
       <List
+        className="mt-4"
         dataSource={vouchers.data?.list || []}
         loading={vouchers.loading}
         pagination={{

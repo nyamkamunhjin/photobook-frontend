@@ -28,10 +28,10 @@ interface Feature {
 
 const Feature: FC<Feature> = ({ imageUrl, text }) => {
   return (
-    <div className="flex flex-col bg-white space-y-2 p-2 w-60 mx-auto">
-      <img className="h-40 w-auto rounded object-cover" src={imageUrl} alt={text} />
+    <div className="flex flex-col bg-white gap-4 p-2 w-60 py-6 mx-auto">
+      <img className="h-40 w-auto rounded object-cover shadow-md" src={imageUrl} alt={text} />
       {/* <span className="font-bold text-5xl">{imageUrl}</span> */}
-      <p className="font-semibold text-gray-700 text-center text-xs break-words">{text}</p>
+      <p className="font-base text-gray-600 text-center text-sm break-words">{text}</p>
     </div>
   )
 }

@@ -29,14 +29,14 @@ const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
           <span className="text-gray-700 text-sm">{template.name}</span>
           {typeof template.discountPrice === 'number' && (
             <span className="text-gray-700 font-light ">
-              <span className="text-sm font-semibold line-through">{currencyFormat(template.price)}</span> ₮{' '}
-              <span className="text-bg font-semibold text-red-400">
+              <span className="text-sm font-normal line-through">{currencyFormat(template.price)}</span> ₮{' '}
+              <span className="text-bg font-normal text-red-400">
                 (-{Math.round((1 - template.discountPrice / template.price) * 100)} %)
               </span>
             </span>
           )}
           <span className="font-light">
-            <span className="text-sm font-semibold">{currencyFormat(template.discountPrice || template.price)}</span> ₮
+            <span className="text-sm font-normal">{currencyFormat(template.discountPrice || template.price)}</span> ₮
           </span>
         </div>
       </article>

@@ -778,3 +778,9 @@ export type TradePhoto = {
 }
 
 export type TradePhotoApproveType = 'approved' | 'pending' | 'declined'
+
+export type TradePhotoCategory = {
+  id: number
+  name: string
+  parentId: number | null
+}
