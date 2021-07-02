@@ -61,9 +61,9 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
 
   return (
     <div className="flex flex-col gap-4">
-      <span className="text-3xl font-bold">{template.name}</span>
+      <span className="text-3xl font-semibold">{template.name}</span>
       <div className="space-y-4">
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes.map((each: PaperSize) => (
             <button
@@ -97,7 +97,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
       </div>
 
       <div className="space-y-4" hidden={selectedState.paperSize?.coverTypes?.length === 0}>
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_type' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'cover_type' })}</span>
         <div className="flex flex-wrap gap-4">
           {selectedState.paperSize?.coverTypes?.map((each: CoverType) => (
             <button
@@ -129,7 +129,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
         className="space-y-4"
         hidden={!selectedState.coverType?.bindingTypes || selectedState.coverType?.bindingTypes?.length === 0}
       >
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'binding_type' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'binding_type' })}</span>
         <div className="flex flex-wrap gap-4">
           {selectedState.coverType?.bindingTypes?.map((each: BindingType) => (
             <button
@@ -154,7 +154,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
         className="space-y-4"
         hidden={!selectedState.coverType?.coverMaterials || selectedState.coverType?.coverMaterials?.length === 0}
       >
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_material' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'cover_material' })}</span>
         <div className="flex flex-wrap gap-4">
           {selectedState.coverType?.coverMaterials?.map((each: CoverMaterial) => (
             <button
@@ -187,7 +187,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
           selectedState.coverMaterial?.coverMaterialColors.length === 0
         }
       >
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'cover_material_color' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'cover_material_color' })}</span>
         <div className="flex flex-wrap gap-4">
           <Slider
             responsive={{

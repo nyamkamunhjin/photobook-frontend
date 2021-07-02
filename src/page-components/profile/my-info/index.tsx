@@ -92,27 +92,6 @@ const MyInfo: FC = () => {
             phoneNumber: user?.phoneNumber && parseInt(user.phoneNumber, 10),
           }}
         >
-          <Form.Item
-            className="flex-1"
-            name="avatarUrl"
-            label={
-              <span className="font-semibold text-gray-500">
-                <FormattedMessage id="avatar_url" />
-              </span>
-            }
-            rules={[
-              {
-                type: 'string',
-                message: <FormattedMessage id="wrong_avatar_url" />,
-              },
-              {
-                // required: true,
-                message: <FormattedMessage id="please_input_avatar_url" />,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
           <div className="flex gap-4">
             <Form.Item
               className="flex-1"
@@ -222,7 +201,27 @@ const MyInfo: FC = () => {
                 <FormattedMessage id="verify_email" />
               </CustomButton>
             ))}
-
+          <Form.Item
+            className="flex-1"
+            name="avatarUrl"
+            label={
+              <span className="font-semibold text-gray-500">
+                <FormattedMessage id="avatar_url" />
+              </span>
+            }
+            rules={[
+              {
+                type: 'string',
+                message: <FormattedMessage id="wrong_avatar_url" />,
+              },
+              {
+                // required: true,
+                message: <FormattedMessage id="please_input_avatar_url" />,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
           {/* <Form.Item
             name="password"
             label={

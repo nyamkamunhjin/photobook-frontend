@@ -38,7 +38,7 @@ const data = {
 const AboutUs: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 items-center p-4 max-w-5xl mx-auto">
-      <span className="font-bold text-5xl">{data.title}</span>
+      <span className="font-medium text-5xl">{data.title}</span>
       <p className="text-justify text-base">{data.description}</p>
       <p className="text-base">{data.text1}</p>
       <img src="/about-us.png" alt="about us" />

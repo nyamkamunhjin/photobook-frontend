@@ -25,6 +25,7 @@ const ActivatedGiftCards: FC<Props> = () => {
       <hr className="my-1" />
 
       <List
+        className="mt-4"
         dataSource={giftCards.data?.list || []}
         loading={giftCards.loading}
         pagination={{

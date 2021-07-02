@@ -8,6 +8,7 @@ import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { currencyFormat } from 'utils'
 import UploadPhoto from 'pages/photo-trade/upload-photo'
+import { CustomButton, PhotoTradeStatus } from 'components'
 
 const PhotoTrade: React.FC = () => {
   const sellingPhotos = useRequest(listUserSellingPhotos, {
@@ -26,6 +27,7 @@ const PhotoTrade: React.FC = () => {
         </span>
         <List
           // itemLayout="vertical"
+          className="mt-4"
           dataSource={purchasedPhotos.data?.list || []}
           loading={purchasedPhotos.loading}
           pagination={{
@@ -37,7 +39,7 @@ const PhotoTrade: React.FC = () => {
               <div className="flex gap-2 items-center w-full">
                 <Zoom>
                   <img
-                    className="w-32 h-20 object-cover"
+                    className="w-32 h-20 object-contain rounded shadow"
                     src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}
                     alt={item.photoName}
                   />
@@ -63,6 +65,7 @@ const PhotoTrade: React.FC = () => {
           )}
         />
       </div>
+      {/* selling photos */}
       <div className="flex flex-col gap-2">
         <hr className="my-1" />
         <div className="flex items-center">
@@ -79,12 +82,13 @@ const PhotoTrade: React.FC = () => {
               <span className="text-base text-gray-500">
                 <FormattedMessage id="you_have_no_selling_photos" />
               </span>
-              <UploadPhoto />
+              {/* <UploadPhoto /> */}
             </div>
           )}
         >
           <List
             // itemLayout="vertical"
+            className="mt-4"
             dataSource={sellingPhotos.data?.list || []}
             loading={sellingPhotos.loading}
             pagination={{
@@ -96,21 +100,32 @@ const PhotoTrade: React.FC = () => {
                 <div className="flex gap-2 items-center w-full">
                   <Zoom>
                     <img
-                      className="w-32 h-20 object-cover"
+                      className="w-32 h-20 object-contain rounded shadow"
                       src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}
                       alt={item.photoName}
                     />
                   </Zoom>
 
                   <div className="flex flex-col gap-2 self-start">
-                    <span className="font-semibold text-base">{item.photoName}</span>
-                    <span className="w-full max-w-xs">{item.description}</span>
-                    <span className="w-full max-w-xs">{currencyFormat(item.price)} ₮</span>
+                    <div className="flex gap-2">
+                      <span className="font-medium text-base">{item.photoName}</span>
+                      <PhotoTradeStatus className="" status={item.status} />
+                    </div>
+
+                    <span className="w-full max-w-xs truncate">{item.description}</span>
+                    <span className="w-full max-w-xs">
+                      <FormattedMessage id="price" />: {currencyFormat(item.price)} ₮
+                    </span>
+                    <span className="">
+                      <FormattedMessage id="sell_count" />: {item.sellCount}
+                    </span>
                   </div>
 
-                  {/* <div className="ml-auto">
-                  <span className="font-semibold text-base">{item.sellCount}</span>
-                </div> */}
+                  <div className="ml-auto">
+                    <CustomButton className="btn-warning">
+                      <FormattedMessage id="edit" />
+                    </CustomButton>
+                  </div>
                 </div>
               </List.Item>
             )}

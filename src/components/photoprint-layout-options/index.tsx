@@ -39,7 +39,7 @@ const PhotoprintLayoutOptions: FC<Props> = ({ template, paperSizes, selectedStat
     <div className="flex flex-col gap-4">
       <span className="text-3xl font-bold">{template.name}</span>
       <div className="space-y-4">
-        <span className="font-semibold text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes.map((each: PaperSize) => (
             <button

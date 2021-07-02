@@ -1391,12 +1391,38 @@ export const uploadPhoto = async (data: Partial<TradePhoto>) => {
 
 export const buyPhoto = async (id: string) => {
   const response = await BaseRequest({
-    url: `trade-photo/${id}`,
+    url: `trade-photo/buy/${id}`,
     method: 'PUT',
   })
   return response?.data
 }
 // #endregion [TradePhoto]
+
+// #region [TradePhotoCategory]
+export const listTradePhotoCategory = async (
+  params?: PaginatedParams[0],
+  data?: Record<string, unknown>,
+  offset?: number
+) => {
+  let query = params && data ? buildQuery(params, data) : ''
+  if (offset && params && params.current !== 1) {
+    query += `&offset=${JSON.stringify(offset)}`
+  }
+
+  const response = await BaseRequest({
+    url: `trade-photo-category?${query}`,
+    method: 'GET',
+  })
+
+  response?.data?.forEach(async (each: any) => {
+    each.tempUrl = await Storage.get(each.imageUrl, { expires: 60 * 60 * 24 * 7 }).catch(() => each.imageUrl)
+  })
+
+  if (params) return { list: response?.data, total: response?.totalCount, offset: response?.offset }
+  return response?.data
+}
+
+// #endregion [TradePhotoCategory]
 
 export const paymentBank = async (data: Object) => {
   const response = await BaseRequest({

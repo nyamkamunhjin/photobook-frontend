@@ -110,6 +110,9 @@
 
   "upload": "Upload",
   "sell_photo": "Upload photo",
+  "sell_count": "Sell Count",
+  "tag": "Tag",
+  "owner": "Owner",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 

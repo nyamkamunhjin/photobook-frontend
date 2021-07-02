@@ -110,6 +110,9 @@
 
   "upload": "Оруулах",
   "sell_photo": "Зураг оруулах",
+  "sell_count": "Зарагдсан тоо",
+  "tag": "Шошго",
+  "owner": "Эзэмшигч",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
 
@@ -160,7 +163,7 @@
   "buy_gift_cards": "Бэлгийн карт авах",
   "wrong_gift_card_code": "Бэлгийн картны код буруу байна.",
   "activate_gift_card": "Бэлгийн карт идэвхижүүлэх",
-  "activate": "идэвхижүүлэх",
+  "activate": "Идэвхижүүлэх",
   "photo_by": "Зургийн эзэмшигч",
 
   "discount": "Хөнгөлөлт",

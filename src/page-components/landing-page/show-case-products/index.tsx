@@ -8,7 +8,7 @@ interface Props {
 
 const ShowCaseProducts: FC<Props> = ({ cards }) => {
   return (
-    <WidthLimiter className="flex flex-col justify-center items-center p-4 py-10 gap-4 h-96">
+    <WidthLimiter className="flex flex-col justify-center items-center p-4 py-10 gap-4">
       <div className="flex justify-center gap-4">
         <button className="btn-text text-base font-light" type="button">
           <FormattedMessage id="new" />

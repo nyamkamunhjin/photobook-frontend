@@ -1,37 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Spirax&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Spirax&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@200&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;900&display=swap');
 
 .btn {
-  @apply py-2 px-4 rounded outline-none focus:outline-none font-semibold transition-all duration-150;
+  @apply py-2 px-4 rounded outline-none focus:outline-none font-normal transition-all duration-150;
 }
 .btn-primary {
   @apply btn bg-gray-700 hover:bg-gray-800 text-white shadow hover:shadow-lg;
 }
 
 .btn-text {
-  @apply btn bg-transparent text-gray-600 hover:text-blue-600 font-semibold;
+  @apply btn bg-transparent text-gray-600 hover:text-blue-600 font-normal;
 }
 
 .btn-accept {
-  @apply btn bg-green-400 hover:bg-green-500 text-white font-semibold shadow hover:shadow-lg;
+  @apply btn bg-green-400 hover:bg-green-500 text-white font-normal shadow hover:shadow-lg;
 }
 
 .btn-cancel {
-  @apply btn bg-red-400 hover:bg-red-500 text-white font-semibold shadow hover:shadow-lg;
+  @apply btn bg-red-400 hover:bg-red-500 text-white font-normal shadow hover:shadow-lg;
 }
 
 .btn-warning {
-  @apply btn bg-yellow-400 hover:bg-yellow-500 text-white font-semibold hover:shadow-lg;
+  @apply btn bg-yellow-400 hover:bg-yellow-500 text-white font-normal hover:shadow-lg;
+}
+
+.component-hover {
+  @apply shadow-lg transform hover:-translate-y-0.5 hover:shadow-2xl transition-all ease-in;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif; */
+  font-family: 'Rubik', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

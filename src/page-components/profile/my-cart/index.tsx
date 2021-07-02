@@ -114,6 +114,7 @@ const MyCart: React.FC = () => {
       </span>
       <div>
         <List
+          className="mt-4"
           itemLayout="horizontal"
           dataSource={shoppingCart.data?.cartItems}
           loading={shoppingCart.loading}

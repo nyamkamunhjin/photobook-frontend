@@ -1,23 +1,14 @@
 /* eslint-disable no-nested-ternary */
 import { useRequest } from 'ahooks'
 import React, { useEffect, useRef, useState } from 'react'
-import { buyPhoto, getTradePhoto, listTradePhoto } from 'api'
-import Masonry from 'react-masonry-css'
+import { getTradePhoto, listTradePhoto } from 'api'
 import { TradePhoto } from 'interfaces'
-import Zoom from 'react-medium-image-zoom'
-import { CustomButton } from 'components'
-import { Modal, notification, Input } from 'antd'
+import { Loading } from 'components'
+import { Modal, Input } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 import './style.scss'
 import 'react-medium-image-zoom/dist/styles.css'
-import { currencyFormat } from '../../utils'
-
-const breakpointColumnsObj = {
-  default: 4,
-  1100: 3,
-  700: 2,
-  500: 1,
-}
+import PhotoTradeItem from 'page-components/photo-trade-item'
 
 const PhotoTrade: React.FC = () => {
   const intl = useIntl()
@@ -41,6 +32,11 @@ const PhotoTrade: React.FC = () => {
       debounceInterval: 1000,
       loadMore: true,
       ref: containerRef,
+
+      isNoMore: (data) => {
+        // console.log(data)
+        return data?.offset >= data?.total
+      },
     }
   )
 
@@ -66,7 +62,7 @@ const PhotoTrade: React.FC = () => {
 
   return (
     <div className="p-4 flex flex-col lg:flex-row gap-4">
-      <div className="flex lg:flex-col gap-4 rounded-lg bg-gray-50 p-4" style={{ minWidth: '15rem' }}>
+      <div className="flex lg:flex-col gap-4 rounded bg-gray-50 p-4" style={{ minWidth: '15rem' }}>
         {/* <div className="flex flex-col gap-2 w-full max-w-xs">
           <span className="text-base font-semibold">
             <FormattedMessage id="sort" />
@@ -90,24 +86,24 @@ const PhotoTrade: React.FC = () => {
           </Select>
         </div> */}
         <div className="flex flex-col gap-2 w-full max-w-xs">
-          <span className="text-base font-semibold">
+          <span className="text-base font-medium">
             <FormattedMessage id="search_by_user" />
           </span>
           <Input size="large" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
         </div>
         <div className="flex flex-col gap-2 w-full max-w-xs">
-          <span className="text-base font-semibold">
+          <span className="text-base font-medium">
             <FormattedMessage id="search_by_word" />
           </span>
           <Input size="large" value={searchWord} onChange={(e) => setSearchWord(e.target.value)} />
         </div>
       </div>
       <div className="flex flex-col gap-4 items-center overflow-y-auto h-screen hide-scroll w-full" ref={containerRef}>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {!tradePhotos.loading &&
             tradePhotos.data?.list.map((each: TradePhoto) => (
               <button
-                className="flex-grow flex-shrink focus:outline-none bg-green-200 overflow-hidden"
+                className="flex-grow flex-shrink focus:outline-none overflow-hidden rounded shadow"
                 key={each.id}
                 onClick={() => {
                   setId(each.id)
@@ -122,57 +118,19 @@ const PhotoTrade: React.FC = () => {
               </button>
             ))}
         </div>
-        {!tradePhotos.noMore && (
-          <CustomButton className="btn-primary" onClick={tradePhotos.loadMore} disabled={tradePhotos.noMore}>
-            {tradePhotos.loadingMore
-              ? intl.formatMessage({ id: 'loading!' })
-              : tradePhotos.noMore
-              ? ''
-              : intl.formatMessage({ id: 'click_to_load_more' })}
-          </CustomButton>
-        )}
+        {tradePhotos.loadingMore && <Loading fill={false} />}
         {tradePhoto.data && (
           <Modal
             // title={tradePhoto.data.photoName}
             className="w-full max-w-6xl"
+            bodyStyle={{ padding: 0 }}
+            closable={false}
             centered
             visible={!!id}
             onCancel={() => setId(undefined)}
-            footer={<div />}
+            footer={false}
           >
-            <div className="flex flex-col items-start p-2 gap-2 min-h-screen pt-10">
-              <Zoom wrapStyle={{ width: '100%' }}>
-                <img
-                  className="w-full"
-                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${tradePhoto.data?.imageUrl}`}
-                  alt={tradePhoto.data?.photoName}
-                />
-              </Zoom>
-              <div className="w-full flex flex-col gap-4 p-2 items-start">
-                <span className="text-4xl mt-0 pt-0">{tradePhoto.data?.photoName}</span>
-                <p className="text-base">{tradePhoto.data?.description}</p>
-                <span className="text-base font-semibold">
-                  <FormattedMessage id="photo_by" />:{' '}
-                  <span className="font-normal">
-                    {tradePhoto.data?.user.firstName} {tradePhoto.data?.user.lastName}
-                  </span>
-                </span>
-                <span className="text-2xl font-semibold text-gray-600">
-                  {currencyFormat(tradePhoto.data?.price)}
-                  <span className="text-xs font-bold">₮</span>
-                </span>
-                <CustomButton
-                  className="btn-primary"
-                  onClick={() =>
-                    buyPhoto(tradePhoto.data?.id).then((res) => {
-                      if (res) notification.success({ message: intl.formatMessage({ id: 'success!' }) })
-                    })
-                  }
-                >
-                  <FormattedMessage id="buy" />
-                </CustomButton>
-              </div>
-            </div>
+            <PhotoTradeItem tradePhoto={tradePhoto} />
           </Modal>
         )}
       </div>

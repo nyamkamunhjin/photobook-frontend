@@ -64,7 +64,8 @@ const OrderHistory: React.FC = () => {
         <FormattedMessage id="order_history" />
       </span>
       <Table
-        scroll={{ x: '100%' }}
+        className="mt-4"
+        scroll={{ x: 400 }}
         columns={columnsOrder}
         expandable={{
           expandedRowRender: ({ orderItems, giftCardDiscountAmount }) => (
