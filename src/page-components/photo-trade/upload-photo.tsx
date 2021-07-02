@@ -9,7 +9,11 @@ import { s3Upload } from 'utils/aws-lib'
 import { useRequest } from 'ahooks'
 import { currencyFormat } from '../../utils'
 
-const UploadPhoto: React.FC = () => {
+interface Props {
+  refreshCallback?: () => void
+}
+
+const UploadPhoto: React.FC<Props> = ({ refreshCallback }) => {
   const [visible, setVisible] = useState(false)
   const [file, setFile] = useState<File>()
   const intl = useIntl()
@@ -31,6 +35,8 @@ const UploadPhoto: React.FC = () => {
             if (res) {
               notification.success({ message: intl.formatMessage({ id: 'success!' }) })
               setVisible(false)
+
+              if (refreshCallback) refreshCallback()
             }
           })
         })
@@ -89,7 +95,7 @@ const UploadPhoto: React.FC = () => {
               name="categories"
               rules={[{ required: true, message: intl.formatMessage({ id: 'required' }) }]}
             >
-              <Select mode="multiple">
+              <Select mode="multiple" optionFilterProp="children">
                 {tradePhotoCategories.data?.map((each: TradePhotoCategory) => (
                   <Select.Option key={each.id} value={each.id}>
                     {each.name}

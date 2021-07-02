@@ -1396,6 +1396,15 @@ export const buyPhoto = async (id: string) => {
   })
   return response?.data
 }
+
+export const editPhoto = async (id: string, data: Partial<TradePhoto>) => {
+  const response = await BaseRequest({
+    url: `trade-photo/${id}`,
+    method: 'PUT',
+    data,
+  })
+  return response?.data
+}
 // #endregion [TradePhoto]
 
 // #region [TradePhotoCategory]
