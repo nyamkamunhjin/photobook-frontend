@@ -38,7 +38,7 @@ module.exports = {
       padding: '2rem',
     },
     colors: {
-      lightblue: colors.lightBlue,
+      lightblue: colors.sky,
       blue: colors.blue,
       green: colors.green,
       gray: colors.coolGray,

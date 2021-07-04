@@ -45,7 +45,7 @@ const PhotoTrade: React.FC = () => {
   })
 
   useEffect(() => {
-    const query: any = {}
+    const query: any = { status: 'approved' }
     if (searchName?.length > 0) query.user = searchName
     if (searchWord?.length > 0) query.description = searchWord
     tradePhotos.reset()
