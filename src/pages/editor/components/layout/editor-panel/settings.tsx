@@ -52,7 +52,7 @@ const SlideSettings: React.FC<Props> = ({
 
   return (
     <Modal
-      title="Slide Settings"
+      title={<FormattedMessage id="slide_settings" />}
       visible={settingsVisible}
       footer={[
         <Button key="back" onClick={handleSettingsCancel}>

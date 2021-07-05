@@ -139,8 +139,13 @@
   filter: sepia(20%) brightness(10%) contrast(130%);
   -webkit-filter: sepia(20%) brightness(10%) contrast(130%);
 }
-
-.toolbar {
+.backgroundToolbar {
+  display: flex !important;
+  position: fixed !important;
+  bottom: 250px;
+}
+.toolbar,
+.backgroundToolbar {
   background-color: #fff;
   border: 1px solid #d3d3d3;
   border-radius: 3px;
@@ -377,7 +382,6 @@
     opacity: 0.3;
     z-index: 10000;
   }
-
   .center-circle {
     position: absolute;
     border-radius: 50%;
@@ -590,9 +594,26 @@
     z-index: 10000;
   }
 
+  .circle-container {
+    position: absolute;
+    width: 50%;
+    top: 0;
+    height: 100%;
+    &.left {
+      left: 0;
+    }
+    &.middle {
+      left: 50%;
+    }
+    &.right {
+      right: 0;
+    }
+  }
+
   .center-circle {
     position: absolute;
     border-radius: 50%;
+    top: 50%;
     background-color: rgba(78, 90, 92, 0.5);
     box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.5), 0 0 0 43px rgba(0, 0, 0, 0.15) inset;
     display: flex;
@@ -612,16 +633,19 @@
   }
 
   .center-circle-left {
-    left: calc(25% - 75px / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: none;
   }
 
   .center-circle-middle {
+    transform: translate(-50%, -50%);
     display: none;
   }
 
   .center-circle-right {
-    right: calc(25% - 75px / 2);
+    right: 50%;
+    transform: translate(50%, -50%);
     display: none;
   }
 
@@ -822,6 +846,7 @@
 
   .item {
     pointer-events: auto;
+    align-items: center;
     display: flex;
     flex-direction: column;
     width: 100px;

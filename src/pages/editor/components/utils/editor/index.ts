@@ -49,6 +49,7 @@ interface Props {
   removeObject?: (props: { object: Object; container: Object }) => void
   setObject: (object: any) => void
   scaledContainerRef: any
+  backgroundEdit?: boolean
   slideContainerRef?: any
   groupRef: any
   canvasRef: any
@@ -87,6 +88,7 @@ export default class Editor {
   slideViewRef: any
   slideContainerRef?: any
   scaledContainerRef: any
+  backgroundEdit?: boolean
   transformers: any = {
     n: 't',
     s: 'b',
@@ -106,7 +108,6 @@ export default class Editor {
   setObjectIndex: any
 
   scale: number
-
   _groupObjects: any
   setGroupObjects: any
 
@@ -146,7 +147,12 @@ export default class Editor {
     this.scaledContainerRef = props.scaledContainerRef
     this._groupStyles = props._groupStyles
     this.overflow = props.overflow
-    if (props._objectType) this._objectType = props._objectType
+    if (props.backgroundEdit !== undefined) {
+      this.backgroundEdit = props.backgroundEdit
+    }
+    if (props._objectType) {
+      this._objectType = props._objectType
+    }
     if (props._isTextEditing !== undefined) {
       this._isTextEditing = props._isTextEditing
     }
@@ -162,6 +168,9 @@ export default class Editor {
     if (props._border) {
       this._border = props._border
     }
+    if (props.double !== undefined) {
+      this.double = props.double
+    }
     this.setOverflow = props.setOverflow
     this.removeObject = props.removeObject
     this.setObjectType = props.setObjectType
@@ -175,9 +184,6 @@ export default class Editor {
     this.setGroupStyles = props.setGroupStyles
     this.magnetX = props.magnetX
     this.magnetY = props.magnetY
-    if (props.double !== undefined) {
-      this.double = props.double
-    }
     this.magnetX = document.getElementById('magnetX')
     this.magnetY = document.getElementById('magnetY')
   }
@@ -2026,24 +2032,19 @@ export default class Editor {
         const placeholder = this._object.firstChild as HTMLElement
         const image = placeholder.childNodes[2] as HTMLImageElement
         const _height = image.height - Math.abs(Number(_obj.props.imageStyle.top))
-
-        if (
-          height - _height > 0 &&
-          't b bl br tl tr l r'.split(' ').includes(type) &&
-          (newSize.height > oldSize.height || newSize.width < oldSize.width || newSize.width > oldSize.width)
-        ) {
+        const ratioX = height / image.naturalWidth
+        const ratioY = width / image.naturalWidth
+        if (height - _height >= 0 && ratioY > ratioX) {
           const _width = Number(`${image.style.width}`.replace('%', ''))
-          if (width >= 100) {
-            image.style.width = `${((_width || 100) * height) / _height}%`
-            image.style.top = '0'
-            image.style.left = '0'
-          }
-        } else if (width >= 100 && 'r l br bl tr tl'.split(' ').includes(type)) {
+          image.style.width = `${((_width || 100) * height) / _height}%`
+          image.style.top = '0'
+          image.style.left = '0'
+        } else {
           image.style.width = '100%'
         }
       }
     },
-    100
+    1000
   )
   public moveToolbar = (
     toolbar: any,

@@ -48,6 +48,7 @@ export interface StyleType {
   borderImageSlice?: number
   maskImage?: string
   WebkitMaskImage?: string
+  transformOrigin?: string
   zIndex?: string
   filter?: string
 }
@@ -378,7 +379,8 @@ export interface Image {
 
 export interface BackgroundImage {
   className: string
-  style?: Object
+  style?: StyleType
+  bgStyle?: StyleType
   imageurl?: string
   src?: string
 }

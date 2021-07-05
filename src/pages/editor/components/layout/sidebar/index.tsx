@@ -130,6 +130,7 @@ const SideBarPanel: React.FC<Props> = ({
   }
 
   const closeTab = () => {
+    if (editor.backgroundEdit) return
     toggleSidebar()
     setClosed(true)
     setType('')
