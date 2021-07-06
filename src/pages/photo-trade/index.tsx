@@ -5,13 +5,12 @@ import { getTradePhoto, listTradePhoto } from 'api'
 import { TradePhoto } from 'interfaces'
 import { Loading } from 'components'
 import { Modal, Input } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 import './style.scss'
 import 'react-medium-image-zoom/dist/styles.css'
 import PhotoTradeItem from 'page-components/photo-trade-item'
 
 const PhotoTrade: React.FC = () => {
-  const intl = useIntl()
   const [id, setId] = useState<number>()
   const [sort, setSort] = useState<'A-Z' | 'most_popular' | 'most_recent'>('A-Z')
   const [searchName, setSearchName] = useState<string>('')

@@ -3,7 +3,7 @@
 import React from 'react'
 import { MdFlip, MdDelete } from 'react-icons/md'
 import { AiOutlineRotateLeft, AiOutlineRotateRight } from 'react-icons/ai'
-import { BackgroundImage, HistoryProps, ObjectType, PObject } from 'interfaces'
+import { BackgroundImage } from 'interfaces'
 import { Tooltip } from 'antd'
 import { FormattedMessage } from 'react-intl'
 import ShapeToolbar from './shape-toolbar'

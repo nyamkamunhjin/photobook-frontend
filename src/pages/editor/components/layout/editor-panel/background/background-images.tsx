@@ -301,7 +301,7 @@ const BackgroundImages: React.FC<Props> = ({
       translateX = 0
       translateY = 0
     }
-    if (rotateAngle === 270) {
+    if (rotateAngle === 90) {
       translateY = -translateY
       translateX = -translateX
     }

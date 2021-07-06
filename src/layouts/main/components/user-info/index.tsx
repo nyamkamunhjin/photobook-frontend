@@ -1,10 +1,9 @@
-import { Avatar, Button, Popover } from 'antd'
+import { Avatar, Popover } from 'antd'
 import { useDispatch } from 'react-redux'
 import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { LOGOUT } from 'redux/actions/types'
 import { useHistory } from 'react-router'
-import styles from './styles.module.scss'
 import { CustomButton } from '../../../../components'
 
 interface Props {

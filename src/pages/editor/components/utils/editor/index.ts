@@ -187,7 +187,6 @@ export default class Editor {
     this.magnetX = document.getElementById('magnetX')
     this.magnetY = document.getElementById('magnetY')
   }
-
   // #region [LayoutMethods]
   public changeLayout = (
     objects: Container[],
@@ -2032,19 +2031,23 @@ export default class Editor {
         const placeholder = this._object.firstChild as HTMLElement
         const image = placeholder.childNodes[2] as HTMLImageElement
         const _height = image.height - Math.abs(Number(_obj.props.imageStyle.top))
-        const ratioX = height / image.naturalWidth
-        const ratioY = width / image.naturalWidth
-        if (height - _height >= 0 && ratioY > ratioX) {
-          const _width = Number(`${image.style.width}`.replace('%', ''))
-          image.style.width = `${((_width || 100) * height) / _height}%`
+        const _width = Number(`${image.style.width}`.replace('%', ''))
+        if (
+          (image.naturalWidth > image.naturalHeight && height > width) ||
+          image.naturalWidth / image.naturalHeight > width / height
+        ) {
+          const deltaWidth = ((_width || 100) * height) / _height
+          image.style.width = `${deltaWidth}%`
           image.style.top = '0'
-          image.style.left = '0'
+          image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
         } else {
           image.style.width = '100%'
+          image.style.left = '0'
+          image.style.top = `${-(image.height / 2 - height / 2)}px`
         }
       }
     },
-    1000
+    500
   )
   public moveToolbar = (
     toolbar: any,
