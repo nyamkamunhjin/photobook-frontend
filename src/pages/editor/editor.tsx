@@ -129,6 +129,7 @@ const BookEditor: React.FC<Props> = ({
 
   // states
   const [scale, setScale] = useState<number>(1)
+  const [zoom, setZoom] = useState(1)
   const [fitScale, setFitScale] = useState<number>(1)
   const [_objectType, setObjectType] = useState<ObjectType>('')
   const [_isTextEditing, setIsTextEditing] = useState<boolean>(false)
@@ -192,9 +193,10 @@ const BookEditor: React.FC<Props> = ({
       canvasRef,
       setGroupStyles,
       _object,
-      double: true,
+      // double: true,
+      zoom,
     })
-  }, [scale, slideHeight, slideWidth])
+  }, [scale, slideHeight, slideWidth, zoom])
 
   const saveTextBeforeUndo = () => {
     if (_index > -1 && _isTextEditing) {
@@ -340,7 +342,6 @@ const BookEditor: React.FC<Props> = ({
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
   }
-
   useEffect(() => {
     if (loading) return
     const debouncedHandleResize = debounce(function handleResize() {
@@ -428,6 +429,10 @@ const BookEditor: React.FC<Props> = ({
             object={_object}
             objectType={_objectType}
             index={_index}
+            zoom={{
+              state: zoom,
+              action: setZoom,
+            }}
             objects={objects}
             updateObject={updateObject}
             updateHistory={updateHistory}
@@ -536,6 +541,7 @@ const BookEditor: React.FC<Props> = ({
                                 updateHistory,
                                 saveObjects,
                                 scale,
+                                zoom,
                               })}
                             </div>
                           )

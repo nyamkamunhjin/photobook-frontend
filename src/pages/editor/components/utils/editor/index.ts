@@ -61,6 +61,7 @@ interface Props {
   scale: number
   magnetX?: any
   magnetY?: any
+  zoom?: number
   double?: boolean
   _objectType?: ObjectType
   _border?: number
@@ -72,6 +73,7 @@ interface Props {
 }
 export default class Editor {
   _threshhold = 30
+  _zoom = 1
   _border = 0
   _rotaterDistance = 30
   _rotateAngle = 0
@@ -152,6 +154,9 @@ export default class Editor {
     }
     if (props._objectType) {
       this._objectType = props._objectType
+    }
+    if (props.zoom !== undefined) {
+      this._zoom = props.zoom
     }
     if (props._isTextEditing !== undefined) {
       this._isTextEditing = props._isTextEditing
@@ -2036,14 +2041,14 @@ export default class Editor {
           (image.naturalWidth > image.naturalHeight && height > width) ||
           image.naturalWidth / image.naturalHeight > width / height
         ) {
-          const deltaWidth = ((_width || 100) * height) / _height
+          const deltaWidth = ((_width / this._zoom || 100) * height) / _height
           image.style.width = `${deltaWidth}%`
           image.style.top = '0'
           image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
         } else {
           image.style.width = '100%'
           image.style.left = '0'
-          image.style.top = `${-(image.height / 2 - height / 2)}px`
+          image.style.top = `${-(image.height / this._zoom / 2 - height / 2)}px`
         }
       }
     },

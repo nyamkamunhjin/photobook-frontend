@@ -9,10 +9,11 @@ interface Props {
   updateObject?: (props: { object: PObject }) => void
   updateHistory?: (historyType: string, props: any) => void
   saveObjects?: () => void
+  zoom: number
   scale: number
 }
 
-const renderObject: React.FC<Props> = ({ object, updateObject, updateHistory, saveObjects, scale, edit }) => {
+const renderObject: React.FC<Props> = ({ object, updateObject, updateHistory, saveObjects, scale, edit, zoom = 1 }) => {
   const { props } = object
 
   const updateUrl = (url: string) => {
@@ -37,6 +38,7 @@ const renderObject: React.FC<Props> = ({ object, updateObject, updateHistory, sa
     return (
       <Image
         scale={scale}
+        zoom={zoom}
         object={object}
         edit={edit}
         updateObject={updateObject}

@@ -116,6 +116,7 @@ const Preview: React.FC<Props> = ({
                                 edit: false,
                                 object: o,
                                 scale,
+                                zoom: 1,
                               })}
                             </div>
                           )

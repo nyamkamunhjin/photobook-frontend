@@ -15,6 +15,10 @@ import ShapeToolbar from './shape-toolbar'
 interface Props {
   objectType?: ObjectType
   object: HTMLDivElement
+  zoom?: {
+    state: number
+    action: Function
+  }
   objects: PObject[]
   index: number
   updateObject: (props: { object: PObject }) => void
@@ -44,6 +48,7 @@ const Toolbar: React.FC<Props> = ({
   object,
   objects,
   index,
+  zoom,
   isLayout = false,
 }) => {
   return (
@@ -64,6 +69,7 @@ const Toolbar: React.FC<Props> = ({
           index={index}
           object={object}
           objects={objects}
+          zoom={zoom}
           updateObject={updateObject}
           updateHistory={updateHistory}
           removeImageFromObject={removeImageFromObject}

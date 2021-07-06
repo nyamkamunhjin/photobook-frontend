@@ -51,6 +51,7 @@ export interface StyleType {
   transformOrigin?: string
   zIndex?: string
   filter?: string
+  scale?: number
 }
 
 export interface ProjectCreate {
