@@ -1,4 +1,4 @@
-import { LayoutObject, OElement, Slide } from 'interfaces'
+import { CollisionObject, LayoutObject, OElement, Slide } from 'interfaces'
 import { ParseNumber } from 'utils'
 import lodash from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
@@ -400,45 +400,126 @@ const ALIGNMENT_PROPS = {
   yy: 0,
 }
 
-export const diffRect = (a: OElement, b: OElement, index: number) => {
+export const diffRect = (a: OElement, b: OElement, index: number, border: number) => {
   const result = Object.keys(ALIGNMENT_PROPS).map((key) => {
     switch (key) {
       case 'tt':
-        return { size: Math.abs(a.t - b.t), key, index, vertical: false }
+        return { size: Math.abs(a.t - b.t), key, index, vertical: false, position: index !== -1 ? b.t : -border }
       case 'ty':
-        return { size: Math.abs(a.t - b.t - b.h / 2), key, index, vertical: false }
+        return {
+          size: Math.abs(a.t - b.t - b.h / 2),
+          key,
+          index,
+          vertical: false,
+          position: index !== -1 ? b.t + b.h / 2 : b.h / 2,
+          magnet: index !== -1 ? b.t + b.h / 2 : b.h / 2,
+        }
       case 'bb':
-        return { size: Math.abs(b.t + b.h - a.t - a.h), key, index, vertical: false }
+        return {
+          size: Math.abs(b.t + b.h - a.t - a.h),
+          key,
+          index,
+          vertical: false,
+          position: index !== -1 ? b.t + b.h : b.h,
+          magnet: index !== -1 ? b.t + b.h : b.h,
+        }
       case 'by':
-        return { size: Math.abs(b.t + b.h / 2 - a.t - a.h), key, index, vertical: false }
-      case 'rr':
-        return { size: Math.abs(b.l + b.w - a.l - a.w), key, index, vertical: true }
-      case 'rx':
-        return { size: Math.abs(b.l + b.w / 2 - a.l - a.w), key, index, vertical: true }
-      case 'll':
-        return { size: Math.abs(a.l - b.l), key, index, vertical: true }
-      case 'lx':
-        return { size: Math.abs(a.l - b.l - b.h / 2), key, index, vertical: true }
+        return {
+          size: Math.abs(b.t + b.h / 2 - a.t - a.h),
+          key,
+          index,
+          vertical: false,
+          position: index !== -1 ? b.t + b.h / 2 : b.h / 2,
+          magnet: index !== -1 ? b.t + b.h / 2 : b.h / 2,
+        }
       case 'tb':
-        return { size: Math.abs(a.t - b.t - b.h), key, index, vertical: false }
+        return {
+          size: Math.abs(a.t - b.t - b.h),
+          key,
+          index,
+          vertical: false,
+          position: index !== -1 ? b.t + b.h : b.h / 2,
+          magnet: index !== -1 ? b.t + b.h : b.h / 2,
+        }
       case 'bt':
-        return { size: Math.abs(b.t - a.t - a.h), key, index, vertical: false }
+        return {
+          size: Math.abs(b.t - a.t - a.h),
+          key,
+          index,
+          vertical: false,
+          position: index !== -1 ? b.t : b.h / 2,
+          magnet: index !== -1 ? b.t : b.h / 2,
+        }
+      case 'rr':
+        return {
+          size: Math.abs(b.l + b.w - a.l - a.w),
+          key,
+          index,
+          vertical: true,
+          position: index !== -1 ? b.l + b.w - a.w : b.w - a.w + border,
+          magnet: index !== -1 ? b.l + b.w : b.w + border,
+        }
+      case 'rx':
+        return {
+          size: Math.abs(b.l + b.w / 2 - a.l - a.w),
+          key,
+          index,
+          vertical: true,
+          position: index !== -1 ? b.l + b.w / 2 - a.w : b.w / 2 - a.w,
+          magnet: index !== -1 ? b.l + b.w / 2 : b.w / 2 + border,
+        }
+      case 'll':
+        return {
+          size: Math.abs(a.l - b.l),
+          key,
+          index,
+          vertical: true,
+          position: index !== -1 ? b.l : border,
+          magnet: index !== -1 ? b.l : border,
+        }
+      case 'lx':
+        return {
+          size: Math.abs(a.l - b.l - b.h / 2),
+          key,
+          index,
+          vertical: true,
+          position: index !== -1 ? b.l + b.w / 2 : b.w / 2,
+          magnet: index !== -1 ? b.l + b.w / 2 : b.w / 2,
+        }
       case 'rl':
-        return { size: Math.abs(b.l - a.l - a.w), key, index, vertical: true }
+        return {
+          size: Math.abs(b.l - a.l - a.w),
+          key,
+          index,
+          vertical: true,
+          position: index !== -1 ? b.l : b.w / 2,
+          magnet: index !== -1 ? b.l : b.w / 2,
+        }
       case 'lr':
-        return { size: Math.abs(a.l - b.l - b.w), key, index, vertical: true }
+        return {
+          size: Math.abs(a.l - b.l - b.w),
+          key,
+          index,
+          vertical: true,
+          position: index !== -1 ? b.l + b.w : b.h / 2,
+          magnet: index !== -1 ? b.l + b.w : b.h / 2,
+        }
       case 'xx':
         return {
           size: Math.abs((a.l + a.w - b.l - b.w + (a.l - b.l)) / 2),
           key,
           index,
           vertical: true,
+          position: index !== -1 ? b.l + b.w / 2 : b.h / 2,
+          magnet: index !== -1 ? b.l + b.w / 2 : b.h / 2,
         }
       case 'yy':
         return {
           size: Math.abs((a.t - b.t + (a.t + a.h - b.t - b.h)) / 2),
           key,
           index,
+          position: index !== -1 ? b.t + b.h / 2 : b.h / 2,
+          magnet: index !== -1 ? b.t + b.h / 2 : b.h / 2,
           vertical: false,
         }
       default:

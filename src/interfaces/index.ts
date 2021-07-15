@@ -90,6 +90,8 @@ export interface CollisionObject {
   key: string
   index: number
   vertical: boolean
+  position: number
+  magnet: number
 }
 
 export interface Container {
