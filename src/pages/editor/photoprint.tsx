@@ -445,6 +445,7 @@ const BookEditor: React.FC<Props> = ({
                                 updateHistory,
                                 saveObjects,
                                 scale,
+                                zoom: 1,
                               })}
                             </div>
                           )

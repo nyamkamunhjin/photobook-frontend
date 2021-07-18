@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsArrowsMove } from 'react-icons/bs'
 import { SET_BACKGROUNDS, UPDATE_BACKGROUND } from 'redux/actions/types'
-import { BackgroundImage, EditorInterface, HistoryProps } from 'interfaces'
+import { BackgroundImage, EditorInterface, HistoryProps, StyleType } from 'interfaces'
+import { ParseNumber } from 'utils'
+import Toolbar from './toolbar'
 
 interface Props {
   editor: EditorInterface
@@ -28,6 +30,7 @@ const BackgroundImages: React.FC<Props> = ({
   onBackgroundDropDragOver,
   onBackgroundDropDragLeave,
 }) => {
+  const [selectedBG, setSelectedBG] = useState('')
   useEffect(() => {
     const container: HTMLDivElement | null = document.querySelector('#container')
     if (editor.backgroundEdit) {
@@ -62,18 +65,22 @@ const BackgroundImages: React.FC<Props> = ({
           backgrounds: [
             {
               className: 'background-right',
-              style: { top: 0, left: 0 },
+              style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
               src: backgroundFull?.firstChild?.src,
               imageurl: backgroundFull?.firstChild.getAttribute('data-imageurl'),
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
             },
             {
               className: 'background-left',
-              style: { top: 0, left: 0 },
+              style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
             {
               className: 'background-full',
+              style: { rotateAngle: 0, transform: '' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
             },
           ],
         })
@@ -82,9 +89,10 @@ const BackgroundImages: React.FC<Props> = ({
           backgrounds: [
             {
               className: 'background-left',
-              style: { top: 0, left: 0 },
+              style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
             },
           ],
         })
@@ -94,15 +102,20 @@ const BackgroundImages: React.FC<Props> = ({
         backgrounds: [
           {
             className: 'background-full',
-            style: { top: 0, left: 0 },
+            style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
             src: e.dataTransfer.getData('tempUrl'),
             imageurl: e.dataTransfer.getData('imageUrl'),
           },
           {
             className: 'background-left',
+            style: { rotateAngle: 0, transform: '' },
+            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
           },
           {
             className: 'background-right',
+            style: { rotateAngle: 0, transform: '' },
+            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
           },
         ],
       })
@@ -111,17 +124,21 @@ const BackgroundImages: React.FC<Props> = ({
         setBackgrounds({
           backgrounds: [
             {
+              style: { rotateAngle: 0, transform: '' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               className: 'background-left',
               src: backgroundFull.firstChild.src,
               imageurl: backgroundFull.firstChild.getAttribute('data-imageurl'),
             },
             {
               className: 'background-right',
-              style: { top: 0, left: 0 },
+              style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
             {
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               className: 'background-full',
             },
           ],
@@ -131,7 +148,8 @@ const BackgroundImages: React.FC<Props> = ({
           backgrounds: [
             {
               className: 'background-right',
-              style: { top: 0, left: 0 },
+              style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
@@ -172,16 +190,24 @@ const BackgroundImages: React.FC<Props> = ({
   }
 
   const backgroundReposition = (e: any, bgClass: string) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const _background: any = document.querySelector(bgClass)
+    const _image = _background.firstChild
+    if (!_image) {
+      return
+    }
     const scaled_container: any = document.querySelector('#scaled_container')
+    const slide_container: any = document.querySelector('#slide')
     scaled_container.style.cursor = 'grab'
 
     const circle = e.target
     circle.style.display = 'none'
 
-    const _background: any = document.querySelector(bgClass)
-    const _image = _background.firstChild
     _background.style.overflow = 'unset'
-
+    if (slide_container) {
+      slide_container.style.overflow = 'unset'
+    }
     const { width: bgWidth, height: bgHeight } = getComputedStyle(_background)
 
     let startX = e.clientX / scale
@@ -204,8 +230,8 @@ const BackgroundImages: React.FC<Props> = ({
       t += deltaY
       l += deltaX
 
-      if (Math.abs(t) < 10) t = 0
-      if (Math.abs(l) < 10) l = 0
+      // if (Math.abs(t) < 10) t = 10
+      // if (Math.abs(l) < 10) l = 10
 
       if (t <= 0 && Math.abs(t) <= Math.abs(heightDiff)) {
         _image.style.top = t + 'px'
@@ -224,6 +250,9 @@ const BackgroundImages: React.FC<Props> = ({
       scaled_container.style.cursor = 'default'
       circle.style.display = 'flex'
       _background.style.overflow = 'hidden'
+      if (slide_container) {
+        slide_container.style.overflow = 'hidden'
+      }
       window.removeEventListener('mouseup', onMouseUp)
       window.removeEventListener('mousemove', onMouseMove)
 
@@ -237,6 +266,7 @@ const BackgroundImages: React.FC<Props> = ({
         background: {
           className,
           style: {
+            ...background.style,
             top: _image.style.top,
             left: _image.style.left,
           },
@@ -248,6 +278,95 @@ const BackgroundImages: React.FC<Props> = ({
     window.addEventListener('mousemove', onMouseMove)
   }
 
+  const onRotate = (angle: string) => {
+    if (!updateHistory || !updateBackground || !selectedBG.length) return
+    const [background] = backgrounds.filter((b: BackgroundImage) => b.className === selectedBG)
+    const bgElement: any = document.querySelector(`.${selectedBG}`)
+    const { width, height } = getComputedStyle(bgElement)
+    let { rotateAngle = 0, transform = 'rotate(0deg) translateX(0px) translateY(0px)' } =
+      background.bgStyle as StyleType
+    if (!transform.match(/rotate\(([^)]+)\)/)) {
+      transform += ' rotate(0deg)  translateX(0px) translateY(0px)'
+    }
+    const w = ParseNumber(height)
+    const h = ParseNumber(width)
+    let translateX = Math.abs(ParseNumber(width) - ParseNumber(height)) / 2
+    let translateY = Math.abs(ParseNumber(width) - ParseNumber(height)) / 2
+    if (angle === 'left') {
+      rotateAngle = (rotateAngle || 360) - 90
+    } else {
+      rotateAngle = (rotateAngle >= 360 ? 0 : rotateAngle) + 90
+    }
+    if (rotateAngle % 180 === 0) {
+      translateX = 0
+      translateY = 0
+    }
+    if (rotateAngle === 90) {
+      translateY = -translateY
+      translateX = -translateX
+    }
+    if (background.bgStyle) {
+      updateBackground({
+        background: {
+          ...background,
+          bgStyle: {
+            ...background.bgStyle,
+            transform: transform
+              .replace(/rotate\(([^)]+)\)/, `rotate(${rotateAngle}deg)`)
+              .replace(/translateX\(([^)]+)\)/, `translateX(${translateX}px)`)
+              .replace(/translateY\(([^)]+)\)/, `translateY(${translateY}px)`),
+            height: h,
+            width: w,
+            rotateAngle,
+          },
+        },
+      })
+    }
+  }
+  const onFlip = () => {
+    if (!updateHistory || !updateBackground || !selectedBG.length) return
+    const [background] = backgrounds.filter((b: BackgroundImage) => b.className === selectedBG)
+    let { transform = 'rotate(0deg) translateX(0px) translateY(0px)' } = background.style as StyleType
+    if (!transform.match(/scaleX\(([^)]+)\)/) || transform.match(/scaleX\(([^)]+)\)/)?.length === 0) {
+      transform += ' scaleX(1)'
+    }
+    console.log(transform)
+    const scaleX = transform.match(/scaleX\(([^)]+)\)/)
+    if (scaleX && scaleX[0] === 'scaleX(1)') {
+      transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(-1)')
+    } else {
+      transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(1)')
+    }
+    if (background.bgStyle) {
+      updateHistory(UPDATE_BACKGROUND, { background })
+      updateBackground({
+        background: {
+          ...background,
+          style: {
+            ...background.style,
+            transform,
+          },
+        },
+      })
+    }
+  }
+  const onRemove = () => {
+    if (!updateHistory || !updateBackground || !selectedBG.length) return
+    const [background] = backgrounds.filter((b: BackgroundImage) => b.className === selectedBG)
+    updateHistory(UPDATE_BACKGROUND, { background })
+    updateBackground({
+      background: {
+        ...background,
+        src: '',
+      },
+    })
+  }
+  const updateObject = (_backgrounds: BackgroundImage[]) => {
+    if (!updateHistory || !setBackgrounds) return
+    const [background] = backgrounds.filter((b: BackgroundImage) => b.className === selectedBG)
+    updateHistory(UPDATE_BACKGROUND, { background })
+    setBackgrounds({ backgrounds: _backgrounds })
+  }
   return (
     <>
       <div
@@ -268,25 +387,42 @@ const BackgroundImages: React.FC<Props> = ({
         onDragLeave={onBackgroundDropDragLeave}
         onDrop={onBackgroundDropDragDrop}
       />
-      <div
-        onMouseDown={(e) => backgroundReposition(e, '.background-left')}
-        className="center-circle center-circle-left"
-      >
-        <BsArrowsMove className="drag-icon" />
+      <div className="circle-container left" onClick={() => setSelectedBG('background-left')}>
+        <div
+          onMouseDown={(e) => backgroundReposition(e, '.background-left')}
+          className="center-circle center-circle-left"
+        >
+          <BsArrowsMove className="drag-icon" />
+        </div>
       </div>
-      <div
-        onMouseDown={(e) => backgroundReposition(e, '.background-full')}
-        className="center-circle center-circle-middle"
-      >
-        <BsArrowsMove className="drag-icon" />
+      <div className="circle-container middle" onClick={() => setSelectedBG('background-full')}>
+        <div
+          onMouseDown={(e) => backgroundReposition(e, '.background-full')}
+          className="center-circle center-circle-middle"
+        >
+          <BsArrowsMove className="drag-icon" />
+        </div>
       </div>
-      <div
-        onMouseDown={(e) => backgroundReposition(e, '.background-right')}
-        className="center-circle center-circle-right"
-      >
-        <BsArrowsMove className="drag-icon" />
+      <div className="circle-container right" onClick={() => setSelectedBG('background-right')}>
+        <div
+          onMouseDown={(e) => backgroundReposition(e, '.background-right')}
+          className="center-circle center-circle-right"
+        >
+          <BsArrowsMove className="drag-icon" />
+        </div>
       </div>
       <div className={slideIndex === 0 ? 'book-spine-cover' : 'book-spine'} />
+      {editor.backgroundEdit && (
+        <Toolbar
+          background={selectedBG}
+          backgrounds={backgrounds}
+          setBackgrounds={updateObject}
+          rotateLeftObject={() => onRotate('left')}
+          rotateRightObject={() => onRotate('right')}
+          flipObject={() => onFlip()}
+          removeObject={() => onRemove()}
+        />
+      )}
     </>
   )
 }

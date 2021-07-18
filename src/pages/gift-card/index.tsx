@@ -67,7 +67,7 @@ const GiftCard: React.FC<GiftCard> = ({ id, imageUrl, name, description, discoun
         <CustomButton
           className="btn-primary self-end"
           onClick={() => {
-            buyGiftCard(id).then((res) => {
+            buyGiftCard(id).then(() => {
               notification.success({ message: intl.formatMessage({ id: 'success!' }) })
               router.push('/profile?tab=my_info')
             })

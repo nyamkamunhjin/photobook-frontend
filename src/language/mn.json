@@ -15,11 +15,10 @@
   "no": "Үгүй",
   "yes": "Тийм",
   "copied_to_clipboard": "Хуулагдлаа",
-
+  "montage": "Монтаж",
   "create": "Үүсгэх",
   "delete": "Устгах",
   "update": "Шинэчлэх",
-
   "name": "Нэр",
   "code": "Код",
   "empty": "Хоосон",
@@ -27,87 +26,57 @@
   "is-freeze": "Хөлдөх",
   "key": "Түлхүүр",
   "settings": "Тохиргоо",
-
   "categories": "Ангиллууд",
   "category": "Ангилал",
-
   "layouts": "Layouts",
   "layout": "Layout",
-
   "layout_category": "Layout Category",
   "layout_categories": "Layout Categories",
-
   "layout_file": "Layout File",
   "layout_files": "Layout Files",
-
   "clipart": "Clipart",
   "cliparts": "Cliparts",
-
   "clipart_category": "Clipart Category",
   "clipart_categories": "Clipart Categories",
-
   "clipart_file": "Clipart File",
   "clipart_files": "Clipart Files",
-
   "mask": "Mask",
   "masks": "Masks",
-
   "mask_category": "Mask Category",
   "mask_categories": "Mask Categories",
-
   "mask_file": "Mask File",
   "mask_files": "Mask Files",
-
   "editor": "Editor",
-
   "files": "Files",
   "file": "File",
-
   "background": "Background",
   "backgrounds": "Backgrounds",
-
   "background_category": "Background Category",
   "background_categories": "Background Categories",
-
   "background_file": "Background File",
   "background_files": "Background Files",
-
   "frame": "Frame",
   "frames": "Frames",
-
   "frame_category": "Frame Category",
   "frame_categories": "Frame Categories",
-
   "frame_file": "Frame File",
   "frame_files": "Frame Files",
-
   "log-out": "Log out",
-
   "image_url": "URL",
   "image_id": "Зургийн ID",
   "image": "Зураг",
-
   "template": "Template",
   "templates": "Templates",
-
   "template_category": "Template Category",
   "template_categories": "Template Categories",
-
   "binding_type": "Нурууны төрөл",
-
   "paper_size": "Хэвлэлийн хэмжээ",
-
   "paper_material": "Хэвлэлийн материал",
-
   "cover_material": "Хавтасны материал",
-
   "cover_type": "Хавтасны төрөл",
-
   "frame_material": "Жаазны материал",
-
   "cover_material_color": "Хавтасны өнгө",
   "payment_amount_vat_included": "НӨАТ-тэй үнэ",
-
   "upload": "Оруулах",
   "sell_photo": "Зураг оруулах",
   "sell_count": "Зарагдсан тоо",
@@ -115,22 +84,18 @@
   "owner": "Эзэмшигч",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
-
   "new": "Шинэ",
   "popular": "Эрэлттэй",
   "special": "Онцгой",
-
   "purchased_photos": "Худалдаж авсан зураг",
   "selling_photos": "Зарж байгаа зураг",
   "you_have_no_selling_photos": "Таньд одоогоор зарж байгаа зураг байхгүй байна.",
   "search_by_user": "Зурагчнаар хайх",
   "search_by_word": "Үгээр хайх",
-
   "order_history": "Захиалгын түүх",
   "my_projects": "Миний төслүүд",
   "my_cart": "Миний сагс",
   "my_info": "Миний мэдээлэл",
-
   "order_summary": "Захиалгын хураангуй",
   "shipping_fee": "Хүргэлтийн төлбөр",
   "vat_fee": "НӨАТ",
@@ -151,10 +116,8 @@
   "user_discount": "Хэрэглэгчийн хөнгөлөлт",
   "template_discount": "Template хөнгөлөлт",
   "gift_card_discount": "Бэлгийн картын хөнгөлөлт",
-
   "voucher_discount": "Ваучер хөнгөлөлт",
   "vouchers": "Ваучерууд",
-
   "credits": "Дүн",
   "added_gift_card": "Бэлгийн карт нэмлээ",
   "removed_gift_card": "Бэлгийн карт хаслаа",
@@ -165,7 +128,6 @@
   "activate_gift_card": "Бэлгийн карт идэвхижүүлэх",
   "activate": "Идэвхижүүлэх",
   "photo_by": "Зургийн эзэмшигч",
-
   "discount": "Хөнгөлөлт",
   "used": "Хэрэглэсэн",
   "not_used": "Хэрэглээгүй",
@@ -174,19 +136,16 @@
   "discount_percent": "Хөнгөлөлтийн хувь",
   "remove_voucher": "Ваучер хасах",
   "voucher_removed": "Ваучер хаслаа",
-
   "unconfirmed": "Хянагдаагүй",
   "confirmed": "Хянагдсан",
   "created": "Хийгдсэн",
   "checked": "Шалгагдсан",
   "delivered": "Хүргэгдсэн",
   "expired": "Хугацаа хэтэрсэн",
-
   "edit": "Өөрчлөх",
   "add_to_cart": "Сагсруу нэмэх",
   "added_to_cart": "Сагсруу нэмлээ",
   "order": "Захиалга",
-
   "first_name": "Нэр",
   "last_name": "Овог",
   "avatar_url": "Зургийн URL",
@@ -201,17 +160,14 @@
   "please_input_avatar_url": "Зургийн URL оруулна уу",
   "please_input_email": "И-мейл ээ оруулна уу",
   "please_input_phone_number": "Утасны дугаараа оруулна уу",
-
   "required": "Шаардлагатай",
   "photo_name": "Зургийн нэр",
-
   "connect_facebook": "Facebook-ээ холбох",
   "connect_google": "Google-ээ холбох",
   "social_accounts": "Social хаягууд",
   "connected": "Холбогдсон",
   "addresses": "Хүргэлтийн хаягууд",
   "buy": "Авах",
-
   "add": "Нэмэх",
   "delivery_first_name": "Нэр",
   "delivery_last_name": "Овог",
@@ -223,7 +179,6 @@
   "please_input_additional_description": "Нэмэлт мэдээлэл оруулна уу",
   "additional_notes": "Хүргэлтийн хаяг дээрх нэмэлт мэдээлэл",
   "what_our_customers_are_saying": "Бидний хэрэглэгчид юу гэж хэлж байгаа вэ?",
-
   "email_verified": "И-мейл баталгаажлаа",
   "verify_email": "И-мейл баталгаажууулах",
   "wrong_email": "Буруу и-мейл",
@@ -235,7 +190,6 @@
   "sign_in_error": "Нэвтрэхэд алдаа гарлаа",
   "sign_up_success": "Амжилттай бүртгүүллээ",
   "sign_up_error": "Бүртгүүлэхэд алдаа гарлаа",
-
   "type": "Төрөл",
   "brightness": "Гэрэлтүүлэг",
   "contrast": "Contrast",
@@ -288,7 +242,7 @@
   "please_add_photos": "Зургууд нэмнэ үү",
   "projects": "Төслүүд",
   "square": "Дөрвөлжин",
-  "eclipse": "Eclipse",
+  "eclipse": "Тойрог",
   "photo": "Зураг",
   "text": "Текст",
   "preview": "Харах",
@@ -366,5 +320,16 @@
   "controller.flip.horizontally": "Flip Horizontailly",
   "controller.flip.vertically": "Flip Vertically",
   "controller.reset.message": "Та оруулсан өөрчлөлтүүдээ буцаахдаа итгэлтэй байна уу?",
-  "controller.remove.message": "Та төслөөсөө энэ зургийг устгах уу?"
+  "controller.remove.message": "Та төслөөсөө энэ зургийг устгах уу?",
+  "slide_settings": "Тохиргоо",
+  "done": "Дуусгах",
+  "careers": "Ажлын байр",
+  "contact": "Холбогдох",
+  "terms_of_service": "Үйлчилгээний нөхцөл",
+  "privacy_policy": "Нууцлалын бодлого",
+  "filter": "Шүүх",
+  "sort": " ",
+  "most_recent": "Сүүлд оруулсан",
+  "most_sold": "Их зарагдсан",
+  "no_photos_found": "Зураг олдсонгүй"
 }

@@ -76,6 +76,7 @@ const Slides: React.FC<Props> = ({
                       updateHistory,
                       saveObjects,
                       scale,
+                      zoom: 1,
                     })}
                   </div>
                 )
@@ -96,6 +97,7 @@ const Slides: React.FC<Props> = ({
                       updateHistory,
                       saveObjects,
                       scale,
+                      zoom: 1,
                     })}
                   </div>
                 )

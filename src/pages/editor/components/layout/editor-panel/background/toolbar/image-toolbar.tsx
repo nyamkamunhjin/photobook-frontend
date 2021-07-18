@@ -15,10 +15,6 @@ import { filters } from 'configs'
 
 interface Props {
   index: number
-  zoom?: {
-    state: number
-    action: Function
-  }
   object: HTMLDivElement
   objects: PObject[]
   removeImageFromObject?: () => void
@@ -26,15 +22,7 @@ interface Props {
   updateObject: (value: { object: PObject }) => void
 }
 
-const ImageToolbar = ({
-  index,
-  object,
-  objects,
-  removeImageFromObject,
-  updateHistory,
-  updateObject,
-  zoom: _zoom,
-}: Props) => {
+const ImageToolbar = ({ index, object, objects, removeImageFromObject, updateHistory, updateObject }: Props) => {
   const [hasImage, setHasImage] = useState<boolean>(false)
   const [showPicker, setShowPicker] = useState<boolean>(false)
   const [showFilters, setShowFilters] = useState<boolean>(false)
@@ -44,7 +32,7 @@ const ImageToolbar = ({
   useHotkeys('shift+-', () => zoomOut(), [objects, index, object])
   useHotkeys('shift+0', () => zoomFit(), [objects, index, object])
 
-  const onScale = (_object: PObject, zoom: number) => {
+  const scale = (_object: PObject, width: string, left = '0px', top = '0px') => {
     updateObject({
       object: {
         ..._object,
@@ -52,42 +40,48 @@ const ImageToolbar = ({
           ..._object.props,
           imageStyle: {
             ..._object.props.imageStyle,
-            transform: `scale(${zoom})`,
-            scale: zoom,
+            width,
+            left,
+            top,
           },
         },
       },
     })
-    if (_zoom) {
-      _zoom.action(zoom)
-    }
     updateHistory(UPDATE_OBJECT, { object })
   }
   const zoomIn = () => {
     if (!object) return false
     const _object = objects[index]
     const { imageStyle } = _object.props
-    onScale(_object, (imageStyle.scale || 1) + 0.1)
+    scale(_object, `${parseFloat(`${imageStyle.width}`) + 10}%`, `${imageStyle.left || 0}`, `${imageStyle.top || 0}`)
     return true
   }
 
   const zoomFit = () => {
     if (!object) return false
     const _object = objects[index]
-    onScale(_object, 1)
+    scale(_object, '100%')
     return true
   }
 
   const zoomOut = () => {
     if (!object) return false
     const _object = objects[index]
-    const {
-      imageStyle: { scale = 0 },
-    } = _object.props
-    if (scale > 1) {
-      onScale(_object, scale - 0.1)
-    } else {
-      onScale(_object, 1)
+    const { imageStyle } = _object.props
+    const width = parseFloat(imageStyle.width + '')
+    const left = parseFloat(imageStyle.left + '')
+    const top = parseFloat(imageStyle.top + '')
+    const viewWidth = parseFloat(_object.style?.width + '')
+    const viewHeight = parseFloat(_object.style?.height + '')
+    const placeholder = object.firstChild as HTMLElement
+    const { height } = placeholder.childNodes[2] as HTMLImageElement
+
+    const imageWidth = (viewWidth / 100) * Math.abs(width - 10) - Math.abs(left)
+    const imageHeight = height * 0.9 - Math.abs(top)
+    if (width > 100) {
+      const _left = imageWidth < viewWidth ? left - imageWidth + viewWidth : left
+      const _top = imageHeight < viewHeight ? top - imageHeight + viewHeight : top
+      scale(_object, `${parseFloat(`${imageStyle.width}`) - 10}%`, `${_left}px`, `${_top}px`)
     }
     return true
   }

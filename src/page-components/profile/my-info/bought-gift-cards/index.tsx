@@ -52,7 +52,10 @@ const BoughtGiftCards: FC<Props> = () => {
                   </span>
                 </div>
                 <span className="flex gap-2 ml-auto self-center">
-                  <FormattedMessage id="code" />: <span className="filter blur-sm hover:blur-0">{item.code}</span>
+                  <FormattedMessage id="code" />:{' '}
+                  <button className="cursor-pointer filter blur-sm focus:blur-0 outline-none" type="button">
+                    {item.code}
+                  </button>
                   <CustomButton
                     className="text-base text-gray-500 hover:text-gray-800 focus:outline-none"
                     onClick={() => {

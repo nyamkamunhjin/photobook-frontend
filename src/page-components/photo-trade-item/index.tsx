@@ -19,7 +19,7 @@ const PhotoTradeItem: FC<Props> = ({ tradePhoto }) => {
       <div className="w-full py-20 px-24 bg-gray-100 shadow-inner">
         <Zoom wrapStyle={{ width: '100%' }}>
           <img
-            className="w-full shadow-2xl focus:outline-none"
+            className="w-full shadow-3xl focus:outline-none"
             src={`${process.env.REACT_APP_PUBLIC_IMAGE}${tradePhoto.data?.imageUrl}`}
             alt={tradePhoto.data?.photoName}
           />

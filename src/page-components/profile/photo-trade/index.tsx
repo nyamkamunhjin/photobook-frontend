@@ -7,8 +7,9 @@ import { TradePhoto } from 'interfaces'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { currencyFormat } from 'utils'
-import UploadPhoto from 'pages/photo-trade/upload-photo'
-import { CustomButton, PhotoTradeStatus } from 'components'
+import UploadPhoto from 'page-components/photo-trade/upload-photo'
+import { PhotoTradeStatus } from 'components'
+import EditPhoto from 'page-components/photo-trade/edit-photo'
 
 const PhotoTrade: React.FC = () => {
   const sellingPhotos = useRequest(listUserSellingPhotos, {
@@ -73,7 +74,7 @@ const PhotoTrade: React.FC = () => {
             <FormattedMessage id="selling_photos" />
           </span>
           <div className="ml-auto">
-            <UploadPhoto />
+            <UploadPhoto refreshCallback={() => sellingPhotos.refresh()} />
           </div>
         </div>
         <ConfigProvider
@@ -113,6 +114,7 @@ const PhotoTrade: React.FC = () => {
                     </div>
 
                     <span className="w-full max-w-xs truncate">{item.description}</span>
+
                     <span className="w-full max-w-xs">
                       <FormattedMessage id="price" />: {currencyFormat(item.price)} ₮
                     </span>
@@ -122,15 +124,27 @@ const PhotoTrade: React.FC = () => {
                   </div>
 
                   <div className="ml-auto">
-                    <CustomButton className="btn-warning">
+                    {/* <CustomButton className="btn-warning" onClick={() => setPhotoId(item.id)}>
                       <FormattedMessage id="edit" />
-                    </CustomButton>
+                    </CustomButton> */}
+                    <EditPhoto id={item.id.toString()} refreshCallback={() => sellingPhotos.refresh()} />
                   </div>
                 </div>
               </List.Item>
             )}
           />
         </ConfigProvider>
+        {/* <Modal
+          className="w-full max-w-6xl"
+          bodyStyle={{ padding: 0 }}
+          closable={false}
+          centered
+          visible={!!photoId}
+          onCancel={() => setPhotoId(undefined)}
+          footer={false}
+        >
+          <EditPhoto />
+        </Modal> */}
       </div>
     </div>
   )

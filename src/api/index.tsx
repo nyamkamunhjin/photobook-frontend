@@ -401,7 +401,7 @@ export const updateProject = async (id: number, data: Object) => {
 
 export const updateProjectSlides = async (id: number, data: Object) => {
   const response = await BaseRequest({
-    url: `project/${id}/print/slides`,
+    url: `project/${id}/slides`,
     method: 'PUT',
     data,
   })
@@ -1393,6 +1393,15 @@ export const buyPhoto = async (id: string) => {
   const response = await BaseRequest({
     url: `trade-photo/buy/${id}`,
     method: 'PUT',
+  })
+  return response?.data
+}
+
+export const editPhoto = async (id: string, data: Partial<TradePhoto>) => {
+  const response = await BaseRequest({
+    url: `trade-photo/${id}`,
+    method: 'PUT',
+    data,
   })
   return response?.data
 }

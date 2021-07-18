@@ -1,4 +1,4 @@
-import { Button, Popover } from 'antd'
+import { Popover } from 'antd'
 import { Locales, RootInterface } from 'interfaces'
 import { useDispatch, useSelector } from 'react-redux'
 import React, { ReactNode } from 'react'

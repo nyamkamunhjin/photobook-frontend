@@ -11,6 +11,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons'
 import { FormattedMessage } from 'react-intl'
+import { FaRegCircle } from 'react-icons/fa'
 import { Popover, Button } from 'antd'
 import { LayoutsInterface } from 'interfaces'
 import SlideSettings from './settings'
@@ -115,7 +116,7 @@ const SideButtons: React.FC<Props> = ({
         )}
         {createEclipse && (
           <div hidden={!createEclipse} onClick={createEclipse} className="item">
-            <BorderOutlined style={{ fontSize: 24 }} />
+            <FaRegCircle style={{ fontSize: 24 }} />
             <FormattedMessage id="eclipse" />
           </div>
         )}

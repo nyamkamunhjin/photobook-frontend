@@ -9,6 +9,7 @@ import { imageOnError } from 'utils'
 
 interface Props {
   scale: number
+  zoom: number
   object: SlideObject
   updateObject?: (props: { object: PObject }) => void
   updateHistory?: (historyType: string, props: any) => void
@@ -41,13 +42,11 @@ const Image: React.FC<Props> = ({
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
   const [overflow, setOverflow] = useState<string>('hidden')
-
   const imageReposition = (e: any) => {
     document.body.style.cursor = 'grab'
     const circle = e.target
     circle.style.display = 'none'
     setOverflow('unset')
-
     const _object = document.getElementById(object.id) as HTMLElement
     const placeholder = _object.firstChild as HTMLElement
     const image = placeholder.childNodes[2] as HTMLElement
@@ -64,12 +63,12 @@ const Image: React.FC<Props> = ({
       const deltaY = clientY - startY
 
       const { top, left, width: _width, height: _height } = getComputedStyle(image)
-
+      const zoom = parseFloat(image.style.transform?.match(/scale\(([^)]+)\)/)?.[1] || '1')
       let t = parseFloat(top)
       let l = parseFloat(left)
 
-      const heightDiff = parseFloat(pHeight) - parseFloat(_height)
-      const widthDiff = parseFloat(pWidth) - parseFloat(_width)
+      const heightDiff = parseFloat(pHeight) - parseFloat(_height) * zoom
+      const widthDiff = parseFloat(pWidth) - parseFloat(_width) * zoom
 
       t += deltaY
       l += deltaX
@@ -169,8 +168,8 @@ const Image: React.FC<Props> = ({
         style={{
           ...imageStyle,
           filter: _filter,
-          // WebkitMaskSize: `${width - _borderWidth * 2}px ${height - _borderWidth * 2}px`,
           WebkitMaskSize: 'contain',
+          transformOrigin: 'left top',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
         }}
@@ -188,7 +187,6 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
-      {/* <div style={{borderColor, borderWidth, opacity}} className="frame"></div> */}
       <div
         style={{
           visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',

@@ -26,16 +26,19 @@ const Background: React.FC<Props> = ({ bg, bgStyles, updateBackground }) => {
       className={`background ${bg.className}`}
       style={{
         ...bgStyles[bg.className],
+        ...bg.bgStyle,
         display: bg.imageurl ? 'block' : 'none',
       }}
     >
-      <img
-        data-imageurl={bg.imageurl}
-        src={bg.src}
-        style={bg.style}
-        onError={(e) => imageOnError(e, bg.imageurl, updateUrl)}
-        alt={bg.className}
-      />
+      {bg.src && bg.src?.length > 0 && (
+        <img
+          data-imageurl={bg.imageurl}
+          src={bg.src}
+          style={bg.style as any}
+          onError={(e) => imageOnError(e, bg.imageurl, updateUrl)}
+          alt={bg.className}
+        />
+      )}
     </div>
   )
 }

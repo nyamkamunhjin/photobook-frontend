@@ -8,17 +8,17 @@ const OrderStatus: FC<Props> = ({ status }) => {
   const getColor = (value: typeof status) => {
     switch (value) {
       case 'unconfirmed':
-        return 'bg-gray-300'
+        return 'bg-gray-500'
       case 'confirmed':
-        return 'bg-lightblue-300'
+        return 'bg-lightblue-500'
       case 'created':
-        return 'bg-blue-300'
+        return 'bg-blue-500'
       case 'checked':
-        return 'bg-yellow-300'
+        return 'bg-yellow-500'
       case 'delivered':
-        return 'bg-green-300'
+        return 'bg-green-500'
       case 'expired':
-        return 'bg-red-300'
+        return 'bg-red-500'
       default:
         return 'bg-black'
     }

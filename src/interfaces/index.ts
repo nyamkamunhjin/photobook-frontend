@@ -48,8 +48,10 @@ export interface StyleType {
   borderImageSlice?: number
   maskImage?: string
   WebkitMaskImage?: string
+  transformOrigin?: string
   zIndex?: string
   filter?: string
+  scale?: number
 }
 
 export interface ProjectCreate {
@@ -88,6 +90,8 @@ export interface CollisionObject {
   key: string
   index: number
   vertical: boolean
+  position: number
+  magnet: number
 }
 
 export interface Container {
@@ -378,7 +382,8 @@ export interface Image {
 
 export interface BackgroundImage {
   className: string
-  style?: Object
+  style?: StyleType
+  bgStyle?: StyleType
   imageurl?: string
   src?: string
 }

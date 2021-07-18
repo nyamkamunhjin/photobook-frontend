@@ -49,6 +49,7 @@ interface Props {
   removeObject?: (props: { object: Object; container: Object }) => void
   setObject: (object: any) => void
   scaledContainerRef: any
+  backgroundEdit?: boolean
   slideContainerRef?: any
   groupRef: any
   canvasRef: any
@@ -60,6 +61,7 @@ interface Props {
   scale: number
   magnetX?: any
   magnetY?: any
+  zoom?: number
   double?: boolean
   _objectType?: ObjectType
   _border?: number
@@ -71,6 +73,7 @@ interface Props {
 }
 export default class Editor {
   _threshhold = 30
+  _zoom = 1
   _border = 0
   _rotaterDistance = 30
   _rotateAngle = 0
@@ -87,6 +90,7 @@ export default class Editor {
   slideViewRef: any
   slideContainerRef?: any
   scaledContainerRef: any
+  backgroundEdit?: boolean
   transformers: any = {
     n: 't',
     s: 'b',
@@ -106,7 +110,6 @@ export default class Editor {
   setObjectIndex: any
 
   scale: number
-
   _groupObjects: any
   setGroupObjects: any
 
@@ -146,7 +149,15 @@ export default class Editor {
     this.scaledContainerRef = props.scaledContainerRef
     this._groupStyles = props._groupStyles
     this.overflow = props.overflow
-    if (props._objectType) this._objectType = props._objectType
+    if (props.backgroundEdit !== undefined) {
+      this.backgroundEdit = props.backgroundEdit
+    }
+    if (props._objectType) {
+      this._objectType = props._objectType
+    }
+    if (props.zoom !== undefined) {
+      this._zoom = props.zoom
+    }
     if (props._isTextEditing !== undefined) {
       this._isTextEditing = props._isTextEditing
     }
@@ -162,6 +173,9 @@ export default class Editor {
     if (props._border) {
       this._border = props._border
     }
+    if (props.double !== undefined) {
+      this.double = props.double
+    }
     this.setOverflow = props.setOverflow
     this.removeObject = props.removeObject
     this.setObjectType = props.setObjectType
@@ -175,13 +189,9 @@ export default class Editor {
     this.setGroupStyles = props.setGroupStyles
     this.magnetX = props.magnetX
     this.magnetY = props.magnetY
-    if (props.double !== undefined) {
-      this.double = props.double
-    }
     this.magnetX = document.getElementById('magnetX')
     this.magnetY = document.getElementById('magnetY')
   }
-
   // #region [LayoutMethods]
   public changeLayout = (
     objects: Container[],
@@ -1219,88 +1229,50 @@ export default class Editor {
     if (elementX.size <= this._threshhold) {
       switch (elementX.key) {
         case 'tt':
-          if (elementX.index !== -1) {
-            size = ParseNumber(this.objects[elementX.index].style.top)
-          } else {
-            size = -this._border
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (move) {
             object.style.top = `${size}px`
           }
           break
         case 'ty':
-          if (elementX.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementX.index].style.top) +
-              ParseNumber(this.objects[elementX.index].style.height) / 2
-          } else {
-            size = ParseNumber(this.slideHeight) / 2
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (move) {
             object.style.top = `${size}px`
           }
           break
         case 'bb':
-          if (elementX.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementX.index].style.top) +
-              ParseNumber(this.objects[elementX.index].style.height)
-          } else {
-            size = ParseNumber(this.slideHeight)
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
           }
           break
         case 'by':
-          if (elementX.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementX.index].style.top) +
-              ParseNumber(this.objects[elementX.index].style.height) / 2
-          } else {
-            size = ParseNumber(this.slideHeight) / 2
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
           }
           break
         case 'tb':
-          if (elementX.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementX.index].style.top) +
-              ParseNumber(this.objects[elementX.index].style.height)
-          } else {
-            size = ParseNumber(this.slideHeight / 2)
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (move) {
             object.style.top = `${size}px`
           }
           break
         case 'bt':
-          if (elementX.index !== -1) {
-            size = ParseNumber(this.objects[elementX.index].style.top)
-          } else {
-            size = ParseNumber(this.slideHeight / 2)
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
           }
           break
         case 'yy':
-          if (elementX.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementX.index].style.top) +
-              ParseNumber(this.objects[elementX.index].style.height) / 2
-          } else {
-            size = ParseNumber(this.slideHeight / 2)
-          }
-          this.magnetX.style.top = `${size * this.scale}px`
+          size = elementX.position
+          this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.top = `${size - ParseNumber(this.objects[this._index].style.height) / 2}px`
           }
@@ -1313,86 +1285,51 @@ export default class Editor {
     if (elementY.size <= this._threshhold) {
       switch (elementY.key) {
         case 'rr':
-          if (elementY.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementY.index].style.left) +
-              ParseNumber(this.objects[elementY.index].style.width)
-          } else {
-            size = ParseNumber(this.slideWidth) + this._border
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (this._index !== undefined && move) {
-            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
+            object.style.left = `${size}px`
           }
           break
         case 'rx':
-          if (elementY.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementY.index].style.left) +
-              ParseNumber(this.objects[elementY.index].style.width) / 2
-          } else {
-            size = ParseNumber(this.slideWidth) / 2 + this._border
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (this._index !== undefined && move) {
-            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
+            object.style.left = `${size}px`
           }
           break
         case 'll':
-          if (elementY.index !== -1) {
-            size = ParseNumber(this.objects[elementY.index].style.left)
-          } else {
-            size = -this._border
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (move) {
+            console.log('size', elementX, elementY)
             object.style.left = `${size}px`
           }
           break
         case 'lx':
-          if (elementY.index !== -1) {
-            size = ParseNumber(this.objects[elementY.index].style.left) / 2
-          } else {
-            size = ParseNumber(this.slideWidth / 2)
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (move) {
             object.style.left = `${size}px`
           }
           break
         case 'rl':
-          if (elementY.index !== -1) {
-            size = ParseNumber(this.objects[elementY.index].style.left)
-          } else {
-            size = ParseNumber(this.slideHeight / 2)
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
           }
           break
         case 'lr':
-          if (elementY.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementY.index].style.left) +
-              ParseNumber(this.objects[elementY.index].style.width)
-          } else {
-            size = ParseNumber(this.slideHeight / 2)
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (move) {
             object.style.left = `${size}px`
           }
           break
         case 'xx':
-          if (elementY.index !== -1) {
-            size =
-              ParseNumber(this.objects[elementY.index].style.left) +
-              ParseNumber(this.objects[elementY.index].style.width) / 2
-          } else {
-            size = ParseNumber(this.slideHeight / 2)
-          }
-          this.magnetY.style.left = `${size * this.scale}px`
+          size = elementY.position
+          this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (this._index !== undefined && move) {
             object.style.left = `${size - ParseNumber(this.objects[this._index].style.width) / 2}px`
           }
@@ -1405,9 +1342,41 @@ export default class Editor {
 
     this.moveResizers({ object, objectType })
   }
+  public addCornerCollision = (element: OElement, minSizes: any[]) => {
+    if (this.double) {
+      minSizes.push(
+        diffRect(
+          element,
+          {
+            l: ParseNumber(this._border),
+            h: ParseNumber(this.slideHeight) - this._border,
+            w: ParseNumber(this.slideWidth / 2 - 30),
+            t: this._border,
+          },
+          -1,
+          this._border
+        )
+      )
+    } else {
+      minSizes.push(
+        diffRect(
+          element,
+          {
+            l: ParseNumber(this._border),
+            h: ParseNumber(this.slideHeight) - this._border,
+            w: ParseNumber(this.slideWidth) - this._border,
+            t: this._border,
+          },
+          -1,
+          this._border
+        )
+      )
+    }
+    return minSizes
+  }
   public moveCollisionObject = (object: any, objectType: string, element: OElement) => {
     if (this.objects && this._index !== undefined) {
-      const minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
+      let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
         if (i === this._index) return asn
         const { width = 0, left = 0, top = 0, height = 0 } = obj.style
         asn.push(
@@ -1419,23 +1388,13 @@ export default class Editor {
               w: ParseNumber(width),
               t: ParseNumber(top),
             },
-            i
+            i,
+            this._border
           )
         )
         return asn
       }, [])
-      minSizes.push(
-        diffRect(
-          element,
-          {
-            l: ParseNumber(this._border),
-            h: ParseNumber(this.slideHeight) - this._border,
-            w: this.double ? ParseNumber(this.slideWidth / 2 - 30) : ParseNumber(this.slideWidth) - this._border,
-            t: this._border,
-          },
-          -1
-        )
-      )
+      minSizes = this.addCornerCollision(element, minSizes)
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
@@ -1445,7 +1404,7 @@ export default class Editor {
   }
   public collisionDetecter = lodash.throttle((object: any, objectType: string, element: OElement) => {
     if (this.objects && this._index !== undefined) {
-      const minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
+      let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
         if (i === this._index) return asn
         const { width = 0, left = 0, top = 0, height = 0 } = obj.style
         asn.push(
@@ -1457,28 +1416,18 @@ export default class Editor {
               w: ParseNumber(width),
               t: ParseNumber(top),
             },
-            i
+            i,
+            this._border
           )
         )
         return asn
       }, [])
-      minSizes.push(
-        diffRect(
-          element,
-          {
-            l: ParseNumber(this._border),
-            h: ParseNumber(this.slideHeight) - this._border,
-            w: this.double ? ParseNumber(this.slideWidth / 2 - 30) : ParseNumber(this.slideWidth) - this._border,
-            t: this._border,
-          },
-          -1
-        )
-      )
+      minSizes = this.addCornerCollision(element, minSizes)
+
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
         .value()
-      console.log('aaaavaaaa', x, y)
       this.renderLines(object, objectType, true, x, y)
     }
   }, 500)
@@ -2026,24 +1975,23 @@ export default class Editor {
         const placeholder = this._object.firstChild as HTMLElement
         const image = placeholder.childNodes[2] as HTMLImageElement
         const _height = image.height - Math.abs(Number(_obj.props.imageStyle.top))
-
+        const _width = Number(`${image.style.width}`.replace('%', ''))
         if (
-          height - _height > 0 &&
-          't b bl br tl tr l r'.split(' ').includes(type) &&
-          (newSize.height > oldSize.height || newSize.width < oldSize.width || newSize.width > oldSize.width)
+          (image.naturalWidth > image.naturalHeight && height > width) ||
+          image.naturalWidth / image.naturalHeight > width / height
         ) {
-          const _width = Number(`${image.style.width}`.replace('%', ''))
-          if (width >= 100) {
-            image.style.width = `${((_width || 100) * height) / _height}%`
-            image.style.top = '0'
-            image.style.left = '0'
-          }
-        } else if (width >= 100 && 'r l br bl tr tl'.split(' ').includes(type)) {
+          const deltaWidth = ((_width / this._zoom || 100) * height) / _height
+          image.style.width = `${deltaWidth}%`
+          image.style.top = '0'
+          image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
+        } else {
           image.style.width = '100%'
+          image.style.left = '0'
+          image.style.top = `${-(image.height / this._zoom / 2 - height / 2)}px`
         }
       }
     },
-    100
+    500
   )
   public moveToolbar = (
     toolbar: any,

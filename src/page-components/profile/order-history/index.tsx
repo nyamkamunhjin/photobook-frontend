@@ -128,7 +128,7 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems, giftCardDiscount
                   </span>
                 </div>
               </div>
-              <div className="border-t border-gray-300 flex flex-col">
+              <div className="border-t border-gray-500 flex flex-col">
                 {item.appliedDiscountTypes.length > 0 && (
                   <span className="text-gray-500">
                     <FormattedMessage id="applied_discounts" />:{' '}

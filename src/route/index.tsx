@@ -99,6 +99,11 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
+    path: '/editor/montage',
+    component: LoadableLoader(() => import('pages/editor/montage')),
+    exact: true,
+  },
+  {
     path: '/editor/canvas',
     component: LoadableLoader(() => import('pages/editor/canvas')),
     exact: true,

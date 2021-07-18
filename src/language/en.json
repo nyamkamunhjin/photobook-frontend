@@ -15,11 +15,10 @@
   "no": "No",
   "yes": "Yes",
   "copied_to_clipboard": "Copied to clipboard",
-
+  "montage": "Montage",
   "create": "Create",
   "delete": "Delete",
   "update": "Update",
-
   "name": "Name",
   "code": "Code",
   "empty": "Empty",
@@ -27,87 +26,57 @@
   "is-freeze": "Freeze",
   "key": "Key",
   "settings": "Settings",
-
   "categories": "Categories",
   "category": "Category",
-
   "layouts": "Layouts",
   "layout": "Layout",
-
   "layout_category": "Layout Category",
   "layout_categories": "Layout Categories",
-
   "layout_file": "Layout File",
   "layout_files": "Layout Files",
-
   "clipart": "Clipart",
   "cliparts": "Cliparts",
-
   "clipart_category": "Clipart Category",
   "clipart_categories": "Clipart Categories",
-
   "clipart_file": "Clipart File",
   "clipart_files": "Clipart Files",
-
   "mask": "Mask",
   "masks": "Masks",
-
   "mask_category": "Mask Category",
   "mask_categories": "Mask Categories",
-
   "mask_file": "Mask File",
   "mask_files": "Mask Files",
-
   "editor": "Editor",
-
   "files": "Files",
   "file": "File",
-
   "background": "Background",
   "backgrounds": "Backgrounds",
-
   "background_category": "Background Category",
   "background_categories": "Background Categories",
-
   "background_file": "Background File",
   "background_files": "Background Files",
-
   "frame": "Frame",
   "frames": "Frames",
-
   "frame_category": "Frame Category",
   "frame_categories": "Frame Categories",
-
   "frame_file": "Frame File",
   "frame_files": "Frame Files",
-
   "log-out": "Log out",
-
   "image_url": "URL",
   "image_id": "Image ID",
   "image": "Image",
-
   "template": "Template",
   "templates": "Templates",
-
   "template_category": "Template Category",
   "template_categories": "Template Categories",
-
   "binding_type": "Binding Type",
-
   "paper_size": "Size",
-
   "paper_material": "Material",
-
   "cover_material": "Material",
-
   "cover_type": "Type",
-
   "frame_material": "Frame Material",
-
   "cover_material_color": "Color",
   "payment_amount_vat_included": "Payment Amount Vat Included",
-
   "upload": "Upload",
   "sell_photo": "Upload photo",
   "sell_count": "Sell Count",
@@ -115,16 +84,13 @@
   "owner": "Owner",
   "prompt.name": "Нэр оруулна уу",
   "prompt.name.placeholder": "Нэр",
-
   "new": "New",
   "popular": "Popular",
   "special": "Special",
-
   "order_history": "Order History",
   "my_projects": "My Projects",
   "my_cart": "My Cart",
   "my_info": "My Info",
-
   "order_summary": "Order summary",
   "shipping_fee": "Shipping fee",
   "vat_fee": "Vat fee",
@@ -145,10 +111,8 @@
   "user_discount": "User discount",
   "template_discount": "Template discount",
   "gift_card_discount": "Gift Card discount",
-
   "voucher_discount": "Voucher discount",
   "vouchers": "Vouchers",
-
   "credits": "Credits",
   "added_gift_card": "Added Gift Card",
   "removed_gift_card": "Removed Gift Card",
@@ -159,7 +123,6 @@
   "activate_gift_card": "Activate Gift Card",
   "activate": "Activate",
   "photo_by": "Photo by",
-
   "discount": "Discount",
   "used": "Used",
   "not_used": "Not Used",
@@ -168,19 +131,16 @@
   "discount_percent": "Discount Percent",
   "remove_voucher": "Remove Voucher",
   "voucher_removed": "Voucher Removed",
-
   "unconfirmed": "Unconfirmed",
   "confirmed": "Confirmed",
   "created": "Created",
   "checked": "Checked",
   "delivered": "Delivered",
   "expired": "Expired",
-
   "edit": "Edit",
   "add_to_cart": "Add to cart",
   "added_to_cart": "Added to cart",
   "order": "Order",
-
   "first_name": "First Name",
   "last_name": "Last Name",
   "avatar_url": "Avatar Url",
@@ -195,17 +155,14 @@
   "please_input_avatar_url": "Please input avatar url",
   "please_input_email": "Please input email",
   "please_input_phone_number": "Please input phone number",
-
   "required": "Required",
   "photo_name": "Photo Name",
-
   "connect_facebook": "Connect Facebook",
   "connect_google": "Connect Google",
   "social_accounts": "Social Accounts",
   "connected": "Connected",
   "addresses": "Addresses",
   "buy": "Buy",
-
   "add": "Add",
   "delivery_first_name": "First Name",
   "delivery_last_name": "Last Name",
@@ -217,7 +174,6 @@
   "please_input_additional_description": "Please input additional description",
   "additional_notes": "Addtional notes on the shipping address",
   "what_our_customers_are_saying": "What our customers are saying",
-
   "email_verified": "Email Verified",
   "verify_email": "Verify Email",
   "wrong_email": "Wrong Email",
@@ -229,13 +185,11 @@
   "sign_in_error": "Sign in error",
   "sign_up_success": "Sign up success",
   "sign_up_error": "Sign up error",
-
   "purchased_photos": "Purchased Photos",
   "selling_photos": "Selling Photos",
   "you_have_no_selling_photos": "You have no selling photos.",
   "search_by_user": "Search by user",
   "search_by_word": "Search by word",
-
   "type": "Type",
   "brightness": "brightness",
   "contrast": "Contrast",
@@ -366,5 +320,16 @@
   "controller.flip.horizontally": "Flip Horizontailly",
   "controller.flip.vertically": "Flip Vertically",
   "controller.reset.message": "This will undo all the changes you made to this photo. Are you sure?",
-  "controller.remove.message": "You are going to delete this photo from your project. Are you sure?"
+  "controller.remove.message": "You are going to delete this photo from your project. Are you sure?",
+  "slide_settings": "Slide Settings",
+  "done": "Done",
+  "careers": "Careers",
+  "contact": "Contact",
+  "terms_of_service": "Terms of Service",
+  "privacy_policy": "Privacy Policy",
+  "filter": "Filter",
+  "sort": "Sort",
+  "most_recent": "Most Recent",
+  "most_sold": "Most Sold",
+  "no_photos_found": "No Photos Found"
 }

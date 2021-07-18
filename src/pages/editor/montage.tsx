@@ -129,7 +129,6 @@ const BookEditor: React.FC<Props> = ({
 
   // states
   const [scale, setScale] = useState<number>(1)
-  const [zoom, setZoom] = useState(1)
   const [fitScale, setFitScale] = useState<number>(1)
   const [_objectType, setObjectType] = useState<ObjectType>('')
   const [_isTextEditing, setIsTextEditing] = useState<boolean>(false)
@@ -164,6 +163,7 @@ const BookEditor: React.FC<Props> = ({
   const editors = useMemo(() => {
     return new Editor({
       setTextObjectIndex,
+      backgroundEdit: editor.backgroundEdit,
       setObjectIndex,
       scale,
       overflow,
@@ -193,10 +193,9 @@ const BookEditor: React.FC<Props> = ({
       canvasRef,
       setGroupStyles,
       _object,
-      // double: true,
-      zoom,
+      double: true,
     })
-  }, [scale, slideHeight, slideWidth, zoom])
+  }, [scale, slideHeight, slideWidth])
 
   const saveTextBeforeUndo = () => {
     if (_index > -1 && _isTextEditing) {
@@ -342,6 +341,7 @@ const BookEditor: React.FC<Props> = ({
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
   }
+
   useEffect(() => {
     if (loading) return
     const debouncedHandleResize = debounce(function handleResize() {
@@ -429,10 +429,6 @@ const BookEditor: React.FC<Props> = ({
             object={_object}
             objectType={_objectType}
             index={_index}
-            zoom={{
-              state: zoom,
-              action: setZoom,
-            }}
             objects={objects}
             updateObject={updateObject}
             updateHistory={updateHistory}
@@ -541,7 +537,7 @@ const BookEditor: React.FC<Props> = ({
                                 updateHistory,
                                 saveObjects,
                                 scale,
-                                zoom,
+                                zoom: 1,
                               })}
                             </div>
                           )
@@ -554,7 +550,9 @@ const BookEditor: React.FC<Props> = ({
                 <div
                   className="group-selection"
                   ref={groupRef}
-                  onMouseDown={(e) => editors.selectionDragStart(e, containers)}
+                  onMouseDown={(e) => {
+                    if (editor.backgroundEdit) editors.selectionDragStart(e, containers)
+                  }}
                 />
                 <div className="active-border" />
                 <div className="page-border" />
