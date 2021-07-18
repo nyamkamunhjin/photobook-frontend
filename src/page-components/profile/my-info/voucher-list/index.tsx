@@ -36,7 +36,7 @@ const VoucherList: FC<Props> = () => {
           // eslint-disable-next-line no-nested-ternary
           const status = item.isUsed ? 'used' : isExpired ? 'expired' : 'not_used'
           // eslint-disable-next-line no-nested-ternary
-          const color = status === 'used' ? 'bg-gray-300' : status === 'expired' ? 'bg-red-300' : 'bg-green-300'
+          const color = status === 'used' ? 'bg-gray-500' : status === 'expired' ? 'bg-red-500' : 'bg-green-500'
 
           return (
             <List.Item className="rounded p-2 hover:bg-gray-50" key={item.id}>

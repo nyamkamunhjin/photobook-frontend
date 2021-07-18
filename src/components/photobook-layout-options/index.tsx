@@ -200,7 +200,7 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
               <div
                 className={`cursor-pointer w-28 focus:outline-none  ${
                   selectedState.coverMaterialColor?.id === each.id
-                    ? 'border-4 border-blue-300'
+                    ? 'border-4 border-blue-500'
                     : 'hover:border-green-200'
                 } `}
                 onClick={() => {

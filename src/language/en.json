@@ -326,5 +326,10 @@
   "careers": "Careers",
   "contact": "Contact",
   "terms_of_service": "Terms of Service",
-  "privacy_policy": "Privacy Policy"
+  "privacy_policy": "Privacy Policy",
+  "filter": "Filter",
+  "sort": "Sort",
+  "most_recent": "Most Recent",
+  "most_sold": "Most Sold",
+  "no_photos_found": "No Photos Found"
 }

@@ -326,5 +326,10 @@
   "careers": "Ажлын байр",
   "contact": "Холбогдох",
   "terms_of_service": "Үйлчилгээний нөхцөл",
-  "privacy_policy": "Нууцлалын бодлого"
+  "privacy_policy": "Нууцлалын бодлого",
+  "filter": "Шүүх",
+  "sort": " ",
+  "most_recent": "Сүүлд оруулсан",
+  "most_sold": "Их зарагдсан",
+  "no_photos_found": "Зураг олдсонгүй"
 }

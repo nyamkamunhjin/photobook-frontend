@@ -36,7 +36,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         </span>
       </div>
 
-      <hr className="border-t border-solid border-gray-300" />
+      <hr className="border-t border-solid border-gray-500" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="order_subtotal" />
@@ -76,7 +76,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         </>
       )}
 
-      <hr className="border-t border-solid border-gray-300" />
+      <hr className="border-t border-solid border-gray-500" />
       <div className="flex justify-between">
         <span className="text-sm font-light text-gray-700">
           <FormattedMessage id="shipping_fee" />
@@ -98,7 +98,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           {daysToDeliver} <FormattedMessage id="day" />
         </span>
       </div>
-      <hr className="border-t border-solid border-gray-300" />
+      <hr className="border-t border-solid border-gray-500" />
       {/* {giftCardUpdate?.update && (
         <>
           <div className="flex justify-between">

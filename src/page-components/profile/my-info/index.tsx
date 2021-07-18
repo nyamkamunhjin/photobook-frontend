@@ -180,7 +180,7 @@ const MyInfo: FC = () => {
             (user?.emailConfirmed ? (
               <CustomButton
                 className="btn-text cursor-default whitespace-nowrap"
-                icon={<HiCheck className="text-xl text-green-300" />}
+                icon={<HiCheck className="text-xl text-green-500" />}
                 iconPosition="right"
               >
                 <FormattedMessage id="email_verified" />

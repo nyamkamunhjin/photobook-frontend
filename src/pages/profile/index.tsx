@@ -48,7 +48,7 @@ const Profile: FC = () => {
               {user.avatarUrl ? (
                 <img className="rounded-full w-full h-full object-cover" src={user.avatarUrl} alt="profile" />
               ) : (
-                <div className="bg-green-300 rounded-full w-full h-full" />
+                <div className="bg-green-500 rounded-full w-full h-full" />
               )}
             </div>
 

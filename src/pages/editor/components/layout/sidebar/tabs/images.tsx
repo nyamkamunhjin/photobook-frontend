@@ -106,15 +106,15 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, link
             <div className="flex">
               <div
                 onClick={onZoomOut}
-                className="rounded p-1 shadow-sm border border-gray-300 rounded-r-none cursor-pointer"
+                className="rounded p-1 shadow-sm border border-gray-500 rounded-r-none cursor-pointer"
               >
-                <CgZoomOut className={zoom === 1 ? 'text-gray-300' : 'text-gray-500'} />
+                <CgZoomOut className={zoom === 1 ? 'text-gray-500' : 'text-gray-500'} />
               </div>
               <div
                 onClick={onZoomIn}
-                className="rounded p-1 shadow-sm border border-gray-300 rounded-l-none cursor-pointer"
+                className="rounded p-1 shadow-sm border border-gray-500 rounded-l-none cursor-pointer"
               >
-                <CgZoomIn className={zoom === 3 ? 'text-gray-300' : 'text-gray-500'} />
+                <CgZoomIn className={zoom === 3 ? 'text-gray-500' : 'text-gray-500'} />
               </div>
             </div>
           </div>
