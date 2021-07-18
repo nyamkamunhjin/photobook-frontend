@@ -322,5 +322,9 @@
   "controller.reset.message": "This will undo all the changes you made to this photo. Are you sure?",
   "controller.remove.message": "You are going to delete this photo from your project. Are you sure?",
   "slide_settings": "Slide Settings",
-  "done": "Done"
+  "done": "Done",
+  "careers": "Careers",
+  "contact": "Contact",
+  "terms_of_service": "Terms of Service",
+  "privacy_policy": "Privacy Policy"
 }

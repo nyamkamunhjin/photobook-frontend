@@ -38,6 +38,7 @@ module.exports = {
       padding: '2rem',
     },
     colors: {
+      inherit: 'inherit',
       lightblue: colors.sky,
       blue: colors.blue,
       green: colors.green,

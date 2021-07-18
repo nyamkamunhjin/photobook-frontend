@@ -322,5 +322,9 @@
   "controller.reset.message": "Та оруулсан өөрчлөлтүүдээ буцаахдаа итгэлтэй байна уу?",
   "controller.remove.message": "Та төслөөсөө энэ зургийг устгах уу?",
   "slide_settings": "Тохиргоо",
-  "done": "Дуусгах"
+  "done": "Дуусгах",
+  "careers": "Ажлын байр",
+  "contact": "Холбогдох",
+  "terms_of_service": "Үйлчилгээний нөхцөл",
+  "privacy_policy": "Нууцлалын бодлого"
 }
