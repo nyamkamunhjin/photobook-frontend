@@ -331,5 +331,7 @@
   "sort": " ",
   "most_recent": "Сүүлд оруулсан",
   "most_sold": "Их зарагдсан",
-  "no_photos_found": "Зураг олдсонгүй"
+  "no_photos_found": "Зураг олдсонгүй",
+  "filters": "Филтер",
+  "color_presets": "Өнгөний сонголтууд"
 }

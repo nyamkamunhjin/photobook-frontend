@@ -1,4 +1,4 @@
-import { FilterMap } from 'interfaces'
+import { ColorPreset, FilterMap } from 'interfaces'
 
 export const filters: FilterMap = {
   none: {
@@ -42,6 +42,19 @@ export const filters: FilterMap = {
     },
   },
 }
+
+export const colorPresets: ColorPreset[] = [
+  {
+    name: '1977',
+    style: { background: `green` },
+    filterStyle: { filter: `brightness(110%) contrast(110%) saturate(130%)` },
+  },
+  {
+    name: 'Aden',
+    style: { background: `linear-gradient( to right, rgba(66, 10, 14, 0.2) 1%, rgba(66, 10, 14, 0) 100% )` },
+    filterStyle: { filter: `brightness(120%) contrast(90%) saturate(85%) hue-rotate(20deg)` },
+  },
+]
 
 export const WideHorizontalLayout = {
   labelCol: { lg: 8, md: 10 },
