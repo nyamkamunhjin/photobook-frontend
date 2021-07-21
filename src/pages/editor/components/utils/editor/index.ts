@@ -1210,7 +1210,9 @@ export default class Editor {
     objectType: string,
     move: boolean,
     elementX: CollisionObject,
-    elementY: CollisionObject
+    elementY: CollisionObject,
+    isResize = false
+    // resizeSide?: string
   ) => {
     if (
       !this.objects ||
@@ -1228,13 +1230,18 @@ export default class Editor {
     if (elementY.size > this._threshhold) {
       this.magnetY.style.display = 'none'
     }
-
+    // console.log('isResize', isResize, 'elementX', elementX, 'elementY', elementY)
     let size = 0
     if (elementX.size <= this._threshhold) {
       switch (elementX.key) {
         case 'tt':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
+          if (isResize) {
+            object.style.height = `${Math.abs(
+              ParseNumber(object.style.height) + ParseNumber(object.style.top) - size
+            )}px`
+          }
           if (move) {
             object.style.top = `${size}px`
           }
@@ -1242,6 +1249,11 @@ export default class Editor {
         case 'ty':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
+          if (isResize) {
+            object.style.height = `${Math.abs(
+              ParseNumber(object.style.height) + ParseNumber(object.style.top) - size
+            )}px`
+          }
           if (move) {
             object.style.top = `${size}px`
           }
@@ -1249,20 +1261,29 @@ export default class Editor {
         case 'bb':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
-          if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
+          if (isResize) {
+            object.style.height = `${Math.abs(size - ParseNumber(object.style.top))}px`
+          } else if (this._index !== undefined && move) {
+            object.style.top = `${size - ParseNumber(object.style.height)}px`
           }
           break
         case 'by':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
-          if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
+          if (isResize) {
+            object.style.height = `${Math.abs(size - ParseNumber(object.style.top))}px`
+          } else if (this._index !== undefined && move) {
+            object.style.top = `${size - ParseNumber(object.style.height)}px`
           }
           break
         case 'tb':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
+          if (isResize) {
+            object.style.height = `${Math.abs(
+              ParseNumber(object.style.top) + ParseNumber(object.style.height) - size
+            )}px`
+          }
           if (move) {
             object.style.top = `${size}px`
           }
@@ -1270,15 +1291,17 @@ export default class Editor {
         case 'bt':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
-          if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height)}px`
+          if (isResize) {
+            object.style.height = `${Math.abs(size - ParseNumber(object.style.top))}px`
+          } else if (this._index !== undefined && move) {
+            object.style.top = `${size - ParseNumber(object.style.height)}px`
           }
           break
         case 'yy':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(this.objects[this._index].style.height) / 2}px`
+            object.style.top = `${size - ParseNumber(object.style.height) / 2}px`
           }
           break
         default:
@@ -1291,42 +1314,69 @@ export default class Editor {
         case 'rr':
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
-          if (this._index !== undefined && move) {
+          if (isResize) {
+            object.style.width = `${Math.abs(
+              size + ParseNumber(object.style.width) - ParseNumber(object.style.left)
+            )}px`
+          } else if (this._index !== undefined && move) {
             object.style.left = `${size}px`
           }
           break
         case 'rx':
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
-          if (this._index !== undefined && move) {
+          if (isResize) {
+            object.style.width = `${Math.abs(
+              size + ParseNumber(object.style.width) - ParseNumber(object.style.left)
+            )}px`
+          } else if (this._index !== undefined && move) {
             object.style.left = `${size}px`
           }
           break
         case 'll':
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
+          if (isResize) {
+            object.style.width = `${Math.abs(
+              ParseNumber(object.style.left) + ParseNumber(object.style.width) - size
+            )}px`
+          }
           if (move) {
-            console.log('size', elementX, elementY)
             object.style.left = `${size}px`
           }
           break
         case 'lx':
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
+          if (isResize) {
+            object.style.width = `${Math.abs(
+              ParseNumber(object.style.width) + ParseNumber(object.style.left) - size
+            )}px`
+          }
           if (move) {
             object.style.left = `${size}px`
           }
           break
         case 'rl':
+          // Double uyd do nothing buyu size auto ih uguh
+          if (elementY.index === -1) break
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
-          if (this._index !== undefined && move) {
-            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width)}px`
+          if (isResize) {
+            object.style.width = `${Math.abs(size - ParseNumber(object.style.left))}px`
+          } else if (this._index !== undefined && move) {
+            object.style.left = `${size - ParseNumber(object.style.width)}px`
           }
           break
         case 'lr':
+          if (elementY.index === -1) break
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
+          if (isResize) {
+            object.style.width = `${Math.abs(
+              ParseNumber(object.style.width) + ParseNumber(object.style.left) - size
+            )}px`
+          }
           if (move) {
             object.style.left = `${size}px`
           }
@@ -1335,7 +1385,7 @@ export default class Editor {
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (this._index !== undefined && move) {
-            object.style.left = `${size - ParseNumber(this.objects[this._index].style.width) / 2}px`
+            object.style.left = `${size - ParseNumber(object.style.width) / 2}px`
           }
           break
         default:
@@ -1345,7 +1395,7 @@ export default class Editor {
     }
     this.moveResizers({ object, objectType })
   }
-  public addCornerCollision = (element: OElement, minSizes: any[]) => {
+  public addCornerCollision = (element: OElement, minSizes: any[], isResize = false) => {
     if (this.double) {
       minSizes.push(
         diffRect(
@@ -1353,11 +1403,26 @@ export default class Editor {
           {
             l: ParseNumber(this._border),
             h: ParseNumber(this.slideHeight) - this._border,
-            w: ParseNumber(this.slideWidth / 2 - 30),
+            w: ParseNumber((this.slideWidth - 30) / 2),
             t: this._border,
           },
           -1,
-          this._border
+          this._border,
+          false,
+          isResize
+        ),
+        diffRect(
+          element,
+          {
+            l: ParseNumber(this._border + (this.slideWidth + 30) / 2),
+            h: ParseNumber(this.slideHeight) - this._border,
+            w: ParseNumber((this.slideWidth - 30) / 2),
+            t: this._border,
+          },
+          -1,
+          this._border,
+          true,
+          isResize
         )
       )
     } else {
@@ -1371,13 +1436,15 @@ export default class Editor {
             t: this._border,
           },
           -1,
-          this._border
+          this._border,
+          false,
+          isResize
         )
       )
     }
     return minSizes
   }
-  public moveCollisionObject = (object: any, objectType: string, element: OElement) => {
+  public moveCollisionObject = (object: any, objectType: string, element: OElement, isResize = false) => {
     if (this.objects && this._index !== undefined) {
       let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
         if (i === this._index) return asn
@@ -1392,22 +1459,24 @@ export default class Editor {
               t: ParseNumber(top),
             },
             i,
-            this._border
+            this._border,
+            false,
+            isResize
           )
         )
         return asn
       }, [])
-      minSizes = this.addCornerCollision(element, minSizes)
+      minSizes = this.addCornerCollision(element, minSizes, isResize)
+      console.log('minSizes', minSizes)
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
         .value()
-      // Urgeljlel bii minby 0 bwal daraginhiig n awarai
-      // minSizes-g ahin harah
-      this.renderLines(object, objectType, true, x, y)
+      console.log('X', x, 'Y', y)
+      this.renderLines(object, objectType, true, x, y, isResize)
     }
   }
-  public collisionDetecter = lodash.throttle((object: any, objectType: string, element: OElement) => {
+  public collisionDetecter = lodash.throttle((object: any, objectType: string, element: OElement, isResize = false) => {
     if (this.objects && this._index !== undefined) {
       let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
         if (i === this._index) return asn
@@ -1422,18 +1491,21 @@ export default class Editor {
               t: ParseNumber(top),
             },
             i,
-            this._border
+            this._border,
+            false,
+            isResize
           )
         )
         return asn
       }, [])
-      minSizes = this.addCornerCollision(element, minSizes)
-
+      minSizes = this.addCornerCollision(element, minSizes, isResize)
+      console.log('minSizes', minSizes)
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
         .value()
-      this.renderLines(object, objectType, true, x, y)
+      console.log('X', x, 'Y', y)
+      this.renderLines(object, objectType, true, x, y, isResize)
     }
   }, 500)
   public getObjectType = (classList: any): ObjectType => {
@@ -2207,9 +2279,7 @@ export default class Editor {
     }, 0)
   }
   // eslint-disable-next-line prettier/prettier
-  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[], isCanvas = false) => {
-    console.log('startResize', _index)
-
+  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[]) => {
     if (e.button !== 0 || _index === -1 || !this._object) return
 
     // For collisionBorder start
@@ -2219,8 +2289,6 @@ export default class Editor {
     this.magnetY = document.getElementById('magnetY')
     if (this._object) this.hideImageCircle(this._object)
     const objectType = this.getObjectType(object.firstElementChild?.classList)
-    // console.log('e.target', object.firstElementChild?.classList)
-    // console.log('objectType', objectType)
     this.setObjectType(objectType)
     this.hideBorder(e.target)
     this._object = object
@@ -2259,6 +2327,13 @@ export default class Editor {
       const deltaL = getLength(deltaX, deltaY)
       const isShiftKey = sube.shiftKey
       this.onResize(deltaL, alpha, rect, type, isShiftKey, _index, objects)
+      const { top: _top, left: _left, width: _width, height: _height } = getComputedStyle(object)
+      const _t = parseFloat(_top)
+      const _l = parseFloat(_left)
+      const _w = parseFloat(_width)
+      const _h = parseFloat(_height)
+      // eslint-disable-next-line prettier/prettier
+      this.collisionDetecter(object, objectType, { t: _t, l: _l, w: _w, h: _h }, true)
     }
 
     const onMouseUp = () => {
@@ -2272,16 +2347,14 @@ export default class Editor {
         this.updateObjectStyle(objects[_index])
       }
 
-      // Collision
-      if (!isCanvas) return
-
+      // Magnet
       const { top: _top, left: _left, width: _width, height: _height } = getComputedStyle(object)
       const _t = parseFloat(_top)
       const _l = parseFloat(_left)
       const _w = parseFloat(_width)
       const _h = parseFloat(_height)
       // eslint-disable-next-line prettier/prettier
-      this.moveCollisionObject(object, objectType, { t: _t, l: _l, w: _w, h: _h })
+      this.moveCollisionObject(object, objectType, { t: _t, l: _l, w: _w, h: _h }, true)
       if (_index > -1) {
         this.updateObjectStyle(o, object)
       }
