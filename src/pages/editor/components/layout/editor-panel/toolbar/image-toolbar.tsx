@@ -123,6 +123,9 @@ const ImageToolbar = ({
         props: {
           ..._object.props,
           colorPreset,
+          imageStyle: {
+            filter: colorPreset.filterStyle?.filter,
+          },
         },
       },
     })
@@ -355,25 +358,25 @@ const ImageToolbar = ({
                 <FormattedMessage id="color_presets" />
               </b>
             </span>
-            <div className="flex">
+            <div className="flex gap-2 p-2">
               {colorPresets.map((preset: ColorPreset) => (
-                <span
+                <div
                   className="cursor-pointer"
                   style={colorPreset?.name === preset.name ? { backgroundColor: '#d3d3d3' } : {}}
                   key={preset.name}
                   onClick={() => changeColorPreset(preset)}
                 >
-                  <div className="relative">
+                  <div className="w-16 relative flex items-center">
                     <div className="absolute mix-blend-screen w-full h-full" style={preset.style} />
                     <img
                       alt={preset.name}
                       style={preset.style}
-                      className={`filter-icon ${preset.name}`}
+                      className={`border-2 border-white border-solid ${preset.name} w-full h-full`}
                       src={filterImage}
                     />
                   </div>
                   <span className="filter-name">{preset.name}</span>
-                </span>
+                </div>
               ))}
             </div>
           </div>

@@ -191,7 +191,7 @@
   "sign_up_success": "Амжилттай бүртгүүллээ",
   "sign_up_error": "Бүртгүүлэхэд алдаа гарлаа",
   "type": "Төрөл",
-  "brightness": "Гэрэлтүүлэг",
+  "brightness": "Brightness",
   "contrast": "Contrast",
   "saturation": "Saturation",
   "toolbox.deleteImage": "Remove image from the design",

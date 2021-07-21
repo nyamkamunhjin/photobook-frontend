@@ -165,9 +165,9 @@ const Image: React.FC<Props> = ({
         <div
           className="absolute z-50 mix-blend-overlay"
           style={{
-            height: getComputedStyle(imageRef.current).height,
-            width: getComputedStyle(imageRef.current).width,
-            top: getComputedStyle(imageRef.current).top,
+            height: imageStyle.height,
+            width: imageStyle.width,
+            top: imageStyle.top,
             left: getComputedStyle(imageRef.current).left,
             ...object?.props?.colorPreset?.style,
           }}
@@ -185,7 +185,6 @@ const Image: React.FC<Props> = ({
           transformOrigin: 'left top',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
-          ...object?.props?.colorPreset?.filterStyle,
         }}
         src={tempUrl}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}
