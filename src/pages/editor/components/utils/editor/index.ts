@@ -1114,6 +1114,8 @@ export default class Editor {
     this.hideGroupSelection()
   }
   public startDrag = (e: any, o: any, index: number, objects?: PObject[]) => {
+    console.log('startDrag', index)
+
     if (objects) {
       this.objects = objects
     }
@@ -1124,6 +1126,8 @@ export default class Editor {
     this.magnetY = document.getElementById('magnetY')
     if (this._object) this.hideImageCircle(this._object)
     const objectType = this.getObjectType(e.target.firstChild?.classList)
+    // console.log('e.target', e.target.firstChild.classList)
+    // console.log('objectType', objectType)
     this.setObjectType(objectType)
     let startX = e.clientX / this.scale
     let startY = e.clientY / this.scale
@@ -1339,7 +1343,6 @@ export default class Editor {
       }
       this.renderLine(false)
     }
-
     this.moveResizers({ object, objectType })
   }
   public addCornerCollision = (element: OElement, minSizes: any[]) => {
@@ -1399,6 +1402,8 @@ export default class Editor {
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
         .value()
+      // Urgeljlel bii minby 0 bwal daraginhiig n awarai
+      // minSizes-g ahin harah
       this.renderLines(object, objectType, true, x, y)
     }
   }
@@ -2201,14 +2206,32 @@ export default class Editor {
       this.moveToolbar(toolbar, options, { t, l, w, h, maxY })
     }, 0)
   }
-  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[]) => {
+  // eslint-disable-next-line prettier/prettier
+  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[], isCanvas = false) => {
+    console.log('startResize', _index)
+
     if (e.button !== 0 || _index === -1 || !this._object) return
 
+    // For collisionBorder start
+    const o = objects[_index]
+    const object = document.getElementById(o.id) as HTMLDivElement
+    this.magnetX = document.getElementById('magnetX')
+    this.magnetY = document.getElementById('magnetY')
+    if (this._object) this.hideImageCircle(this._object)
+    const objectType = this.getObjectType(object.firstElementChild?.classList)
+    // console.log('e.target', object.firstElementChild?.classList)
+    // console.log('objectType', objectType)
+    this.setObjectType(objectType)
+    this.hideBorder(e.target)
+    this._object = object
+    this.setObjectIndex(_index)
+    this.setObject(object)
+    this.showImageCircle(e.target, objectType)
+    // For collisionBorder end
     document.body.style.cursor = cursor
     const startX = e.clientX / this.scale
     const startY = e.clientY / this.scale
     const { top: t, left: l, width: w, height: h } = getComputedStyle(this._object)
-
     const { rotateAngle } = objects[_index].style
 
     const {
@@ -2248,6 +2271,24 @@ export default class Editor {
       if (_index > -1) {
         this.updateObjectStyle(objects[_index])
       }
+
+      // Collision
+      if (!isCanvas) return
+
+      const { top: _top, left: _left, width: _width, height: _height } = getComputedStyle(object)
+      const _t = parseFloat(_top)
+      const _l = parseFloat(_left)
+      const _w = parseFloat(_width)
+      const _h = parseFloat(_height)
+      // eslint-disable-next-line prettier/prettier
+      this.moveCollisionObject(object, objectType, { t: _t, l: _l, w: _w, h: _h })
+      if (_index > -1) {
+        this.updateObjectStyle(o, object)
+      }
+      setTimeout(() => {
+        this.magnetX.style.display = 'none'
+        this.magnetY.style.display = 'none'
+      }, 300)
     }
 
     document.addEventListener('mousemove', onMouseMove)

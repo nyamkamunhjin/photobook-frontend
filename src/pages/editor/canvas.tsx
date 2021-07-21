@@ -471,7 +471,7 @@ const BookEditor: React.FC<Props> = ({
                     <div
                       key={t}
                       style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects)}
+                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, true)}
                       className={`resize ${resize}`}
                     />
                   )
