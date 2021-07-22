@@ -1126,8 +1126,6 @@ export default class Editor {
     this.magnetY = document.getElementById('magnetY')
     if (this._object) this.hideImageCircle(this._object)
     const objectType = this.getObjectType(e.target.firstChild?.classList)
-    // console.log('e.target', e.target.firstChild.classList)
-    // console.log('objectType', objectType)
     this.setObjectType(objectType)
     let startX = e.clientX / this.scale
     let startY = e.clientY / this.scale
@@ -1170,7 +1168,7 @@ export default class Editor {
       const w = parseFloat(width)
       const h = parseFloat(height)
 
-      this.moveCollisionObject(object, objectType, { t, l, w, h })
+      this.moveCollisionObject(object, objectType, { t, l, w, h }, false)
       if (index > -1) {
         this.updateObjectStyle(o, object)
       }
@@ -1194,7 +1192,7 @@ export default class Editor {
     object.style.top = t + deltaY + 'px'
     object.style.left = l + deltaX + 'px'
     this.moveResizers({ object, objectType })
-    this.collisionDetecter(object, objectType, { t, l, w, h })
+    this.collisionDetecter(object, objectType, { t, l, w, h }, false)
   }
 
   public renderLine = (isHorizontal: boolean) => {
@@ -2522,7 +2520,11 @@ export default class Editor {
   public onSlideMouseDown = (e: any, _index: number, containers: Container[]) => {
     if (e.target.classList.contains('image-center')) return
 
-    if (e.target.id === 'scaled_container' || e.target.id === 'canvas_container') {
+    if (
+      e.target.id === 'scaled_container' ||
+      e.target.id === 'canvas_container' ||
+      (e.target.closest('#scaled_container') && !e.target.classList.contains('object'))
+    ) {
       this.hideImageCircle(this._object)
       if (_index > -1 && this._isTextEditing) {
         this.setTextObjectIndex(_index)
@@ -2533,6 +2535,7 @@ export default class Editor {
         this.setIsTextEditing(false)
         window.getSelection()?.removeAllRanges()
       }
+
       this.deSelectObject()
     }
 

@@ -1,4 +1,4 @@
-import { CollisionObject, LayoutObject, OElement, Slide } from 'interfaces'
+import { LayoutObject, OElement, Slide } from 'interfaces'
 import { ParseNumber } from 'utils'
 import lodash from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
@@ -565,7 +565,12 @@ export const diffRect = (
         }
       case 'rl':
         return {
-          size: Math.abs(b.l - a.l - a.w),
+          size: (() => {
+            if (index === -1 && isRightSide) {
+              return 10000
+            }
+            return Math.abs(b.l - a.l - a.w)
+          })(),
           key,
           index,
           vertical: true,
@@ -574,7 +579,12 @@ export const diffRect = (
         }
       case 'lr':
         return {
-          size: Math.abs(a.l - b.l - b.w),
+          size: (() => {
+            if (index === -1 && !isRightSide) {
+              return 1000
+            }
+            return Math.abs(a.l - b.l - b.w)
+          })(),
           key,
           index,
           vertical: true,
