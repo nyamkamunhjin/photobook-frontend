@@ -1115,8 +1115,6 @@ export default class Editor {
   }
 
   public onSelect = (e: any, o: any, index: number, objects?: PObject[]) => {
-    console.log('startDrag', index)
-
     if (objects) {
       this.objects = objects
     }
@@ -1133,18 +1131,21 @@ export default class Editor {
     this.setObjectIndex(index)
     this._index = index
     this.setObject(object)
-    // this.showImageCircle(e.target, objectType)
 
     this._isMouseDown = true
 
     const toolbar: any = document.querySelector('.toolbar')
-    if (toolbar?.style?.display === 'none') {
-      toolbar.style.display = 'block'
-    } else {
-      toolbar.style.display = 'block'
-    }
+    if (toolbar) {
+      if (toolbar.style.display === 'none' || !toolbar.style.display) {
+        toolbar.style.display = 'flex'
+      } else if (toolbar.style.display === 'flex') {
+        toolbar.style.display = 'none'
+      }
 
-    this.moveToolbar(toolbar, {}, { t: 0, l: 0, w: 0, h: 0, maxY: 0 })
+      toolbar.style.position = 'absolute'
+      toolbar.style.top = `0px`
+      toolbar.style.left = `calc(50% - 190px)`
+    }
   }
 
   public startDrag = (e: any, o: any, index: number, objects?: PObject[]) => {
