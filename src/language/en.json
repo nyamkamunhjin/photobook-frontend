@@ -201,7 +201,7 @@
   "toolbox.zoomFit": "Fit the image with in the photo slot",
   "toolbox.left": "Rotate Left",
   "toolbox.right": "Rotate Right",
-  "toolbox.flit": "Flit Image",
+  "toolbox.flip": "Flip Image",
   "toolbox.redTrans": "Reduce transparency",
   "toolbox.incTrans": "Increase transparency",
   "toolbox.frame": "Frame",

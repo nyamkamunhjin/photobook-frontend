@@ -1113,6 +1113,40 @@ export default class Editor {
     this.hideActiveBorder()
     this.hideGroupSelection()
   }
+
+  public onSelect = (e: any, o: any, index: number, objects?: PObject[]) => {
+    console.log('startDrag', index)
+
+    if (objects) {
+      this.objects = objects
+    }
+    if (this._isTextEditing && e.target.nodeName === 'P') return
+    if (e.target.classList.contains('image-center')) return
+    const object = document.getElementById(o.id) as HTMLDivElement
+
+    if (this._object) this.hideImageCircle(this._object)
+    const objectType = this.getObjectType(e.target.firstChild?.classList)
+    this.setObjectType(objectType)
+
+    this.hideBorder(e.target)
+    this._object = object
+    this.setObjectIndex(index)
+    this._index = index
+    this.setObject(object)
+    // this.showImageCircle(e.target, objectType)
+
+    this._isMouseDown = true
+
+    const toolbar: any = document.querySelector('.toolbar')
+    if (toolbar?.style?.display === 'none') {
+      toolbar.style.display = 'block'
+    } else {
+      toolbar.style.display = 'block'
+    }
+
+    this.moveToolbar(toolbar, {}, { t: 0, l: 0, w: 0, h: 0, maxY: 0 })
+  }
+
   public startDrag = (e: any, o: any, index: number, objects?: PObject[]) => {
     console.log('startDrag', index)
 
