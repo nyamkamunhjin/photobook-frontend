@@ -7,11 +7,11 @@ import { GiFairyWand } from 'react-icons/gi'
 import { VscZoomIn, VscZoomOut, VscScreenFull } from 'react-icons/vsc'
 import { BsSubtract } from 'react-icons/bs'
 import { InputNumber, Slider, Tooltip } from 'antd'
-import { PObject } from 'interfaces'
+import { ColorPreset, PObject } from 'interfaces'
 import { ColorResult, SketchPicker } from 'react-color'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
-import { filters } from 'configs'
+import { colorPresets, filters } from 'configs'
 
 interface Props {
   index: number
@@ -104,6 +104,27 @@ const ImageToolbar = ({
             ..._object.props.imageStyle,
             ...filters[filter].style,
             filterName: filter,
+          },
+        },
+      },
+    })
+
+    updateHistory(UPDATE_OBJECT, { object })
+    return true
+  }
+
+  const changeColorPreset = (colorPreset?: ColorPreset) => {
+    console.log(colorPreset)
+    if (!object || !colorPreset) return false
+    const _object = objects[index]
+    updateObject({
+      object: {
+        ..._object,
+        props: {
+          ..._object.props,
+          colorPreset,
+          imageStyle: {
+            filter: colorPreset.filterStyle?.filter,
           },
         },
       },
@@ -238,6 +259,7 @@ const ImageToolbar = ({
 
   const _object = objects[index]
   const imageStyle = _object?.props.imageStyle
+  const colorPreset = _object?.props.colorPreset
   const frameStyle = _object?.props?.frameStyle
   const hasFrameImage = !!_object?.props?.frameImage?.length
   const { brightness = 100, contrast = 100, saturation = 100, opacity = '100%' } = imageStyle || {}
@@ -306,22 +328,57 @@ const ImageToolbar = ({
               </span>
             </span>
           </div>
-          <div className="filters">
-            {Object.keys(filters).map((k: string) => (
-              <span
-                style={imageStyle?.filterName === k ? { backgroundColor: '#d3d3d3' } : {}}
-                key={k}
-                onClick={() => changeFilter(k)}
-              >
-                <img
-                  alt={k}
-                  style={{ ...filters[k].style }}
-                  className={`filter-icon ${filters[k]}`}
-                  src={filterImage}
-                />
-                <span className="filter-name">{k}</span>
-              </span>
-            ))}
+          <div className="flex flex-col filters my-2">
+            <span>
+              <b>
+                <FormattedMessage id="filters" />
+              </b>
+            </span>
+            <div className="flex">
+              {Object.keys(filters).map((k: string) => (
+                <span
+                  style={imageStyle?.filterName === k ? { backgroundColor: '#d3d3d3' } : {}}
+                  key={k}
+                  onClick={() => changeFilter(k)}
+                >
+                  <img
+                    alt={k}
+                    style={{ ...filters[k].style }}
+                    className={`filter-icon ${filters[k]}`}
+                    src={filterImage}
+                  />
+                  <span className="filter-name">{k}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col filters my-2">
+            <span>
+              <b>
+                <FormattedMessage id="color_presets" />
+              </b>
+            </span>
+            <div className="flex gap-2 p-2">
+              {colorPresets.map((preset: ColorPreset) => (
+                <div
+                  className="cursor-pointer"
+                  style={colorPreset?.name === preset.name ? { backgroundColor: '#d3d3d3' } : {}}
+                  key={preset.name}
+                  onClick={() => changeColorPreset(preset)}
+                >
+                  <div className="w-16 relative flex items-center">
+                    <div className="absolute mix-blend-screen w-full h-full" style={preset.style} />
+                    <img
+                      alt={preset.name}
+                      style={preset.style}
+                      className={`border-2 border-white border-solid ${preset.name} w-full h-full`}
+                      src={filterImage}
+                    />
+                  </div>
+                  <span className="filter-name">{preset.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </span>
       </div>

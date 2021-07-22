@@ -191,7 +191,7 @@
   "sign_up_success": "Амжилттай бүртгүүллээ",
   "sign_up_error": "Бүртгүүлэхэд алдаа гарлаа",
   "type": "Төрөл",
-  "brightness": "Гэрэлтүүлэг",
+  "brightness": "Brightness",
   "contrast": "Contrast",
   "saturation": "Saturation",
   "toolbox.deleteImage": "Remove image from the design",
@@ -331,5 +331,7 @@
   "sort": " ",
   "most_recent": "Сүүлд оруулсан",
   "most_sold": "Их зарагдсан",
-  "no_photos_found": "Зураг олдсонгүй"
+  "no_photos_found": "Зураг олдсонгүй",
+  "filters": "Филтер",
+  "color_presets": "Өнгөний сонголтууд"
 }

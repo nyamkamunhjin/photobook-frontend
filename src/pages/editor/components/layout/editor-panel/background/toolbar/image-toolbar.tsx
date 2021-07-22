@@ -7,11 +7,11 @@ import { GiFairyWand } from 'react-icons/gi'
 import { VscZoomIn, VscZoomOut, VscScreenFull } from 'react-icons/vsc'
 import { BsSubtract } from 'react-icons/bs'
 import { InputNumber, Slider, Tooltip } from 'antd'
-import { PObject } from 'interfaces'
+import { ColorPreset, PObject } from 'interfaces'
 import { ColorResult, SketchPicker } from 'react-color'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
-import { filters } from 'configs'
+import { colorPresets, filters } from 'configs'
 
 interface Props {
   index: number
@@ -315,6 +315,27 @@ const ImageToolbar = ({ index, object, objects, removeImageFromObject, updateHis
                 />
                 <span className="filter-name">{k}</span>
               </span>
+            ))}
+          </div>
+          <div className="filters">
+            {colorPresets.map((preset: ColorPreset) => (
+              <div
+
+              // style={imageStyle?.filterName === preset ? { backgroundColor: '#d3d3d3' } : {}}
+              // key={preset}
+              // onClick={() => changeFilter(preset)}
+              >
+                <div className="relative">
+                  <div className="absolute mix-blend-screen w-full h-full" style={preset.style} />
+                  <img
+                    alt={preset.name}
+                    style={preset.style}
+                    className={`filter-icon ${preset.name}`}
+                    src={filterImage}
+                  />
+                </div>
+                <span className="filter-name">{preset.name}</span>
+              </div>
             ))}
           </div>
         </span>
