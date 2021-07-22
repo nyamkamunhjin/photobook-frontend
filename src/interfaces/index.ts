@@ -1,3 +1,5 @@
+import React from 'react'
+
 export type DomType = HTMLElement
 
 export type ObjectType = 'image' | 'object' | 'text' | 'shape' | ''
@@ -117,6 +119,7 @@ export interface Cropper {
 }
 export interface ObjectProps {
   className: string
+  colorPreset?: ColorPreset
   imageStyle: StyleType
   maskStyle?: StyleType
   maskImage?: string
@@ -397,6 +400,11 @@ export interface Filter {
 }
 export interface FilterMap {
   [x: string]: Filter
+}
+export interface ColorPreset {
+  name: string
+  style: React.CSSProperties
+  filterStyle?: React.CSSProperties
 }
 
 export interface EditorInterface {

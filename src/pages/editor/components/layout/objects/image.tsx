@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Tooltip } from 'antd'
 import { InfoCircleOutlined, PlusSquareOutlined } from '@ant-design/icons'
 import { BsArrowsMove } from 'react-icons/bs'
-import { PObject, SlideObject } from 'interfaces'
+import { ColorPreset, PObject, SlideObject } from 'interfaces'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { imageOnError } from 'utils'
 
@@ -18,6 +18,7 @@ interface Props {
   edit?: boolean
   tempUrl?: string
   imageUrl?: string
+  colorPreset?: ColorPreset
   imageStyle?: any
   updateUrl: (url: string) => void
   resolution: { width: number; height: number }
@@ -160,6 +161,18 @@ const Image: React.FC<Props> = ({
     >
       <div className="border" />
       <div className="background" style={placeholderStyle} hidden={!edit} />
+      {imageRef?.current && (
+        <div
+          className="absolute z-50 mix-blend-overlay"
+          style={{
+            height: imageStyle.height,
+            width: imageStyle.width,
+            top: imageStyle.top,
+            left: getComputedStyle(imageRef.current).left,
+            ...object?.props?.colorPreset?.style,
+          }}
+        />
+      )}
       <img
         ref={imageRef}
         alt="object"
