@@ -39,7 +39,7 @@ const ForgotPassword: React.FC = () => {
             <Input />
           </Form.Item>
           <Form.Item>
-            <CustomButton className="btn-warning" loading={loading} type="submit">
+            <CustomButton className="btn-primary" loading={loading} type="submit">
               <FormattedMessage id="send_password_change_link" />
             </CustomButton>
           </Form.Item>
