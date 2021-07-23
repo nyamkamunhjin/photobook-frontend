@@ -1,4 +1,4 @@
-import { CollisionObject, LayoutObject, OElement, Slide } from 'interfaces'
+import { LayoutObject, OElement, Slide } from 'interfaces'
 import { ParseNumber } from 'utils'
 import lodash from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
@@ -388,10 +388,12 @@ const ALIGNMENT_PROPS = {
   ty: 0,
   rr: 0,
   rx: 0,
+  // xr: 0,
   bb: 0,
   by: 0,
   ll: 0,
   lx: 0,
+  // xl: 0,
   tb: 0,
   bt: 0,
   rl: 0,
@@ -400,11 +402,25 @@ const ALIGNMENT_PROPS = {
   yy: 0,
 }
 
-export const diffRect = (a: OElement, b: OElement, index: number, border: number) => {
+export const diffRect = (
+  a: OElement,
+  b: OElement,
+  index: number,
+  border: number,
+  isRightSide = false,
+  isResize = false
+) => {
   const result = Object.keys(ALIGNMENT_PROPS).map((key) => {
     switch (key) {
       case 'tt':
-        return { size: Math.abs(a.t - b.t), key, index, vertical: false, position: index !== -1 ? b.t : -border }
+        return {
+          size: Math.abs(a.t - b.t),
+          key,
+          index,
+          vertical: false,
+          position: index !== -1 ? b.t : -border,
+          magnet: index !== -1 ? b.t : -border,
+        }
       case 'ty':
         return {
           size: Math.abs(a.t - b.t - b.h / 2),
@@ -456,8 +472,18 @@ export const diffRect = (a: OElement, b: OElement, index: number, border: number
           key,
           index,
           vertical: true,
-          position: index !== -1 ? b.l + b.w - a.w : b.w - a.w + border,
-          magnet: index !== -1 ? b.l + b.w : b.w + border,
+          // position: index !== -1 ? b.l + b.w - a.w : b.w - a.w + border,
+          position: (() => {
+            if (index !== -1) return b.l + b.w - a.w
+            if (!isRightSide) return b.w - a.w + border
+            return b.w + b.l - a.w
+          })(),
+          // magnet: index !== -1 ? b.l + b.w : b.w + border,
+          magnet: (() => {
+            if (index !== -1) return b.l + b.w
+            if (!isRightSide) return b.w + border
+            return b.w + b.l
+          })(),
         }
       case 'rx':
         return {
@@ -465,30 +491,86 @@ export const diffRect = (a: OElement, b: OElement, index: number, border: number
           key,
           index,
           vertical: true,
-          position: index !== -1 ? b.l + b.w / 2 - a.w : b.w / 2 - a.w,
-          magnet: index !== -1 ? b.l + b.w / 2 : b.w / 2 + border,
+          position: (() => {
+            if (index !== -1) return b.l + b.w / 2 - a.w
+            if (!isRightSide) return b.w / 2 - a.w
+            return b.l + b.w / 2 - a.w
+          })(),
+          magnet: (() => {
+            if (index !== -1) return b.l + b.w / 2
+            if (!isRightSide) return b.w / 2 + border
+            return b.w / 2 + b.l
+          })(),
         }
+      // case 'xr':
+      //   return {
+      //     size: Math.abs(b.l + b.w - a.l - a.w / 2),
+      //     key,
+      //     index,
+      //     vertical: true,
+      //     position: (() => {
+      //       if (index === -1) return b.w - a.w + border
+      //       if (!isResize) return b.l + b.w
+      //       if (resizeSide?.includes('e')) {
+      //         return a.l + (b.l + b.w - a.l) * 2
+      //       } else if (resizeSide?.includes('w')) {
+      //         return b.l + b.w - (a.l + a.w - b.l - b.w)
+      //       }
+      //       return ''
+      //     })(),
+      //     magnet: (() => {
+      //       if (index === -1) return b.w - a.w + border
+      //       if (!isResize) return b.l + b.w
+      //       if (resizeSide?.includes('e')) {
+      //         return a.l + (b.l + b.w - a.l) * 2
+      //       } else if (resizeSide?.includes('w')) {
+      //         return b.l + b.w - (a.l + a.w - b.l - b.w)
+      //       }
+      //       return ''
+      //     })(),
+      //   }
       case 'll':
         return {
           size: Math.abs(a.l - b.l),
           key,
           index,
           vertical: true,
-          position: index !== -1 ? b.l : border,
-          magnet: index !== -1 ? b.l : border,
+          position: (() => {
+            if (index !== -1) return b.l
+            if (!isRightSide) return border
+            return b.l
+          })(),
+          magnet: (() => {
+            if (index !== -1) return b.l
+            if (!isRightSide) return border
+            return b.l
+          })(),
         }
       case 'lx':
         return {
-          size: Math.abs(a.l - b.l - b.h / 2),
+          size: Math.abs(a.l - b.l - b.w / 2),
           key,
           index,
           vertical: true,
-          position: index !== -1 ? b.l + b.w / 2 : b.w / 2,
-          magnet: index !== -1 ? b.l + b.w / 2 : b.w / 2,
+          position: (() => {
+            if (index !== -1) return b.l + b.w / 2
+            if (!isRightSide) return b.w / 2
+            return b.w / 2 + b.l
+          })(),
+          magnet: (() => {
+            if (index !== -1) return b.l + b.w / 2
+            if (!isRightSide) return b.w / 2
+            return b.w / 2 + b.l
+          })(),
         }
       case 'rl':
         return {
-          size: Math.abs(b.l - a.l - a.w),
+          size: (() => {
+            if (index === -1 && isRightSide) {
+              return 10000
+            }
+            return Math.abs(b.l - a.l - a.w)
+          })(),
           key,
           index,
           vertical: true,
@@ -497,12 +579,17 @@ export const diffRect = (a: OElement, b: OElement, index: number, border: number
         }
       case 'lr':
         return {
-          size: Math.abs(a.l - b.l - b.w),
+          size: (() => {
+            if (index === -1 && !isRightSide) {
+              return 1000
+            }
+            return Math.abs(a.l - b.l - b.w)
+          })(),
           key,
           index,
           vertical: true,
-          position: index !== -1 ? b.l + b.w : b.h / 2,
-          magnet: index !== -1 ? b.l + b.w : b.h / 2,
+          position: index !== -1 ? b.l + b.w : b.w / 2,
+          magnet: index !== -1 ? b.l + b.w : b.w / 2,
         }
       case 'xx':
         return {
@@ -510,8 +597,16 @@ export const diffRect = (a: OElement, b: OElement, index: number, border: number
           key,
           index,
           vertical: true,
-          position: index !== -1 ? b.l + b.w / 2 : b.h / 2,
-          magnet: index !== -1 ? b.l + b.w / 2 : b.h / 2,
+          position: (() => {
+            if (index !== -1) return b.l + b.w / 2
+            if (!isRightSide) return b.w / 2
+            return b.w / 2 + b.l
+          })(),
+          magnet: (() => {
+            if (index !== -1) return b.l + b.w / 2
+            if (!isRightSide) return b.w / 2
+            return b.w / 2 + b.l
+          })(),
         }
       case 'yy':
         return {
@@ -526,6 +621,14 @@ export const diffRect = (a: OElement, b: OElement, index: number, border: number
         return 0
     }
   })
+  if (isResize) {
+    return Object.values(lodash(result).groupBy('vertical').value()).map((group) =>
+      lodash.minBy(
+        group.filter((item) => (item as { size: number })?.size > 0.1),
+        'size'
+      )
+    )
+  }
   return lodash(result)
     .groupBy('vertical')
     .map((group) => lodash.minBy(group, 'size'))

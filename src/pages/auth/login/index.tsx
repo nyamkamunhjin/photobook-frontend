@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Form, Input, notification } from 'antd'
 import { useDispatch } from 'react-redux'
-import { FacebookFilled, GoogleOutlined } from '@ant-design/icons'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { signIn } from 'api'
 import { LOGIN_FAIL, LOGIN_SUCCESS } from 'redux/actions/types'
 import { CustomButton, useRouter } from 'components'
 import { loadUser } from 'redux/actions/auth'
+import { FcGoogle } from 'react-icons/fc'
+import { SiFacebook } from 'react-icons/si'
 
 const Login: React.FC = () => {
   const router = useRouter()
@@ -63,10 +64,19 @@ const Login: React.FC = () => {
             <FormattedMessage id="forgot_password" />?
           </CustomButton>
         </div>
-        <CustomButton className="btn-primary" icon={<GoogleOutlined />} onClick={googleSignin}>
+        <CustomButton
+          className="btn-primary bg-white text-black border border-solid"
+          icon={<FcGoogle fontSize={15} />}
+          onClick={googleSignin}
+        >
           Sign in with Google
         </CustomButton>
-        <CustomButton className="btn-primary" icon={<FacebookFilled />} onClick={facebookSignin}>
+        <CustomButton
+          className="btn-primary border border-solid"
+          icon={<SiFacebook fontSize={15} />}
+          onClick={facebookSignin}
+          style={{ background: '#5890FF' }}
+        >
           Sign in with Facebook
         </CustomButton>
         <Form name="basic" layout="vertical" onFinish={onFinish}>
@@ -94,7 +104,7 @@ const Login: React.FC = () => {
             <Input.Password />
           </Form.Item>
           <Form.Item>
-            <CustomButton className="btn-warning" loading={loading} type="submit">
+            <CustomButton className="btn-primary" loading={loading} type="submit">
               <FormattedMessage id="sign-in" />
             </CustomButton>
           </Form.Item>

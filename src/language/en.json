@@ -201,7 +201,7 @@
   "toolbox.zoomFit": "Fit the image with in the photo slot",
   "toolbox.left": "Rotate Left",
   "toolbox.right": "Rotate Right",
-  "toolbox.flit": "Flit Image",
+  "toolbox.flip": "Flip Image",
   "toolbox.redTrans": "Reduce transparency",
   "toolbox.incTrans": "Increase transparency",
   "toolbox.frame": "Frame",
@@ -331,5 +331,7 @@
   "sort": "Sort",
   "most_recent": "Most Recent",
   "most_sold": "Most Sold",
-  "no_photos_found": "No Photos Found"
+  "no_photos_found": "No Photos Found",
+  "filters": "Filters",
+  "color_presets": "Color Presets"
 }
