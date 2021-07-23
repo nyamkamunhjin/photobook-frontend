@@ -21,6 +21,7 @@ interface Props {
   settingsVisible: boolean
   updateProject: (projectId: number, props: { paperSizeId: number }) => void
   project: ProjectInterface
+  setIsPaperSizeChanged: any
 }
 
 interface FormValues {
@@ -32,7 +33,8 @@ const SlideSettings: React.FC<Props> = ({
   settingsVisible,
   updateProject,
   type,
-  project: { currentProject },
+  project: { currentProject, slideWidth, slideHeight, objects, slideIndex },
+  setIsPaperSizeChanged,
 }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const submitRef = useRef<HTMLButtonElement>(null)
@@ -44,9 +46,36 @@ const SlideSettings: React.FC<Props> = ({
     setSettingsVisible(false)
   }
 
-  const onFinish = (values: FormValues) => {
+  const onFinish = async (values: FormValues) => {
     if (currentProject.id) {
-      updateProject(currentProject.id, { paperSizeId: values.paperSizeId })
+      objects.forEach((o) => {
+        o.ratio = {
+          t: parseFloat(o.style.top as string) / slideHeight,
+          l: parseFloat(o.style.left as string) / ((slideWidth - 30) / 2),
+          h: parseFloat(o.style.height as string) / slideHeight,
+          w: parseFloat(o.style.width as string) / ((slideWidth - 30) / 2),
+        }
+      })
+      currentProject.slides.forEach((slide, index) => {
+        if (index === slideIndex) slide.objects = objects
+        else if (slide.objects.length) {
+          slide.objects.forEach((o) => {
+            o.ratio = {
+              t: parseFloat(o.style.top as string) / slideHeight,
+              l: parseFloat(o.style.left as string) / ((slideWidth - 30) / 2),
+              h: parseFloat(o.style.height as string) / slideHeight,
+              w: parseFloat(o.style.width as string) / ((slideWidth - 30) / 2),
+            }
+          })
+        }
+      })
+
+      try {
+        await updateProject(currentProject.id, { paperSizeId: values.paperSizeId })
+        setIsPaperSizeChanged(() => true)
+      } catch (err: any) {
+        console.log(err.message)
+      }
     }
   }
 

@@ -1113,9 +1113,7 @@ export default class Editor {
     this.hideActiveBorder()
     this.hideGroupSelection()
   }
-  public startDrag = (e: any, o: any, index: number, objects?: PObject[]) => {
-    console.log('startDrag', index)
-
+  public startDrag = (e: any, o: any, index: number, objects?: PObject[], gap = 0) => {
     if (objects) {
       this.objects = objects
     }
@@ -1151,7 +1149,7 @@ export default class Editor {
       const clientY = sube.clientY / this.scale
       const deltaX = clientX - startX
       const deltaY = clientY - startY
-      this.onDrag(deltaX, deltaY, object, objectType)
+      this.onDrag(deltaX, deltaY, object, objectType, gap)
       startX = clientX
       startY = clientY
     }
@@ -1168,7 +1166,7 @@ export default class Editor {
       const w = parseFloat(width)
       const h = parseFloat(height)
 
-      this.moveCollisionObject(object, objectType, { t, l, w, h }, false)
+      this.moveCollisionObject(object, objectType, { t, l, w, h }, gap, false)
       if (index > -1) {
         this.updateObjectStyle(o, object)
       }
@@ -1181,7 +1179,7 @@ export default class Editor {
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', onMouseUp)
   }
-  public onDrag = (deltaX: number, deltaY: number, object: any, objectType: string) => {
+  public onDrag = (deltaX: number, deltaY: number, object: any, objectType: string, gap: number) => {
     const { top, left, width, height } = getComputedStyle(object)
 
     const t = parseFloat(top)
@@ -1192,7 +1190,7 @@ export default class Editor {
     object.style.top = t + deltaY + 'px'
     object.style.left = l + deltaX + 'px'
     this.moveResizers({ object, objectType })
-    this.collisionDetecter(object, objectType, { t, l, w, h }, false)
+    this.collisionDetecter(object, objectType, { t, l, w, h }, gap, false)
   }
 
   public renderLine = (isHorizontal: boolean) => {
@@ -1209,6 +1207,7 @@ export default class Editor {
     move: boolean,
     elementX: CollisionObject,
     elementY: CollisionObject,
+    gap: number,
     isResize = false
     // resizeSide?: string
   ) => {
@@ -1279,20 +1278,20 @@ export default class Editor {
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (isResize) {
             object.style.height = `${Math.abs(
-              ParseNumber(object.style.top) + ParseNumber(object.style.height) - size
+              ParseNumber(object.style.top) + ParseNumber(object.style.height) - size - gap
             )}px`
           }
           if (move) {
-            object.style.top = `${size}px`
+            object.style.top = `${size + gap}px`
           }
           break
         case 'bt':
           size = elementX.position
           this.magnetX.style.top = `${elementX.magnet * this.scale}px`
           if (isResize) {
-            object.style.height = `${Math.abs(size - ParseNumber(object.style.top))}px`
+            object.style.height = `${Math.abs(size - ParseNumber(object.style.top)) - gap}px`
           } else if (this._index !== undefined && move) {
-            object.style.top = `${size - ParseNumber(object.style.height)}px`
+            object.style.top = `${size - ParseNumber(object.style.height) - gap}px`
           }
           break
         case 'yy':
@@ -1361,9 +1360,9 @@ export default class Editor {
           size = elementY.position
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (isResize) {
-            object.style.width = `${Math.abs(size - ParseNumber(object.style.left))}px`
+            object.style.width = `${Math.abs(size - ParseNumber(object.style.left)) - gap}px`
           } else if (this._index !== undefined && move) {
-            object.style.left = `${size - ParseNumber(object.style.width)}px`
+            object.style.left = `${size - ParseNumber(object.style.width) - gap}px`
           }
           break
         case 'lr':
@@ -1372,11 +1371,11 @@ export default class Editor {
           this.magnetY.style.left = `${elementY.magnet * this.scale}px`
           if (isResize) {
             object.style.width = `${Math.abs(
-              ParseNumber(object.style.width) + ParseNumber(object.style.left) - size
+              ParseNumber(object.style.width) + ParseNumber(object.style.left) - size - gap
             )}px`
           }
           if (move) {
-            object.style.left = `${size}px`
+            object.style.left = `${size + gap}px`
           }
           break
         case 'xx':
@@ -1442,7 +1441,7 @@ export default class Editor {
     }
     return minSizes
   }
-  public moveCollisionObject = (object: any, objectType: string, element: OElement, isResize = false) => {
+  public moveCollisionObject = (object: any, objectType: string, element: OElement, gap: number, isResize = false) => {
     if (this.objects && this._index !== undefined) {
       let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
         if (i === this._index) return asn
@@ -1465,47 +1464,50 @@ export default class Editor {
         return asn
       }, [])
       minSizes = this.addCornerCollision(element, minSizes, isResize)
-      console.log('minSizes', minSizes)
+      // console.log('minSizes', minSizes)
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
         .map((group) => lodash.minBy(group, 'size'))
         .value()
-      console.log('X', x, 'Y', y)
-      this.renderLines(object, objectType, true, x, y, isResize)
+      // console.log('X', x, 'Y', y)
+      this.renderLines(object, objectType, true, x, y, gap, isResize)
     }
   }
-  public collisionDetecter = lodash.throttle((object: any, objectType: string, element: OElement, isResize = false) => {
-    if (this.objects && this._index !== undefined) {
-      let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
-        if (i === this._index) return asn
-        const { width = 0, left = 0, top = 0, height = 0 } = obj.style
-        asn.push(
-          diffRect(
-            element,
-            {
-              l: ParseNumber(left),
-              h: ParseNumber(height),
-              w: ParseNumber(width),
-              t: ParseNumber(top),
-            },
-            i,
-            this._border,
-            false,
-            isResize
+  public collisionDetecter = lodash.throttle(
+    (object: any, objectType: string, element: OElement, gap: number, isResize = false) => {
+      if (this.objects && this._index !== undefined) {
+        let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
+          if (i === this._index) return asn
+          const { width = 0, left = 0, top = 0, height = 0 } = obj.style
+          asn.push(
+            diffRect(
+              element,
+              {
+                l: ParseNumber(left),
+                h: ParseNumber(height),
+                w: ParseNumber(width),
+                t: ParseNumber(top),
+              },
+              i,
+              this._border,
+              false,
+              isResize
+            )
           )
-        )
-        return asn
-      }, [])
-      minSizes = this.addCornerCollision(element, minSizes, isResize)
-      console.log('minSizes', minSizes)
-      const [x, y] = lodash(minSizes.flat(1))
-        .groupBy('vertical')
-        .map((group) => lodash.minBy(group, 'size'))
-        .value()
-      console.log('X', x, 'Y', y)
-      this.renderLines(object, objectType, true, x, y, isResize)
-    }
-  }, 500)
+          return asn
+        }, [])
+        minSizes = this.addCornerCollision(element, minSizes, isResize)
+        // console.log('minSizes', minSizes)
+        const [x, y] = lodash(minSizes.flat(1))
+          .groupBy('vertical')
+          .map((group) => lodash.minBy(group, 'size'))
+          .value()
+        // console.log('X', x, 'Y', y)
+        this.renderLines(object, objectType, true, x, y, gap, isResize)
+      }
+    },
+    500
+  )
   public getObjectType = (classList: any): ObjectType => {
     let objectType: ObjectType = ''
     if (!classList) return 'text'
@@ -2277,7 +2279,7 @@ export default class Editor {
     }, 0)
   }
   // eslint-disable-next-line prettier/prettier
-  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[]) => {
+  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[], gap = 0) => {
     if (e.button !== 0 || _index === -1 || !this._object) return
 
     // For collisionBorder start
@@ -2331,7 +2333,7 @@ export default class Editor {
       const _w = parseFloat(_width)
       const _h = parseFloat(_height)
       // eslint-disable-next-line prettier/prettier
-      this.collisionDetecter(object, objectType, { t: _t, l: _l, w: _w, h: _h }, true)
+      this.collisionDetecter(object, objectType, { t: _t, l: _l, w: _w, h: _h }, gap, true)
     }
 
     const onMouseUp = () => {
@@ -2352,7 +2354,7 @@ export default class Editor {
       const _w = parseFloat(_width)
       const _h = parseFloat(_height)
       // eslint-disable-next-line prettier/prettier
-      this.moveCollisionObject(object, objectType, { t: _t, l: _l, w: _w, h: _h }, true)
+      this.moveCollisionObject(object, objectType, { t: _t, l: _l, w: _w, h: _h }, gap, true)
       if (_index > -1) {
         this.updateObjectStyle(o, object)
       }

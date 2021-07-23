@@ -35,6 +35,7 @@ interface Props {
   }
   layouts?: LayoutsInterface[]
   settings?: boolean
+  setIsPaperSizeChanged?: any
 }
 
 const SideButtons: React.FC<Props> = ({
@@ -47,6 +48,7 @@ const SideButtons: React.FC<Props> = ({
   layout,
   layouts,
   settings = true,
+  setIsPaperSizeChanged,
 }) => {
   const [settingsVisible, setSettingsVisible] = useState<boolean>(false)
 
@@ -134,7 +136,12 @@ const SideButtons: React.FC<Props> = ({
     <div className="side-buttons">
       <div>{renderButtons('left')}</div>
       <div>{renderButtons('right')}</div>
-      <SlideSettings type={type} setSettingsVisible={setSettingsVisible} settingsVisible={settingsVisible} />
+      <SlideSettings
+        type={type}
+        setSettingsVisible={setSettingsVisible}
+        settingsVisible={settingsVisible}
+        setIsPaperSizeChanged={setIsPaperSizeChanged}
+      />
     </div>
   )
 }
