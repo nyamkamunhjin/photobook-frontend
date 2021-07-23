@@ -1582,6 +1582,14 @@ export default class Editor {
 
     this.setObjectType('shape')
   }
+  public createMontagePortrait = (e: any, objects: PObject[]) => {
+    this.hideToolbar()
+    this.createImages(e, objects)
+    this.createText(objects)
+
+    this.setObjectType('montage-portrait')
+  }
+
   public createSquare = (objects: PObject[]) => {
     this.hideToolbar()
     const style = {
@@ -1937,7 +1945,10 @@ export default class Editor {
     const clientY = e.clientY / this.scale
 
     const rect = this._object.getBoundingClientRect()
-    const { rotateAngle } = objects[_index].style
+    const rotateAngle = objects[_index]?.style?.rotateAngle
+
+    if (!rotateAngle) return
+
     this._isMouseDown = true
 
     const center = {

@@ -151,7 +151,7 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
   useHotkeys('shift+w', () => editors.onSendForward(_index, objects), [_index, objects])
   useHotkeys('shift+s', () => editors.onSendBackward(_index, objects), [_index, objects])
-  useHotkeys('ctrl+Delete', () => editors.onRemoveObject(containers, objects, _index), [_index, objects])
+  useHotkeys('Delete', () => editors.onRemoveObject(containers, objects, _index), [_index, objects])
   useHotkeys('shift+Delete', () => editors.onRemoveImageFromObject(_index, objects, _objectType), [_index, objects])
   useHotkeys(
     'ctrl+shift+s',
@@ -451,6 +451,7 @@ const BookEditor: React.FC<Props> = ({
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
             createEclipse={() => editors.createEclipse(objects)}
+            createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
             changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
             layout={layout}
             type="photobook"
