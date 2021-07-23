@@ -12,7 +12,7 @@ import PhotoTrade from 'page-components/profile/photo-trade'
 import { useSelector } from 'react-redux'
 
 type tabState = 'order_history' | 'my_projects' | 'my_cart' | 'my_info' | 'photo_trade'
-const tabStates: tabState[] = ['order_history', 'my_projects', 'my_cart', 'my_info', 'photo_trade']
+const tabStates: tabState[] = ['order_history', 'my_projects', 'my_cart', 'photo_trade', 'my_info']
 
 const Profile: FC = () => {
   const user = useSelector((state: RootInterface) => state.auth.user)

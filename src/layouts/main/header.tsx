@@ -26,7 +26,7 @@ const Topbar: React.FC = () => {
   }, [user, router])
 
   return (
-    <header className="shadow-md z-10 bg-white">
+    <header className="shadow-md z-10">
       <div className="px-4 mx-auto w-full max-w-7xl">
         <div className="flex  items-center p-2">
           <Link className="text-2xl font-bold text-black" to="/">
@@ -35,11 +35,11 @@ const Topbar: React.FC = () => {
           <div className="ml-auto space-x-2">
             {!user && (
               <>
-                <button type="button" className="btn-text" onClick={() => router.push('/auth/signin')}>
-                  <FormattedMessage id="sign-in" />
-                </button>
-                <button type="button" className="btn-warning" onClick={() => router.push('/auth/signup')}>
+                <button type="button" className="btn-text" onClick={() => router.push('/auth/signup')}>
                   <FormattedMessage id="sign-up" />
+                </button>
+                <button type="button" className="btn-primary" onClick={() => router.push('/auth/signin')}>
+                  <FormattedMessage id="sign-in" />
                 </button>
               </>
             )}

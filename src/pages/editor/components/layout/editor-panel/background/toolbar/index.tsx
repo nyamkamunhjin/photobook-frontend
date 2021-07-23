@@ -44,7 +44,7 @@ const Toolbar: React.FC<Props> = ({
         </Tooltip>
       )}
       {flipObject && (
-        <Tooltip placement="top" title={<FormattedMessage id="toolbox.flit" />}>
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.flip" />}>
           <span onClick={flipObject} className="toolbar-icon">
             <MdFlip />
           </span>

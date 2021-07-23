@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable consistent-return */
@@ -44,7 +45,7 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean } from 'ahooks'
-import { Header, FooterListTools, SideBarPanel } from './components/layout'
+import { Header, FooterListTools, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderObject } from './components/utils'
 import './components/styles/editor.scss'
@@ -322,6 +323,24 @@ const BookEditor: React.FC<Props> = ({
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
         <div id="editor_container" ref={editorContainerRef}>
+          <Toolbar
+            object={_object}
+            objectType={_objectType}
+            index={_index}
+            objects={objects}
+            updateObject={updateObject}
+            updateHistory={updateHistory}
+            moveResizers={editors.moveResizers}
+            // removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+            // rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
+            // rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
+            flipObject={() => editors.onFlipObject(_index, objects)}
+            sendForward={() => editors.onSendForward(_index, objects)}
+            sendBackward={() => editors.onSendBackward(_index, objects)}
+            removeObject={() => {
+              return null
+            }}
+          />
           <div id="selection" hidden ref={selectionRef} />
           <div
             id="slide_container"
@@ -343,6 +362,9 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={o.style as React.CSSProperties}
                               className={o.className}
+                              onMouseDown={(e) => {
+                                editors.onSelect(e, o, i, objects)
+                              }}
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
                               onInput={(e) => editors.updateText(_index, objects, e)}

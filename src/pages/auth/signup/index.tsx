@@ -135,7 +135,7 @@ const Signup: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <CustomButton className="btn-warning" loading={loading} type="submit">
+            <CustomButton className="btn-primary" loading={loading} type="submit">
               <FormattedMessage id="sign-up" />
             </CustomButton>
           </Form.Item>

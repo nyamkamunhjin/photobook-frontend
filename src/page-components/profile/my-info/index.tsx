@@ -8,6 +8,8 @@ import { deleteShippingAddress, listShippingAddress, updateCurrentUser, verifyEm
 import { loadUser } from 'redux/actions/auth'
 import { CustomButton } from 'components'
 import { useRequest } from 'ahooks'
+import { FcGoogle } from 'react-icons/fc'
+import { SiFacebook } from 'react-icons/si'
 import ShippingAddressModal from './shipping-address-modal'
 import VoucherList from './voucher-list'
 import BoughtGiftCards from './bought-gift-cards'
@@ -279,23 +281,39 @@ const MyInfo: FC = () => {
         <div className="w-full flex flex-col gap-2 mb-4">
           <span className="text-xl">Google</span>
           {user?.googleId ? (
-            <span className="btn-accept w-32 grid place-items-center">
+            <CustomButton
+              className="btn-primary bg-white text-black border border-solid  flex gap-2 w-32 justify-center font-medium"
+              icon={<FcGoogle fontSize={15} />}
+            >
               <FormattedMessage id="connected" />
-            </span>
+            </CustomButton>
           ) : (
-            <button className="btn bg-blue-400" type="button" onClick={googleSignin}>
+            <CustomButton
+              className="btn-primary bg-white text-black border border-solid w-48 flex gap-2 justify-center font-medium"
+              icon={<FcGoogle fontSize={15} />}
+              onClick={googleSignin}
+            >
               <FormattedMessage id="connect_google" />
-            </button>
+            </CustomButton>
           )}
           <span className="text-xl">Facebook</span>
           {user?.facebookId ? (
-            <span className="btn-accept w-32 grid place-items-center">
+            <CustomButton
+              className="btn-accept w-32 flex items-center justify-center btn-primary border border-transparent border-solid"
+              icon={<SiFacebook fontSize={15} />}
+              style={{ background: '#5890FF' }}
+            >
               <FormattedMessage id="connected" />
-            </span>
+            </CustomButton>
           ) : (
-            <button className="btn bg-blue-400" type="button" onClick={facebookSignin}>
+            <CustomButton
+              className="btn-accept w-48 flex items-center justify-center btn-primary border border-transparent border-solid"
+              icon={<SiFacebook fontSize={15} />}
+              onClick={facebookSignin}
+              style={{ background: '#5890FF' }}
+            >
               <FormattedMessage id="connect_facebook" />
-            </button>
+            </CustomButton>
           )}
         </div>
 
