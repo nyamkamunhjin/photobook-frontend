@@ -330,7 +330,7 @@ export const addNewPrintSlide = (projectId: number, imageUrls: string[]) => asyn
 export const duplicatePrintSlide = (projectId: number, slideIndex: string, slide: Slide) => async (dispatch: any) => {
   try {
     const newSlide = generateDuplicatedSlide(slide)
-    await updateProjectSlides(projectId, {
+    await updateProjectPrintSlides(projectId, {
       duplicate: newSlide,
     })
     dispatch({
@@ -347,7 +347,7 @@ export const duplicatePrintSlide = (projectId: number, slideIndex: string, slide
 // delete printslidea
 export const deletePrintSlide = (projectId: number, slideId: string) => async (dispatch: any) => {
   try {
-    await updateProjectSlides(projectId, {
+    await updateProjectPrintSlides(projectId, {
       pop: slideId,
     })
     dispatch({

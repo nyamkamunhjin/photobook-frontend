@@ -144,7 +144,7 @@ export interface PObject {
   id: string
   props: ObjectProps
   style: StyleType
-  ratio?: { t: number; l: number; h: number; w: number }
+  ratio?: { t: number; l: number; h: number; w: number; sw: number; sh: number }
 }
 
 export type FeatureType = 'frames' | 'backgrounds' | 'masks' | 'cliparts' | 'images' | 'layouts'

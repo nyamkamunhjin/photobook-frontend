@@ -1149,8 +1149,6 @@ export default class Editor {
   }
 
   public startDrag = (e: any, o: any, index: number, objects?: PObject[], gap = 0) => {
-    console.log('startDrag', index)
-
     if (objects) {
       this.objects = objects
     }
@@ -1545,7 +1543,20 @@ export default class Editor {
     },
     500
   )
-  public getObjectType = (classList: any): ObjectType => {
+  public getObjectType = (classList: any, isArray = false): ObjectType => {
+    if (isArray) {
+      let objectType: ObjectType = ''
+      if (!classList.length) return 'text'
+      if (classList.includes('image-placeholder')) {
+        objectType = 'image'
+      } else if (classList.includes('shape')) {
+        objectType = 'shape'
+      } else if (classList.includes('text-container')) {
+        objectType = 'text'
+      }
+
+      return objectType
+    }
     let objectType: ObjectType = ''
     if (!classList) return 'text'
     if (classList.contains('image-placeholder')) {

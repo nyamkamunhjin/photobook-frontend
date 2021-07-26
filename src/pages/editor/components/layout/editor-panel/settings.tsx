@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { updateProject } from 'redux/actions/project'
 import { Modal, Select, Form, Button } from 'antd'
@@ -42,18 +42,20 @@ const SlideSettings: React.FC<Props> = ({
     listPaperSize({ current: 0, pageSize: 100 }, { templateType: type })
   )
 
-  const handleSettingsCancel = () => {
+  const handleSettingsCancel = useCallback(() => {
     setSettingsVisible(false)
-  }
+  }, [setSettingsVisible])
 
   const onFinish = async (values: FormValues) => {
     if (currentProject.id) {
       objects.forEach((o) => {
         o.ratio = {
-          t: parseFloat(o.style.top as string) / slideHeight,
-          l: parseFloat(o.style.left as string) / ((slideWidth - 30) / 2),
-          h: parseFloat(o.style.height as string) / slideHeight,
-          w: parseFloat(o.style.width as string) / ((slideWidth - 30) / 2),
+          t: parseFloat(o.style.top as string),
+          l: parseFloat(o.style.left as string),
+          h: parseFloat(o.style.height as string),
+          w: parseFloat(o.style.width as string),
+          sw: slideWidth,
+          sh: slideHeight,
         }
       })
       currentProject.slides.forEach((slide, index) => {
@@ -61,10 +63,12 @@ const SlideSettings: React.FC<Props> = ({
         else if (slide.objects.length) {
           slide.objects.forEach((o) => {
             o.ratio = {
-              t: parseFloat(o.style.top as string) / slideHeight,
-              l: parseFloat(o.style.left as string) / ((slideWidth - 30) / 2),
-              h: parseFloat(o.style.height as string) / slideHeight,
-              w: parseFloat(o.style.width as string) / ((slideWidth - 30) / 2),
+              t: parseFloat(o.style.top as string),
+              l: parseFloat(o.style.left as string),
+              h: parseFloat(o.style.height as string),
+              w: parseFloat(o.style.width as string),
+              sw: slideWidth,
+              sh: slideHeight,
             }
           })
         }
@@ -79,10 +83,33 @@ const SlideSettings: React.FC<Props> = ({
     }
   }
 
+  useEffect(() => {
+    const clickWindow = (e: any) => {
+      if (typeof e.target.className === 'object' || e.target.closest('.ant-modal-close')) {
+        handleSettingsCancel()
+        return
+      }
+      if (
+        e.target.closest('.modal-child') ||
+        e.target.className.includes('modal-child') ||
+        e.target.className.includes('ant-select-item-option-content')
+      )
+        return
+      handleSettingsCancel()
+    }
+    if (settingsVisible) window.addEventListener('mouseup', clickWindow)
+    else window.removeEventListener('mouseup', clickWindow)
+
+    return () => {
+      window.removeEventListener('mouseup', clickWindow)
+    }
+  }, [settingsVisible, handleSettingsCancel])
+
   return (
     <Modal
       title={<FormattedMessage id="slide_settings" />}
       visible={settingsVisible}
+      className="modal-child"
       footer={[
         <Button key="back" onClick={handleSettingsCancel}>
           <FormattedMessage id="cancel" />

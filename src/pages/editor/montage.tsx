@@ -107,8 +107,6 @@ const BookEditor: React.FC<Props> = ({
     fetching,
   },
 }) => {
-  console.log('OBJECTS<<<<<<<<<<<<<<', objects)
-
   const [template] = useQueryState('template', 1)
   const [coverTypeId] = useQueryState('coverType', 1)
   const [paperSizeId] = useQueryState('paperSize', 1)
@@ -423,23 +421,33 @@ const BookEditor: React.FC<Props> = ({
       })
     }
   }, [editor.dragStart, editor.type])
-  console.log(isPaperSizeChanged)
 
   useEffect(() => {
     if (!isPaperSizeChanged) return
     objects.forEach((o: PObject) => {
-      const { t, l, h, w } = o.ratio as { t: number; l: number; h: number; w: number }
+      const { t, l, h, w, sw, sh } = o.ratio as { t: number; l: number; h: number; w: number; sw: number; sh: number }
       o.style = {
         ...o.style,
-        top: `${slideHeight * t}px`,
-        left: `${((slideWidth - 30) / 2) * l}px`,
-        height: `${slideHeight * h}px`,
-        width: `${((slideWidth - 30) / 2) * w}px`,
+        top: `${(slideHeight * t) / sh}px`,
+        left: `${(((slideWidth - 30) / 2) * l) / ((sw - 30) / 2)}px`,
+        height: `${(slideHeight * h) / sh}px`,
+        width: `${(((slideWidth - 30) / 2) * w) / ((sw - 30) / 2)}px`,
       }
-    })
-    // const objectType = editors.getObjectType(o.firstChild?.classList)
-    // editors.moveCollisionObject(o, objectType, { t: parseFloat(o.style.top), l: _l, w: _w, h: _h }, 0, true)
 
+      const objectType = editors.getObjectType(o.props.className.split(' '), true)
+      editors.moveCollisionObject(
+        o,
+        objectType,
+        {
+          t: parseFloat(o.style.top as string),
+          l: parseFloat(o.style.left as string),
+          w: parseFloat(o.style.width as string),
+          h: parseFloat(o.style.height as string),
+        },
+        0,
+        true
+      )
+    })
     editors.deSelectObject()
     setIsPaperSizeChanged(false)
   }, [slideWidth, slideHeight, objects, isPaperSizeChanged])
