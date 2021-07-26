@@ -144,6 +144,7 @@ export interface PObject {
   id: string
   props: ObjectProps
   style: StyleType
+  ratio?: { t: number; l: number; h: number; w: number; sw: number; sh: number }
 }
 
 export type FeatureType = 'frames' | 'backgrounds' | 'masks' | 'cliparts' | 'images' | 'layouts'
@@ -275,6 +276,7 @@ export interface Slide {
   objects: PObject[]
   object?: PObject
   createdAt?: Date
+  ratio?: { width: number; height: number }
 }
 
 export interface ImageSlide {

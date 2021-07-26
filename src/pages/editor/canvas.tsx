@@ -418,7 +418,7 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={o.style as React.CSSProperties}
                               className={o.className}
-                              onMouseDown={(e) => editors.startDrag(e, o, i, objects)}
+                              onMouseDown={(e) => editors.startDrag(e, o, i, objects, 30)}
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
                               onDragOver={editors.onDragObjectOver}
@@ -471,7 +471,7 @@ const BookEditor: React.FC<Props> = ({
                     <div
                       key={t}
                       style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects)}
+                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 30)}
                       className={`resize ${resize}`}
                     />
                   )

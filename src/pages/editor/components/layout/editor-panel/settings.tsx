@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { updateProject } from 'redux/actions/project'
 import { Modal, Select, Form, Button } from 'antd'
@@ -21,6 +21,7 @@ interface Props {
   settingsVisible: boolean
   updateProject: (projectId: number, props: { paperSizeId: number }) => void
   project: ProjectInterface
+  setIsPaperSizeChanged: any
 }
 
 interface FormValues {
@@ -32,7 +33,8 @@ const SlideSettings: React.FC<Props> = ({
   settingsVisible,
   updateProject,
   type,
-  project: { currentProject },
+  project: { currentProject, slideWidth, slideHeight, objects, slideIndex },
+  setIsPaperSizeChanged,
 }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const submitRef = useRef<HTMLButtonElement>(null)
@@ -40,20 +42,74 @@ const SlideSettings: React.FC<Props> = ({
     listPaperSize({ current: 0, pageSize: 100 }, { templateType: type })
   )
 
-  const handleSettingsCancel = () => {
+  const handleSettingsCancel = useCallback(() => {
     setSettingsVisible(false)
-  }
+  }, [setSettingsVisible])
 
-  const onFinish = (values: FormValues) => {
+  const onFinish = async (values: FormValues) => {
     if (currentProject.id) {
-      updateProject(currentProject.id, { paperSizeId: values.paperSizeId })
+      objects.forEach((o) => {
+        o.ratio = {
+          t: parseFloat(o.style.top as string),
+          l: parseFloat(o.style.left as string),
+          h: parseFloat(o.style.height as string),
+          w: parseFloat(o.style.width as string),
+          sw: slideWidth,
+          sh: slideHeight,
+        }
+      })
+      currentProject.slides.forEach((slide, index) => {
+        if (index === slideIndex) slide.objects = objects
+        else if (slide.objects.length) {
+          slide.objects.forEach((o) => {
+            o.ratio = {
+              t: parseFloat(o.style.top as string),
+              l: parseFloat(o.style.left as string),
+              h: parseFloat(o.style.height as string),
+              w: parseFloat(o.style.width as string),
+              sw: slideWidth,
+              sh: slideHeight,
+            }
+          })
+        }
+      })
+
+      try {
+        await updateProject(currentProject.id, { paperSizeId: values.paperSizeId })
+        setIsPaperSizeChanged(() => true)
+      } catch (err: any) {
+        console.log(err.message)
+      }
     }
   }
+
+  useEffect(() => {
+    const clickWindow = (e: any) => {
+      if (typeof e.target.className === 'object' || e.target.closest('.ant-modal-close')) {
+        handleSettingsCancel()
+        return
+      }
+      if (
+        e.target.closest('.modal-child') ||
+        e.target.className.includes('modal-child') ||
+        e.target.className.includes('ant-select-item-option-content')
+      )
+        return
+      handleSettingsCancel()
+    }
+    if (settingsVisible) window.addEventListener('mouseup', clickWindow)
+    else window.removeEventListener('mouseup', clickWindow)
+
+    return () => {
+      window.removeEventListener('mouseup', clickWindow)
+    }
+  }, [settingsVisible, handleSettingsCancel])
 
   return (
     <Modal
       title={<FormattedMessage id="slide_settings" />}
       visible={settingsVisible}
+      className="modal-child"
       footer={[
         <Button key="back" onClick={handleSettingsCancel}>
           <FormattedMessage id="cancel" />
