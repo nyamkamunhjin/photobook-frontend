@@ -424,7 +424,7 @@ const BookEditor: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isPaperSizeChanged) return
-    objects.forEach((o: PObject) => {
+    objects.forEach((o: PObject, index: number, arr: PObject[]) => {
       const { t, l, h, w, sw, sh } = o.ratio as { t: number; l: number; h: number; w: number; sw: number; sh: number }
       o.style = {
         ...o.style,
@@ -445,7 +445,9 @@ const BookEditor: React.FC<Props> = ({
           h: parseFloat(o.style.height as string),
         },
         0,
-        true
+        true,
+        arr,
+        index
       )
     })
     editors.deSelectObject()

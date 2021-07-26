@@ -1071,12 +1071,6 @@ export default class Editor {
       },
     }
     if (JSON.stringify(newObject) !== JSON.stringify(o)) {
-      console.log('before')
-      console.log(o)
-
-      console.log('after')
-      console.log(newObject)
-
       this.updateObject({ object: newObject })
       this.updateHistory(UPDATE_OBJECT, { object: o })
     }
@@ -1476,7 +1470,19 @@ export default class Editor {
     }
     return minSizes
   }
-  public moveCollisionObject = (object: any, objectType: string, element: OElement, gap: number, isResize = false) => {
+  public moveCollisionObject = (
+    object: any,
+    objectType: string,
+    element: OElement,
+    gap: number,
+    isResize = false,
+    objects?: PObject[],
+    index?: number
+  ) => {
+    if (objects) {
+      this.objects = objects
+      this._index = index
+    }
     if (this.objects && this._index !== undefined) {
       let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
         if (i === this._index) return asn
