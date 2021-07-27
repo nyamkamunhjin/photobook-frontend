@@ -11,7 +11,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons'
 import { FormattedMessage } from 'react-intl'
-import { FaRegCircle } from 'react-icons/fa'
+import { FaPortrait, FaRegCircle } from 'react-icons/fa'
 import { Popover, Button } from 'antd'
 import { LayoutsInterface } from 'interfaces'
 import SlideSettings from './settings'
@@ -126,8 +126,8 @@ const SideButtons: React.FC<Props> = ({
         )}
         {createMontagePortrait && (
           <div hidden={!createMontagePortrait} onClick={createMontagePortrait} className="item">
-            <FaRegCircle style={{ fontSize: 24 }} />
-            <FormattedMessage id="eclipse" />
+            <FaPortrait style={{ fontSize: 24 }} />
+            <FormattedMessage id="montage" />
           </div>
         )}
         {settings && (

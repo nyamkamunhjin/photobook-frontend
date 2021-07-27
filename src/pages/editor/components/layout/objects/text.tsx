@@ -24,7 +24,7 @@ const Text: React.FC<Props> = ({ textStyle, autogrowStyle, texts, style, classNa
     <div className={className} style={style}>
       <div className="border" />
       <div className="autogrow" style={autogrowStyle} />
-      <p ref={textRef} className="text" style={textStyle} contentEditable={false} spellCheck={false} />
+      <span ref={textRef} className="text" style={textStyle} contentEditable={false} spellCheck={false} />
     </div>
   )
 }
