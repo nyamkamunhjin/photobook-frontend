@@ -1421,36 +1421,67 @@ export default class Editor {
     }
     this.moveResizers({ object, objectType })
   }
-  public addCornerCollision = (element: OElement, minSizes: any[], isResize = false) => {
+  public addCornerCollision = (element: OElement, minSizes: any[], isResize = false, isRatioFitter = false) => {
     if (this.double) {
-      minSizes.push(
-        diffRect(
-          element,
-          {
-            l: ParseNumber(this._border),
-            h: ParseNumber(this.slideHeight) - this._border,
-            w: ParseNumber((this.slideWidth - 30) / 2),
-            t: this._border,
-          },
-          -1,
-          this._border,
-          false,
-          isResize
-        ),
-        diffRect(
-          element,
-          {
-            l: ParseNumber(this._border + (this.slideWidth + 30) / 2),
-            h: ParseNumber(this.slideHeight) - this._border,
-            w: ParseNumber((this.slideWidth - 30) / 2),
-            t: this._border,
-          },
-          -1,
-          this._border,
-          true,
-          isResize
+      if (isRatioFitter) {
+        minSizes.unshift(
+          diffRect(
+            element,
+            {
+              l: ParseNumber(this._border),
+              h: ParseNumber(this.slideHeight) - this._border,
+              w: ParseNumber((this.slideWidth - 30) / 2),
+              t: this._border,
+            },
+            -1,
+            this._border,
+            false,
+            isResize
+          ),
+          diffRect(
+            element,
+            {
+              l: ParseNumber(this._border + (this.slideWidth + 30) / 2),
+              h: ParseNumber(this.slideHeight) - this._border,
+              w: ParseNumber((this.slideWidth - 30) / 2),
+              t: this._border,
+            },
+            -1,
+            this._border,
+            true,
+            isResize
+          )
         )
-      )
+      } else {
+        minSizes.push(
+          diffRect(
+            element,
+            {
+              l: ParseNumber(this._border),
+              h: ParseNumber(this.slideHeight) - this._border,
+              w: ParseNumber((this.slideWidth - 30) / 2),
+              t: this._border,
+            },
+            -1,
+            this._border,
+            false,
+            isResize
+          ),
+          diffRect(
+            element,
+            {
+              l: ParseNumber(this._border + (this.slideWidth + 30) / 2),
+              h: ParseNumber(this.slideHeight) - this._border,
+              w: ParseNumber((this.slideWidth - 30) / 2),
+              t: this._border,
+            },
+            -1,
+            this._border,
+            true,
+            isResize
+          )
+        )
+      }
     } else {
       minSizes.push(
         diffRect(
@@ -1479,9 +1510,11 @@ export default class Editor {
     objects?: PObject[],
     index?: number
   ) => {
+    let isRatioFitter = false
     if (objects) {
       this.objects = objects
       this._index = index
+      isRatioFitter = true
     }
     if (this.objects && this._index !== undefined) {
       let minSizes = this.objects.reduce<any[]>((asn, obj, i) => {
@@ -1504,7 +1537,7 @@ export default class Editor {
         )
         return asn
       }, [])
-      minSizes = this.addCornerCollision(element, minSizes, isResize)
+      minSizes = this.addCornerCollision(element, minSizes, isResize, isRatioFitter)
       // console.log('minSizes', minSizes)
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')

@@ -55,6 +55,8 @@ const Editor: React.FC<Props> = ({
   const srcWidth = maxWidth * (srcHeight / maxHeight)
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
   const object = getSlides(sort, slides)[slideIndex]
+  const [isPaperSizeChanged, setIsPaperSizeChanged] = useState(false)
+
   // states
   return (
     <ImageModal
@@ -86,6 +88,9 @@ const Editor: React.FC<Props> = ({
               imageUrl={object.object?.props.imageUrl}
               imageStyle={object.object?.props.imageStyle}
               placeholderStyle={object.object?.props.placeholderStyle}
+              isEditor
+              isPaperSizeChanged={isPaperSizeChanged}
+              setIsPaperSizeChanged={setIsPaperSizeChanged}
             />
           </div>
         </div>
@@ -110,6 +115,7 @@ const Editor: React.FC<Props> = ({
           state: selected,
           action: setSelected,
         }}
+        setIsPaperSizeChanged={setIsPaperSizeChanged}
       />
     </ImageModal>
   )

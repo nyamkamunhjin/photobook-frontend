@@ -26,9 +26,18 @@ interface Props {
     state: ToolsType
     action: (t: ToolsType) => void
   }
+  setIsPaperSizeChanged: any
 }
 
-const Tools: React.FC<Props> = ({ select, object, slideId, updateObject, paperSizes, paperMaterials }) => {
+const Tools: React.FC<Props> = ({
+  select,
+  object,
+  slideId,
+  updateObject,
+  paperSizes,
+  paperMaterials,
+  setIsPaperSizeChanged,
+}) => {
   const { paperSize, cropStyle, imageStyle, paperMaterial } = object?.props
 
   const { brightness = 100, contrast = 100, saturation = 100 } = imageStyle || {}
@@ -81,6 +90,7 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject, paperSi
       },
       slideId
     )
+    setIsPaperSizeChanged(true)
   }
   const onPaperMaterial = (material: PaperMaterial) => {
     updateObject(
@@ -385,7 +395,7 @@ const Tools: React.FC<Props> = ({ select, object, slideId, updateObject, paperSi
           </div>
         </div>
       </div>
-      <div className="controller_container">
+      <div className="controller_container flex justify-start">
         <div
           className={`${select.state === 'transform' ? 'button selected' : 'button'}`}
           onClick={() => select.action('transform')}

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { Cropper, PObject, SlideObject } from 'interfaces'
@@ -22,6 +22,9 @@ interface Props extends React.HTMLProps<HTMLImageElement> {
   resolution: { width: number; height: number }
   placeholderStyle?: Object
   disabled?: boolean
+  isEditor?: boolean
+  isPaperSizeChanged: boolean
+  setIsPaperSizeChanged: any
 }
 
 const transformers = {
@@ -43,6 +46,9 @@ const Image: React.FC<Props> = ({
   resolution,
   updateObject,
   disabled = false,
+  isEditor = false,
+  isPaperSizeChanged,
+  setIsPaperSizeChanged,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -57,38 +63,61 @@ const Image: React.FC<Props> = ({
     },
     { wait: 50 }
   )
+  const [loader, setLoader] = useState(true)
+  const countRef = useRef(0)
 
   const moveCropper = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
     document.body.style.cursor = 'grab'
     const cropper = e?.target as HTMLElement
-    const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
-    const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
-    let startX = e.clientX / scaleX
-    let startY = e.clientY / scaleY
+    // const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
+    // const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
+    let startX = e.clientX
+    let startY = e.clientY
 
     const onMouseMove = (sube: any) => {
       sube.preventDefault()
       const { clientX, clientY } = sube
+
       const { rotateAngle = 0 } = object.props.imageStyle
-      const deltaX = startX - clientX / scaleX
-      const deltaY = startY - clientY / scaleY
-      startX = clientX / scaleX
-      startY = clientY / scaleY
-      let t = cropper.offsetTop - deltaY
-      let l = cropper.offsetLeft - deltaX
-      if (t < 0) {
-        t = 0
-      } else if (t > originalHeight) {
-        t = originalHeight
+      const deltaX = startX - clientX
+      const deltaY = startY - clientY
+      startX = clientX
+      startY = clientY
+
+      let t = cropper.offsetTop - deltaY / scaleX
+      let l = cropper.offsetLeft - deltaX / scaleY
+      if (t < imageRef.current.offsetTop) {
+        t = imageRef.current.offsetTop
+      } else if (t > imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight) {
+        t = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight
       }
-      if (l < imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth) {
-        l = imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth
-      } else if (l > originalWidth) {
-        l = originalWidth
+      if (l < imageRef.current.offsetLeft) {
+        l = imageRef.current.offsetLeft
+      } else if (l > imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.offsetWidth) {
+        l = imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.offsetWidth
       }
-      cropper.style.top = t + 'px'
-      cropper.style.left = l + 'px'
+
+      if (
+        imageRef.current.getBoundingClientRect().top <= sube.pageY &&
+        imageRef.current.getBoundingClientRect().top + imageRef.current.getBoundingClientRect().height >= sube.pageY
+      ) {
+        cropper.style.top = t + 'px'
+      } else if (imageRef.current.getBoundingClientRect().top > sube.pageY) {
+        cropper.style.top = imageRef.current.offsetTop + 'px'
+      } else {
+        cropper.style.top = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight + 'px'
+      }
+      if (
+        imageRef.current.getBoundingClientRect().left <= sube.pageX &&
+        imageRef.current.getBoundingClientRect().left + imageRef.current.getBoundingClientRect().width >= sube.pageX
+      ) {
+        cropper.style.left = l + 'px'
+      } else if (imageRef.current.getBoundingClientRect().left > sube.pageX) {
+        cropper.style.left = imageRef.current.offsetLeft + 'px'
+      } else {
+        cropper.style.left = imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.offsetWidth + 'px'
+      }
       run({ t, l, w: cropper.offsetWidth, h: cropper.offsetHeight, rotateAngle })
     }
 
@@ -132,7 +161,7 @@ const Image: React.FC<Props> = ({
     document.body.style.cursor = 'grab'
     const cropper = document.querySelector('.wrapper_container .cropper') as HTMLElement
     const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
-    const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
+    // const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
     const startX = e.clientX / scaleX
     const startY = e.clientY / scaleY
     if (!cropper) {
@@ -167,10 +196,10 @@ const Image: React.FC<Props> = ({
       let _l = left
       const _w = _width
       const _h = _height
-      if (_t < 0) {
+      if (_t < imageRef.current.offsetTop) {
         _t = 0
-      } else if (_t > originalHeight) {
-        _t = originalHeight
+      } else if (_t > imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight) {
+        _t = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight
       }
 
       if (_l < imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth) {
@@ -322,7 +351,6 @@ const Image: React.FC<Props> = ({
 
   useEffect(() => {
     const { cropStyle, imageStyle: imgStyle } = object.props
-
     run({
       t: ParseNumber(cropStyle?.top),
       h: ParseNumber(cropStyle?.height),
@@ -335,9 +363,51 @@ const Image: React.FC<Props> = ({
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
   const cropper = object.props.cropStyle
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
+  const cropperRatio = cropper ? cropper.width / cropper.height : 0
+
+  const adjustCropper = useCallback(() => {
+    if (!cropper) return
+
+    const { width: w, height: h } = window.getComputedStyle(imageRef.current, null)
+    const width = parseFloat(w)
+    const height = parseFloat(h)
+
+    if (width / height >= cropperRatio) {
+      cropper.height = height
+      cropper.width = cropper.height * cropperRatio
+    } else {
+      cropper.width = width
+      cropper.height = cropper.width / cropperRatio
+    }
+
+    if (width / height > 1 && loader) {
+      cropper.top = parseFloat(imageRef.current.offsetTop)
+      cropper.left = (width - cropper.width) / 2
+      setLoader(false)
+    } else if (width / height <= 1 && loader) {
+      cropper.left = parseFloat(imageRef.current.offsetLeft)
+      cropper.top = (height - cropper.height) / 2
+      setLoader(false)
+    }
+
+    if (cropper.left + cropper.width > imageRef.current.offsetLeft + imageRef.current.offsetWidth) {
+      cropper.left = imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.width
+    }
+    if (cropper.top + cropper.height > imageRef.current.offsetTop + imageRef.current.offsetHeight) {
+      cropper.top = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.height
+    }
+    console.log('cropper.height', cropper.height, 'h', h)
+
+    setIsPaperSizeChanged(false)
+  }, [cropper, cropperRatio, loader, setIsPaperSizeChanged])
+
+  useEffect(() => {
+    if (isPaperSizeChanged) adjustCropper()
+  }, [isPaperSizeChanged])
+
   return (
     <div
-      className={className}
+      className={`${className} flex justify-center items-center`}
       style={{
         ...style,
         overflow: 'hidden',
@@ -355,6 +425,7 @@ const Image: React.FC<Props> = ({
           filter: _filter,
           objectFit: 'contain',
         }}
+        onLoad={isEditor ? () => setLoader(false) : adjustCropper}
         src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}
       />
@@ -365,19 +436,20 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
-
-      <div
-        className="cropper"
-        id="cropper"
-        onMouseDown={moveCropper}
-        style={{
-          left: cropper?.left,
-          top: cropper?.top,
-          width: cropper?.width,
-          height: cropper?.height,
-          pointerEvents: disabled ? 'none' : 'visible',
-        }}
-      />
+      {!loader && (
+        <div
+          className="cropper"
+          id="cropper"
+          onMouseDown={moveCropper}
+          style={{
+            left: cropper?.left,
+            top: cropper?.top,
+            width: cropper?.width,
+            height: cropper?.height,
+            pointerEvents: disabled ? 'none' : 'visible',
+          }}
+        />
+      )}
       {Object.keys(transformers).map((t: string) => {
         return (
           <div

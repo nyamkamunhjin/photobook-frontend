@@ -41,6 +41,8 @@ const Images: React.FC<Props> = ({
   const maxHeight = 1000
   const srcWidth = srcHeight + height
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
+  const [isPaperSizeChanged, setIsPaperSizeChanged] = useState(false)
+
   const onPaperSize = (id: number, object: Slide) => {
     const size = paperSizes?.find((a) => a.id === id)
     if (!size) {
@@ -68,6 +70,7 @@ const Images: React.FC<Props> = ({
         object.slideId
       )
     )
+    setIsPaperSizeChanged(true)
   }
 
   const onPaperMaterial = (id: number, object: Slide) => {
@@ -144,6 +147,8 @@ const Images: React.FC<Props> = ({
                   imageStyle={object.object?.props.imageStyle}
                   updateObject={(a, e) => dispatch(updateObject(a, e))}
                   placeholderStyle={object.object?.props.placeholderStyle}
+                  isPaperSizeChanged={isPaperSizeChanged}
+                  setIsPaperSizeChanged={setIsPaperSizeChanged}
                 />
               </div>
             </div>
