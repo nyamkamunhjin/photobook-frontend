@@ -364,6 +364,7 @@ const Image: React.FC<Props> = ({
   const cropper = object.props.cropStyle
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
   const cropperRatio = cropper ? cropper.width / cropper.height : 0
+  console.log('cropperRatio', cropperRatio)
 
   const adjustCropper = useCallback(() => {
     if (!cropper) return
@@ -371,11 +372,14 @@ const Image: React.FC<Props> = ({
     const { width: w, height: h } = window.getComputedStyle(imageRef.current, null)
     const width = parseFloat(w)
     const height = parseFloat(h)
+    console.log('Ratio', width / height, 'cropperRatio', cropperRatio)
 
     if (width / height >= cropperRatio) {
       cropper.height = height
       cropper.width = cropper.height * cropperRatio
     } else {
+      console.log(123)
+
       cropper.width = width
       cropper.height = cropper.width / cropperRatio
     }
@@ -396,10 +400,10 @@ const Image: React.FC<Props> = ({
     if (cropper.top + cropper.height > imageRef.current.offsetTop + imageRef.current.offsetHeight) {
       cropper.top = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.height
     }
-    console.log('cropper.height', cropper.height, 'h', h)
+    console.log('cropper.height', cropper.height, 'h', h, imageRef.current)
 
     setIsPaperSizeChanged(false)
-  }, [cropper, cropperRatio, loader, setIsPaperSizeChanged])
+  }, [cropper, cropperRatio, loader, setIsPaperSizeChanged, imageRef])
 
   useEffect(() => {
     if (isPaperSizeChanged) adjustCropper()

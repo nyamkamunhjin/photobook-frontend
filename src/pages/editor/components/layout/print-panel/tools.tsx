@@ -70,11 +70,11 @@ const Tools: React.FC<Props> = ({
       slideId
     )
   }
-  const onPaperSize = (size: PaperSize) => {
+  const onPaperSize = async (size: PaperSize) => {
     const max = Math.max(ParseNumber(cropStyle?.width), ParseNumber(cropStyle?.height))
     const max2 = Math.max(size.height, size.width)
     const min2 = Math.min(size.height, size.width)
-    updateObject(
+    await updateObject(
       {
         object: {
           ...object,
