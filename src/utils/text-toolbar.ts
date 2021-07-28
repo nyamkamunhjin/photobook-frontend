@@ -114,24 +114,24 @@ export const changeFontSize = (value: any, props: any) => {
     text.style.fontSize = value
     text.style.lineHeight = value
     const object = props.objects[props.index]
-    const { left, height } = getComputedStyle(text)
-    const kPadding = parseFloat(left)
-    const textHeight = parseFloat(height)
-    const newHeight = textHeight + kPadding * 2
-    props.object.style.height = newHeight + 'px'
+    // const { left, height } = getComputedStyle(text)
+    // const kPadding = parseFloat(left)
+    // const textHeight = parseFloat(height)
+    // const newHeight = textHeight + kPadding * 2
+    // props.object.style.height = newHeight + 'px'
 
     props.updateObject({
       object: {
         ...object,
         style: {
           ...object.style,
-          height: newHeight,
+          // height: newHeight,
         },
         props: {
           ...object.props,
           autogrowStyle: {
             ...object.props.autogrowStyle,
-            height: newHeight,
+            // height: newHeight,
           },
           textStyle: {
             ...object.props.textStyle,

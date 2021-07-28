@@ -11,7 +11,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons'
 import { FormattedMessage } from 'react-intl'
-import { FaRegCircle } from 'react-icons/fa'
+import { FaPortrait, FaRegCircle } from 'react-icons/fa'
 import { Popover, Button } from 'antd'
 import { LayoutsInterface } from 'interfaces'
 import SlideSettings from './settings'
@@ -22,6 +22,7 @@ interface Props {
   createText?: () => void
   createSquare?: () => void
   createEclipse?: () => void
+  createMontagePortrait?: (e: unknown) => void
   changeLayout?: (align: string, type: string) => void
   layout?: {
     left: {
@@ -43,6 +44,7 @@ const SideButtons: React.FC<Props> = ({
   createText,
   createSquare,
   createEclipse,
+  createMontagePortrait,
   changeLayout,
   type = 'photobook',
   layout,
@@ -120,6 +122,12 @@ const SideButtons: React.FC<Props> = ({
           <div hidden={!createEclipse} onClick={createEclipse} className="item">
             <FaRegCircle style={{ fontSize: 24 }} />
             <FormattedMessage id="eclipse" />
+          </div>
+        )}
+        {createMontagePortrait && (
+          <div hidden={!createMontagePortrait} onClick={createMontagePortrait} className="item">
+            <FaPortrait style={{ fontSize: 24 }} />
+            <FormattedMessage id="montage" />
           </div>
         )}
         {settings && (

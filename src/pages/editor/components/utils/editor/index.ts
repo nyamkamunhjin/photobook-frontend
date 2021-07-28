@@ -17,7 +17,7 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 import lodash from 'lodash'
 import { ADD_LAYOUT, UPDATE_GROUP_CONTAINER, UPDATE_OBJECT } from 'redux/actions/types'
-import { arraysEqual, debounce, getRotationScaler, ParseNumber } from 'utils'
+import { arraysEqual, debounce, getRotationScaler, montagePortraitGap, ParseNumber } from 'utils'
 import {
   calculateCenter,
   centerToTL,
@@ -1179,6 +1179,39 @@ export default class Editor {
       const deltaX = clientX - startX
       const deltaY = clientY - startY
       this.onDrag(deltaX, deltaY, object, objectType, gap)
+
+      /* montage image, text group */
+      if (object.id.startsWith('image-montage-')) {
+        const eachObject = document.getElementById(object.id.replace('image-montage-', 'text-montage-'))
+        if (eachObject) {
+          const objectRect = getComputedStyle(object)
+
+          const pxParser = (text: string) => {
+            return parseFloat(text.replace('px', ''))
+          }
+
+          eachObject.style.top = montagePortraitGap + pxParser(objectRect.top) + pxParser(objectRect.height) + 'px'
+          eachObject.style.left =
+            pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
+        }
+      }
+
+      if (object.id.startsWith('text-montage-')) {
+        const eachObject = document.getElementById(object.id.replace('text-montage-', 'image-montage-'))
+        if (eachObject) {
+          const objectRect = getComputedStyle(object)
+
+          const pxParser = (text: string) => {
+            return parseFloat(text.replace('px', ''))
+          }
+
+          eachObject.style.top =
+            pxParser(objectRect.top) - montagePortraitGap - pxParser(eachObject.style.height) + 'px'
+          eachObject.style.left =
+            pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
+        }
+      }
+
       startX = clientX
       startY = clientY
     }
@@ -1198,6 +1231,33 @@ export default class Editor {
       this.moveCollisionObject(object, objectType, { t, l, w, h }, gap, false)
       if (index > -1) {
         this.updateObjectStyle(o, object)
+
+        /* save montage text or image */
+
+        if (object.id.startsWith('image-montage-')) {
+          /* find montage text and update */
+          const id = object.id.replace('image-montage-', 'text-montage-')
+          const element = document.getElementById(id)
+
+          if (element) {
+            this.updateObjectStyle(
+              objects?.find((each) => each.id === id),
+              element
+            )
+          }
+        }
+        if (object.id.startsWith('text-montage-')) {
+          /* find montage text and update */
+          const id = object.id.replace('text-montage-', 'image-montage-')
+          const element = document.getElementById(id)
+
+          if (element) {
+            this.updateObjectStyle(
+              objects?.find((each) => each.id === id),
+              element
+            )
+          }
+        }
       }
       setTimeout(() => {
         this.magnetX.style.display = 'none'
@@ -1636,6 +1696,81 @@ export default class Editor {
 
     this.setObjectType('shape')
   }
+  public createMontagePortrait = (e: any, objects: PObject[]) => {
+    this.hideToolbar()
+
+    /* generate uuid for image and text */
+    const uuid = uuidv4()
+    const zIndex = 100 + objects.length + ''
+    /* create portrait image as a custom image  */
+    const imageStyle = {
+      top: 100,
+      left: 100,
+      width: 500,
+      height: 300,
+      rotateAngle: 0,
+      transform: '',
+      zIndex,
+    }
+
+    this.addObject({
+      object: {
+        id: `image-montage-${uuid}`,
+        className: 'object',
+        style: imageStyle,
+        props: {
+          style: { transform: 'scaleX(1)' },
+          className: 'image-placeholder',
+          imageStyle: { display: 'none', top: 0, left: 0, width: '100%' },
+          placeholderStyle: { opacity: '0.5', backgroundColor: '#737373' },
+        },
+      },
+    })
+    this.setObjectType('image-placeholder')
+
+    /* create text field */
+
+    const style = {
+      top: imageStyle.top + montagePortraitGap + imageStyle.height,
+      left: imageStyle.left + imageStyle.width / 2 - 500 / 2,
+      width: 500,
+      height: 80,
+      rotateAngle: 0,
+      transform: '',
+      zIndex,
+    }
+
+    const textStyle = {
+      color: '#333',
+      textAlign: 'center',
+      fontSize: '72px',
+    }
+
+    const autogrowStyle = {
+      height: 'auto',
+    }
+
+    this.addObject({
+      object: {
+        id: `text-montage-${uuid}`,
+        className: 'object',
+        style,
+        props: {
+          textStyle,
+          autogrowStyle,
+          className: 'text-container',
+          style: { transform: 'scaleX(1)' },
+          texts: ['Name'],
+          placeholderStyle: { opacity: 1 },
+        },
+      },
+    })
+
+    this.setObjectType('text')
+
+    this.setObjectType('montage-portrait') // ene yag yu hiigeed bnaa
+  }
+
   public createSquare = (objects: PObject[]) => {
     this.hideToolbar()
     const style = {
@@ -1991,7 +2126,10 @@ export default class Editor {
     const clientY = e.clientY / this.scale
 
     const rect = this._object.getBoundingClientRect()
-    const { rotateAngle } = objects[_index].style
+    const rotateAngle = objects[_index]?.style?.rotateAngle
+
+    if (!rotateAngle) return
+
     this._isMouseDown = true
 
     const center = {
