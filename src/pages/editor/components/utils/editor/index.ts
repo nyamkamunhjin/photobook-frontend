@@ -1183,34 +1183,33 @@ export default class Editor {
       /* montage image, text group */
       if (object.id.startsWith('image-montage-')) {
         const eachObject = document.getElementById(object.id.replace('image-montage-', 'text-montage-'))
-        // console.log({ eachObject })
-        if (!eachObject) return
+        if (eachObject) {
+          const objectRect = getComputedStyle(object)
 
-        const objectRect = getComputedStyle(object)
+          const pxParser = (text: string) => {
+            return parseFloat(text.replace('px', ''))
+          }
 
-        const pxParser = (text: string) => {
-          return parseFloat(text.replace('px', ''))
+          eachObject.style.top = montagePortraitGap + pxParser(objectRect.top) + pxParser(objectRect.height) + 'px'
+          eachObject.style.left =
+            pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
         }
-
-        eachObject.style.top = montagePortraitGap + pxParser(objectRect.top) + pxParser(objectRect.height) + 'px'
-        eachObject.style.left =
-          pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
       }
 
       if (object.id.startsWith('text-montage-')) {
         const eachObject = document.getElementById(object.id.replace('text-montage-', 'image-montage-'))
-        // console.log({ eachObject })
-        if (!eachObject) return
+        if (eachObject) {
+          const objectRect = getComputedStyle(object)
 
-        const objectRect = getComputedStyle(object)
+          const pxParser = (text: string) => {
+            return parseFloat(text.replace('px', ''))
+          }
 
-        const pxParser = (text: string) => {
-          return parseFloat(text.replace('px', ''))
+          eachObject.style.top =
+            pxParser(objectRect.top) - montagePortraitGap - pxParser(eachObject.style.height) + 'px'
+          eachObject.style.left =
+            pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
         }
-
-        eachObject.style.top = pxParser(objectRect.top) - montagePortraitGap - pxParser(eachObject.style.height) + 'px'
-        eachObject.style.left =
-          pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
       }
 
       startX = clientX
@@ -1238,19 +1237,26 @@ export default class Editor {
         if (object.id.startsWith('image-montage-')) {
           /* find montage text and update */
           const id = object.id.replace('image-montage-', 'text-montage-')
-          this.updateObjectStyle(
-            objects?.find((each) => each.id === id),
-            document.getElementById(id)
-          )
-        }
+          const element = document.getElementById(id)
 
+          if (element) {
+            this.updateObjectStyle(
+              objects?.find((each) => each.id === id),
+              element
+            )
+          }
+        }
         if (object.id.startsWith('text-montage-')) {
           /* find montage text and update */
           const id = object.id.replace('text-montage-', 'image-montage-')
-          this.updateObjectStyle(
-            objects?.find((each) => each.id === id),
-            document.getElementById(id)
-          )
+          const element = document.getElementById(id)
+
+          if (element) {
+            this.updateObjectStyle(
+              objects?.find((each) => each.id === id),
+              element
+            )
+          }
         }
       }
       setTimeout(() => {
@@ -1662,7 +1668,7 @@ export default class Editor {
 
     /* generate uuid for image and text */
     const uuid = uuidv4()
-
+    const zIndex = 100 + objects.length + ''
     /* create portrait image as a custom image  */
     const imageStyle = {
       top: 100,
@@ -1671,7 +1677,7 @@ export default class Editor {
       height: 300,
       rotateAngle: 0,
       transform: '',
-      zIndex: 100 + objects.length + '',
+      zIndex,
     }
 
     this.addObject({
@@ -1698,7 +1704,7 @@ export default class Editor {
       height: 80,
       rotateAngle: 0,
       transform: '',
-      zIndex: 100 + objects.length + '',
+      zIndex,
     }
 
     const textStyle = {
