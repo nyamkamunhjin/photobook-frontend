@@ -21,7 +21,7 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
       )}
       <div className="mx-4 p-4">
         <button
-          className="focus:outline-none font-semibold"
+          className="focus:outline-none hover:text-blue-300 font-semibold"
           type="button"
           onClick={() => router.replace(`/editor/print?template=2`)}
         >
@@ -37,7 +37,7 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
                 return (
                   <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
                     <button
-                      className="focus:outline-none"
+                      className="focus:outline-none hover:text-blue-300"
                       type="button"
                       onClick={() => router.replace(`/product/photoprint?all=false&category=${each.id}`)}
                     >

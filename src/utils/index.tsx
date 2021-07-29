@@ -4,6 +4,8 @@ import { PaginatedParams } from 'ahooks/lib/useAntdTable'
 import { Storage } from 'aws-amplify'
 import dayjs from 'dayjs'
 
+export const montagePortraitGap = 40
+
 export const isEmptyDate: (date?: string) => boolean = (date) => {
   if (!date) return true
   return date.startsWith('0001-01-01')
