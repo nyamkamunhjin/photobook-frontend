@@ -194,6 +194,15 @@ const Tools: React.FC<Props> = ({
           ...object,
           props: {
             ...object.props,
+            imageStyle: {
+              display: 'block',
+              left: 0,
+              rotateAngle: 0,
+              top: 0,
+              transform: 'scaleX(1) scaleY(1) rotate(0deg)',
+              width: '100%',
+              height: '100%',
+            },
             cropStyle: {
               ...(object.props?.cropStyle as Cropper),
             },
