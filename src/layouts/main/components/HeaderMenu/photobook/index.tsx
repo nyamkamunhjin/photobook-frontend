@@ -25,16 +25,16 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
           <FormattedMessage id="photobook" />
         </p>
         <ul className="flex flex-col gap-2">
-          <li className="text-gray-600 text-xs" key="montage">
+          {/* <li className="text-gray-600 text-xs" key="montage">
             <button className="focus:outline-none" type="button" onClick={() => router.replace('/editor/montage')}>
               <FormattedMessage id="montage" />
             </button>
-          </li>
+          </li> */}
           {coverTypes ? (
             coverTypes?.map((each) => (
               <li className="text-gray-600 text-xs" key={each.id + each.name + each.quantity}>
                 <button
-                  className="focus:outline-none"
+                  className="focus:outline-none hover:text-blue-300"
                   type="button"
                   onClick={() => router.replace('/product/photobook')}
                 >
@@ -59,7 +59,7 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
                 return (
                   <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
                     <button
-                      className="focus:outline-none"
+                      className="focus:outline-none hover:text-blue-300"
                       type="button"
                       onClick={() => router.replace(`/product/photobook?all=false&category=${each.id}`)}
                     >

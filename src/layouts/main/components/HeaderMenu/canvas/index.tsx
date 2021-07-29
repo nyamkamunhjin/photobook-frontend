@@ -33,7 +33,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
                 return (
                   <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
                     <button
-                      className="focus:outline-none"
+                      className="focus:outline-none hover:text-blue-300"
                       type="button"
                       onClick={() => router.replace(`/product/canvas?all=false&category=${each.id}`)}
                     >
@@ -59,7 +59,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
                 return (
                   <li className="text-gray-600 text-xs" key={each.id + each.name}>
                     <button
-                      className="focus:outline-none"
+                      className="focus:outline-none hover:text-blue-300"
                       type="button"
                       onClick={() => router.replace(`/product/frame?all=false&category=${each.id + each.name}`)}
                     >
