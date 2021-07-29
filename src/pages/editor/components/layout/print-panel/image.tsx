@@ -25,6 +25,8 @@ interface Props extends React.HTMLProps<HTMLImageElement> {
   isEditor?: boolean
   isPaperSizeChanged: boolean
   setIsPaperSizeChanged: any
+  isAngleChanged?: boolean
+  setIsAngleChanged?: any
 }
 
 const transformers = {
@@ -49,6 +51,8 @@ const Image: React.FC<Props> = ({
   isEditor = false,
   isPaperSizeChanged,
   setIsPaperSizeChanged,
+  isAngleChanged,
+  setIsAngleChanged,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -64,7 +68,8 @@ const Image: React.FC<Props> = ({
     { wait: 50 }
   )
   const [loader, setLoader] = useState(true)
-  const countRef = useRef(0)
+  const [_cropperRatio, set_CropperRatio] = useState(0)
+  const _cropperAngle = useRef(0)
 
   const moveCropper = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault()
@@ -75,11 +80,27 @@ const Image: React.FC<Props> = ({
     let startX = e.clientX
     let startY = e.clientY
 
+    let {
+      offsetTop: img_offsetTop,
+      offsetLeft: img_offsetLeft,
+      offsetHeight: img_offsetHeight,
+      offsetWidth: img_offsetWidth,
+    } = imageRef.current
+    const { rotateAngle = 0 } = object.props.imageStyle
+
+    if (rotateAngle % 180 !== 0) {
+      const _img_offsetTop = img_offsetTop
+      const _img_offsetWidth = img_offsetWidth
+      img_offsetTop = img_offsetLeft
+      img_offsetLeft = _img_offsetTop
+      img_offsetWidth = img_offsetHeight
+      img_offsetHeight = _img_offsetWidth
+    }
+
     const onMouseMove = (sube: any) => {
       sube.preventDefault()
       const { clientX, clientY } = sube
 
-      const { rotateAngle = 0 } = object.props.imageStyle
       const deltaX = startX - clientX
       const deltaY = startY - clientY
       startX = clientX
@@ -87,15 +108,15 @@ const Image: React.FC<Props> = ({
 
       let t = cropper.offsetTop - deltaY / scaleX
       let l = cropper.offsetLeft - deltaX / scaleY
-      if (t < imageRef.current.offsetTop) {
-        t = imageRef.current.offsetTop
-      } else if (t > imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight) {
-        t = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight
+      if (t < img_offsetTop) {
+        t = img_offsetTop
+      } else if (t > img_offsetTop + img_offsetHeight - cropper.offsetHeight) {
+        t = img_offsetTop + img_offsetHeight - cropper.offsetHeight
       }
-      if (l < imageRef.current.offsetLeft) {
-        l = imageRef.current.offsetLeft
-      } else if (l > imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.offsetWidth) {
-        l = imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.offsetWidth
+      if (l < img_offsetLeft) {
+        l = img_offsetLeft
+      } else if (l > img_offsetLeft + img_offsetWidth - cropper.offsetWidth) {
+        l = img_offsetLeft + img_offsetWidth - cropper.offsetWidth
       }
 
       if (
@@ -104,9 +125,9 @@ const Image: React.FC<Props> = ({
       ) {
         cropper.style.top = t + 'px'
       } else if (imageRef.current.getBoundingClientRect().top > sube.pageY) {
-        cropper.style.top = imageRef.current.offsetTop + 'px'
+        cropper.style.top = img_offsetTop + 'px'
       } else {
-        cropper.style.top = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight + 'px'
+        cropper.style.top = img_offsetTop + img_offsetHeight - cropper.offsetHeight + 'px'
       }
       if (
         imageRef.current.getBoundingClientRect().left <= sube.pageX &&
@@ -114,9 +135,9 @@ const Image: React.FC<Props> = ({
       ) {
         cropper.style.left = l + 'px'
       } else if (imageRef.current.getBoundingClientRect().left > sube.pageX) {
-        cropper.style.left = imageRef.current.offsetLeft + 'px'
+        cropper.style.left = img_offsetLeft + 'px'
       } else {
-        cropper.style.left = imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.offsetWidth + 'px'
+        cropper.style.left = img_offsetLeft + img_offsetWidth - cropper.offsetWidth + 'px'
       }
       run({ t, l, w: cropper.offsetWidth, h: cropper.offsetHeight, rotateAngle })
     }
@@ -160,7 +181,7 @@ const Image: React.FC<Props> = ({
     e.preventDefault()
     document.body.style.cursor = 'grab'
     const cropper = document.querySelector('.wrapper_container .cropper') as HTMLElement
-    const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
+    // const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
     // const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
     const startX = e.clientX / scaleX
     const startY = e.clientY / scaleY
@@ -181,6 +202,23 @@ const Image: React.FC<Props> = ({
     })
     const rect = { width, height, centerX, centerY, rotateAngle }
     let _isMouseDown = true
+
+    let {
+      offsetTop: img_offsetTop,
+      offsetLeft: img_offsetLeft,
+      offsetHeight: img_offsetHeight,
+      offsetWidth: img_offsetWidth,
+    } = imageRef.current
+    if (rotateAngle % 180 !== 0) {
+      const _img_offsetTop = img_offsetTop
+      const _img_offsetWidth = img_offsetWidth
+      img_offsetTop = img_offsetLeft
+      img_offsetLeft = _img_offsetTop
+      img_offsetWidth = img_offsetHeight
+      img_offsetHeight = _img_offsetWidth
+    }
+    console.log('_cropperRatio', _cropperRatio)
+
     const resizeObject = ({
       top,
       left,
@@ -194,27 +232,36 @@ const Image: React.FC<Props> = ({
     }) => {
       let _t = top
       let _l = left
-      const _w = _width
-      const _h = _height
-      if (_t < imageRef.current.offsetTop) {
-        _t = 0
-      } else if (_t > imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight) {
-        _t = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.offsetHeight
+      let _w = _width
+      let _h = _height
+
+      if (_t < img_offsetTop) {
+        _t = img_offsetTop
+      } else if (_t > img_offsetTop + img_offsetHeight - cropper.offsetHeight) {
+        _t = img_offsetTop + img_offsetHeight - cropper.offsetHeight
+      }
+      if (_l < img_offsetLeft) {
+        _l = img_offsetLeft
+      } else if (_l > img_offsetLeft + img_offsetWidth - cropper.offsetWidth) {
+        _l = img_offsetLeft + img_offsetWidth - cropper.offsetWidth
       }
 
-      if (_l < imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth) {
-        _l = imageRef.current.offsetWidth / 2 - imageRef.current.naturalWidth
-      } else if (_l > originalWidth) {
-        _l = originalWidth
+      if (_h > img_offsetHeight) _h = img_offsetHeight
+      if (_w > img_offsetWidth) _w = img_offsetWidth
+
+      if (_w / _h > _cropperRatio && img_offsetWidth > img_offsetHeight) {
+        _w = _h * _cropperRatio
+        _h = img_offsetHeight
+      } else if (_w / _h > _cropperRatio && img_offsetWidth <= img_offsetHeight) {
+        _w = img_offsetWidth
+        _h = _w / _cropperRatio
       }
 
-      // if (_t + _h <= originalHeight) {
       cropper.style.top = _t + 'px'
       cropper.style.left = _l + 'px'
       cropper.style.width = _w + 'px'
       cropper.style.height = _h + 'px'
       run({ t: _t, l: _l, w: _w, h: _h, rotateAngle })
-      // }
     }
     const onResize = (
       length: number,
@@ -364,50 +411,90 @@ const Image: React.FC<Props> = ({
   const cropper = object.props.cropStyle
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
   const cropperRatio = cropper ? cropper.width / cropper.height : 0
-  console.log('cropperRatio', cropperRatio)
 
   const adjustCropper = useCallback(() => {
     if (!cropper) return
 
-    const { width: w, height: h } = window.getComputedStyle(imageRef.current, null)
-    const width = parseFloat(w)
-    const height = parseFloat(h)
-    console.log('Ratio', width / height, 'cropperRatio', cropperRatio)
+    let {
+      offsetTop: img_offsetTop,
+      offsetLeft: img_offsetLeft,
+      offsetHeight: img_offsetHeight,
+      offsetWidth: img_offsetWidth,
+    } = imageRef.current
+    const { rotateAngle = 0 } = object.props.imageStyle
+    if (rotateAngle % 180 !== 0) {
+      const _img_offsetTop = img_offsetTop
+      const _img_offsetWidth = img_offsetWidth
+      img_offsetTop = img_offsetLeft
+      img_offsetLeft = _img_offsetTop
+      img_offsetWidth = img_offsetHeight
+      img_offsetHeight = _img_offsetWidth
+    }
 
-    if (width / height >= cropperRatio) {
-      cropper.height = height
+    const imgRatio = img_offsetWidth / img_offsetHeight
+    if (imgRatio >= cropperRatio) {
+      cropper.height = img_offsetHeight
       cropper.width = cropper.height * cropperRatio
     } else {
-      console.log(123)
-
-      cropper.width = width
+      cropper.width = img_offsetWidth
       cropper.height = cropper.width / cropperRatio
     }
 
-    if (width / height > 1 && loader) {
-      cropper.top = parseFloat(imageRef.current.offsetTop)
-      cropper.left = (width - cropper.width) / 2
+    if (imgRatio > 1 && loader) {
+      cropper.top = parseFloat(img_offsetTop)
+      cropper.left = (img_offsetWidth - cropper.width) / 2
       setLoader(false)
-    } else if (width / height <= 1 && loader) {
-      cropper.left = parseFloat(imageRef.current.offsetLeft)
-      cropper.top = (height - cropper.height) / 2
+    } else if (imgRatio <= 1 && loader) {
+      cropper.left = parseFloat(img_offsetLeft)
+      cropper.top = (img_offsetHeight - cropper.height) / 2
       setLoader(false)
     }
 
-    if (cropper.left + cropper.width > imageRef.current.offsetLeft + imageRef.current.offsetWidth) {
-      cropper.left = imageRef.current.offsetLeft + imageRef.current.offsetWidth - cropper.width
+    if (cropper.left + cropper.width > img_offsetLeft + img_offsetWidth) {
+      cropper.left = img_offsetLeft + img_offsetWidth - cropper.width
     }
-    if (cropper.top + cropper.height > imageRef.current.offsetTop + imageRef.current.offsetHeight) {
-      cropper.top = imageRef.current.offsetTop + imageRef.current.offsetHeight - cropper.height
+    if (cropper.top + cropper.height > img_offsetTop + img_offsetHeight) {
+      cropper.top = img_offsetTop + img_offsetHeight - cropper.height
     }
-    console.log('cropper.height', cropper.height, 'h', h, imageRef.current)
 
+    set_CropperRatio(cropperRatio)
     setIsPaperSizeChanged(false)
-  }, [cropper, cropperRatio, loader, setIsPaperSizeChanged, imageRef])
+  }, [cropper, cropperRatio, loader, setIsPaperSizeChanged, imageRef, object.props.imageStyle])
 
   useEffect(() => {
     if (isPaperSizeChanged) adjustCropper()
   }, [isPaperSizeChanged])
+
+  const adjustCropperAngle = useCallback(() => {
+    const { rotateAngle } = object.props.imageStyle
+
+    if (!cropper || rotateAngle === undefined) return
+
+    const { width: w, height: h, top: t, left: l } = cropper
+    let _t = 0
+    let _l = 0
+
+    if (_cropperAngle.current > rotateAngle) {
+      _t = imageRef.current.offsetLeft + imageRef.current.offsetWidth - l - w
+      _l = t
+    } else {
+      _t = l
+      _l = imageRef.current.offsetLeft + imageRef.current.offsetWidth - t - h
+    }
+
+    cropper.top = _t
+    cropper.left = _l
+    cropper.width = h
+    cropper.height = w
+
+    _cropperAngle.current = rotateAngle
+    set_CropperRatio((prevState) => 1 / prevState)
+    setIsAngleChanged(false)
+  }, [_cropperAngle, cropper, object.props.imageStyle, setIsAngleChanged])
+
+  useEffect(() => {
+    if (_cropperAngle.current !== object.props.imageStyle.rotateAngle && isAngleChanged) adjustCropperAngle()
+  }, [object.props.imageStyle.rotateAngle, isAngleChanged])
 
   return (
     <div
@@ -429,7 +516,14 @@ const Image: React.FC<Props> = ({
           filter: _filter,
           objectFit: 'contain',
         }}
-        onLoad={isEditor ? () => setLoader(false) : adjustCropper}
+        onLoad={
+          isEditor
+            ? () => {
+                setLoader(false)
+                set_CropperRatio(cropperRatio)
+              }
+            : adjustCropper
+        }
         src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageUrl}`}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}
       />

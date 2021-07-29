@@ -27,6 +27,7 @@ interface Props {
     action: (t: ToolsType) => void
   }
   setIsPaperSizeChanged: any
+  setIsAngleChanged: any
 }
 
 const Tools: React.FC<Props> = ({
@@ -37,6 +38,7 @@ const Tools: React.FC<Props> = ({
   paperSizes,
   paperMaterials,
   setIsPaperSizeChanged,
+  setIsAngleChanged,
 }) => {
   const { paperSize, cropStyle, imageStyle, paperMaterial } = object?.props
 
@@ -69,6 +71,7 @@ const Tools: React.FC<Props> = ({
       },
       slideId
     )
+    setIsAngleChanged(true)
   }
   const onPaperSize = async (size: PaperSize) => {
     const max = Math.max(ParseNumber(cropStyle?.width), ParseNumber(cropStyle?.height))
