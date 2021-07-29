@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable consistent-return */
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import { Slider } from 'antd'
 import { Cropper, PaperMaterial, PaperSize, PObject, ToolsType } from 'interfaces'
 import { IconButton, InputNumber } from 'components'
@@ -28,6 +28,7 @@ interface Props {
   }
   setIsPaperSizeChanged: any
   setIsAngleChanged: any
+  onRemove: (index: number) => void
 }
 
 const Tools: React.FC<Props> = ({
@@ -39,6 +40,7 @@ const Tools: React.FC<Props> = ({
   paperMaterials,
   setIsPaperSizeChanged,
   setIsAngleChanged,
+  onRemove,
 }) => {
   const { paperSize, cropStyle, imageStyle, paperMaterial } = object?.props
 
@@ -399,7 +401,7 @@ const Tools: React.FC<Props> = ({
         <div hidden={select.state !== 'remove'}>
           <div className="choice">
             <FormattedMessage id="controller.remove.message" />
-            <div className="ml-5" onClick={onReset}>
+            <div className="ml-5" onClick={onRemove as any}>
               <span className="filter-name">
                 <FormattedMessage id="controller.remove" />
               </span>

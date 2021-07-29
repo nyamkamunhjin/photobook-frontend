@@ -31,6 +31,7 @@ interface Props {
   hasNext?: () => boolean
   hasPrevious?: () => boolean
   visible: boolean
+  onRemove: (index: number) => void
 }
 
 const Editor: React.FC<Props> = ({
@@ -45,6 +46,7 @@ const Editor: React.FC<Props> = ({
   slides,
   paperSizes,
   paperMaterials,
+  onRemove,
 }) => {
   const [height] = useWindow()
   const maxWidth = 1000
@@ -120,6 +122,10 @@ const Editor: React.FC<Props> = ({
         }}
         setIsPaperSizeChanged={setIsPaperSizeChanged}
         setIsAngleChanged={setIsAngleChanged}
+        onRemove={() => {
+          onCancel()
+          onRemove(slideIndex)
+        }}
       />
     </ImageModal>
   )

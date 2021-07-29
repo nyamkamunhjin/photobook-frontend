@@ -172,6 +172,7 @@ const Grid: React.FC<Props> = ({
           onCancel={() => setSlideIndex(-1)}
           visible={slideIndex !== -1}
           object={slides[slideIndex]}
+          onRemove={(index) => onRemove(slides[index])}
         />
       )}
     </div>
