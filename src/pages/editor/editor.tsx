@@ -451,7 +451,7 @@ const BookEditor: React.FC<Props> = ({
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
             createEclipse={() => editors.createEclipse(objects)}
-            createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
+            // createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
             changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
             layout={layout}
             type="photobook"

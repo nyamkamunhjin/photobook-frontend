@@ -1902,6 +1902,7 @@ export default class Editor {
     }
     this.setObjectType('image')
   }
+
   public onObjectDrop = (e: any, type: FeatureType, objects: PObject[], _index: number) => {
     this.hideToolbar()
     e.preventDefault()
@@ -1985,6 +1986,179 @@ export default class Editor {
       this.createImage(e, objects)
     } else if ('images'.includes(type)) {
       this.createImages(e, objects)
+    }
+  }
+
+  public createImagesMontage = (e: any, objects: PObject[]) => {
+    this.hideToolbar()
+    if (e.dataTransfer) {
+      JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image) => {
+        const { x, y } = this.canvasRef.current.getBoundingClientRect()
+        const x1 = e.clientX - x
+        const y1 = e.clientY - y
+
+        const style = {
+          top: y1,
+          left: x1,
+          width: 500,
+          height: 300,
+          rotateAngle: 0,
+          transform: '',
+          zIndex: 100 + objects.length + '',
+        }
+
+        this.addObject({
+          object: {
+            id: uuidv4(),
+            className: 'object',
+            style,
+            props: {
+              imageUrl: image.imageUrl,
+              tempUrl: image.tempUrl,
+              className: 'image-placeholder',
+              imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+              style: { transform: 'scaleX(1)' },
+              placeholderStyle: { opacity: 1 },
+            },
+          },
+        })
+      })
+    } else {
+      const style = {
+        top: 100,
+        left: 100,
+        width: 500,
+        height: 300,
+        rotateAngle: 0,
+        transform: '',
+        zIndex: 100 + objects.length + '',
+      }
+
+      this.addObject({
+        object: layoutPositionsToImage(style),
+      })
+    }
+    this.setObjectType('image')
+  }
+
+  public onObjectDropMontage = (e: any, type: FeatureType, objects: PObject[], _index: number) => {
+    this.hideToolbar()
+    e.preventDefault()
+    if (!'images,cliparts,frames,masks'.includes(type) || this._isTextEditing) return
+
+    if (
+      e.target.classList.contains('object') &&
+      e.target.childNodes[0].className === 'image-placeholder' &&
+      !'cliparts'.includes(type)
+    ) {
+      if (_index > -1) {
+        const { top, left, width, height } = getComputedStyle(this._object)
+        const {
+          options,
+          rect: { w, h },
+        } = calculateCenter({ top, left, width, height }, this._rotateAngle)
+
+        const activeBorder = document.querySelector('.active-border')
+        this.showActiveBorder(activeBorder, options, w, h, this._rotateAngle)
+      }
+      if (type === 'frames') {
+        e.target.style.border = 'none'
+        const index = objects.findIndex((o: any) => o.id === e.target.id)
+
+        const newObject = {
+          ...objects[index],
+          props: {
+            ...objects[index].props,
+            frameImage: e.dataTransfer.getData('imageUrl'),
+            frameStyle: {
+              borderImageSource: `url(${e.dataTransfer.getData('tempUrl')})`,
+              borderImageSlice: 200,
+              borderImageRepeat: 'stretch',
+              borderColor: 'transparent',
+              borderWidth: '50px',
+            },
+            placeholderStyle: { opacity: '1' },
+          },
+        }
+
+        this.updateObject({ object: newObject })
+        this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+      } else if (type === 'masks') {
+        e.target.style.border = 'none'
+        const index = objects.findIndex((o: any) => o.id === e.target.id)
+
+        const newObject = {
+          ...objects[index],
+          props: {
+            ...objects[index].props,
+            maskImage: e.dataTransfer.getData('imageUrl'),
+            maskStyle: {
+              maskImage: `url(${e.dataTransfer.getData('tempUrl').replace('https', 'http')})`,
+              WebkitMaskImage: `url(${e.dataTransfer.getData('tempUrl').replace('https', 'http')})`,
+            },
+            placeholderStyle: { opacity: '1' },
+          },
+        }
+
+        this.updateObject({ object: newObject })
+        this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+      } else {
+        e.target.style.border = 'none'
+        const index = objects.findIndex((o: any) => o.id === e.target.id)
+        const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
+        const newObject = {
+          ...objects[index],
+          props: {
+            ...objects[index].props,
+            imageUrl: images[0].imageUrl,
+            tempUrl: images[0].tempUrl,
+            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+            placeholderStyle: { opacity: '1' },
+          },
+        }
+
+        console.log({ objects, object: objects[index] })
+        // object: {
+        //   id: uuidv4(),
+        //   className: 'object',
+        //   style,
+        //   props: {
+        //     textStyle,
+        //     autogrowStyle,
+        //     className: 'text-container',
+        //     style: { transform: 'scaleX(1)' },
+        //     texts: ['Enter text here'],
+        //     placeholderStyle: { opacity: 1 },
+        //   },
+        // },
+
+        if (objects[index].id.startsWith('image-montage-')) {
+          /* text iin olno */
+          const textObjectID = objects[index].id.replace('image-montage-', 'text-montage-')
+          const textObject = objects.find((each) => each.id === textObjectID)
+
+          /* zuragnaas neriine olno */
+          if (textObject && images.length > 0) {
+            /* text update hiine */
+            this.updateObject({
+              object: {
+                ...textObject,
+                props: {
+                  ...textObject.props,
+                  texts: [images[0].name],
+                },
+              },
+            })
+          }
+        }
+
+        this.updateObject({ object: newObject })
+        this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+      }
+    } else if ('cliparts'.includes(type)) {
+      this.createImage(e, objects)
+    } else if ('images'.includes(type)) {
+      this.createImagesMontage(e, objects)
     }
   }
   // #endregion [ObjectMethods]

@@ -129,13 +129,13 @@ const BookEditor: React.FC<Props> = ({
 
   // states
   const [scale, setScale] = useState<number>(1)
+  const [zoom, setZoom] = useState(1)
   const [fitScale, setFitScale] = useState<number>(1)
   const [_objectType, setObjectType] = useState<ObjectType>('')
   const [_isTextEditing, setIsTextEditing] = useState<boolean>(false)
   const [_index, setObjectIndex] = useState<number>(-1)
   const [_textObjectIndex, setTextObjectIndex] = useState<number>(-1)
   const [_object, setObject] = useState<any>(null)
-  const [isPaperSizeChanged, setIsPaperSizeChanged] = useState<boolean>(false)
   const [_groupObjects, setGroupObjects] = useState<any>(null)
   const [footerCollapse, setFooterCollapse] = useBoolean(false)
   const [_groupStyles, setGroupStyles] =
@@ -164,7 +164,6 @@ const BookEditor: React.FC<Props> = ({
   const editors = useMemo(() => {
     return new Editor({
       setTextObjectIndex,
-      backgroundEdit: editor.backgroundEdit,
       setObjectIndex,
       scale,
       overflow,
@@ -194,9 +193,10 @@ const BookEditor: React.FC<Props> = ({
       canvasRef,
       setGroupStyles,
       _object,
-      double: true,
+      // double: true,
+      zoom,
     })
-  }, [scale, slideHeight, slideWidth])
+  }, [scale, slideHeight, slideWidth, zoom])
 
   const saveTextBeforeUndo = () => {
     if (_index > -1 && _isTextEditing) {
@@ -342,7 +342,6 @@ const BookEditor: React.FC<Props> = ({
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
   }
-
   useEffect(() => {
     if (loading) return
     const debouncedHandleResize = debounce(function handleResize() {
@@ -422,38 +421,6 @@ const BookEditor: React.FC<Props> = ({
     }
   }, [editor.dragStart, editor.type])
 
-  useEffect(() => {
-    if (!isPaperSizeChanged) return
-    objects.forEach((o: PObject, index: number, arr: PObject[]) => {
-      const { t, l, h, w, sw, sh } = o.ratio as { t: number; l: number; h: number; w: number; sw: number; sh: number }
-      o.style = {
-        ...o.style,
-        top: `${(slideHeight * t) / sh}px`,
-        left: `${(((slideWidth - 30) / 2) * l) / ((sw - 30) / 2)}px`,
-        height: `${(slideHeight * h) / sh}px`,
-        width: `${(((slideWidth - 30) / 2) * w) / ((sw - 30) / 2)}px`,
-      }
-
-      const objectType = editors.getObjectType(o.props.className.split(' '), true)
-      editors.moveCollisionObject(
-        o,
-        objectType,
-        {
-          t: parseFloat(o.style.top as string),
-          l: parseFloat(o.style.left as string),
-          w: parseFloat(o.style.width as string),
-          h: parseFloat(o.style.height as string),
-        },
-        0,
-        true,
-        arr,
-        index
-      )
-    })
-    editors.deSelectObject()
-    setIsPaperSizeChanged(false)
-  }, [slideWidth, slideHeight, objects, isPaperSizeChanged])
-
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
@@ -462,6 +429,10 @@ const BookEditor: React.FC<Props> = ({
             object={_object}
             objectType={_objectType}
             index={_index}
+            zoom={{
+              state: zoom,
+              action: setZoom,
+            }}
             objects={objects}
             updateObject={updateObject}
             updateHistory={updateHistory}
@@ -480,16 +451,16 @@ const BookEditor: React.FC<Props> = ({
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
             createEclipse={() => editors.createEclipse(objects)}
+            createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
             changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
             layout={layout}
             type="photobook"
             layouts={layouts}
-            setIsPaperSizeChanged={setIsPaperSizeChanged}
           />
           <div
             id="slide_container"
             onMouseDown={(e) => editors.onSlideMouseDown(e, _index, containers)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index)}
+            onDrop={(e) => editors.onObjectDropMontage(e, editor.type, objects, _index)}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -571,7 +542,7 @@ const BookEditor: React.FC<Props> = ({
                                 updateHistory,
                                 saveObjects,
                                 scale,
-                                zoom: 1,
+                                zoom,
                               })}
                             </div>
                           )
@@ -584,9 +555,7 @@ const BookEditor: React.FC<Props> = ({
                 <div
                   className="group-selection"
                   ref={groupRef}
-                  onMouseDown={(e) => {
-                    if (editor.backgroundEdit) editors.selectionDragStart(e, containers)
-                  }}
+                  onMouseDown={(e) => editors.selectionDragStart(e, containers)}
                 />
                 <div className="active-border" />
                 <div className="page-border" />
