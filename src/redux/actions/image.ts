@@ -82,7 +82,14 @@ export const unlinkImages = (keys: string[], id: number) => async (dispatch: any
 
 export const addImages = (keys: string[], id: number) => async (dispatch: any) => {
   try {
-    let images = await createMultiImage(keys.map((key) => ({ imageUrl: key, type: 'images', projects: [id] })))
+    let images = await createMultiImage(
+      keys.map((key) => ({
+        imageUrl: key,
+        name: key.split('-').slice(1, key.split('-').length).join('-').split('.')[0], // sorry medq
+        type: 'images',
+        projects: [id],
+      }))
+    )
     images = await Promise.all(
       images.map(async (image: Image) => ({
         ...image,
