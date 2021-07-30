@@ -181,10 +181,10 @@ const Image: React.FC<Props> = ({
     e.preventDefault()
     document.body.style.cursor = 'grab'
     const cropper = document.querySelector('.wrapper_container .cropper') as HTMLElement
-    // const originalWidth = imageRef.current.offsetWidth / 2 + imageRef.current.naturalWidth - cropper.offsetWidth
-    // const originalHeight = imageRef.current.offsetHeight / 2 + imageRef.current.naturalHeight - cropper.offsetHeight
+
     const startX = e.clientX / scaleX
     const startY = e.clientY / scaleY
+
     if (!cropper) {
       return
     }
@@ -217,7 +217,10 @@ const Image: React.FC<Props> = ({
       img_offsetWidth = img_offsetHeight
       img_offsetHeight = _img_offsetWidth
     }
-    console.log('_cropperRatio', _cropperRatio)
+
+    const { top: imgTop, left: imgLeft, width: imgWidth, height: imgHeight } = imageRef.current.getBoundingClientRect()
+
+    console.log('_cropperRatio', _cropperRatio, 'type', type)
 
     const resizeObject = ({
       top,
@@ -233,7 +236,7 @@ const Image: React.FC<Props> = ({
       let _t = top
       let _l = left
       let _w = _width
-      let _h = _height
+      const _h = _height
 
       if (_t < img_offsetTop) {
         _t = img_offsetTop
@@ -246,21 +249,24 @@ const Image: React.FC<Props> = ({
         _l = img_offsetLeft + img_offsetWidth - cropper.offsetWidth
       }
 
-      if (_h > img_offsetHeight) _h = img_offsetHeight
-      if (_w > img_offsetWidth) _w = img_offsetWidth
+      console.log('_w / _h', _w / _h, 'startX', startX, 'startY', startY)
 
-      if (_w / _h > _cropperRatio && img_offsetWidth > img_offsetHeight) {
-        _w = _h * _cropperRatio
-        _h = img_offsetHeight
-      } else if (_w / _h > _cropperRatio && img_offsetWidth <= img_offsetHeight) {
-        _w = img_offsetWidth
-        _h = _w / _cropperRatio
-      }
+      _w = _h * _cropperRatio
 
-      cropper.style.top = _t + 'px'
-      cropper.style.left = _l + 'px'
+      if (_h > img_offsetHeight || _w > img_offsetWidth) return
+
       cropper.style.width = _w + 'px'
       cropper.style.height = _h + 'px'
+
+      if (type.includes('t') && type.includes('l')) {
+        cropper.style.top = _t + 'px'
+        cropper.style.left = _l + 'px'
+      } else if (type.includes('l')) {
+        cropper.style.left = _l + 'px'
+      } else if (type.includes('t')) {
+        cropper.style.top = _t + 'px'
+      }
+
       run({ t: _t, l: _l, w: _w, h: _h, rotateAngle })
     }
     const onResize = (
@@ -300,13 +306,83 @@ const Image: React.FC<Props> = ({
     const onMouseMove = (sube: any) => {
       if (!_isMouseDown) return
       sube.preventDefault()
-      const clientX = sube.clientX / scaleX
-      const clientY = sube.clientY / scaleY
-      const deltaX = clientX - startX
-      const deltaY = clientY - startY
-      const alpha = Math.atan2(deltaY, deltaX)
-      const deltaL = getLength(deltaX, deltaY)
-      onResize(deltaL, alpha, rect, true)
+
+      // if (type === 'tl' && sube.pageX <= imgLeft && sube.pageY <= imgTop) return
+      // if (type === 'tr' && sube.pageX >= imgLeft + imgWidth && sube.pageY <= imgTop) return
+      // if (type === 'bl' && sube.pageX <= imgLeft && sube.pageY >= imgTop + imgHeight) return
+      // if (type === 'br' && sube.pageX >= imgLeft + imgWidth && sube.pageY >= imgTop + imgHeight) return
+
+      const {
+        top: cropperTop,
+        left: cropperLeft,
+        width: cropperWidth,
+        height: cropperHeight,
+      } = cropper.getBoundingClientRect()
+
+      const { clientX, clientY } = sube
+      if (startX === clientX && startY === clientY) return
+
+      let _t = cropper.offsetTop
+      let _l = cropper.offsetLeft
+      let _w = cropper.offsetWidth
+      let _h = cropper.offsetHeight
+
+      if (type === 'tl') {
+        const deltaX = Math.abs(cropperLeft - sube.pageX)
+        const deltaY = Math.abs(cropperTop - sube.pageY)
+
+        if (cropperLeft > sube.pageX || cropperTop > sube.pageY) {
+          if (deltaX > deltaY) {
+            const delta = deltaX * scaleX
+            _w += delta
+            _l -= delta
+            _h = _w / _cropperRatio
+            _t = cropper.offsetTop + cropper.offsetHeight - _h
+          } else {
+            const delta = deltaY * scaleY
+            _h += delta
+            _t -= delta
+            _w = _h * _cropperRatio
+            _l = cropper.offsetLeft + cropper.offsetWidth - _w
+          }
+        } else if (deltaX > deltaY) {
+          const delta = deltaX * scaleX
+          _w -= delta
+          _l += delta
+          _h = _w / _cropperRatio
+          _t = cropper.offsetTop + cropper.offsetHeight - _h
+        } else {
+          const delta = deltaY * scaleY
+          _h -= delta
+          _t += delta
+          _w = _h * _cropperRatio
+          _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        }
+
+        if (img_offsetWidth > img_offsetHeight && _h > img_offsetHeight) {
+          _h = img_offsetHeight
+          _t = img_offsetTop
+          _w = _h * _cropperRatio
+          _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        } else if (img_offsetWidth <= img_offsetHeight && _w > img_offsetWidth) {
+          _w = img_offsetWidth
+          _l = img_offsetLeft
+          _h = _w / _cropperRatio
+          _t = cropper.offsetTop + cropper.offsetHeight - _h
+        } else if (_h < 40) {
+          _h = 40
+          _t = cropper.offsetTop + cropper.offsetHeight - _h
+          _w = _h * _cropperRatio
+          _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        }
+      }
+
+      cropper.style.top = _t + 'px'
+      cropper.style.left = _l + 'px'
+      cropper.style.width = _w + 'px'
+      cropper.style.height = _h + 'px'
+
+      run({ t: _t, l: _l, w: _w, h: _h, rotateAngle })
     }
     const onMouseUp = () => {
       _isMouseDown = false
