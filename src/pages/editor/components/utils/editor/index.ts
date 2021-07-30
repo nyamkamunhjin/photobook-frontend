@@ -1992,36 +1992,43 @@ export default class Editor {
   public createImagesMontage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     if (e.dataTransfer) {
-      JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image) => {
-        const { x, y } = this.canvasRef.current.getBoundingClientRect()
-        const x1 = e.clientX - x
-        const y1 = e.clientY - y
-
-        const style = {
-          top: y1,
-          left: x1,
-          width: 500,
-          height: 300,
-          rotateAngle: 0,
-          transform: '',
-          zIndex: 100 + objects.length + '',
-        }
-
-        this.addObject({
-          object: {
-            id: uuidv4(),
-            className: 'object',
-            style,
-            props: {
-              imageUrl: image.imageUrl,
-              tempUrl: image.tempUrl,
-              className: 'image-placeholder',
-              imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-              style: { transform: 'scaleX(1)' },
-              placeholderStyle: { opacity: 1 },
+      const emptyObjects = objects.filter((each) => each.id.startsWith('image-montage-') && !each.props.imageUrl)
+      JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image, index: number) => {
+        console.log({ image })
+        if (index < emptyObjects.length) {
+          this.updateObject({
+            object: {
+              ...emptyObjects[index],
+              props: {
+                ...emptyObjects[index].props,
+                imageUrl: image.imageUrl,
+                tempUrl: image.tempUrl,
+                imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+                placeholderStyle: { opacity: '1' },
+              },
             },
-          },
-        })
+          })
+
+          /* montage zuragnii text update hiih */
+
+          /* text iin olno */
+          const textObjectID = objects[index].id.replace('image-montage-', 'text-montage-')
+          const textObject = objects.find((each) => each.id === textObjectID)
+          // console.log('updating text', image.name)
+          /* zuragnaas neriine olno */
+          if (textObject && image) {
+            /* text update hiine */
+            this.updateObject({
+              object: {
+                ...textObject,
+                props: {
+                  ...textObject.props,
+                  texts: [image.name],
+                },
+              },
+            })
+          }
+        }
       })
     } else {
       const style = {
@@ -2117,21 +2124,7 @@ export default class Editor {
           },
         }
 
-        console.log({ objects, object: objects[index] })
-        // object: {
-        //   id: uuidv4(),
-        //   className: 'object',
-        //   style,
-        //   props: {
-        //     textStyle,
-        //     autogrowStyle,
-        //     className: 'text-container',
-        //     style: { transform: 'scaleX(1)' },
-        //     texts: ['Enter text here'],
-        //     placeholderStyle: { opacity: 1 },
-        //   },
-        // },
-
+        /* montage zuragnii text update hiih */
         if (objects[index].id.startsWith('image-montage-')) {
           /* text iin olno */
           const textObjectID = objects[index].id.replace('image-montage-', 'text-montage-')
