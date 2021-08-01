@@ -307,11 +307,6 @@ const Image: React.FC<Props> = ({
       if (!_isMouseDown) return
       sube.preventDefault()
 
-      // if (type === 'tl' && sube.pageX <= imgLeft && sube.pageY <= imgTop) return
-      // if (type === 'tr' && sube.pageX >= imgLeft + imgWidth && sube.pageY <= imgTop) return
-      // if (type === 'bl' && sube.pageX <= imgLeft && sube.pageY >= imgTop + imgHeight) return
-      // if (type === 'br' && sube.pageX >= imgLeft + imgWidth && sube.pageY >= imgTop + imgHeight) return
-
       const {
         top: cropperTop,
         left: cropperLeft,
@@ -359,22 +354,162 @@ const Image: React.FC<Props> = ({
           _l = cropper.offsetLeft + cropper.offsetWidth - _w
         }
 
-        if (img_offsetWidth > img_offsetHeight && _h > img_offsetHeight) {
-          _h = img_offsetHeight
+        if (img_offsetTop > _t) {
+          _h = _h - img_offsetTop + _t
           _t = img_offsetTop
           _w = _h * _cropperRatio
           _l = cropper.offsetLeft + cropper.offsetWidth - _w
-        } else if (img_offsetWidth <= img_offsetHeight && _w > img_offsetWidth) {
-          _w = img_offsetWidth
+        }
+        if (img_offsetLeft > _l) {
+          _w = _w - img_offsetLeft + _l
           _l = img_offsetLeft
           _h = _w / _cropperRatio
           _t = cropper.offsetTop + cropper.offsetHeight - _h
-        } else if (_h < 40) {
+        }
+        if (
+          img_offsetTop + img_offsetHeight - _t >= 40 &&
+          img_offsetLeft + img_offsetWidth - _l >= 40 * cropperRatio &&
+          _h < 40
+        ) {
           _h = 40
           _t = cropper.offsetTop + cropper.offsetHeight - _h
           _w = _h * _cropperRatio
           _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        } else if (_h < 40) return
+      } else if (type === 'tr') {
+        const deltaX = Math.abs(cropperLeft + cropperWidth - sube.pageX)
+        const deltaY = Math.abs(cropperTop - sube.pageY)
+
+        if (cropperLeft + cropperWidth < sube.pageX || cropperTop > sube.pageY) {
+          if (deltaX > deltaY) {
+            const delta = deltaX * scaleX
+            _w += delta
+            _h = _w / _cropperRatio
+            _t = cropper.offsetTop + cropper.offsetHeight - _h
+          } else {
+            const delta = deltaY * scaleY
+            _h += delta
+            _t -= delta
+            _w = _h * _cropperRatio
+          }
+        } else if (deltaX > deltaY) {
+          const delta = deltaX * scaleX
+          _w -= delta
+          _h = _w / _cropperRatio
+          _t = cropper.offsetTop + cropper.offsetHeight - _h
+        } else {
+          const delta = deltaY * scaleY
+          _h -= delta
+          _t += delta
+          _w = _h * _cropperRatio
         }
+
+        if (img_offsetTop > _t) {
+          _h = _h - img_offsetTop + _t
+          _t = img_offsetTop
+          _w = _h * _cropperRatio
+        }
+        if (img_offsetLeft + img_offsetWidth < _l + _w) {
+          _w = img_offsetLeft + img_offsetWidth - _l
+          _h = _w / _cropperRatio
+          _t = cropper.offsetTop + cropper.offsetHeight - _h
+        }
+        if (
+          img_offsetTop + img_offsetHeight - _t >= 40 &&
+          img_offsetLeft + img_offsetWidth - _l >= 40 * cropperRatio &&
+          _h < 40
+        ) {
+          _h = 40
+          _t = cropper.offsetTop + cropper.offsetHeight - _h
+          _w = _h * _cropperRatio
+        } else if (_h < 40) return
+      } else if (type === 'bl') {
+        const deltaX = Math.abs(cropperLeft - sube.pageX)
+        const deltaY = Math.abs(cropperTop + cropperHeight - sube.pageY)
+
+        if (cropperLeft > sube.pageX || cropperTop + cropperHeight < sube.pageY) {
+          if (deltaX > deltaY) {
+            const delta = deltaX * scaleX
+            _w += delta
+            _l -= delta
+            _h = _w / _cropperRatio
+          } else {
+            const delta = deltaY * scaleY
+            _h += delta
+            _w = _h * _cropperRatio
+            _l = cropper.offsetLeft + cropper.offsetWidth - _w
+          }
+        } else if (deltaX > deltaY) {
+          const delta = deltaX * scaleX
+          _w -= delta
+          _l += delta
+          _h = _w / _cropperRatio
+        } else {
+          const delta = deltaY * scaleY
+          _h -= delta
+          _w = _h * _cropperRatio
+          _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        }
+
+        if (img_offsetTop + img_offsetHeight < _t + _h) {
+          _h = img_offsetTop + img_offsetHeight - _t
+          _w = _h * _cropperRatio
+          _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        }
+        if (img_offsetLeft > _l) {
+          _w = _w - img_offsetLeft + _l
+          _l = img_offsetLeft
+          _h = _w / _cropperRatio
+        }
+        if (
+          img_offsetTop + img_offsetHeight - _t >= 40 &&
+          img_offsetLeft + img_offsetWidth - _l >= 40 * cropperRatio &&
+          _h < 40
+        ) {
+          _h = 40
+          _w = _h * _cropperRatio
+          _l = cropper.offsetLeft + cropper.offsetWidth - _w
+        } else if (_h < 40) return
+      } else if (type === 'br') {
+        const deltaX = Math.abs(cropperLeft + cropperWidth - sube.pageX)
+        const deltaY = Math.abs(cropperTop + cropperHeight - sube.pageY)
+
+        if (cropperLeft + cropperWidth < sube.pageX || cropperTop + cropperHeight < sube.pageY) {
+          if (deltaX > deltaY) {
+            const delta = deltaX * scaleX
+            _w += delta
+            _h = _w / _cropperRatio
+          } else {
+            const delta = deltaY * scaleY
+            _h += delta
+            _w = _h * _cropperRatio
+          }
+        } else if (deltaX > deltaY) {
+          const delta = deltaX * scaleX
+          _w -= delta
+          _h = _w / _cropperRatio
+        } else {
+          const delta = deltaY * scaleY
+          _h -= delta
+          _w = _h * _cropperRatio
+        }
+
+        if (img_offsetTop + img_offsetHeight < _t + _h) {
+          _h = img_offsetTop + img_offsetHeight - _t
+          _w = _h * _cropperRatio
+        }
+        if (img_offsetLeft + img_offsetWidth < _l + _w) {
+          _w = img_offsetLeft + img_offsetWidth - _l
+          _h = _w / _cropperRatio
+        }
+        if (
+          img_offsetTop + img_offsetHeight - _t >= 40 &&
+          img_offsetLeft + img_offsetWidth - _l >= 40 * cropperRatio &&
+          _h < 40
+        ) {
+          _h = 40
+          _w = _h * _cropperRatio
+        } else if (_h < 40) return
       }
 
       cropper.style.top = _t + 'px'
