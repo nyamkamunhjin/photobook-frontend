@@ -2442,7 +2442,7 @@ export default class Editor {
       const _obj = objects[_index]
       if (_obj?.props.className === 'image-placeholder') {
         const placeholder = this._object.firstChild as HTMLElement
-        const image = placeholder.childNodes[2] as HTMLImageElement
+        const image = placeholder.childNodes[3] as HTMLImageElement
         const _height = image.height - Math.abs(Number(_obj.props.imageStyle.top))
         const _width = Number(`${image.style.width}`.replace('%', ''))
         if (

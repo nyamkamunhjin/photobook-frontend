@@ -173,6 +173,9 @@ const Image: React.FC<Props> = ({
           }}
         />
       )}
+      {/* <div className="absolute w-full h-full p-10 bg-transparent">
+        <div className="w-full h-full bg-red-200 mix-blend-overlay">123</div>
+      </div> */}
       <img
         ref={imageRef}
         alt="object"
