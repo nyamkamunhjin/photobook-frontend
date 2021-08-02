@@ -10,6 +10,8 @@ COPY package*.json ./
 
 # ENV NODE_ENV=production
 ENV REACT_APP_BACK_URL=https://photobook.fibo.cloud:8443/api/v1
+ENV REACT_APP_PUBLIC_IMAGE=https://dev-photobook-infra-s3-files6f97a25d-qdr2q0v0swq5.s3.amazonaws.com/public/
+
 RUN yarn
 COPY . .
 
