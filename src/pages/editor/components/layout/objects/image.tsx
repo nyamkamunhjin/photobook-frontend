@@ -6,6 +6,7 @@ import { BsArrowsMove } from 'react-icons/bs'
 import { ColorPreset, PObject, SlideObject } from 'interfaces'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { imageOnError } from 'utils'
+import Editor from '../../utils/editor'
 
 interface Props {
   scale: number
@@ -50,7 +51,7 @@ const Image: React.FC<Props> = ({
     setOverflow('unset')
     const _object = document.getElementById(object.id) as HTMLElement
     const placeholder = _object.firstChild as HTMLElement
-    const image = placeholder.childNodes[2] as HTMLElement
+    const image = placeholder.childNodes[3] as HTMLElement
 
     const { width: pWidth, height: pHeight } = getComputedStyle(placeholder)
 
@@ -156,7 +157,9 @@ const Image: React.FC<Props> = ({
         ...(object?.props?.frameStyle || {}),
         overflow,
         borderStyle: 'solid',
-        borderColor,
+        // borderColor,
+        borderColor: 'transparent',
+        borderWidth: '40px',
       }}
     >
       <div className="border" />
@@ -173,9 +176,6 @@ const Image: React.FC<Props> = ({
           }}
         />
       )}
-      {/* <div className="absolute w-full h-full p-10 bg-transparent">
-        <div className="w-full h-full bg-red-200 mix-blend-overlay">123</div>
-      </div> */}
       <img
         ref={imageRef}
         alt="object"
@@ -188,6 +188,7 @@ const Image: React.FC<Props> = ({
           transformOrigin: 'left top',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
+          transform: `translate(-40px, ${parseFloat(imageStyle.width) > 100 ? '' : '-40px'})`,
         }}
         src={tempUrl}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}

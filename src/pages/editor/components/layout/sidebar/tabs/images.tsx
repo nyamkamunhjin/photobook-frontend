@@ -27,12 +27,16 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, link
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   const [hover, setHover] = useState<PreviewInterface>()
-  const [selectedImages, setSelectedImages] = useState<Image[]>()
+  const [selectedImages, setSelectedImages] = useState<Image[]>([])
   const [sort, setSort] = useState('a-z')
   const [zoom, setZoom] = useLocalStorageState('zoom', 1)
 
-  const dragStart = (e: React.DragEvent<HTMLImageElement>) => {
-    e.dataTransfer.setData('images', JSON.stringify(selectedImages))
+  const dragStart = (image: Image, e: React.DragEvent<HTMLImageElement>) => {
+    if (selectedImages.length > 0) {
+      e.dataTransfer.setData('images', JSON.stringify(selectedImages))
+    } else {
+      e.dataTransfer.setData('images', JSON.stringify([image]))
+    }
   }
 
   const showModal = () => {
@@ -182,7 +186,7 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, link
                 className={selectedImages?.some((each) => each.id === image.id) ? 'active' : ''}
                 alt={image.tempUrl}
                 src={image.tempUrl}
-                onDragStart={(e) => dragStart(e)}
+                onDragStart={(e) => dragStart(image, e)}
                 onClick={(e) => toggle.run(image, e)}
                 onMouseEnter={(e) => setHover({ image, left: e.clientX, top: e.clientY })}
                 onMouseLeave={() => setHover(undefined)}

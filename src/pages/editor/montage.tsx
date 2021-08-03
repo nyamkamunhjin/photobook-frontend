@@ -43,7 +43,7 @@ import {
 import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
-import { useBoolean } from 'ahooks'
+import { useBoolean, useFullscreen } from 'ahooks'
 import { Header, BackgroundImages, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderBackground, renderObject } from './components/utils'
@@ -126,6 +126,8 @@ const BookEditor: React.FC<Props> = ({
   const [refreshing, setRefreshing] = useBoolean(false)
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
+  const ref = useRef<any>()
+  const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -421,6 +423,12 @@ const BookEditor: React.FC<Props> = ({
     }
   }, [editor.dragStart, editor.type])
 
+  useEffect(() => {
+    if (isFullscreen) return
+    setPreview.setFalse()
+    setSingle.setTrue()
+  }, [isFullscreen])
+
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
@@ -588,15 +596,17 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   ) : (
-    <div className="AdvancedEditorWrapper">
+    <div className="AdvancedEditorWrapper" ref={ref}>
       <Header
         deSelectObject={editors.deSelectObject}
         onPreview={() => {
           if (preview || !single) {
             setPreview.setFalse()
             setSingle.setTrue()
+            exitFull()
           } else {
             setPreview.setTrue()
+            setFull()
           }
         }}
         saveName={onSaveName}

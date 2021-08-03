@@ -1854,7 +1854,7 @@ export default class Editor {
   public createImages = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     if (e.dataTransfer) {
-      JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image) => {
+      JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image, i: number) => {
         const { x, y } = this.canvasRef.current.getBoundingClientRect()
         const x1 = e.clientX - x
         const y1 = e.clientY - y
@@ -1868,10 +1868,10 @@ export default class Editor {
           transform: '',
           zIndex: 100 + objects.length + '',
         }
-
+        const _id = uuidv4()
         this.addObject({
           object: {
-            id: uuidv4(),
+            id: _id,
             className: 'object',
             style,
             props: {
@@ -1884,6 +1884,14 @@ export default class Editor {
             },
           },
         })
+
+        // ImageFit
+        setTimeout(() => {
+          const _object = document.getElementById(_id)
+          if (!_object) return
+          const { width: w, height: h } = getComputedStyle(_object)
+          this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, undefined, objects.length, objects, _object)
+        }, (i + 1) * 600)
       })
     } else {
       const style = {
@@ -1981,6 +1989,11 @@ export default class Editor {
 
         this.updateObject({ object: newObject })
         this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+        // ImageFit
+        const _object = document.getElementById(objects[index].id)
+        if (!_object) return
+        const { width: w, height: h } = getComputedStyle(_object)
+        this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, type, index, objects, _object)
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
@@ -2438,13 +2451,43 @@ export default class Editor {
     }
   }
   public imageFit = debounce(
-    (height: number, width: number, newSize: Size, oldSize: Size, type: string, _index: number, objects: PObject[]) => {
+    (
+      height: number,
+      width: number,
+      newSize: Size,
+      oldSize: Size,
+      type: string,
+      _index: number,
+      objects: PObject[],
+      object?: any
+    ) => {
+      // console.log(
+      //   'imageFit',
+      //   'height',
+      //   height,
+      //   'width',
+      //   width,
+      //   'newSize',
+      //   newSize,
+      //   'oldSize',
+      //   oldSize,
+      //   'type',
+      //   type,
+      //   '_index',
+      //   _index,
+      //   'objects',
+      //   objects,
+      //   'object',
+      //   object
+      // )
+
       const _obj = objects[_index]
-      if (_obj?.props.className === 'image-placeholder') {
-        const placeholder = this._object.firstChild as HTMLElement
-        const image = placeholder.childNodes[3] as HTMLImageElement
-        const _height = image.height - Math.abs(Number(_obj.props.imageStyle.top))
+      if (object || _obj?.props.className === 'image-placeholder') {
+        const placeholder = object ? (object.firstChild as HTMLElement) : (this._object.firstChild as HTMLElement)
+        const image = placeholder.querySelector('img') as HTMLImageElement
+        const _height = object ? image.height : image.height - Math.abs(Number(_obj.props.imageStyle.top))
         const _width = Number(`${image.style.width}`.replace('%', ''))
+
         if (
           (image.naturalWidth > image.naturalHeight && height > width) ||
           image.naturalWidth / image.naturalHeight > width / height
@@ -2454,7 +2497,7 @@ export default class Editor {
           image.style.top = '0'
           image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
         } else {
-          image.style.width = '100%'
+          image.style.width = 'calc(100% + 80px)'
           image.style.left = '0'
           image.style.top = `${-(image.height / this._zoom / 2 - height / 2)}px`
         }

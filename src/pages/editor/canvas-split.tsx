@@ -44,7 +44,7 @@ import {
 import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
-import { useBoolean } from 'ahooks'
+import { useBoolean, useFullscreen } from 'ahooks'
 import { Header, FooterListTools, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderObject } from './components/utils'
@@ -319,6 +319,14 @@ const BookEditor: React.FC<Props> = ({
     }
   }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const ref = useRef<any>()
+  const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
+  useEffect(() => {
+    if (isFullscreen) return
+    setPreview.setFalse()
+    setSingle.setTrue()
+  }, [isFullscreen])
+
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
@@ -433,15 +441,17 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   ) : (
-    <div className="AdvancedEditorWrapper">
+    <div className="AdvancedEditorWrapper" ref={ref}>
       <Header
         deSelectObject={editors.deSelectObject}
         onPreview={() => {
           if (preview || !single) {
             setPreview.setFalse()
             setSingle.setTrue()
+            exitFull()
           } else {
             setPreview.setTrue()
+            setFull()
           }
         }}
         saveName={onSaveName}
