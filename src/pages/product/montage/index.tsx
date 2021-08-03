@@ -9,7 +9,7 @@ import { useQueryState } from 'react-router-use-location-state'
 
 const templateType = 'montage'
 
-const ProductPhotoPrint: FC = () => {
+const ProductMontage: FC = () => {
   const [selectedCategory, setSelectedCategory] = useQueryState('category', 'all')
   const [rowSize, setRowSize] = useQueryState<3 | 4 | 6>('rowSize', 3)
   const [all, setAll] = useQueryState('all', true)
@@ -50,6 +50,7 @@ const ProductPhotoPrint: FC = () => {
   const onRadioChange = (e: RadioChangeEvent) => setRowSize(e.target.value)
 
   useEffect(() => {
+    templates.pagination.changeCurrent(1)
     templates.refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory])
@@ -70,4 +71,4 @@ const ProductPhotoPrint: FC = () => {
   )
 }
 
-export default ProductPhotoPrint
+export default ProductMontage

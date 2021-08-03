@@ -7,19 +7,18 @@ import { listProductAd, listTemplate, listTemplateCategory } from 'api'
 import { ProductWrapper, ProductCategories, ProductList } from 'components'
 import { useQueryState } from 'react-router-use-location-state'
 
+const templateType = 'montage'
+
 const ProductPhotobook: FC = () => {
   const [selectedCategory, setSelectedCategory] = useQueryState('category', 'all')
   const [rowSize, setRowSize] = useQueryState<3 | 4 | 6>('rowSize', 3)
   const [all, setAll] = useQueryState('all', true)
-  const ad = useRequest(() => listProductAd('photobook'))
-  const categories = useRequest(
-    () => listTemplateCategory({ current: 0, pageSize: 100 }, { templateType: 'photobook' }),
-    {
-      onError: () => {
-        message.error('error')
-      },
-    }
-  )
+  const ad = useRequest(() => listProductAd(templateType))
+  const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, { templateType }), {
+    onError: () => {
+      message.error('error')
+    },
+  })
 
   const templates = useRequest(
     ({ current, pageSize }) =>
@@ -30,7 +29,7 @@ const ProductPhotobook: FC = () => {
         },
         {
           categories: all ? null : selectedCategory.toString(),
-          templateType: 'photobook',
+          templateType,
         },
         (current - 1) * pageSize
       ),
@@ -57,7 +56,7 @@ const ProductPhotobook: FC = () => {
   }, [selectedCategory])
 
   return (
-    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === 'photobook')?.imageUrl}>
+    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === templateType)?.imageUrl}>
       <WidthLimiter>
         <div className="flex min-h-screen">
           <div className="flex justify-center w-1/4 ">

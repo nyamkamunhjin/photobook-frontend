@@ -34,7 +34,6 @@ const routes: RouteInterface[] = [
     component: LoadableLoader(() => import('pages/product/photoprint/template')),
     exact: true,
   },
-
   {
     path: '/product/canvas/template/:id',
     component: LoadableLoader(() => import('pages/product/canvas/template')),
@@ -43,6 +42,16 @@ const routes: RouteInterface[] = [
   {
     path: '/product/frame/template/:id',
     component: LoadableLoader(() => import('pages/product/frame/template')),
+    exact: true,
+  },
+  {
+    path: '/product/montage/template/:id',
+    component: LoadableLoader(() => import('pages/product/montage/template')),
+    exact: true,
+  },
+  {
+    path: '/product/montage',
+    component: LoadableLoader(() => import('pages/product/montage')),
     exact: true,
   },
   {
