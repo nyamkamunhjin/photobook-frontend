@@ -9,13 +9,15 @@ import { useQueryState } from 'react-router-use-location-state'
 import { FormattedMessage } from 'react-intl'
 import { CanvasFormat } from 'configs'
 
+const templateType = 'canvas'
+
 const ProductCanvas: FC = () => {
   const [selectedCategory, setSelectedCategory] = useQueryState('category', 'all')
   const [selectedFormat, setSelectedFormat] = useQueryState('format', CanvasFormat.join(','))
   const [rowSize, setRowSize] = useQueryState<3 | 4 | 6>('rowSize', 3)
   const [all, setAll] = useQueryState('all', true)
-  const ad = useRequest(() => listProductAd('canvas'))
-  const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, { templateType: 'canvas' }), {
+  const ad = useRequest(() => listProductAd(templateType))
+  const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, { templateType }), {
     onError: () => {
       message.error('error')
     },
@@ -31,7 +33,7 @@ const ProductCanvas: FC = () => {
         {
           categories: all ? null : selectedCategory.toString(),
           canvasType: selectedFormat.includes('all') ? null : selectedFormat.toString(),
-          templateType: 'canvas',
+          templateType,
         },
         (current - 1) * pageSize
       ),
@@ -59,7 +61,7 @@ const ProductCanvas: FC = () => {
   }, [selectedCategory, selectedFormat])
 
   return (
-    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === 'canvas')?.imageUrl}>
+    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === templateType)?.imageUrl}>
       <WidthLimiter>
         <div className="flex min-h-screen">
           <div className="flex items-center w-1/4 flex-col">

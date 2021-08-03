@@ -26,10 +26,17 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
         </p>
         <ul className="flex flex-col gap-2">
           <li className="text-gray-600 text-xs" key="montage">
-            <button
+            {/* <button
               className="focus:outline-none hover:text-blue-300"
               type="button"
               onClick={() => router.replace('/editor/montage')}
+            >
+              <FormattedMessage id="montage" />
+            </button> */}
+            <button
+              className="focus:outline-none hover:text-blue-300"
+              type="button"
+              onClick={() => router.replace('/product/montage')}
             >
               <FormattedMessage id="montage" />
             </button>

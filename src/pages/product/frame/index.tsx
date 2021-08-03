@@ -7,12 +7,14 @@ import { MenuClickEventHandler } from 'rc-menu/lib/interface'
 import { ProductWrapper, ProductCategories, ProductList } from 'components'
 import { useQueryState } from 'react-router-use-location-state'
 
+const templateType = 'frame'
+
 const ProductFrame: FC = () => {
   const [selectedCategory, setSelectedCategory] = useQueryState('category', 'all')
   const [rowSize, setRowSize] = useQueryState<3 | 4 | 6>('rowSize', 3)
   const [all, setAll] = useQueryState('all', true)
-  const ad = useRequest(() => listProductAd('frame'))
-  const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, { templateType: 'frame' }), {
+  const ad = useRequest(() => listProductAd(templateType))
+  const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, { templateType }), {
     onError: () => {
       message.error('error')
     },
@@ -27,7 +29,7 @@ const ProductFrame: FC = () => {
         },
         {
           categories: all ? null : selectedCategory.toString(),
-          templateType: 'frame',
+          templateType,
         },
         (current - 1) * pageSize
       ),
@@ -54,7 +56,7 @@ const ProductFrame: FC = () => {
   }, [selectedCategory])
 
   return (
-    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === 'frame')?.imageUrl}>
+    <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === templateType)?.imageUrl}>
       <WidthLimiter>
         <div className="flex min-h-screen">
           <div className="flex justify-center w-1/4 ">

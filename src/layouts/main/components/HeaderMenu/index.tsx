@@ -98,13 +98,6 @@ const HeaderMenu: FC = () => {
           <FormattedMessage id="photoprint" />
         </button>
       </Tippy>
-      {/* <button
-        type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
-        onClick={() => router.replace('/about-us')}
-      >
-        <FormattedMessage id="about_us" />
-      </button> */}
       <button
         type="button"
         className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
