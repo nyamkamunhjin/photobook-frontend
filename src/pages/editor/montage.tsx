@@ -467,7 +467,7 @@ const BookEditor: React.FC<Props> = ({
           />
           <div
             id="slide_container"
-            onMouseDown={(e) => editors.onSlideMouseDown(e, _index, containers)}
+            onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
             onDrop={(e) => editors.onObjectDropMontage(e, editor.type, objects, _index)}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}

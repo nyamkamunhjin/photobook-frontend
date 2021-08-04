@@ -144,6 +144,7 @@ export default class Editor {
     this.setIsTextEditing = props.setIsTextEditing
     this.scale = props.scale
     this.setGroupObjects = props.setGroupObjects
+    this._groupObjects = props._groupObjects
     this.updateGroupContainer = props.updateGroupContainer
     this.slideViewRef = props.slideViewRef
     this.scaledContainerRef = props.scaledContainerRef
@@ -186,6 +187,7 @@ export default class Editor {
     this.slideWidth = props.slideWidth
     this.slideHeight = props.slideHeight
     this.selectionRef = props.selectionRef
+    this.groupRef = props.groupRef
     this.setGroupStyles = props.setGroupStyles
     this.magnetX = props.magnetX
     this.magnetY = props.magnetY
@@ -2214,10 +2216,12 @@ export default class Editor {
             left: minLeft + deltaX,
           },
         })
-
-        this.groupRef.current.style.top = (minTop + deltaY) * this.scale + 'px'
-        this.groupRef.current.style.left = (minLeft + deltaX) * this.scale + 'px'
       })
+
+      this.groupRef.current.style.top = (minTop + deltaY) * this.scale + 'px'
+      this.groupRef.current.style.left = (minLeft + deltaX) * this.scale + 'px'
+      this.groupRef.current.nextSibling.style.top = (minTop + deltaY) * this.scale + 'px'
+      this.groupRef.current.nextSibling.style.left = (minLeft + deltaX) * this.scale + 'px'
 
       startX = clientX
       startY = clientY
@@ -2231,10 +2235,10 @@ export default class Editor {
 
       const _objects = Object.keys(this._groupObjects).map((k: string) => {
         const { top, left, width, height } = getComputedStyle(this._groupObjects[k])
-        const newContainer = {
-          ...containers[parseFloat(k)],
+        const newObject = {
+          ...this._groupObjects[parseFloat(k)],
           style: {
-            ...containers[parseFloat(k)].style,
+            ...this._groupObjects[parseFloat(k)].style,
             top: parseFloat(top),
             left: parseFloat(left),
             width: parseFloat(width),
@@ -2243,13 +2247,31 @@ export default class Editor {
             // transform: `rotateZ(${_rotateAngle}deg)`,
           },
         }
-        return newContainer
+        return newObject
       })
 
       this.updateGroupContainer({ containers: _objects })
       this.updateHistory(UPDATE_GROUP_CONTAINER, {
         containers: containers.filter((c: Container) => _objects.find((x) => x.id === c.id)),
       })
+
+      // Redrag is available
+      const selector = document.querySelector('.active-border')
+      const { top, left, width, height } = selector
+        ? getComputedStyle(selector)
+        : { top: '0px', left: '0px', width: '0px', height: '0px' }
+      const selectedStyle = {
+        top: parseFloat(top) / this.scale,
+        left: parseFloat(left) / this.scale,
+        width: parseFloat(width) / this.scale,
+        height: parseFloat(height) / this.scale,
+      }
+      this.showGroupSelection()
+      this.groupRef.current.style.left = selectedStyle.left * this.scale + 'px'
+      this.groupRef.current.style.top = selectedStyle.top * this.scale + 'px'
+      this.groupRef.current.style.width = selectedStyle.width * this.scale + 'px'
+      this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
+      this.moveResizers({ styles: selectedStyle, objectType: 'group' })
     }
 
     window.addEventListener('mousemove', onMouseMove)
@@ -2935,7 +2957,7 @@ export default class Editor {
   }
   // #endregion [backgroundMethods]
   // #region [Methods]
-  public onSlideMouseDown = (e: any, _index: number, containers: Container[]) => {
+  public onSlideMouseDown = (e: any, _index: number, objects: PObject[]) => {
     if (e.target.classList.contains('image-center')) return
 
     if (
@@ -2980,6 +3002,19 @@ export default class Editor {
       const y3 = Math.min(startY, clientY)
       const y4 = Math.max(startY, clientY)
 
+      const selectorLeft = Math.min(e.pageX, sube.pageX)
+      const selectorRight = Math.max(e.pageX, sube.pageX)
+      const selectorTop = Math.min(e.pageY, sube.pageY)
+      const selectorBottom = Math.max(e.pageY, sube.pageY)
+      const selectorWidth = selectorRight - selectorLeft
+      const selectorHeight = selectorBottom - selectorTop
+      const selector = {
+        top: selectorTop,
+        left: selectorLeft,
+        width: selectorWidth,
+        height: selectorHeight,
+      }
+
       this.selectionRef.current.style.left = x3 + 'px'
       this.selectionRef.current.style.top = y3 + 'px'
       this.selectionRef.current.style.width = x4 - x3 + 'px'
@@ -2987,16 +3022,16 @@ export default class Editor {
 
       const s = this.selectionRef.current.getBoundingClientRect()
 
-      containers.forEach((c: Container, i: number) => {
-        if (!c.id) return
-        const object = document.getElementById(c.id) as HTMLElement
+      objects.forEach((obj: PObject, i: number) => {
+        if (!obj.id) return
+        const object = document.getElementById(obj.id) as HTMLElement
         const o = object.getBoundingClientRect()
 
         if (
-          o.left < s.left + s.width &&
-          o.left + o.width > s.left &&
-          o.top < s.top + s.height &&
-          o.top + o.height > s.top
+          o.left < selector.left + selector.width &&
+          o.left + o.width > selector.left &&
+          o.top < selector.top + selector.height &&
+          o.top + o.height > selector.top
         ) {
           selectedObjects[i] = object
           this.showBorder(object)
@@ -3060,15 +3095,23 @@ export default class Editor {
         const key: number = parseFloat(Object.keys(selectedObjects)[0])
         const object: any = selectedObjects[key]
         const objectType = this.getObjectType(object.firstChild.classList)
+
         this.moveResizers({ object, objectType })
         this.setObjectType(objectType)
         this.setObjectIndex(key)
         this.setObject(object)
         this._object = object
       } else if (Object.keys(selectedObjects).length > 1) {
+        // Object.keys(selectedObjects).forEach((key: string) => {
+        //   const object: any = selectedObjects[key]
+        //   const objectType = this.getObjectType(object.firstChild.classList)
+        //   this.moveResizers({ object, objectType })
+        // })
+        this._groupObjects = selectedObjects
         this.showGroupSelection()
         this.setGroupObjects(selectedObjects)
         this.setGroupStyles(selectedStyle)
+
         this.groupRef.current.style.left = selectedStyle.left * this.scale + 'px'
         this.groupRef.current.style.top = selectedStyle.top * this.scale + 'px'
         this.groupRef.current.style.width = selectedStyle.width * this.scale + 'px'
