@@ -13,6 +13,7 @@ import { Select, Tooltip } from 'antd'
 import { SketchPicker } from 'react-color'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
+import { PObject } from 'interfaces'
 
 const { Option } = Select
 
@@ -129,7 +130,7 @@ const changeFontSize = (value: any, props: any) => {
   if (text) {
     text.style.fontSize = value
     text.style.lineHeight = value
-    const object = props.objects[props.index]
+    const object = props.objects.find((item: PObject) => item.id === props.object.id)
     const { left, height } = getComputedStyle(text)
     const kPadding = parseFloat(left)
     const textHeight = parseFloat(height)
