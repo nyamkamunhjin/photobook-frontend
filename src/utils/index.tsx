@@ -122,7 +122,7 @@ export const ParseNumber = (num?: string | number) => {
   if (typeof num === 'number') {
     return num
   }
-  return Number(num.replace('px', ''))
+  return parseFloat(num)
 }
 
 export const filterArray = (arr: any[], obj: any, key: string) => {

@@ -2461,39 +2461,20 @@ export default class Editor {
       objects: PObject[],
       object?: any
     ) => {
-      // console.log(
-      //   'imageFit',
-      //   'height',
-      //   height,
-      //   'width',
-      //   width,
-      //   'newSize',
-      //   newSize,
-      //   'oldSize',
-      //   oldSize,
-      //   'type',
-      //   type,
-      //   '_index',
-      //   _index,
-      //   'objects',
-      //   objects,
-      //   'object',
-      //   object
-      // )
-
       const _obj = objects[_index]
       if (object || _obj?.props.className === 'image-placeholder') {
         const placeholder = object ? (object.firstChild as HTMLElement) : (this._object.firstChild as HTMLElement)
         const image = placeholder.querySelector('img') as HTMLImageElement
         const _height = object ? image.height : image.height - Math.abs(Number(_obj.props.imageStyle.top))
-        const _width = Number(`${image.style.width}`.replace('%', ''))
+        const regex = image.style.width.match('[0-9]+.[0-9]+%')
+        const _width = regex ? ParseNumber(regex[0]) : 0
 
         if (
           (image.naturalWidth > image.naturalHeight && height > width) ||
           image.naturalWidth / image.naturalHeight > width / height
         ) {
           const deltaWidth = ((_width / this._zoom || 100) * height) / _height
-          image.style.width = `${deltaWidth}%`
+          image.style.width = `calc(${deltaWidth}% + 80px)`
           image.style.top = '0'
           image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
         } else {

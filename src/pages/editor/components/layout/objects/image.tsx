@@ -78,11 +78,15 @@ const Image: React.FC<Props> = ({
       if (Math.abs(t) < 10) t = 0
       if (Math.abs(l) < 10) l = 0
 
-      if (t <= 0 && Math.abs(t) <= Math.abs(heightDiff)) {
+      if (heightDiff >= 0) {
+        image.style.top = '0px'
+      } else if (t <= 0 && Math.abs(t) <= Math.abs(heightDiff)) {
         image.style.top = t + 'px'
       }
 
-      if (l <= 0 && Math.abs(l) <= Math.abs(widthDiff)) {
+      if (widthDiff >= 0) {
+        image.style.left = '0px'
+      } else if (l <= 0 && Math.abs(l) <= Math.abs(widthDiff)) {
         image.style.left = l + 'px'
       }
 
@@ -188,7 +192,7 @@ const Image: React.FC<Props> = ({
           transformOrigin: 'left top',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
-          transform: `translate(-40px, ${parseFloat(imageStyle.width) > 100 ? '' : '-40px'})`,
+          transform: `translate(-40px, -40px)`,
         }}
         src={tempUrl}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}
