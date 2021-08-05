@@ -249,7 +249,10 @@ const MyCart: React.FC = () => {
               giftCards={giftCards.data}
               selected={selectedGiftCard}
               setSelected={setSelectedGiftCard}
-              refresh={() => shoppingCart.refresh()}
+              refresh={() => {
+                shoppingCart.refresh()
+                giftCards.refresh()
+              }}
             />
           </div>
           <OrderSummary {...summary.data} onCreateOrder={() => onCreateOrder(deliveryChecked)} />

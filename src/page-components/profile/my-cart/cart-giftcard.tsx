@@ -4,6 +4,7 @@ import { notification, Select } from 'antd'
 import { SelectValue } from 'antd/lib/select'
 import { GiftCard } from 'interfaces'
 import { addGiftCardToShoppingCart } from 'api'
+import ActivateGiftCard from 'pages/gift-card/components/activate-gift-card'
 
 interface Props {
   giftCards: GiftCard[]
@@ -63,6 +64,12 @@ const CartGiftCard: React.FC<Props> = ({ giftCards, selected, setSelected, refre
           </Select.Option>
         ))}
       </Select>
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-semibold">
+          <FormattedMessage id="activate_gift_card" />
+        </span>
+        <ActivateGiftCard refresh={refresh} />
+      </div>
     </div>
   )
 }
