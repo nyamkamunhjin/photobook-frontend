@@ -468,6 +468,8 @@ const BookEditor: React.FC<Props> = ({
             hasMask={false}
             hasClipArt={false}
             hasImage
+            hasNotices={false}
+            notices={[]}
           />
         )}
         <div className="EditorPanel">

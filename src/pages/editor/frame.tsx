@@ -513,7 +513,9 @@ const BookEditor: React.FC<Props> = ({
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasFrames={false} hasLayout={false} />}
+        {!preview && (
+          <SideBarPanel layoutGroups={layouts} hasFrames={false} hasLayout={false} hasNotices={false} notices={[]} />
+        )}
         <div className="EditorPanel">
           {preview ? <Preview slideIndex={_slideIndex} /> : renderEditor}
           <FooterListTools

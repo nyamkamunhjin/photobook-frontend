@@ -282,6 +282,9 @@ const BookEditor: React.FC<Props> = ({
     updatedSlide.backgrounds = backgrounds
     saveProject(currentProject.id, updatedSlide, _slideIndex)
   }
+  const makeOrder = () => {
+    console.log('makeOrder')
+  }
   const onSaveName = (name: string) => {
     saveProjectAttribute(currentProject.id, { name })
   }
@@ -612,9 +615,10 @@ const BookEditor: React.FC<Props> = ({
         saveName={onSaveName}
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
+        makeOrder={makeOrder}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage />}
+        {!preview && <SideBarPanel layoutGroups={layouts} hasImage hasNotices={false} notices={[]} />}
         <div className="EditorPanel">
           {preview ? (
             <Preview

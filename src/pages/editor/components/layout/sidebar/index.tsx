@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import {
   BgColorsOutlined,
   BorderOuterOutlined,
+  BugOutlined,
   LayoutOutlined,
   LeftOutlined,
   PictureOutlined,
@@ -34,6 +35,7 @@ import Masks from './tabs/masks'
 import Frames from './tabs/frames'
 import Layouts from './tabs/layouts'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
+import Notices from './tabs/notices'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
@@ -54,6 +56,8 @@ interface Props {
   hasClipArt?: boolean
   hasMask?: boolean
   hasBackground?: boolean
+  hasNotices?: boolean
+  notices: any[]
 }
 
 const SideBarPanel: React.FC<Props> = ({
@@ -63,6 +67,8 @@ const SideBarPanel: React.FC<Props> = ({
   hasBackground = true,
   hasClipArt = true,
   hasMask = true,
+  hasNotices = true,
+  notices,
   addImages,
   uploadImages,
   linkImages,
@@ -232,6 +238,19 @@ const SideBarPanel: React.FC<Props> = ({
           <Frames loading={loading} categories={frames} />
         )
       }
+      case 'notices': {
+        return notices.length === 0 ? (
+          <div className="UploadImageDropArea">
+            <div>
+              <p className="phrase-add">
+                <FormattedMessage id="empty" />
+              </p>
+            </div>
+          </div>
+        ) : (
+          <Notices notices={notices} />
+        )
+      }
       default:
         return <div>default page</div>
     }
@@ -301,6 +320,24 @@ const SideBarPanel: React.FC<Props> = ({
             <div className="title">
               <FormattedMessage id="frames" />
             </div>
+          </div>
+          <div
+            // hidden={!hasNotices}
+            onClick={() => switchTab('notices')}
+            className={'HeaderItem relative ' + isActive('notices') + isDisabled()}
+          >
+            <BugOutlined style={{ fontSize: 24 }} />
+            <div className="title">
+              <FormattedMessage id="notices" />
+            </div>
+            {notices.length > 0 && (
+              <span
+                className="absolute top-2 right-2 px-0.5 bg-yellow-500 rounded-sm text-white z-10"
+                style={{ fontSize: 8 }}
+              >
+                {notices.length}
+              </span>
+            )}
           </div>
         </div>
         {!closed && (

@@ -119,6 +119,7 @@ const BookEditor: React.FC<Props> = ({
   const [single, setSingle] = useBoolean(true)
   const ref = useRef<any>()
   const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
+  const [notices, setNotices] = useState<any[]>([])
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -212,6 +213,43 @@ const BookEditor: React.FC<Props> = ({
   const onSaveName = (name: string) => {
     saveProjectAttribute(currentProject.id, { name })
   }
+  const onGoto = (slideId: string, objectId: string) => {
+    console.log('onGoto')
+    // _slideIndex = currentProject.slides.findIndex((slide) => slide.slideId === slideId)
+    // if(_slideIndex === -1) _slideIndex = 0
+  }
+  const onHideAllSimilar = (type: string) => {
+    setNotices((oldState) => {
+      return oldState.filter((notice) => notice.type !== type)
+    })
+  }
+  const onHideThis = (key: string) => {
+    setNotices((oldState) => {
+      return oldState.filter((notice) => notice.key !== key)
+    })
+  }
+  const makeOrder = () => {
+    const _notices = currentProject.slides.reduce((accum, slide, index) => {
+      const temp = slide.objects.reduce((acc, o, i) => {
+        if (o.props.className.includes('image-placeholder') && !('imageUrl' in o.props)) {
+          acc.push({
+            type: 'empty slot',
+            key: 'empty slot index' + index + 'i' + i,
+            data: {
+              slide: 'slide' + (index + 1),
+              onGoto: () => onGoto(slide.slideId, o.id),
+              onHideAllSimilar: () => onHideAllSimilar('empty slot'),
+              onHideThis: () => onHideThis('empty slot index' + index + 'i' + i),
+            },
+          })
+        }
+        return acc
+      }, [] as any[])
+      return accum.concat(temp)
+    }, [] as any[])
+    setNotices(_notices)
+    console.log('makeOrder', currentProject)
+  }
 
   const setSlidePosition = () => {
     if (slideContainerRef.current === null) return
@@ -233,7 +271,7 @@ const BookEditor: React.FC<Props> = ({
     const rect = slideContainerRef.current.getBoundingClientRect()
     const maxWidth = slideWidth
     const maxHeight = slideHeight
-    const srcWidth = rect.width - 240 // 240 is the width of two side menus
+    const srcWidth = rect.width - 240 // 240 is the width of two s ide menus
     const srcHeight = rect.height
 
     const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
@@ -513,9 +551,19 @@ const BookEditor: React.FC<Props> = ({
         saveName={onSaveName}
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
+        makeOrder={makeOrder}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasFrames={false} hasLayout={false} hasImage />}
+        {!preview && (
+          <SideBarPanel
+            layoutGroups={layouts}
+            hasFrames={false}
+            hasLayout={false}
+            hasImage
+            notices={notices}
+            hasNotices={notices.length > 0}
+          />
+        )}
         <div className="EditorPanel">
           {preview ? <Preview slideIndex={_slideIndex} /> : renderEditor}
           <FooterListTools

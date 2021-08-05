@@ -614,7 +614,7 @@ const BookEditor: React.FC<Props> = ({
         saveTextBeforeUndo={saveTextBeforeUndo}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage />}
+        {!preview && <SideBarPanel layoutGroups={layouts} hasImage hasNotices={false} notices={[]} />}
         <div className="EditorPanel">
           {preview ? (
             <Preview

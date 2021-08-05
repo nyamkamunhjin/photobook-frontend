@@ -1,6 +1,13 @@
-import { ArrowLeftOutlined, EyeFilled, RedoOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons'
+import {
+  ArrowLeftOutlined,
+  EyeFilled,
+  RedoOutlined,
+  SaveOutlined,
+  ShoppingCartOutlined,
+  UndoOutlined,
+} from '@ant-design/icons'
 import { useHotkeys } from 'react-hotkeys-hook'
-import { Row } from 'antd'
+import { Button, Row } from 'antd'
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -14,6 +21,7 @@ import { useBoolean } from 'ahooks'
 
 interface HeaderProps {
   saveObjects: () => Promise<void>
+  makeOrder?: () => void
   saveName?: (name: string) => void
   onPreview?: () => void
   deSelectObject: () => void
@@ -26,6 +34,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   saveObjects,
+  makeOrder,
   saveName,
   onPreview,
   deSelectObject,
@@ -143,8 +152,18 @@ const Header: React.FC<HeaderProps> = ({
         >
           <FormattedMessage id="preview" />
         </IconButton>
+        {makeOrder && (
+          <Button
+            className="ml-2 flex gap-2 items-center text-sm"
+            size="large"
+            type="primary"
+            icon={<ShoppingCartOutlined />}
+            onClick={makeOrder}
+          >
+            <FormattedMessage id="order" />
+          </Button>
+        )}
       </Row>
-
       <div className="AdvancedHeaderToolbar" />
     </div>
   )
