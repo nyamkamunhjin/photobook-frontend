@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import {
   BgColorsOutlined,
   BorderOuterOutlined,
   BugOutlined,
+  InfoCircleOutlined,
   LayoutOutlined,
   LeftOutlined,
   PictureOutlined,
@@ -12,6 +13,7 @@ import {
 } from '@ant-design/icons'
 import { useDrop } from 'ahooks'
 import { Button } from 'antd'
+import Modal from 'antd/lib/modal/Modal'
 import {
   addImages as _addImages,
   uploadImages as _uploadImages,
@@ -56,8 +58,8 @@ interface Props {
   hasClipArt?: boolean
   hasMask?: boolean
   hasBackground?: boolean
-  hasNotices?: boolean
-  notices: any[]
+  isOrder: boolean
+  setIsOrder: (param: any) => void
 }
 
 const SideBarPanel: React.FC<Props> = ({
@@ -67,8 +69,8 @@ const SideBarPanel: React.FC<Props> = ({
   hasBackground = true,
   hasClipArt = true,
   hasMask = true,
-  hasNotices = true,
-  notices,
+  isOrder = false,
+  setIsOrder,
   addImages,
   uploadImages,
   linkImages,
@@ -83,6 +85,8 @@ const SideBarPanel: React.FC<Props> = ({
   layoutGroups,
 }) => {
   const [closed, setClosed] = useState<boolean>(!editor.sidebarOpen)
+  const [notices, setNotices] = useState<any[]>([])
+  const [isModal, setIsModal] = useState(false)
 
   const [props, { isHovering }] = useDrop({
     onFiles: (files) => {
@@ -141,6 +145,73 @@ const SideBarPanel: React.FC<Props> = ({
     setClosed(true)
     setType('')
   }
+
+  const onGoto = (slideId: string, objectId: string) => {
+    console.log('onGoto')
+    // _slideIndex = currentProject.slides.findIndex((slide) => slide.slideId === slideId)
+    // if(_slideIndex === -1) _slideIndex = 0
+  }
+  const onHideAllSimilar = (type: string) => {
+    setNotices((oldState) => {
+      return oldState.filter((notice) => notice.type !== type)
+    })
+  }
+  const onHideThis = (key: string) => {
+    setNotices((oldState) => {
+      return oldState.filter((notice) => notice.key !== key)
+    })
+  }
+  const makeOrder = () => {
+    const _notices = currentProject.slides.reduce((accum, slide, index) => {
+      const temp = slide.objects.reduce((acc, o, i) => {
+        if (o.props.className.includes('image-placeholder') && !('imageUrl' in o.props)) {
+          acc.push({
+            type: 'empty slot',
+            key: 'empty slot index' + index + 'i' + i,
+            data: {
+              slide: 'slide' + (index + 1),
+              onGoto: () => onGoto(slide.slideId, o.id),
+              onHideAllSimilar: () => onHideAllSimilar('empty slot'),
+              onHideThis: () => onHideThis('empty slot index' + index + 'i' + i),
+            },
+          })
+        } else if (o.props.className.includes('text-container') && o.props.texts?.includes('Enter text here')) {
+          acc.push({
+            type: 'empty text',
+            key: 'empty text index' + index + 'i' + i,
+            data: {
+              slide: 'slide' + (index + 1),
+              onGoto: () => onGoto(slide.slideId, o.id),
+              onHideAllSimilar: () => onHideAllSimilar('empty text'),
+              onHideThis: () => onHideThis('empty text index' + index + 'i' + i),
+            },
+          })
+        }
+        return acc
+      }, [] as any[])
+      return accum.concat(temp)
+    }, [] as any[])
+    setNotices(_notices)
+    if (_notices.length > 0) {
+      editor.type = 'notices'
+      setClosed(false)
+      setIsModal(true)
+    }
+    console.log('makeOrder', currentProject)
+  }
+  const handleNotices = () => {
+    console.log('handleNotices')
+  }
+  const handleCancel = () => {
+    console.log('handleCancel')
+  }
+
+  useEffect(() => {
+    if (isOrder) {
+      setIsOrder(false)
+      makeOrder()
+    }
+  }, [isOrder])
 
   const renderEditor = () => {
     switch (editor.type) {
@@ -347,6 +418,20 @@ const SideBarPanel: React.FC<Props> = ({
             </div>
           </div>
         )}
+        <Modal
+          title={
+            <div className="flex gap-2 items-center">
+              <InfoCircleOutlined /> Your project contains some minor flaws.
+            </div>
+          }
+          visible={isModal}
+          onOk={handleNotices}
+          onCancel={handleCancel}
+        >
+          <h5>Oops!</h5>
+          <p>Your project contains some minor flaws.</p>
+          <p>Please review them carefully before ordering.</p>
+        </Modal>
       </div>
     </div>
   )

@@ -115,6 +115,7 @@ const BookEditor: React.FC<Props> = ({
   const [overflow, setOverflow] = useState<string>('hidden')
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
+  const [isOrder, setIsOrder] = useState(false)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -457,6 +458,7 @@ const BookEditor: React.FC<Props> = ({
         saveName={onSaveName}
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
+        setIsOrder={setIsOrder}
       />
       <div className="EditorOnePageView">
         {!preview && (
@@ -468,8 +470,8 @@ const BookEditor: React.FC<Props> = ({
             hasMask={false}
             hasClipArt={false}
             hasImage
-            hasNotices={false}
-            notices={[]}
+            isOrder={isOrder}
+            setIsOrder={setIsOrder}
           />
         )}
         <div className="EditorPanel">

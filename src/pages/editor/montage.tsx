@@ -128,6 +128,7 @@ const BookEditor: React.FC<Props> = ({
   const [single, setSingle] = useBoolean(true)
   const ref = useRef<any>()
   const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
+  const [isOrder, setIsOrder] = useState(false)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -612,9 +613,10 @@ const BookEditor: React.FC<Props> = ({
         saveName={onSaveName}
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
+        setIsOrder={setIsOrder}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage hasNotices={false} notices={[]} />}
+        {!preview && <SideBarPanel layoutGroups={layouts} hasImage isOrder={isOrder} setIsOrder={setIsOrder} />}
         <div className="EditorPanel">
           {preview ? (
             <Preview
