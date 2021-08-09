@@ -2593,7 +2593,6 @@ export default class Editor {
   }
   public moveResizers = (props?: any) => {
     let { object, angle, objectType, styles } = props || {}
-
     if (!angle) {
       if (this._object) angle = getRotationScaler(this._object.style.transform)
       else angle = props._rotateAngle || 0
@@ -2601,7 +2600,9 @@ export default class Editor {
     if (!object) object = this._object
     if (!objectType) objectType = this._objectType
     if (!styles) {
-      const { top, left, width, height } = getComputedStyle(object)
+      const temp = document.getElementById(object.id)
+      if (!temp) return
+      const { top, left, width, height } = getComputedStyle(temp)
       styles = {
         top,
         left,

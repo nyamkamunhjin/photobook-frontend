@@ -43,7 +43,7 @@ import {
 import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
-import { useBoolean, useFullscreen } from 'ahooks'
+import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
 import { Header, BackgroundImages, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderBackground, renderObject } from './components/utils'
@@ -163,6 +163,14 @@ const BookEditor: React.FC<Props> = ({
       saveObjects()
     },
     [objects, backgrounds]
+  )
+  const debouncedSave = useDebounceFn(
+    () => {
+      saveObjects()
+    },
+    {
+      wait: 1000 * 30,
+    }
   )
 
   const editors = useMemo(() => {
@@ -462,6 +470,10 @@ const BookEditor: React.FC<Props> = ({
     setPreview.setFalse()
     setSingle.setTrue()
   }, [isFullscreen])
+
+  useEffect(() => {
+    debouncedSave.run()
+  }, [_object])
 
   const renderEditor = (
     <div className="EditorPanelContainer">

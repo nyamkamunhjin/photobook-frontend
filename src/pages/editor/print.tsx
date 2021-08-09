@@ -17,7 +17,7 @@ import {
 import { HistoryProps, ObjectType, PObject, ProjectCreate, ProjectInterface, RootInterface, Slide } from 'interfaces'
 import Spinner from 'components/spinner'
 
-import { useBoolean } from 'ahooks'
+import { useBoolean, useDebounceFn } from 'ahooks'
 import { Header, PrintPanel } from './components/layout'
 import { Editor } from './components/utils'
 import './components/styles/editor.scss'
@@ -83,6 +83,14 @@ const BookEditor: React.FC<Props> = ({
     },
     [objects, backgrounds]
   )
+  const debouncedSave = useDebounceFn(
+    () => {
+      saveObjects()
+    },
+    {
+      wait: 1000 * 30,
+    }
+  )
 
   const editors = useMemo(() => {
     return new Editor({
@@ -146,6 +154,10 @@ const BookEditor: React.FC<Props> = ({
       }
     })
   }, [getProjects, template])
+
+  useEffect(() => {
+    debouncedSave.run()
+  }, [_object])
 
   return fetching ? (
     <div className="AdvancedEditorWrapper">
