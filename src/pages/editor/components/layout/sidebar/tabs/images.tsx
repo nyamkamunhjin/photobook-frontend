@@ -6,6 +6,7 @@ import { Image, UploadablePicture } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
 import Spinner from 'components/spinner'
 import { filterArray } from 'utils'
+import { useHotkeys } from 'react-hotkeys-hook'
 import UploadPhotosGroup from '../../upload-modal/upload-photos-group'
 
 interface Props {
@@ -30,6 +31,8 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, link
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
   const [sort, setSort] = useState('a-z')
   const [zoom, setZoom] = useLocalStorageState('zoom', 1)
+
+  useHotkeys('shift+a', () => setSelectedImages(images))
 
   const dragStart = (image: Image, e: React.DragEvent<HTMLImageElement>) => {
     if (selectedImages.length > 0) {

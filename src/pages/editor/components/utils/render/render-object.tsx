@@ -11,9 +11,19 @@ interface Props {
   saveObjects?: () => void
   zoom: number
   scale: number
+  hasBorder?: boolean
 }
 
-const renderObject: React.FC<Props> = ({ object, updateObject, updateHistory, saveObjects, scale, edit, zoom = 1 }) => {
+const renderObject: React.FC<Props> = ({
+  object,
+  updateObject,
+  updateHistory,
+  saveObjects,
+  scale,
+  edit,
+  zoom = 1,
+  hasBorder = false,
+}) => {
   const { props } = object
 
   const updateUrl = (url: string) => {
@@ -51,6 +61,7 @@ const renderObject: React.FC<Props> = ({ object, updateObject, updateHistory, sa
         updateUrl={updateUrl}
         imageStyle={imageStyle}
         placeholderStyle={placeholderStyle}
+        hasBorder={hasBorder}
       />
     )
   } else if (props.className === 'text-container') {

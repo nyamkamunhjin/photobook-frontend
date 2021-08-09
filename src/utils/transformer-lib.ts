@@ -624,7 +624,9 @@ export const diffRect = (
   if (isResize) {
     return Object.values(lodash(result).groupBy('vertical').value()).map((group) =>
       lodash.minBy(
-        group.filter((item) => (item as { size: number })?.size > 0.1),
+        group.filter((item: any) => {
+          return item?.size > 0.1 && item?.key !== 'xx' && item?.key !== 'yy'
+        }),
         'size'
       )
     )

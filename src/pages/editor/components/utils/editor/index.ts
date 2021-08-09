@@ -1853,7 +1853,7 @@ export default class Editor {
     }
     this.setObjectType('image')
   }
-  public createImages = (e: any, objects: PObject[]) => {
+  public createImages = (e: any, objects: PObject[], hasBorder = false) => {
     this.hideToolbar()
     if (e.dataTransfer) {
       JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image, i: number) => {
@@ -1892,7 +1892,17 @@ export default class Editor {
           const _object = document.getElementById(_id)
           if (!_object) return
           const { width: w, height: h } = getComputedStyle(_object)
-          this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, undefined, objects.length, objects, _object)
+          this.imageFit(
+            parseFloat(h),
+            parseFloat(w),
+            undefined,
+            undefined,
+            undefined,
+            objects.length,
+            objects,
+            _object,
+            hasBorder
+          )
         }, (i + 1) * 600)
       })
     } else {
@@ -1913,7 +1923,7 @@ export default class Editor {
     this.setObjectType('image')
   }
 
-  public onObjectDrop = (e: any, type: FeatureType, objects: PObject[], _index: number) => {
+  public onObjectDrop = (e: any, type: FeatureType, objects: PObject[], _index: number, hasBorder = false) => {
     this.hideToolbar()
     e.preventDefault()
     if (!'images,cliparts,frames,masks'.includes(type) || this._isTextEditing) return
@@ -1995,12 +2005,12 @@ export default class Editor {
         const _object = document.getElementById(objects[index].id)
         if (!_object) return
         const { width: w, height: h } = getComputedStyle(_object)
-        this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, type, index, objects, _object)
+        this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, type, index, objects, _object, hasBorder)
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
     } else if ('images'.includes(type)) {
-      this.createImages(e, objects)
+      this.createImages(e, objects, hasBorder)
     }
   }
 
@@ -2162,6 +2172,12 @@ export default class Editor {
 
         this.updateObject({ object: newObject })
         this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+
+        // ImageFit
+        const _object = document.getElementById(objects[index].id)
+        if (!_object) return
+        const { width: w, height: h } = getComputedStyle(_object)
+        this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, type, index, objects, _object)
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
@@ -2481,11 +2497,14 @@ export default class Editor {
       type: string,
       _index: number,
       objects: PObject[],
-      object?: any
+      object?: any,
+      hasBorder = false
     ) => {
       const _obj = objects[_index]
       if (object || _obj?.props.className === 'image-placeholder') {
-        const placeholder = object ? (object.firstChild as HTMLElement) : (this._object.firstChild as HTMLElement)
+        const placeholder = object
+          ? (object.querySelector('.image-placeholder') as HTMLElement)
+          : (this._object.firstChild as HTMLElement)
         const image = placeholder.querySelector('img') as HTMLImageElement
         const _height = object ? image.height : image.height - Math.abs(Number(_obj.props.imageStyle.top))
         const regex = image.style.width.match('[0-9]+.[0-9]+%')
@@ -2496,11 +2515,11 @@ export default class Editor {
           image.naturalWidth / image.naturalHeight > width / height
         ) {
           const deltaWidth = ((_width / this._zoom || 100) * height) / _height
-          image.style.width = `calc(${deltaWidth}% + 80px)`
+          image.style.width = `calc(${deltaWidth}% + ${hasBorder ? 80 : 0}px)`
           image.style.top = '0'
           image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
         } else {
-          image.style.width = 'calc(100% + 80px)'
+          image.style.width = `calc(100% + ${hasBorder ? 80 : 0}px)`
           image.style.left = '0'
           image.style.top = `${-(image.height / this._zoom / 2 - height / 2)}px`
         }

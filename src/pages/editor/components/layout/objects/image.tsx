@@ -6,7 +6,6 @@ import { BsArrowsMove } from 'react-icons/bs'
 import { ColorPreset, PObject, SlideObject } from 'interfaces'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { imageOnError } from 'utils'
-import Editor from '../../utils/editor'
 
 interface Props {
   scale: number
@@ -24,6 +23,7 @@ interface Props {
   updateUrl: (url: string) => void
   resolution: { width: number; height: number }
   placeholderStyle: Object
+  hasBorder: boolean
 }
 
 const Image: React.FC<Props> = ({
@@ -40,6 +40,7 @@ const Image: React.FC<Props> = ({
   updateUrl,
   resolution: { width, height },
   placeholderStyle,
+  hasBorder,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -161,9 +162,8 @@ const Image: React.FC<Props> = ({
         ...(object?.props?.frameStyle || {}),
         overflow,
         borderStyle: 'solid',
-        // borderColor,
-        borderColor: 'transparent',
-        borderWidth: '40px',
+        borderColor: hasBorder ? 'transparent' : borderColor,
+        borderWidth: hasBorder ? '40px' : '',
       }}
     >
       <div className="border" />
@@ -192,7 +192,7 @@ const Image: React.FC<Props> = ({
           transformOrigin: 'left top',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
-          transform: `translate(-40px, -40px)`,
+          transform: hasBorder ? `translate(-40px, -40px)` : '',
         }}
         src={tempUrl}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}

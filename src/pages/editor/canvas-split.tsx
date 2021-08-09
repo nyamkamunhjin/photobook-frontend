@@ -354,7 +354,7 @@ const BookEditor: React.FC<Props> = ({
           <div
             id="slide_container"
             onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index)}
+            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, true)}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -397,6 +397,7 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 zoom: 1,
                                 scale,
+                                hasBorder: true,
                               })}
                             </div>
                           )
