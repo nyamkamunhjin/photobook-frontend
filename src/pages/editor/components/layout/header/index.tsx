@@ -21,7 +21,7 @@ import { useBoolean } from 'ahooks'
 
 interface HeaderProps {
   saveObjects: () => Promise<void>
-  setIsOrder?: (param: any) => void
+  handleOrder?: (param: any) => void
   saveName?: (name: string) => void
   onPreview?: () => void
   deSelectObject: () => void
@@ -34,7 +34,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   saveObjects,
-  setIsOrder,
+  handleOrder,
   saveName,
   onPreview,
   deSelectObject,
@@ -152,13 +152,13 @@ const Header: React.FC<HeaderProps> = ({
         >
           <FormattedMessage id="preview" />
         </IconButton>
-        {setIsOrder && (
+        {handleOrder && (
           <Button
             className="ml-2 flex gap-2 items-center text-sm"
             size="large"
             type="primary"
             icon={<ShoppingCartOutlined />}
-            onClick={() => setIsOrder(true)}
+            onClick={handleOrder}
           >
             <FormattedMessage id="order" />
           </Button>

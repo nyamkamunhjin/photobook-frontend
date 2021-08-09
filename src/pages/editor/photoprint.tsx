@@ -516,7 +516,10 @@ const BookEditor: React.FC<Props> = ({
         saveName={onSaveName}
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
-        setIsOrder={setIsOrder}
+        handleOrder={async () => {
+          await saveObjects()
+          setIsOrder(true)
+        }}
       />
       <div className="EditorOnePageView">
         {!preview && (

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import {
   BgColorsOutlined,
   BorderOuterOutlined,
@@ -12,7 +12,8 @@ import {
   StarOutlined,
 } from '@ant-design/icons'
 import { useDrop } from 'ahooks'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
+import Checkbox from 'antd/lib/checkbox/Checkbox'
 import Modal from 'antd/lib/modal/Modal'
 import {
   addImages as _addImages,
@@ -27,8 +28,9 @@ import {
   toggleSidebar as _toggleSidebar,
 } from 'redux/actions/editor'
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { EditorInterface, ImageInterface, Project, RootInterface, UploadablePicture } from 'interfaces'
+import { createCartItem } from 'api'
 
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
@@ -86,7 +88,10 @@ const SideBarPanel: React.FC<Props> = ({
 }) => {
   const [closed, setClosed] = useState<boolean>(!editor.sidebarOpen)
   const [notices, setNotices] = useState<any[]>([])
+  const [isNoticeChecked, setIsNoticeChecked] = useState(false)
   const [isModal, setIsModal] = useState(false)
+  const intl = useIntl()
+  const user = useSelector((state: RootInterface) => state.auth.user)
 
   const [props, { isHovering }] = useDrop({
     onFiles: (files) => {
@@ -161,6 +166,16 @@ const SideBarPanel: React.FC<Props> = ({
       return oldState.filter((notice) => notice.key !== key)
     })
   }
+  const createOrder = () => {
+    if (user) {
+      createCartItem({
+        project: currentProject.id,
+      }).then((res) => {
+        setIsModal(false)
+        if (res) message.success(intl.formatMessage({ id: 'added_to_cart' }))
+      })
+    }
+  }
   const makeOrder = () => {
     const _notices = currentProject.slides.reduce((accum, slide, index) => {
       const temp = slide.objects.reduce((acc, o, i) => {
@@ -196,14 +211,11 @@ const SideBarPanel: React.FC<Props> = ({
       editor.type = 'notices'
       setClosed(false)
       setIsModal(true)
+      setIsNoticeChecked(false)
+    } else {
+      createOrder()
     }
-    console.log('makeOrder', currentProject)
-  }
-  const handleNotices = () => {
-    console.log('handleNotices')
-  }
-  const handleCancel = () => {
-    console.log('handleCancel')
+    // console.log('makeOrder', currentProject)
   }
 
   useEffect(() => {
@@ -420,17 +432,30 @@ const SideBarPanel: React.FC<Props> = ({
         )}
         <Modal
           title={
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center text-gray-500">
               <InfoCircleOutlined /> Your project contains some minor flaws.
             </div>
           }
+          centered
           visible={isModal}
-          onOk={handleNotices}
-          onCancel={handleCancel}
+          onOk={createOrder}
+          okButtonProps={{ disabled: !isNoticeChecked }}
+          onCancel={() => setIsModal(false)}
+          className="text-center"
         >
-          <h5>Oops!</h5>
-          <p>Your project contains some minor flaws.</p>
-          <p>Please review them carefully before ordering.</p>
+          <h5 className="text-3xl font-semibold text-gray-500">Oops!</h5>
+          <p className="text-xl font-semibold text-gray-500">Your project contains some minor flaws.</p>
+          <p className="text-lg text-gray-500">
+            Please review them carefully before ordering. If you&apos;re sure that everything is okay, you can proceed
+            anyway.
+          </p>
+          <Checkbox
+            className="text-base font-semibold text-gray-500"
+            onChange={(e) => setIsNoticeChecked(e.target.checked)}
+            checked={isNoticeChecked}
+          >
+            I am sure, everything is fine.
+          </Checkbox>
         </Modal>
       </div>
     </div>
