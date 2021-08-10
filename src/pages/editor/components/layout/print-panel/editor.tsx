@@ -57,8 +57,7 @@ const Editor: React.FC<Props> = ({
   const srcWidth = maxWidth * (srcHeight / maxHeight)
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
   const object = getSlides(sort, slides)[slideIndex]
-  const [isPaperSizeChanged, setIsPaperSizeChanged] = useState(false)
-  const [isAngleChanged, setIsAngleChanged] = useState(false)
+  const [changeReq, setChangeReq] = useState({ isChanged: false, action: '' })
 
   // states
   return (
@@ -92,10 +91,8 @@ const Editor: React.FC<Props> = ({
               imageStyle={object.object?.props.imageStyle}
               placeholderStyle={object.object?.props.placeholderStyle}
               isEditor
-              isPaperSizeChanged={isPaperSizeChanged}
-              setIsPaperSizeChanged={setIsPaperSizeChanged}
-              isAngleChanged={isAngleChanged}
-              setIsAngleChanged={setIsAngleChanged}
+              changeReq={changeReq}
+              setChangeReq={setChangeReq}
             />
           </div>
         </div>
@@ -120,8 +117,7 @@ const Editor: React.FC<Props> = ({
           state: selected,
           action: setSelected,
         }}
-        setIsPaperSizeChanged={setIsPaperSizeChanged}
-        setIsAngleChanged={setIsAngleChanged}
+        setChangeReq={setChangeReq}
         onRemove={() => {
           onCancel()
           onRemove(slideIndex)

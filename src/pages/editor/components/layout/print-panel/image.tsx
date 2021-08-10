@@ -23,10 +23,8 @@ interface Props extends React.HTMLProps<HTMLImageElement> {
   placeholderStyle?: Object
   disabled?: boolean
   isEditor?: boolean
-  isPaperSizeChanged: boolean
-  setIsPaperSizeChanged: any
-  isAngleChanged?: boolean
-  setIsAngleChanged?: any
+  changeReq: any
+  setChangeReq: any
 }
 
 const transformers = {
@@ -49,10 +47,8 @@ const Image: React.FC<Props> = ({
   updateObject,
   disabled = false,
   isEditor = false,
-  isPaperSizeChanged,
-  setIsPaperSizeChanged,
-  isAngleChanged,
-  setIsAngleChanged,
+  changeReq,
+  setChangeReq,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -220,7 +216,7 @@ const Image: React.FC<Props> = ({
 
     const { top: imgTop, left: imgLeft, width: imgWidth, height: imgHeight } = imageRef.current.getBoundingClientRect()
 
-    console.log('_cropperRatio', _cropperRatio, 'type', type)
+    // console.log('_cropperRatio', _cropperRatio, 'type', type)
 
     const resizeObject = ({
       top,
@@ -249,7 +245,7 @@ const Image: React.FC<Props> = ({
         _l = img_offsetLeft + img_offsetWidth - cropper.offsetWidth
       }
 
-      console.log('_w / _h', _w / _h, 'startX', startX, 'startY', startY)
+      // console.log('_w / _h', _w / _h, 'startX', startX, 'startY', startY)
 
       _w = _h * _cropperRatio
 
@@ -616,7 +612,7 @@ const Image: React.FC<Props> = ({
       w: ParseNumber(cropStyle?.width),
       rotateAngle: imgStyle.rotateAngle || 0,
     })
-  }, [object.props.cropStyle])
+  }, [object.props.cropStyle || object.props])
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
   const cropper = object.props.cropStyle
@@ -625,6 +621,7 @@ const Image: React.FC<Props> = ({
 
   const adjustCropper = useCallback(() => {
     if (!cropper) return
+    // console.log('adjustCropper', 111111112)
 
     let {
       offsetTop: img_offsetTop,
@@ -668,13 +665,96 @@ const Image: React.FC<Props> = ({
       cropper.top = img_offsetTop + img_offsetHeight - cropper.height
     }
 
+    // // Urgeljlel bii
+    // // For orientation changed
+    // if (cropper.height > img_offsetHeight) {
+    //   cropper.height = img_offsetHeight
+    //   cropper.width = cropper.height * cropperRatio
+    // }
+    // if (cropper.width > img_offsetWidth) {
+    //   cropper.width = img_offsetWidth
+    //   cropper.height = cropper.width / cropperRatio
+    // }
+    // if (cropper.top < img_offsetTop) cropper.top = img_offsetTop
+    // else if (cropper.top + cropper.height > img_offsetTop + img_offsetHeight)
+    //   cropper.top = img_offsetTop + img_offsetHeight - cropper.height
+    // if (cropper.left < img_offsetLeft) cropper.left = img_offsetLeft
+    // else if (cropper.left + cropper.width > img_offsetLeft + img_offsetWidth)
+    //   cropper.left = img_offsetLeft + img_offsetWidth - cropper.width
+    // console.log(
+    //   'blabslkdbkjashbdjkash',
+    //   'cropper.height',
+    //   cropper.height,
+    //   'cropper.width',
+    //   cropper.width,
+    //   'img_offsetHeight',
+    //   img_offsetHeight
+    // )
     set_CropperRatio(cropperRatio)
-    setIsPaperSizeChanged(false)
-  }, [cropper, cropperRatio, loader, setIsPaperSizeChanged, imageRef, object.props.imageStyle])
+    setChangeReq({ isChanged: false, action: '' })
+  }, [cropper, cropperRatio, loader, setChangeReq, imageRef, object.props.imageStyle])
+
+  const adjustCropperOrientation = useCallback(() => {
+    if (!cropper) return
+    if (cropper.height === cropper.width) return
+
+    let {
+      offsetTop: img_offsetTop,
+      offsetLeft: img_offsetLeft,
+      offsetHeight: img_offsetHeight,
+      offsetWidth: img_offsetWidth,
+    } = imageRef.current
+    const { rotateAngle = 0 } = object.props.imageStyle
+    if (rotateAngle % 180 !== 0) {
+      const _img_offsetTop = img_offsetTop
+      const _img_offsetWidth = img_offsetWidth
+      img_offsetTop = img_offsetLeft
+      img_offsetLeft = _img_offsetTop
+      img_offsetWidth = img_offsetHeight
+      img_offsetHeight = _img_offsetWidth
+    }
+
+    if (cropper.height > img_offsetHeight) {
+      cropper.height = img_offsetHeight
+      cropper.width = cropper.height * cropperRatio
+    }
+    if (cropper.width > img_offsetWidth) {
+      cropper.width = img_offsetWidth
+      cropper.height = cropper.width / cropperRatio
+    }
+    if (cropper.top < img_offsetTop) cropper.top = img_offsetTop
+    else if (cropper.top + cropper.height > img_offsetTop + img_offsetHeight)
+      cropper.top = img_offsetTop + img_offsetHeight - cropper.height
+    if (cropper.left < img_offsetLeft) cropper.left = img_offsetLeft
+    else if (cropper.left + cropper.width > img_offsetLeft + img_offsetWidth)
+      cropper.left = img_offsetLeft + img_offsetWidth - cropper.width
+
+    if (updateObject) {
+      updateObject(
+        {
+          object: {
+            ...object,
+            props: {
+              ...object.props,
+              cropStyle: {
+                ...cropper,
+              },
+            },
+          },
+        },
+        slideId
+      )
+    }
+
+    set_CropperRatio(cropperRatio)
+    setChangeReq({ isChanged: false, action: '' })
+  }, [cropper, cropperRatio, setChangeReq, imageRef, object, slideId, updateObject])
 
   useEffect(() => {
-    if (isPaperSizeChanged) adjustCropper()
-  }, [isPaperSizeChanged])
+    const { isChanged, action } = changeReq
+    if (isChanged && action.includes('orientation')) adjustCropperOrientation()
+    else if (isChanged && action.includes('paper size')) adjustCropper()
+  }, [changeReq])
 
   const adjustCropperAngle = useCallback(() => {
     const { rotateAngle } = object.props.imageStyle
@@ -700,12 +780,14 @@ const Image: React.FC<Props> = ({
 
     _cropperAngle.current = rotateAngle
     set_CropperRatio((prevState) => 1 / prevState)
-    setIsAngleChanged(false)
-  }, [_cropperAngle, cropper, object.props.imageStyle, setIsAngleChanged])
+    setChangeReq({ isChanged: false, action: '' })
+  }, [_cropperAngle, cropper, object.props.imageStyle, setChangeReq])
 
   useEffect(() => {
-    if (_cropperAngle.current !== object.props.imageStyle.rotateAngle && isAngleChanged) adjustCropperAngle()
-  }, [object.props.imageStyle.rotateAngle, isAngleChanged])
+    const { isChanged, action } = changeReq
+    if (_cropperAngle.current !== object.props.imageStyle.rotateAngle && isChanged && action === 'angle')
+      adjustCropperAngle()
+  }, [object.props.imageStyle.rotateAngle, changeReq])
 
   return (
     <div

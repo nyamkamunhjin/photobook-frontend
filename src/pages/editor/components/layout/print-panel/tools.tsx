@@ -9,7 +9,7 @@ import { VscMirror, VscMove, VscRefresh } from 'react-icons/vsc'
 import { RiEraserFill } from 'react-icons/ri'
 import { IoIosTabletPortrait, IoIosTabletLandscape, IoMdTrash } from 'react-icons/io'
 import { AiOutlineRotateLeft } from 'react-icons/ai'
-import { GiFairyWand } from 'react-icons/gi'
+import { GiFairyWand, GiTreasureMap } from 'react-icons/gi'
 import { GrRotateLeft, GrRotateRight } from 'react-icons/gr'
 import { CgEditFlipH, CgEditFlipV } from 'react-icons/cg'
 import { ImContrast, ImBrightnessContrast, ImDroplet } from 'react-icons/im'
@@ -26,8 +26,7 @@ interface Props {
     state: ToolsType
     action: (t: ToolsType) => void
   }
-  setIsPaperSizeChanged: any
-  setIsAngleChanged: any
+  setChangeReq: any
   onRemove: (index: number) => void
 }
 
@@ -38,8 +37,7 @@ const Tools: React.FC<Props> = ({
   updateObject,
   paperSizes,
   paperMaterials,
-  setIsPaperSizeChanged,
-  setIsAngleChanged,
+  setChangeReq,
   onRemove,
 }) => {
   const { paperSize, cropStyle, imageStyle, paperMaterial } = object?.props
@@ -73,7 +71,7 @@ const Tools: React.FC<Props> = ({
       },
       slideId
     )
-    setIsAngleChanged(true)
+    setChangeReq({ isChanged: true, action: 'angle' })
   }
   const onPaperSize = async (size: PaperSize) => {
     const max = Math.max(ParseNumber(cropStyle?.width), ParseNumber(cropStyle?.height))
@@ -95,7 +93,7 @@ const Tools: React.FC<Props> = ({
       },
       slideId
     )
-    setIsPaperSizeChanged(true)
+    setChangeReq({ isChanged: true, action: 'paper size' })
   }
   const onPaperMaterial = (material: PaperMaterial) => {
     updateObject(
@@ -161,16 +159,23 @@ const Tools: React.FC<Props> = ({
     )
   }
   const onOrientation = (position: string) => {
-    let width = ParseNumber(cropStyle?.width)
-    let height = ParseNumber(cropStyle?.height)
+    if (!cropStyle) return
+    let width = ParseNumber(cropStyle.width)
+    let height = ParseNumber(cropStyle.height)
     if (position === 'vertical') {
       if (width > height) {
         width = height
         height = ParseNumber(cropStyle?.width)
+        cropStyle.width = width
+        cropStyle.height = height
+        setChangeReq({ isChanged: true, action: 'orientation vertical' })
       }
     } else if (width < height) {
       width = height
       height = ParseNumber(cropStyle?.width)
+      cropStyle.width = width
+      cropStyle.height = height
+      setChangeReq({ isChanged: true, action: 'orientation horizontal' })
     }
     updateObject(
       {
@@ -235,7 +240,7 @@ const Tools: React.FC<Props> = ({
     } else {
       transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(1)')
     }
-    console.log('wtfend', transform)
+    // console.log('wtfend', transform)
     updateObject(
       {
         object: {
