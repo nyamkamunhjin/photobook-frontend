@@ -1888,22 +1888,24 @@ export default class Editor {
         })
 
         // ImageFit
-        setTimeout(() => {
-          const _object = document.getElementById(_id)
-          if (!_object) return
-          const { width: w, height: h } = getComputedStyle(_object)
-          this.imageFit(
-            parseFloat(h),
-            parseFloat(w),
-            undefined,
-            undefined,
-            undefined,
-            objects.length,
-            objects,
-            _object,
-            hasBorder
-          )
-        }, (i + 1) * 600)
+        this.loadObjects(
+          [
+            {
+              id: _id,
+              className: 'object',
+              style,
+              props: {
+                imageUrl: image.imageUrl,
+                tempUrl: image.tempUrl,
+                className: 'image-placeholder',
+                imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+                style: { transform: 'scaleX(1)' },
+                placeholderStyle: { opacity: '1' },
+              },
+            },
+          ],
+          hasBorder
+        )
       })
     } else {
       const style = {
@@ -1922,7 +1924,41 @@ export default class Editor {
     }
     this.setObjectType('image')
   }
-
+  public loadObjects = (objects: PObject[], hasBorder = false) => {
+    const imgObjects = objects.filter((o) => o.props.className === 'image-placeholder')
+    let count = 0
+    const observer = new MutationObserver((mutations_list) => {
+      mutations_list.forEach((mutation) => {
+        mutation.addedNodes.forEach((added_node) => {
+          if (imgObjects.some((o: PObject) => (added_node as any).id === o.id)) {
+            count += 1
+            if (count === imgObjects.length) {
+              // console.log('#child has been added', imgObjects)
+              imgObjects.forEach((o: PObject) => {
+                const _object = document.getElementById(o.id)
+                if (!_object) return
+                const { width: w, height: h } = getComputedStyle(_object)
+                this.imageFitNoDebounce(
+                  parseFloat(h),
+                  parseFloat(w),
+                  undefined,
+                  undefined,
+                  undefined,
+                  objects.length,
+                  objects,
+                  _object,
+                  hasBorder
+                )
+              })
+            }
+          }
+        })
+      })
+    })
+    const parentNode = document.querySelector('#container')
+    if (!parentNode) return
+    observer.observe(parentNode, { subtree: false, childList: true })
+  }
   public onObjectDrop = (e: any, type: FeatureType, objects: PObject[], _index: number, hasBorder = false) => {
     this.hideToolbar()
     e.preventDefault()
@@ -2488,6 +2524,42 @@ export default class Editor {
       this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
     }
   }
+  public imageFitNoDebounce = (
+    height: number,
+    width: number,
+    newSize: Size | undefined,
+    oldSize: Size | undefined,
+    type: string | undefined,
+    _index: number,
+    objects: PObject[],
+    object?: any,
+    hasBorder = false
+  ) => {
+    const _obj = objects[_index]
+    if (object || _obj?.props.className === 'image-placeholder') {
+      const placeholder = object
+        ? (object.querySelector('.image-placeholder') as HTMLElement)
+        : (this._object.firstChild as HTMLElement)
+      const image = placeholder.querySelector('img') as HTMLImageElement
+      const _height = object ? image.height : image.height - Math.abs(Number(_obj.props.imageStyle.top))
+      const regex = image.style.width.match('[0-9]+.[0-9]+%')
+      const _width = regex ? ParseNumber(regex[0]) : 0
+
+      if (
+        (image.naturalWidth > image.naturalHeight && height > width) ||
+        image.naturalWidth / image.naturalHeight > width / height
+      ) {
+        const deltaWidth = ((_width / this._zoom || 100) * height) / _height
+        image.style.width = `calc(${deltaWidth}% + ${hasBorder ? 60 : 0}px)`
+        image.style.top = '0'
+        image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
+      } else {
+        image.style.width = `calc(100% + ${hasBorder ? 60 : 0}px)`
+        image.style.left = '0'
+        image.style.top = `${-(image.height / this._zoom / 2 - height / 2)}px`
+      }
+    }
+  }
   public imageFit = debounce(
     (
       height: number,
@@ -2501,7 +2573,10 @@ export default class Editor {
       hasBorder = false
     ) => {
       const _obj = objects[_index]
+      console.log('imageFit1')
       if (object || _obj?.props.className === 'image-placeholder') {
+        console.log('imageFit2')
+
         const placeholder = object
           ? (object.querySelector('.image-placeholder') as HTMLElement)
           : (this._object.firstChild as HTMLElement)
@@ -2515,11 +2590,11 @@ export default class Editor {
           image.naturalWidth / image.naturalHeight > width / height
         ) {
           const deltaWidth = ((_width / this._zoom || 100) * height) / _height
-          image.style.width = `calc(${deltaWidth}% + ${hasBorder ? 80 : 0}px)`
+          image.style.width = `calc(${deltaWidth}% + ${hasBorder ? 60 : 0}px)`
           image.style.top = '0'
           image.style.left = `${-((width * deltaWidth) / 200 - width / 2)}px`
         } else {
-          image.style.width = `calc(100% + ${hasBorder ? 80 : 0}px)`
+          image.style.width = `calc(100% + ${hasBorder ? 60 : 0}px)`
           image.style.left = '0'
           image.style.top = `${-(image.height / this._zoom / 2 - height / 2)}px`
         }
@@ -2737,7 +2812,15 @@ export default class Editor {
     }, 0)
   }
   // eslint-disable-next-line prettier/prettier
-  public startResize = (e: any, cursor: string, type: string, _index: number, objects: PObject[], gap = 0) => {
+  public startResize = (
+    e: any,
+    cursor: string,
+    type: string,
+    _index: number,
+    objects: PObject[],
+    gap = 0,
+    hasBorder = false
+  ) => {
     if (e.button !== 0 || _index === -1 || !this._object) return
 
     // For collisionBorder start
@@ -2784,7 +2867,7 @@ export default class Editor {
       const alpha = Math.atan2(deltaY, deltaX)
       const deltaL = getLength(deltaX, deltaY)
       const isShiftKey = sube.shiftKey
-      this.onResize(deltaL, alpha, rect, type, isShiftKey, _index, objects)
+      this.onResize(deltaL, alpha, rect, type, isShiftKey, _index, objects, hasBorder)
       const { top: _top, left: _left, width: _width, height: _height } = getComputedStyle(object)
       const _t = parseFloat(_top)
       const _l = parseFloat(_left)
@@ -2841,7 +2924,8 @@ export default class Editor {
     },
     type: string,
     _index: number,
-    objects: PObject[]
+    objects: PObject[],
+    hasBorder = false
   ) => {
     const oldSize = {
       width: Number(this._object.style.width.replace('px', '')),
@@ -2851,7 +2935,7 @@ export default class Editor {
       width,
       height,
     }
-    this.imageFit(height, width, newSize, oldSize, type, _index, objects)
+    this.imageFit(height, width, newSize, oldSize, type, _index, objects, undefined, hasBorder)
     this._object.style.top = top + 'px'
     this._object.style.left = left + 'px'
     this._object.style.width = width + 'px'
@@ -2871,7 +2955,8 @@ export default class Editor {
     type: string,
     isShiftKey: boolean,
     _index: number,
-    objects: PObject[]
+    objects: PObject[],
+    hasBorder = false
   ) => {
     const minWidth = 20 / this.scale
     const minHeight = 20 / this.scale
@@ -2895,7 +2980,8 @@ export default class Editor {
       }),
       type,
       _index,
-      objects
+      objects,
+      hasBorder
     )
   }
   // #endregion [ResizeMethods]

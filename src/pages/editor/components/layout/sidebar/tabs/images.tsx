@@ -32,7 +32,10 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, link
   const [sort, setSort] = useState('a-z')
   const [zoom, setZoom] = useLocalStorageState('zoom', 1)
 
-  useHotkeys('shift+a', () => setSelectedImages(images))
+  useHotkeys('ctrl+a', (e) => {
+    e.preventDefault()
+    setSelectedImages(images)
+  })
 
   const dragStart = (image: Image, e: React.DragEvent<HTMLImageElement>) => {
     if (selectedImages.length > 0) {
