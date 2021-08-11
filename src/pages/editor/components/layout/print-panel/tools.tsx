@@ -28,6 +28,7 @@ interface Props {
   }
   setChangeReq: any
   onRemove: (index: number) => void
+  setCropperCenter: any
 }
 
 const Tools: React.FC<Props> = ({
@@ -39,6 +40,7 @@ const Tools: React.FC<Props> = ({
   paperMaterials,
   setChangeReq,
   onRemove,
+  setCropperCenter,
 }) => {
   const { paperSize, cropStyle, imageStyle, paperMaterial } = object?.props
 
@@ -160,6 +162,12 @@ const Tools: React.FC<Props> = ({
   }
   const onOrientation = (position: string) => {
     if (!cropStyle) return
+
+    setCropperCenter({
+      top: cropStyle.top + cropStyle.height / 2,
+      left: cropStyle.left + cropStyle.width / 2,
+    })
+
     let width = ParseNumber(cropStyle.width)
     let height = ParseNumber(cropStyle.height)
     if (position === 'vertical') {

@@ -58,6 +58,7 @@ const Editor: React.FC<Props> = ({
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
   const object = getSlides(sort, slides)[slideIndex]
   const [changeReq, setChangeReq] = useState({ isChanged: false, action: '' })
+  const [cropperCenter, setCropperCenter] = useState({ top: 0, left: 0 })
 
   // states
   return (
@@ -93,6 +94,7 @@ const Editor: React.FC<Props> = ({
               isEditor
               changeReq={changeReq}
               setChangeReq={setChangeReq}
+              cropperCenter={cropperCenter}
             />
           </div>
         </div>
@@ -122,6 +124,7 @@ const Editor: React.FC<Props> = ({
           onCancel()
           onRemove(slideIndex)
         }}
+        setCropperCenter={setCropperCenter}
       />
     </ImageModal>
   )

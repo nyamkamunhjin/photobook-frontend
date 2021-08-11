@@ -25,6 +25,7 @@ interface Props extends React.HTMLProps<HTMLImageElement> {
   isEditor?: boolean
   changeReq: any
   setChangeReq: any
+  cropperCenter?: { top: number; left: number }
 }
 
 const transformers = {
@@ -49,6 +50,7 @@ const Image: React.FC<Props> = ({
   isEditor = false,
   changeReq,
   setChangeReq,
+  cropperCenter,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -551,6 +553,7 @@ const Image: React.FC<Props> = ({
           )
         }
       }
+
       window.removeEventListener('mouseup', onMouseUp)
       window.removeEventListener('mousemove', onMouseMove)
     }
@@ -612,7 +615,7 @@ const Image: React.FC<Props> = ({
       w: ParseNumber(cropStyle?.width),
       rotateAngle: imgStyle.rotateAngle || 0,
     })
-  }, [object.props.cropStyle || object.props])
+  }, [object.props?.cropStyle || object.props])
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
   const cropper = object.props.cropStyle
@@ -665,31 +668,6 @@ const Image: React.FC<Props> = ({
       cropper.top = img_offsetTop + img_offsetHeight - cropper.height
     }
 
-    // // Urgeljlel bii
-    // // For orientation changed
-    // if (cropper.height > img_offsetHeight) {
-    //   cropper.height = img_offsetHeight
-    //   cropper.width = cropper.height * cropperRatio
-    // }
-    // if (cropper.width > img_offsetWidth) {
-    //   cropper.width = img_offsetWidth
-    //   cropper.height = cropper.width / cropperRatio
-    // }
-    // if (cropper.top < img_offsetTop) cropper.top = img_offsetTop
-    // else if (cropper.top + cropper.height > img_offsetTop + img_offsetHeight)
-    //   cropper.top = img_offsetTop + img_offsetHeight - cropper.height
-    // if (cropper.left < img_offsetLeft) cropper.left = img_offsetLeft
-    // else if (cropper.left + cropper.width > img_offsetLeft + img_offsetWidth)
-    //   cropper.left = img_offsetLeft + img_offsetWidth - cropper.width
-    // console.log(
-    //   'blabslkdbkjashbdjkash',
-    //   'cropper.height',
-    //   cropper.height,
-    //   'cropper.width',
-    //   cropper.width,
-    //   'img_offsetHeight',
-    //   img_offsetHeight
-    // )
     set_CropperRatio(cropperRatio)
     setChangeReq({ isChanged: false, action: '' })
   }, [cropper, cropperRatio, loader, setChangeReq, imageRef, object.props.imageStyle])
@@ -722,6 +700,12 @@ const Image: React.FC<Props> = ({
       cropper.width = img_offsetWidth
       cropper.height = cropper.width / cropperRatio
     }
+
+    if (cropperCenter) {
+      cropper.top = cropperCenter.top - cropper.height / 2
+      cropper.left = cropperCenter.left - cropper.width / 2
+    }
+
     if (cropper.top < img_offsetTop) cropper.top = img_offsetTop
     else if (cropper.top + cropper.height > img_offsetTop + img_offsetHeight)
       cropper.top = img_offsetTop + img_offsetHeight - cropper.height
@@ -748,7 +732,7 @@ const Image: React.FC<Props> = ({
 
     set_CropperRatio(cropperRatio)
     setChangeReq({ isChanged: false, action: '' })
-  }, [cropper, cropperRatio, setChangeReq, imageRef, object, slideId, updateObject])
+  }, [cropper, cropperRatio, cropperCenter, setChangeReq, imageRef, object, slideId, updateObject])
 
   useEffect(() => {
     const { isChanged, action } = changeReq
@@ -779,6 +763,7 @@ const Image: React.FC<Props> = ({
     cropper.height = w
 
     _cropperAngle.current = rotateAngle
+
     set_CropperRatio((prevState) => 1 / prevState)
     setChangeReq({ isChanged: false, action: '' })
   }, [_cropperAngle, cropper, object.props.imageStyle, setChangeReq])
