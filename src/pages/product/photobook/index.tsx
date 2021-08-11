@@ -7,7 +7,7 @@ import { listProductAd, listTemplate, listTemplateCategory } from 'api'
 import { ProductWrapper, ProductCategories, ProductList } from 'components'
 import { useQueryState } from 'react-router-use-location-state'
 
-const templateType = 'montage'
+const templateType = 'photobook'
 
 const ProductPhotobook: FC = () => {
   const [selectedCategory, setSelectedCategory] = useQueryState('category', 'all')

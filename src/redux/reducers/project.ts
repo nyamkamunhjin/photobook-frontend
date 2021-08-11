@@ -60,7 +60,24 @@ export const defaultProject: ProjectInterface = {
   slideIndex: 0,
   objects: [],
   containers: [],
-  backgrounds: [],
+  backgrounds: [
+    {
+      className: 'background-right',
+      style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+      bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+    },
+    {
+      className: 'background-left',
+      style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+      bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+    },
+    {
+      className: 'background-full',
+      imageurl: '',
+      style: { rotateAngle: 0, transform: '', display: 'block' },
+      bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
+    },
+  ],
   undoHistory: [],
   redoHistory: [],
   layout: {

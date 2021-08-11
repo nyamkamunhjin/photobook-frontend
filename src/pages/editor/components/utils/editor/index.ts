@@ -2041,7 +2041,17 @@ export default class Editor {
         const _object = document.getElementById(objects[index].id)
         if (!_object) return
         const { width: w, height: h } = getComputedStyle(_object)
-        this.imageFit(parseFloat(h), parseFloat(w), undefined, undefined, type, index, objects, _object, hasBorder)
+        this.imageFitNoDebounce(
+          parseFloat(h),
+          parseFloat(w),
+          undefined,
+          undefined,
+          type,
+          index,
+          objects,
+          _object,
+          hasBorder
+        )
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
@@ -2573,10 +2583,7 @@ export default class Editor {
       hasBorder = false
     ) => {
       const _obj = objects[_index]
-      console.log('imageFit1')
       if (object || _obj?.props.className === 'image-placeholder') {
-        console.log('imageFit2')
-
         const placeholder = object
           ? (object.querySelector('.image-placeholder') as HTMLElement)
           : (this._object.firstChild as HTMLElement)

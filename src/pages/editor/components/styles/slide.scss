@@ -596,14 +596,15 @@
 
   .circle-container {
     position: absolute;
-    width: 50%;
+    width: calc(50% - 15px);
     top: 0;
     height: 100%;
     &.left {
       left: 0;
     }
     &.middle {
-      left: 50%;
+      width: 30px !important;
+      left: calc(50%-15px);
     }
     &.right {
       right: 0;

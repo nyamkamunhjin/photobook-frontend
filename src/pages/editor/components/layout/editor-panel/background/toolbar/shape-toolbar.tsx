@@ -17,16 +17,24 @@ interface Props {
 const ShapeToolbar: React.FC<Props> = ({ setBackgrounds, background, backgrounds }) => {
   const [showPicker, setShowPicker] = useState<boolean>(false)
   const [color, setColor] = useState<string>('')
+  console.log('ShapeToolbar', 'background', background, 'backgrounds', backgrounds)
 
   const onChangeComplete = (_color: any) => {
     const { hex } = _color
     setColor(hex)
     const shape = backgrounds.findIndex((_bg) => _bg.className === background)
+
     if (shape !== -1) {
       const colorPicker: any = document.querySelector('.color-picker')
       colorPicker.style.background = hex
-      backgrounds[shape] = { ...backgrounds[shape], bgStyle: { backgroundColor: hex }, src: '' }
-      setBackgrounds(backgrounds)
+      backgrounds[shape] = { ...backgrounds[shape], bgStyle: { backgroundColor: hex, display: 'block' }, src: '' }
+      const _backgrounds = backgrounds.map((bg, index) => {
+        if (background === 'background-full' && index !== shape) {
+          return { ...bg, bgStyle: { display: 'none' } }
+        }
+        return bg
+      })
+      setBackgrounds(_backgrounds)
     }
     return true
   }

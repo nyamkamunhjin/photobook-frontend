@@ -19,7 +19,6 @@ const Background: React.FC<Props> = ({ bg, bgStyles, updateBackground }) => {
       })
     }
   }
-
   return (
     <div
       key={bg.className}
@@ -27,7 +26,6 @@ const Background: React.FC<Props> = ({ bg, bgStyles, updateBackground }) => {
       style={{
         ...bgStyles[bg.className],
         ...bg.bgStyle,
-        display: bg.imageurl ? 'block' : 'none',
       }}
     >
       {bg.src && bg.src?.length > 0 && (

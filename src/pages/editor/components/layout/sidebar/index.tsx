@@ -265,6 +265,23 @@ const SideBarPanel: React.FC<Props> = ({
                 <FormattedMessage id="empty" />
               </p>
             </div>
+            {editor.backgroundEdit ? (
+              <Button
+                type="primary"
+                onClick={() => setBackgroundEdit(false)}
+                style={{ margin: 5, position: 'absolute', bottom: 0, left: 0, width: 240 }}
+              >
+                <FormattedMessage id="done" />
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => setBackgroundEdit(true)}
+                style={{ margin: 5, position: 'absolute', bottom: 0, left: 0, width: 240 }}
+              >
+                <FormattedMessage id="edit_background" />
+              </Button>
+            )}
           </div>
         ) : (
           <Backgrounds
