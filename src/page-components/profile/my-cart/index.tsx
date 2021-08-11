@@ -31,7 +31,7 @@ const MyCart: React.FC = () => {
   const [deliveryChecked, setDeliveryChecked] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
-  const [selectedGiftCard, setSelectedGiftCard] = useState<SelectValue>()
+  const [giftCard, setGiftCard] = useState<GiftCard>()
   const paymentTypes = useRequest<PaymentType>(listPaymentTypes)
 
   const user = useSelector((state: RootInterface) => state.auth.user)
@@ -50,11 +50,11 @@ const MyCart: React.FC = () => {
       )
     },
   })
-  const giftCards = useRequest(listActivatedGiftCard, {
-    onSuccess: (res) => {
-      giftCards.mutate(res.filter((each: GiftCard) => each.remainingAmount > 0))
-    },
-  })
+  // const giftCards = useRequest(listActivatedGiftCard, {
+  //   onSuccess: (res) => {
+  //     giftCards.mutate(res.filter((each: GiftCard) => each.remainingAmount > 0))
+  //   },
+  // })
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
@@ -67,7 +67,7 @@ const MyCart: React.FC = () => {
     throttleInterval: 500,
     onSuccess: (res) => {
       if (res?.giftCardId) {
-        setSelectedGiftCard(res?.giftCardId)
+        setGiftCard(res?.giftCard)
       }
     },
   })
@@ -246,16 +246,19 @@ const MyCart: React.FC = () => {
               refresh={() => shoppingCart.refresh()}
             />
             <CartGiftCard
-              giftCards={giftCards.data}
-              selected={selectedGiftCard}
-              setSelected={setSelectedGiftCard}
+              giftCard={giftCard}
+              setGiftCard={setGiftCard}
               refresh={() => {
                 shoppingCart.refresh()
-                giftCards.refresh()
+                // giftCards.refresh()
               }}
             />
           </div>
-          <OrderSummary {...summary.data} onCreateOrder={() => onCreateOrder(deliveryChecked)} />
+          <OrderSummary
+            {...summary.data}
+            loading={summary.loading}
+            onCreateOrder={() => onCreateOrder(deliveryChecked)}
+          />
         </div>
       )}
     </div>

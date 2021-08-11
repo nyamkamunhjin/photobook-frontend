@@ -4,7 +4,7 @@ import { buildQuery } from 'utils'
 import { ImageCategory, Image, LayoutInterface, Category, User, TradePhoto } from 'interfaces'
 
 // #region [Import]
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 // #endregion
 
@@ -32,25 +32,25 @@ const catchError = (err: any, isMe: boolean) => {
   if (isMe) {
     // localStorage.removeItem('token')
     localStorage.removeItem('refresh')
-    message.warn({ content: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
+    notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
     // if (!isLogin) window.location.replace('/auth/signin')
   } else if (err.response) {
     if (err.response.status === 401) {
       // localStorage.removeItem('token')
       localStorage.removeItem('refresh')
-      // message.warn({ content: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
+      // notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
       // if (!isLogin) window.location.replace('/auth/signin')
     } else if (err.response.status === 403) {
-      message.warn({ content: 'Танд хандах эрх байхгүй байна.' })
+      notification.warn({ message: 'Танд хандах эрх байхгүй байна.' })
     } else if (err.response.status === 404) {
-      message.warn({ content: 'Олдсонгүй.' })
+      notification.warn({ message: 'Олдсонгүй.' })
     } else {
-      message.error({ content: err.response.data.message })
+      notification.error({ message: err.response.data.message })
     }
   } else if (err.message === 'Network Error') {
-    message.info({ content: 'Алдаа гарлаа. Дараа дахин оролдоно уу' })
+    notification.info({ message: 'Алдаа гарлаа. Дараа дахин оролдоно уу' })
   } else {
-    message.error({ content: err.message })
+    notification.error({ message: err.message })
   }
 }
 
@@ -1178,7 +1178,7 @@ export const listActivatedGiftCard = async (
     method: 'GET',
   })
 
-  response?.data.forEach((each: any) => {
+  response?.data?.forEach((each: any) => {
     each.imageUrl = `${process.env.REACT_APP_PUBLIC_IMAGE}${each.imageUrl}`
   })
 
@@ -1213,7 +1213,7 @@ export const activateGiftCard = async (code: string) => {
   return response?.data
 }
 
-export const addGiftCardToShoppingCart = async (id: string, type: 'attach' | 'detach') => {
+export const addGiftCardToShoppingCart = async (id: number | string, type: 'attach' | 'detach') => {
   const response = await BaseRequest({
     url: `gift-card/attach/${id}`,
     method: 'PUT',

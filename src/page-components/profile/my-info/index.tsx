@@ -404,7 +404,6 @@ const MyInfo: FC = () => {
       )}
       <VoucherList />
       <BoughtGiftCards />
-      <ActivatedGiftCards />
     </div>
   )
 }

@@ -5,8 +5,8 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { listBoughtGiftCard } from 'api'
 import { GiftCard } from 'interfaces'
 import { currencyFormat } from 'utils'
-import { HiOutlineClipboardCopy } from 'react-icons/hi'
 import { CustomButton } from 'components'
+import { RiFileCopyLine } from 'react-icons/ri'
 
 interface Props {
   test?: string
@@ -63,7 +63,7 @@ const BoughtGiftCards: FC<Props> = () => {
                       notification.success({ message: intl.formatMessage({ id: 'copied_to_clipboard' }) })
                     }}
                   >
-                    <HiOutlineClipboardCopy />
+                    <RiFileCopyLine />
                   </CustomButton>
                 </span>
               </div>
