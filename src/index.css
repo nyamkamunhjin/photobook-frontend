@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;900&display=swap');
 
 .btn {
-  @apply py-2 px-4 rounded outline-none focus:outline-none font-normal transition-all duration-150;
+  @apply py-2 px-4 rounded outline-none focus:outline-none font-normal transform transition-all duration-150;
 }
 .btn-primary {
   @apply btn bg-gray-700 hover:bg-gray-800 text-white shadow hover:shadow-lg;
