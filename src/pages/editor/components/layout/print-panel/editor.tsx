@@ -57,8 +57,8 @@ const Editor: React.FC<Props> = ({
   const srcWidth = maxWidth * (srcHeight / maxHeight)
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
   const object = getSlides(sort, slides)[slideIndex]
-  const [isPaperSizeChanged, setIsPaperSizeChanged] = useState(false)
-  const [isAngleChanged, setIsAngleChanged] = useState(false)
+  const [changeReq, setChangeReq] = useState({ isChanged: false, action: '' })
+  const [cropperCenter, setCropperCenter] = useState({ top: 0, left: 0 })
 
   // states
   return (
@@ -92,10 +92,9 @@ const Editor: React.FC<Props> = ({
               imageStyle={object.object?.props.imageStyle}
               placeholderStyle={object.object?.props.placeholderStyle}
               isEditor
-              isPaperSizeChanged={isPaperSizeChanged}
-              setIsPaperSizeChanged={setIsPaperSizeChanged}
-              isAngleChanged={isAngleChanged}
-              setIsAngleChanged={setIsAngleChanged}
+              changeReq={changeReq}
+              setChangeReq={setChangeReq}
+              cropperCenter={cropperCenter}
             />
           </div>
         </div>
@@ -120,12 +119,12 @@ const Editor: React.FC<Props> = ({
           state: selected,
           action: setSelected,
         }}
-        setIsPaperSizeChanged={setIsPaperSizeChanged}
-        setIsAngleChanged={setIsAngleChanged}
+        setChangeReq={setChangeReq}
         onRemove={() => {
           onCancel()
           onRemove(slideIndex)
         }}
+        setCropperCenter={setCropperCenter}
       />
     </ImageModal>
   )

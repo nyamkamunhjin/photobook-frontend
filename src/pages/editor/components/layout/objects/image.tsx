@@ -163,7 +163,7 @@ const Image: React.FC<Props> = ({
         overflow,
         borderStyle: 'solid',
         borderColor: hasBorder ? 'transparent' : borderColor,
-        borderWidth: hasBorder ? '40px' : '',
+        borderWidth: hasBorder ? '30px' : '',
       }}
     >
       <div className="border" />
@@ -192,7 +192,7 @@ const Image: React.FC<Props> = ({
           transformOrigin: 'left top',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
-          transform: hasBorder ? `translate(-40px, -40px)` : '',
+          transform: hasBorder ? `translate(-30px, -30px)` : '',
         }}
         src={tempUrl}
         onError={(e) => imageOnError(e, imageUrl, updateUrl)}

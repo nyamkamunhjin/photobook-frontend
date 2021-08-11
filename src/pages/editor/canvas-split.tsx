@@ -275,6 +275,7 @@ const BookEditor: React.FC<Props> = ({
     }
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
+    editors.loadObjects(currentSlide.objects)
   }
 
   useEffect(() => {
