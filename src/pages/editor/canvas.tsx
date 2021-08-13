@@ -74,6 +74,8 @@ interface Props {
   addObject: (props: { object: Object }) => void
 }
 
+const BORDER_WIDTH = 30
+
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
@@ -279,7 +281,7 @@ const BookEditor: React.FC<Props> = ({
     }
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
-    editors.loadObjects(currentSlide.objects, true)
+    editors.loadObjects(currentSlide.objects, BORDER_WIDTH)
   }
 
   useEffect(() => {
@@ -388,6 +390,9 @@ const BookEditor: React.FC<Props> = ({
             sendForward={() => editors.onSendForward(_index, objects)}
             sendBackward={() => editors.onSendBackward(_index, objects)}
             removeObject={() => editors.onRemoveObject(containers, objects, _index)}
+            imageFit={() => {
+              editors.imageFitNoDebounce(objects, editors._object, BORDER_WIDTH)
+            }}
           />
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons
@@ -401,7 +406,7 @@ const BookEditor: React.FC<Props> = ({
           <div
             id="slide_container"
             onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, true)}
+            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH)}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -466,7 +471,7 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 scale,
                                 zoom: 1,
-                                hasBorder: true,
+                                border: BORDER_WIDTH,
                               })}
                             </div>
                           )
@@ -493,7 +498,7 @@ const BookEditor: React.FC<Props> = ({
                     <div
                       key={t}
                       style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 50, true)}
+                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 50, BORDER_WIDTH)}
                       className={`resize ${resize}`}
                     />
                   )

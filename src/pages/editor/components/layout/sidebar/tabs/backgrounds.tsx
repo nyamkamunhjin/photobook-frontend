@@ -20,7 +20,6 @@ const Backgrounds: React.FC<Props> = ({ loading, categories, backgroundEdit, set
     e.dataTransfer.setData('tempUrl', tempUrl)
     e.dataTransfer.setData('imageUrl', imageUrl)
   }
-  console.log('Backgrounds', loading, categories, backgroundEdit)
 
   const onDragEnd = () => {
     setDragStart(false)

@@ -24,6 +24,7 @@ interface Props {
   removeImageFromObject?: () => void
   updateHistory: (type: string, object: unknown) => void
   updateObject: (value: { object: PObject }) => void
+  imageFit?: () => void
 }
 
 const ImageToolbar = ({
@@ -34,6 +35,7 @@ const ImageToolbar = ({
   updateHistory,
   updateObject,
   zoom: _zoom,
+  imageFit,
 }: Props) => {
   const [hasImage, setHasImage] = useState<boolean>(false)
   const [showPicker, setShowPicker] = useState<boolean>(false)
@@ -58,9 +60,11 @@ const ImageToolbar = ({
         },
       },
     })
+
     if (_zoom) {
       _zoom.action(zoom)
     }
+    if (zoom === 1 && imageFit) imageFit()
     updateHistory(UPDATE_OBJECT, { object })
   }
   const zoomIn = () => {
@@ -266,11 +270,13 @@ const ImageToolbar = ({
 
   return (
     <>
-      <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteImage" />}>
-        <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeImageFromObject}>
-          <AiFillMinusSquare />
-        </span>
-      </Tooltip>
+      {removeImageFromObject && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteImage" />}>
+          <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeImageFromObject}>
+            <AiFillMinusSquare />
+          </span>
+        </Tooltip>
+      )}
       <Tooltip placement="top" title={<FormattedMessage id="toolbox.effect" />}>
         <span
           onClick={() => {

@@ -73,6 +73,7 @@ interface Props {
   addObject: (props: { object: Object }) => void
   removeObject: (props: { object: Object; container: Object }) => void
 }
+const BORDER_WIDTH = 30
 
 const BookEditor: React.FC<Props> = ({
   getProjects,
@@ -275,7 +276,7 @@ const BookEditor: React.FC<Props> = ({
     }
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
-    editors.loadObjects(currentSlide.objects)
+    editors.loadObjects(currentSlide.objects, BORDER_WIDTH)
   }
 
   useEffect(() => {
@@ -352,22 +353,27 @@ const BookEditor: React.FC<Props> = ({
             objects={objects}
             updateObject={updateObject}
             updateHistory={updateHistory}
-            moveResizers={editors.moveResizers}
+            flipObject={() => editors.onFlipObject(_index, objects)}
+            imageFit={() => {
+              const _obj = objects.find((o: PObject) => o.props.className === 'image-placeholder')
+              if (!_obj) return
+              editors.imageFitNoDebounce(objects, _obj, BORDER_WIDTH)
+            }}
+            // moveResizers={editors.moveResizers}
             // removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
             // rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
             // rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
-            flipObject={() => editors.onFlipObject(_index, objects)}
-            sendForward={() => editors.onSendForward(_index, objects)}
-            sendBackward={() => editors.onSendBackward(_index, objects)}
-            removeObject={() => {
-              return null
-            }}
+            // sendForward={() => editors.onSendForward(_index, objects)}
+            // sendBackward={() => editors.onSendBackward(_index, objects)}
+            // removeObject={() => {
+            //   return null
+            // }}
           />
           <div id="selection" hidden ref={selectionRef} />
           <div
             id="slide_container"
-            onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, true)}
+            // onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
+            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, true)}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -382,7 +388,9 @@ const BookEditor: React.FC<Props> = ({
                             <div
                               id={o.id}
                               key={o.id}
-                              style={o.style as React.CSSProperties}
+                              style={{
+                                ...(o.style as React.CSSProperties),
+                              }}
                               className={o.className}
                               onMouseDown={(e) => {
                                 editors.onSelect(e, o, i, objects)
@@ -410,7 +418,8 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 zoom: 1,
                                 scale,
-                                hasBorder: true,
+                                border: BORDER_WIDTH,
+                                mustHaveImageCenter: true,
                               })}
                             </div>
                           )
@@ -427,10 +436,10 @@ const BookEditor: React.FC<Props> = ({
                 />
                 <div className="active-border" />
                 <div className="page-border-canvas" />
-                <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
+                {/* <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} /> */}
                 <div id="magnetX" />
                 <div id="magnetY" />
-                {Object.keys(editors.transformers).map((t: string) => {
+                {/* {Object.keys(editors.transformers).map((t: string) => {
                   const cursor = `${t}-resize`
                   const resize = editors.transformers[t]
                   return (
@@ -441,7 +450,7 @@ const BookEditor: React.FC<Props> = ({
                       className={`resize ${resize}`}
                     />
                   )
-                })}
+                })} */}
               </div>
             </div>
           </div>
@@ -523,6 +532,7 @@ const BookEditor: React.FC<Props> = ({
             updateObject={updateObject}
             updateHistory={updateHistory}
             saveObjects={saveObjects}
+            mustHaveImageCenter
           />
         </div>
       </div>

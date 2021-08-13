@@ -23,7 +23,8 @@ interface Props {
   updateUrl: (url: string) => void
   resolution: { width: number; height: number }
   placeholderStyle: Object
-  hasBorder: boolean
+  border: number
+  mustHaveImageCenter: boolean
 }
 
 const Image: React.FC<Props> = ({
@@ -40,7 +41,8 @@ const Image: React.FC<Props> = ({
   updateUrl,
   resolution: { width, height },
   placeholderStyle,
-  hasBorder,
+  border = 0,
+  mustHaveImageCenter = false,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -52,7 +54,7 @@ const Image: React.FC<Props> = ({
     setOverflow('unset')
     const _object = document.getElementById(object.id) as HTMLElement
     const placeholder = _object.firstChild as HTMLElement
-    const image = placeholder.childNodes[3] as HTMLElement
+    const image = placeholder.querySelector('img') as HTMLElement
 
     const { width: pWidth, height: pHeight } = getComputedStyle(placeholder)
 
@@ -79,15 +81,19 @@ const Image: React.FC<Props> = ({
       if (Math.abs(t) < 10) t = 0
       if (Math.abs(l) < 10) l = 0
 
-      if (heightDiff >= 0) {
+      if ((border && heightDiff >= 0) || (t <= 0 && t > -border)) {
+        image.style.top = `-${border}px`
+      } else if (heightDiff >= 0) {
         image.style.top = '0px'
-      } else if (t <= 0 && Math.abs(t) <= Math.abs(heightDiff)) {
+      } else if (t <= -border && Math.abs(t) <= Math.abs(heightDiff - border)) {
         image.style.top = t + 'px'
       }
 
-      if (widthDiff >= 0) {
+      if ((border && widthDiff >= 0) || (l <= 0 && l > -border)) {
+        image.style.left = `-${border}px`
+      } else if (widthDiff >= 0) {
         image.style.left = '0px'
-      } else if (l <= 0 && Math.abs(l) <= Math.abs(widthDiff)) {
+      } else if (l <= -border && Math.abs(l) <= Math.abs(widthDiff - border)) {
         image.style.left = l + 'px'
       }
 
@@ -162,8 +168,8 @@ const Image: React.FC<Props> = ({
         ...(object?.props?.frameStyle || {}),
         overflow,
         borderStyle: 'solid',
-        borderColor: hasBorder ? 'transparent' : borderColor,
-        borderWidth: hasBorder ? '30px' : '',
+        borderColor: border ? 'transparent' : borderColor,
+        borderWidth: `${border}px`,
       }}
     >
       <div className="border" />
@@ -180,23 +186,71 @@ const Image: React.FC<Props> = ({
           }}
         />
       )}
-      <img
-        ref={imageRef}
-        alt="object"
-        className="image"
-        data-imageurl={imageUrl}
-        style={{
-          ...imageStyle,
-          filter: _filter,
-          WebkitMaskSize: 'contain',
-          transformOrigin: 'left top',
-          WebkitMaskRepeat: 'no-repeat',
-          ...(object?.props?.maskStyle || {}),
-          transform: hasBorder ? `translate(-30px, -30px)` : '',
-        }}
-        src={tempUrl}
-        onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-      />
+      {mustHaveImageCenter ? (
+        <>
+          <div
+            className={className}
+            style={{
+              ...style,
+              ...(object?.props?.frameStyle || {}),
+              overflow,
+              borderStyle: 'solid',
+              borderColor: border ? 'transparent' : borderColor,
+              borderWidth: `${border}px`,
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              ...(object?.props?.maskStyle || {}),
+              transform: '',
+            }}
+          >
+            <img
+              ref={imageRef}
+              alt="object"
+              className="image"
+              data-imageurl={imageUrl}
+              style={{
+                ...imageStyle,
+                filter: _filter,
+                transformOrigin: 'left top',
+              }}
+              src={tempUrl}
+              onError={(e) => imageOnError(e, imageUrl, updateUrl)}
+            />
+          </div>
+          <div
+            style={{
+              visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
+            }}
+            onMouseDown={(e) => imageReposition(e)}
+            className="image-center"
+          >
+            <BsArrowsMove className="drag-icon" />
+          </div>
+        </>
+      ) : (
+        <>
+          <img
+            ref={imageRef}
+            alt="object"
+            className="image"
+            data-imageurl={imageUrl}
+            style={{
+              ...imageStyle,
+              filter: _filter,
+              transformOrigin: 'left top',
+            }}
+            src={tempUrl}
+            onError={(e) => imageOnError(e, imageUrl, updateUrl)}
+          />
+          <div
+            style={{ visibility: imageStyle.display === 'none' ? 'hidden' : 'visible' }}
+            onMouseDown={(e) => imageReposition(e)}
+            className="image-center"
+          >
+            <BsArrowsMove className="drag-icon" />
+          </div>
+        </>
+      )}
       <PlusSquareOutlined
         className="plus"
         style={{ display: imageStyle.display === 'none' && edit ? 'block' : 'none' }}
@@ -208,15 +262,6 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
-      <div
-        style={{
-          visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
-        }}
-        onMouseDown={(e) => imageReposition(e)}
-        className="image-center"
-      >
-        <BsArrowsMove className="drag-icon" />
-      </div>
     </div>
   )
 }

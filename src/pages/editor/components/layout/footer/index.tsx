@@ -46,6 +46,7 @@ interface Props {
   changeSlideIndex?: (index: number) => void
   containers: Container[]
   backgrounds: BackgroundImage[]
+  mustHaveImageCenter?: boolean
 }
 
 const FooterListTools: React.FC<Props> = ({
@@ -77,6 +78,7 @@ const FooterListTools: React.FC<Props> = ({
   updateObject,
   hideTools = false,
   scale,
+  mustHaveImageCenter = false,
 }) => {
   const [refreshing, setRefreshing] = useBoolean(false)
   const [_width, _setWidth] = useState(4)
@@ -186,6 +188,7 @@ const FooterListTools: React.FC<Props> = ({
                 updateObject={updateObject}
                 updateHistory={updateHistory}
                 saveObjects={saveObjects}
+                mustHaveImageCenter={mustHaveImageCenter}
               />
             )}
           />
@@ -294,6 +297,7 @@ const FooterListTools: React.FC<Props> = ({
                         updateObject={updateObject}
                         updateHistory={updateHistory}
                         saveObjects={saveObjects}
+                        mustHaveImageCenter={mustHaveImageCenter}
                       />
                     )}
                   />

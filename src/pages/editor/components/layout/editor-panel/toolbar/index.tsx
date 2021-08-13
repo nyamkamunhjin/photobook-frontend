@@ -27,11 +27,12 @@ interface Props {
   rotateLeftObject?: () => void
   rotateRightObject?: () => void
   flipObject?: () => void
-  removeObject: () => void
-  sendBackward: () => void
-  sendForward: () => void
-  moveResizers: (move: MoveResizerInterface) => void
+  removeObject?: () => void
+  sendBackward?: () => void
+  sendForward?: () => void
+  moveResizers?: (move: MoveResizerInterface) => void
   isLayout?: boolean
+  imageFit?: () => void
 }
 const Toolbar: React.FC<Props> = ({
   removeImageFromObject,
@@ -50,6 +51,7 @@ const Toolbar: React.FC<Props> = ({
   index,
   zoom,
   isLayout = false,
+  imageFit,
 }) => {
   return (
     <div className="toolbar">
@@ -73,6 +75,7 @@ const Toolbar: React.FC<Props> = ({
           updateObject={updateObject}
           updateHistory={updateHistory}
           removeImageFromObject={removeImageFromObject}
+          imageFit={imageFit}
         />
       )}
       {objectType === 'shape' && (
@@ -106,21 +109,27 @@ const Toolbar: React.FC<Props> = ({
           </span>
         </Tooltip>
       )}
-      <Tooltip placement="top" title={<FormattedMessage id="toolbox.backward" />}>
-        <span onClick={sendBackward} className="toolbar-icon">
-          <Down width={17} />
-        </span>
-      </Tooltip>
-      <Tooltip placement="top" title={<FormattedMessage id="toolbox.forward" />}>
-        <span onClick={sendForward} className="toolbar-icon">
-          <Up width={17} />
-        </span>
-      </Tooltip>
-      <Tooltip placement="top" title={<FormattedMessage id="toolbox.delete" />}>
-        <span onClick={removeObject} className="toolbar-icon">
-          <MdDelete />
-        </span>
-      </Tooltip>
+      {sendBackward && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.backward" />}>
+          <span onClick={sendBackward} className="toolbar-icon">
+            <Down width={17} />
+          </span>
+        </Tooltip>
+      )}
+      {sendForward && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.forward" />}>
+          <span onClick={sendForward} className="toolbar-icon">
+            <Up width={17} />
+          </span>
+        </Tooltip>
+      )}
+      {removeObject && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.delete" />}>
+          <span onClick={removeObject} className="toolbar-icon">
+            <MdDelete />
+          </span>
+        </Tooltip>
+      )}
     </div>
   )
 }

@@ -21,6 +21,7 @@ interface Props {
   containers: Container[]
   height: number
   changeSlideIndex?: (index: number) => void
+  mustHaveImageCenter?: boolean
 }
 
 const Slides: React.FC<Props> = ({
@@ -37,6 +38,7 @@ const Slides: React.FC<Props> = ({
   scale,
   slide,
   height,
+  mustHaveImageCenter = false,
 }) => {
   const scaledContainerRef = useRef<any>(null)
   const canvasRef = useRef<any>(null)
@@ -77,6 +79,7 @@ const Slides: React.FC<Props> = ({
                       saveObjects,
                       scale,
                       zoom: 1,
+                      mustHaveImageCenter,
                     })}
                   </div>
                 )
@@ -98,6 +101,7 @@ const Slides: React.FC<Props> = ({
                       saveObjects,
                       scale,
                       zoom: 1,
+                      mustHaveImageCenter,
                     })}
                   </div>
                 )
