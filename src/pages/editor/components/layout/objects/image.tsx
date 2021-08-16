@@ -170,6 +170,7 @@ const Image: React.FC<Props> = ({
         borderStyle: 'solid',
         borderColor: border ? 'transparent' : borderColor,
         borderWidth: `${border}px`,
+        transform: '',
       }}
     >
       <div className="border" />
@@ -194,13 +195,12 @@ const Image: React.FC<Props> = ({
               ...style,
               ...(object?.props?.frameStyle || {}),
               overflow,
-              borderStyle: 'solid',
-              borderColor: border ? 'transparent' : borderColor,
-              borderWidth: `${border}px`,
+              // borderStyle: 'solid',
+              // borderColor: border ? 'transparent' : borderColor,
+              // borderWidth: `${border}px`,
               WebkitMaskSize: 'contain',
               WebkitMaskRepeat: 'no-repeat',
               ...(object?.props?.maskStyle || {}),
-              transform: '',
             }}
           >
             <img

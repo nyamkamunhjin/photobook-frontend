@@ -3097,7 +3097,6 @@ export default class Editor {
     // const child = object.firstChild as HTMLElement
     const circle = object.querySelector('.image-center') as HTMLElement
     circle.style.display = 'flex'
-    console.log('showImageCircle', 'object', object, 'objectType', objectType, 'circle', circle)
     this.showGroupSelection()
   }
   public hideImageCircle = (object: HTMLElement) => {

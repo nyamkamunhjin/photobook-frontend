@@ -394,6 +394,12 @@ const BookEditor: React.FC<Props> = ({
                               className={o.className}
                               onMouseDown={(e) => {
                                 editors.onSelect(e, o, i, objects)
+                                // Manage img-circle
+                                const _o = document.getElementById(o.id) as HTMLElement
+                                if (!_o) return
+                                const circle = _o.querySelector('.image-center') as HTMLElement
+                                if (circle.style.display === 'flex') circle.style.display = 'none'
+                                else circle.style.display = 'flex'
                               }}
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
