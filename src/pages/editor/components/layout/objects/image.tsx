@@ -25,6 +25,11 @@ interface Props {
   placeholderStyle: Object
   border: number
   mustHaveImageCenter: boolean
+  isMontage: boolean
+  frameMontage?: {
+    url: string
+    tempUrl: string
+  }
 }
 
 const Image: React.FC<Props> = ({
@@ -43,6 +48,8 @@ const Image: React.FC<Props> = ({
   placeholderStyle,
   border = 0,
   mustHaveImageCenter = false,
+  isMontage = false,
+  frameMontage,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -170,7 +177,7 @@ const Image: React.FC<Props> = ({
         borderStyle: 'solid',
         borderColor: border ? 'transparent' : borderColor,
         borderWidth: `${border}px`,
-        transform: '',
+        transform: mustHaveImageCenter || isMontage ? '' : style.transform,
       }}
     >
       <div className="border" />
@@ -187,7 +194,7 @@ const Image: React.FC<Props> = ({
           }}
         />
       )}
-      {mustHaveImageCenter ? (
+      {(mustHaveImageCenter || isMontage) && (
         <>
           <div
             className={className}
@@ -198,7 +205,7 @@ const Image: React.FC<Props> = ({
               // borderStyle: 'solid',
               // borderColor: border ? 'transparent' : borderColor,
               // borderWidth: `${border}px`,
-              WebkitMaskSize: 'contain',
+              WebkitMaskSize: isMontage ? '102% 100%, auto, contain' : 'contain',
               WebkitMaskRepeat: 'no-repeat',
               ...(object?.props?.maskStyle || {}),
             }}
@@ -227,7 +234,22 @@ const Image: React.FC<Props> = ({
             <BsArrowsMove className="drag-icon" />
           </div>
         </>
-      ) : (
+      )}
+      {frameMontage && (
+        <img
+          alt="object"
+          // className="frame"
+          data-imageurl={frameMontage.url}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'fill',
+            overflow: 'hidden',
+          }}
+          src={frameMontage.tempUrl}
+        />
+      )}
+      {!mustHaveImageCenter && !isMontage && (
         <>
           <img
             ref={imageRef}

@@ -13,6 +13,7 @@ interface Props {
   scale: number
   border?: number
   mustHaveImageCenter?: boolean
+  isMontage?: boolean
 }
 
 const renderObject: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const renderObject: React.FC<Props> = ({
   zoom = 1,
   border = 0,
   mustHaveImageCenter = false,
+  isMontage = false,
 }) => {
   const { props } = object
 
@@ -46,7 +48,8 @@ const renderObject: React.FC<Props> = ({
   }
 
   if (props.className === 'image-placeholder') {
-    const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle } = props
+    const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle, frameMontage } = props
+
     return (
       <Image
         scale={scale}
@@ -65,6 +68,8 @@ const renderObject: React.FC<Props> = ({
         placeholderStyle={placeholderStyle}
         border={border}
         mustHaveImageCenter={mustHaveImageCenter}
+        isMontage={isMontage}
+        frameMontage={frameMontage}
       />
     )
   } else if (props.className === 'text-container') {

@@ -4,6 +4,7 @@ import { connect, useSelector } from 'react-redux'
 import {
   BgColorsOutlined,
   BorderOuterOutlined,
+  BorderOutlined,
   BugOutlined,
   InfoCircleOutlined,
   LayoutOutlined,
@@ -40,6 +41,7 @@ import Frames from './tabs/frames'
 import Layouts from './tabs/layouts'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 import Notices from './tabs/notices'
+import FrameMasks from './tabs/frameMasks'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
@@ -60,6 +62,7 @@ interface Props {
   hasClipArt?: boolean
   hasMask?: boolean
   hasBackground?: boolean
+  hasFrameMask?: boolean
   isOrder: boolean
   setIsOrder: (param: any) => void
 }
@@ -71,6 +74,7 @@ const SideBarPanel: React.FC<Props> = ({
   hasBackground = true,
   hasClipArt = true,
   hasMask = true,
+  hasFrameMask = false,
   isOrder = false,
   setIsOrder,
   addImages,
@@ -338,6 +342,23 @@ const SideBarPanel: React.FC<Props> = ({
           <Frames loading={loading} categories={frames} />
         )
       }
+      case 'frame_masks': {
+        if (hasFrameMask) {
+          const frameMasks = categories.filter((category) => category.type === editor.type)
+          return !loading && frameMasks.length === 0 ? (
+            <div className="UploadImageDropArea">
+              <div>
+                <p className="phrase-add">
+                  <FormattedMessage id="empty" />
+                </p>
+              </div>
+            </div>
+          ) : (
+            <FrameMasks loading={loading} categories={frameMasks} />
+          )
+        }
+        return ''
+      }
       case 'notices': {
         return notices.length === 0 ? (
           <div className="UploadImageDropArea">
@@ -419,6 +440,16 @@ const SideBarPanel: React.FC<Props> = ({
             <BorderOuterOutlined style={{ fontSize: 24 }} />
             <div className="title">
               <FormattedMessage id="frames" />
+            </div>
+          </div>
+          <div
+            hidden={!hasFrameMask}
+            onClick={() => switchTab('frame_masks')}
+            className={'HeaderItem ' + isActive('frame_masks') + isDisabled()}
+          >
+            <BorderOutlined style={{ fontSize: 24 }} />
+            <div className="title">
+              <FormattedMessage id="frame_masks" />
             </div>
           </div>
           <div

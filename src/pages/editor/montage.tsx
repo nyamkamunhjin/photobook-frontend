@@ -599,6 +599,7 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 scale,
                                 zoom,
+                                isMontage: true,
                               })}
                             </div>
                           )
@@ -666,7 +667,17 @@ const BookEditor: React.FC<Props> = ({
         }}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage isOrder={isOrder} setIsOrder={setIsOrder} />}
+        {!preview && (
+          <SideBarPanel
+            layoutGroups={layouts}
+            hasImage
+            isOrder={isOrder}
+            setIsOrder={setIsOrder}
+            hasFrameMask
+            hasFrames={false}
+            hasMask={false}
+          />
+        )}
         <div className="EditorPanel">
           {preview ? (
             <Preview

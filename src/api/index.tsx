@@ -116,6 +116,13 @@ export const listImageCategoryByProject = async (templateId: number) => {
           tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
         }))
       ),
+      frameMasks: await Promise.all(
+        category.frameMasks.map(async (frameMask) => ({
+          ...frameMask,
+          tempFrameUrl: await Storage.get(frameMask.frameUrl, { expires: 60 * 60 * 24 * 7 }),
+          tempMaskUrl: await Storage.get(frameMask.maskUrl, { expires: 60 * 60 * 24 * 7 }),
+        }))
+      ),
     }))
   )
   return categories

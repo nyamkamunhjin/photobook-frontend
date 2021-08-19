@@ -2136,7 +2136,7 @@ export default class Editor {
   public onObjectDropMontage = (e: any, type: FeatureType, objects: PObject[], _index: number) => {
     this.hideToolbar()
     e.preventDefault()
-    if (!'images,cliparts,frames,masks'.includes(type) || this._isTextEditing) return
+    if (!'images,cliparts,frames,masks,frame_masks'.includes(type) || this._isTextEditing) return
 
     if (
       e.target.classList.contains('object') &&
@@ -2187,6 +2187,30 @@ export default class Editor {
             maskStyle: {
               maskImage: `url(${e.dataTransfer.getData('tempUrl').replace('https', 'http')})`,
               WebkitMaskImage: `url(${e.dataTransfer.getData('tempUrl').replace('https', 'http')})`,
+            },
+            placeholderStyle: { opacity: '1' },
+          },
+        }
+
+        this.updateObject({ object: newObject })
+        this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+      } else if (type === 'frame_masks') {
+        e.target.style.border = 'none'
+        const index = objects.findIndex((o: any) => o.id === e.target.id)
+        console.log('onObjectdrop FRAME_MASK')
+        // Urgeljlel bii
+        const newObject = {
+          ...objects[index],
+          props: {
+            ...objects[index].props,
+            maskImage: e.dataTransfer.getData('maskUrl'),
+            maskStyle: {
+              maskImage: `url(${e.dataTransfer.getData('tempMaskUrl').replace('https', 'http')})`,
+              WebkitMaskImage: `url(${e.dataTransfer.getData('tempMaskUrl').replace('https', 'http')})`,
+            },
+            frameMontage: {
+              url: e.dataTransfer.getData('frameUrl'),
+              tempUrl: e.dataTransfer.getData('tempFrameUrl'),
             },
             placeholderStyle: { opacity: '1' },
           },

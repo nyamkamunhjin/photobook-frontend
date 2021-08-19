@@ -138,6 +138,10 @@ export interface ObjectProps {
   style: StyleType
   tempUrl?: string
   texts?: string[]
+  frameMontage?: {
+    url: string
+    tempUrl: string
+  }
 }
 export interface PObject {
   className: string
@@ -147,7 +151,15 @@ export interface PObject {
   ratio?: { t: number; l: number; h: number; w: number; sw: number; sh: number }
 }
 
-export type FeatureType = 'frames' | 'backgrounds' | 'masks' | 'cliparts' | 'images' | 'layouts' | 'notices'
+export type FeatureType =
+  | 'frames'
+  | 'backgrounds'
+  | 'masks'
+  | 'cliparts'
+  | 'images'
+  | 'layouts'
+  | 'notices'
+  | 'frame_masks'
 export interface TemplateType {
   id: number
   name: string
@@ -163,6 +175,7 @@ export interface ImageCategory {
   parentId: number
   parent?: ImageCategory
   images: Image[]
+  frameMasks: FrameMask[]
 }
 
 export interface PaginatedResult<T> {
@@ -383,6 +396,18 @@ export interface Image {
   createdAt: Date
   updatedAt: Date
   imageCategories?: ImageCategory[]
+}
+export interface FrameMask {
+  id: number
+  frameUrl: string
+  maskUrl: string
+  tempFrameUrl: string
+  tempMaskUrl: string
+  updatedAt: Date
+  name: string
+  description: string
+  imageCategories: ImageCategory[]
+  // projects        Project[]
 }
 
 export interface BackgroundImage {
