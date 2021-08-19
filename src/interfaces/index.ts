@@ -388,6 +388,7 @@ export interface Image {
   name: string
   width?: number
   height?: number
+  borderWidth?: number
   imageUrl: string
   tempUrl: string
   public: boolean

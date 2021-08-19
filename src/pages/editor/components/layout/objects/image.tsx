@@ -166,19 +166,31 @@ const Image: React.FC<Props> = ({
 
   const borderColor = rgb ? `rgba(${rgb.r},${rgb.g},${rgb.b},${opacity})` : '#000'
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
+  console.log('imageStyle', imageStyle)
 
   return (
     <div
       className={className}
-      style={{
-        ...style,
-        ...(object?.props?.frameStyle || {}),
-        overflow,
-        borderStyle: 'solid',
-        borderColor: border ? 'transparent' : borderColor,
-        borderWidth: `${border}px`,
-        transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-      }}
+      style={
+        border
+          ? {
+              ...style,
+              ...(object?.props?.frameStyle || {}),
+              overflow,
+              borderStyle: 'solid',
+              borderColor: border ? 'transparent' : borderColor,
+              borderWidth: `${border}px`,
+              transform: mustHaveImageCenter || isMontage ? '' : style.transform,
+            }
+          : {
+              ...style,
+              ...(object?.props?.frameStyle || {}),
+              overflow,
+              borderStyle: 'solid',
+              borderColor: border ? 'transparent' : borderColor,
+              transform: mustHaveImageCenter || isMontage ? '' : style.transform,
+            }
+      }
     >
       <div className="border" />
       <div className="background" style={placeholderStyle} hidden={!edit} />
@@ -194,7 +206,8 @@ const Image: React.FC<Props> = ({
           }}
         />
       )}
-      {(mustHaveImageCenter || isMontage) && (
+      {/* (mustHaveImageCenter || isMontage) */}
+      {true && (
         <>
           <div
             className={className}
@@ -205,7 +218,7 @@ const Image: React.FC<Props> = ({
               // borderStyle: 'solid',
               // borderColor: border ? 'transparent' : borderColor,
               // borderWidth: `${border}px`,
-              WebkitMaskSize: isMontage ? '102% 100%, auto, contain' : 'contain',
+              WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : 'contain',
               WebkitMaskRepeat: 'no-repeat',
               ...(object?.props?.maskStyle || {}),
             }}
@@ -249,7 +262,7 @@ const Image: React.FC<Props> = ({
           src={frameMontage.tempUrl}
         />
       )}
-      {!mustHaveImageCenter && !isMontage && (
+      {/* {!mustHaveImageCenter && !isMontage && (
         <>
           <img
             ref={imageRef}
@@ -272,7 +285,7 @@ const Image: React.FC<Props> = ({
             <BsArrowsMove className="drag-icon" />
           </div>
         </>
-      )}
+      )} */}
       <PlusSquareOutlined
         className="plus"
         style={{ display: imageStyle.display === 'none' && edit ? 'block' : 'none' }}

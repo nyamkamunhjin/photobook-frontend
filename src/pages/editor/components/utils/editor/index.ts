@@ -2008,7 +2008,7 @@ export default class Editor {
               borderImageSlice: 200,
               borderImageRepeat: 'stretch',
               borderColor: 'transparent',
-              borderWidth: '50px',
+              borderWidth: `${e.dataTransfer.getData('borderWidth')}px`,
             },
             placeholderStyle: { opacity: '1' },
           },
@@ -2032,7 +2032,6 @@ export default class Editor {
             placeholderStyle: { opacity: '1' },
           },
         }
-
         this.updateObject({ object: newObject })
         this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
       } else {

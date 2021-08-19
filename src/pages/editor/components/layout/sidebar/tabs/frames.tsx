@@ -11,9 +11,10 @@ interface Props {
 const { Panel } = Collapse
 
 const Frames: React.FC<Props> = ({ loading, categories }) => {
-  const dragStart = (e: any, tempUrl: any, imageUrl: any) => {
+  const dragStart = (e: any, tempUrl: any, imageUrl: any, borderWidth = 0) => {
     e.dataTransfer.setData('tempUrl', tempUrl)
     e.dataTransfer.setData('imageUrl', imageUrl)
+    e.dataTransfer.setData('borderWidth', borderWidth)
   }
 
   return loading ? (
@@ -35,7 +36,7 @@ const Frames: React.FC<Props> = ({ loading, categories }) => {
                   <div className="ImageContainer" key={`${image.imageUrl}`}>
                     <img
                       draggable
-                      onDragStart={(e) => dragStart(e, image.tempUrl, image.imageUrl)}
+                      onDragStart={(e) => dragStart(e, image.tempUrl, image.imageUrl, image.borderWidth)}
                       alt={image.tempUrl}
                       src={image.tempUrl}
                     />
