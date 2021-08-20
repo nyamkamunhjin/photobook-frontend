@@ -57,11 +57,12 @@ export interface StyleType {
 }
 
 export interface ProjectCreate {
-  paperSizeId: number
+  paperSizeId?: number
   coverTypeId?: number
   bindingTypeId?: number
   coverMaterialId?: number
   coverColorId?: number
+  paperSize?: { width: number; height: number }
 }
 export interface RGB {
   r?: number

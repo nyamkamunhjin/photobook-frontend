@@ -1,8 +1,8 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { PaperMaterial, PaperSize, Template } from 'interfaces'
 import { Select } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { CustomButton } from 'components'
 
 interface Props {
@@ -23,6 +23,23 @@ interface Props {
 
 const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, selectedState, setSelectedState }) => {
   const intl = useIntl()
+  const widthRef = useRef<HTMLInputElement>(null)
+  const heightRef = useRef<HTMLInputElement>(null)
+  const history = useHistory()
+
+  const onFinish = () => {
+    if (
+      !widthRef.current ||
+      !heightRef.current ||
+      parseFloat(widthRef.current?.value) === 0 ||
+      parseFloat(heightRef.current?.value) === 0
+    )
+      return alert('Please check the size')
+
+    return history.push(
+      `/editor/canvas/split?template=${template.id}&width=${widthRef.current.value}&height=${heightRef.current.value}`
+    )
+  }
 
   useEffect(() => {
     const initialState = () => {
@@ -91,12 +108,35 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           ))}
         </div>
       </div>
+      <div className="space-y-4" hidden={template.canvasType !== 'Split'}>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })} /см/</span>
+        <div className="flex gap-8">
+          <div className="flex flex-col gap-1 flex-1">
+            <span className="text-gray-500 font-medium">Width</span>
+            <input
+              placeholder="width"
+              type="number"
+              ref={widthRef}
+              defaultValue={0}
+              className="max-w-min px-2 py-1 border appearance-none focus:appearance-none hover:appearance-none focus:outline-none focus:border-blue-400 text-sm"
+            />
+          </div>
+          <div className="flex flex-col gap-1 flex-1">
+            <span className="text-gray-500 font-medium">Height</span>
+            <input
+              placeholder="height"
+              type="number"
+              ref={heightRef}
+              defaultValue={0}
+              className="max-w-min px-2 py-1 border appearance-none focus:appearance-none hover:appearance-none focus:outline-none focus:border-blue-400 text-sm"
+            />
+          </div>
+        </div>
+      </div>
       {template.canvasType === 'Split' ? (
-        <Link to={`/editor/canvas/split?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
-          <CustomButton className="btn-primary">
-            <FormattedMessage id="start_book" />
-          </CustomButton>
-        </Link>
+        <CustomButton onClick={onFinish} className="btn-primary max-w-max">
+          <FormattedMessage id="start_book" />
+        </CustomButton>
       ) : (
         <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
           <CustomButton className="btn-primary">

@@ -103,7 +103,8 @@ const BookEditor: React.FC<Props> = ({
   },
 }) => {
   const [template] = useQueryState('template', 1)
-  const [paperSizeId] = useQueryState('paperSize', 1)
+  const [width] = useQueryState('width', 1)
+  const [height] = useQueryState('height', 1)
   const [uuid, setUuid] = useQueryState('project', '')
 
   const slideViewRef: any = useRef(null)
@@ -294,11 +295,12 @@ const BookEditor: React.FC<Props> = ({
   })
 
   useEffect(() => {
-    if (!template) {
+    if (!template || width === 0 || height === 0) {
       window.history.back()
       return
     }
-    getProjects(template, { paperSizeId }, uuid).then((id) => {
+    const paperSize = { width, height }
+    getProjects(template, { paperSize }, uuid).then((id) => {
       if (id) {
         setUuid(id)
       }
