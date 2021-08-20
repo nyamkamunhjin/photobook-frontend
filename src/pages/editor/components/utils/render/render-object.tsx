@@ -14,6 +14,8 @@ interface Props {
   border?: number
   mustHaveImageCenter?: boolean
   isMontage?: boolean
+  slideWidth?: number
+  slideHeight?: number
 }
 
 const renderObject: React.FC<Props> = ({
@@ -27,6 +29,8 @@ const renderObject: React.FC<Props> = ({
   border = 0,
   mustHaveImageCenter = false,
   isMontage = false,
+  slideWidth,
+  slideHeight,
 }) => {
   const { props } = object
 
@@ -70,6 +74,8 @@ const renderObject: React.FC<Props> = ({
         mustHaveImageCenter={mustHaveImageCenter}
         isMontage={isMontage}
         frameMontage={frameMontage}
+        slideWidth={slideWidth}
+        slideHeight={slideHeight}
       />
     )
   } else if (props.className === 'text-container') {

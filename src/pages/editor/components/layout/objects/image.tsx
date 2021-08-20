@@ -30,6 +30,8 @@ interface Props {
     url: string
     tempUrl: string
   }
+  slideWidth?: number
+  slideHeight?: number
 }
 
 const Image: React.FC<Props> = ({
@@ -50,6 +52,8 @@ const Image: React.FC<Props> = ({
   mustHaveImageCenter = false,
   isMontage = false,
   frameMontage,
+  slideWidth,
+  slideHeight,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -166,7 +170,9 @@ const Image: React.FC<Props> = ({
 
   const borderColor = rgb ? `rgba(${rgb.r},${rgb.g},${rgb.b},${opacity})` : '#000'
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
-  console.log('imageStyle', imageStyle)
+
+  const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
+  console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
@@ -206,48 +212,48 @@ const Image: React.FC<Props> = ({
           }}
         />
       )}
-      {/* (mustHaveImageCenter || isMontage) */}
-      {true && (
-        <>
-          <div
-            className={className}
-            style={{
-              ...style,
-              ...(object?.props?.frameStyle || {}),
-              overflow,
-              // borderStyle: 'solid',
-              // borderColor: border ? 'transparent' : borderColor,
-              // borderWidth: `${border}px`,
-              WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : 'contain',
-              WebkitMaskRepeat: 'no-repeat',
-              ...(object?.props?.maskStyle || {}),
-            }}
-          >
-            <img
-              ref={imageRef}
-              alt="object"
-              className="image"
-              data-imageurl={imageUrl}
-              style={{
-                ...imageStyle,
-                filter: _filter,
-                transformOrigin: 'left top',
-              }}
-              src={tempUrl}
-              onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-            />
-          </div>
-          <div
-            style={{
-              visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
-            }}
-            onMouseDown={(e) => imageReposition(e)}
-            className="image-center"
-          >
-            <BsArrowsMove className="drag-icon" />
-          </div>
-        </>
-      )}
+      <div
+        className={className + ' absolute top-0 left-0'}
+        style={{
+          ...style,
+          ...(object?.props?.frameStyle || {}),
+          overflow,
+          WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : 'contain',
+          WebkitMaskRepeat: 'no-repeat',
+          ...(object?.props?.maskStyle || {}),
+        }}
+      >
+        <img
+          ref={imageRef}
+          alt="object"
+          className="image"
+          data-imageurl={imageUrl}
+          style={{
+            ...imageStyle,
+            filter: _filter,
+            transformOrigin: 'left top',
+          }}
+          src={tempUrl}
+          onError={(e) => imageOnError(e, imageUrl, updateUrl)}
+        />
+      </div>
+      <div
+        style={
+          minSize
+            ? {
+                visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
+                width: `${minSize * 0.1}px`,
+                height: `${minSize * 0.1}px`,
+              }
+            : {
+                visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
+              }
+        }
+        onMouseDown={(e) => imageReposition(e)}
+        className="image-center"
+      >
+        <BsArrowsMove className={`drag-icon ${minSize && 'w-1/2 h-1/2'}`} />
+      </div>
       {frameMontage && (
         <img
           alt="object"
@@ -262,30 +268,6 @@ const Image: React.FC<Props> = ({
           src={frameMontage.tempUrl}
         />
       )}
-      {/* {!mustHaveImageCenter && !isMontage && (
-        <>
-          <img
-            ref={imageRef}
-            alt="object"
-            className="image"
-            data-imageurl={imageUrl}
-            style={{
-              ...imageStyle,
-              filter: _filter,
-              transformOrigin: 'left top',
-            }}
-            src={tempUrl}
-            onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-          />
-          <div
-            style={{ visibility: imageStyle.display === 'none' ? 'hidden' : 'visible' }}
-            onMouseDown={(e) => imageReposition(e)}
-            className="image-center"
-          >
-            <BsArrowsMove className="drag-icon" />
-          </div>
-        </>
-      )} */}
       <PlusSquareOutlined
         className="plus"
         style={{ display: imageStyle.display === 'none' && edit ? 'block' : 'none' }}

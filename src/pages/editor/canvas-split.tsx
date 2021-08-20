@@ -392,6 +392,8 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={{
                                 ...(o.style as React.CSSProperties),
+                                width: slideWidth + 'px',
+                                height: slideHeight + 'px',
                               }}
                               className={o.className}
                               onMouseDown={(e) => {
@@ -428,6 +430,8 @@ const BookEditor: React.FC<Props> = ({
                                 scale,
                                 border: BORDER_WIDTH,
                                 mustHaveImageCenter: true,
+                                slideWidth,
+                                slideHeight,
                               })}
                             </div>
                           )
