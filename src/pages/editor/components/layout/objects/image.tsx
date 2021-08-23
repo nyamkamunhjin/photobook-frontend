@@ -172,7 +172,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  console.log('object?.props?.maskStyle', object?.props?.maskStyle)
+  // console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
@@ -218,7 +218,7 @@ const Image: React.FC<Props> = ({
           ...style,
           ...(object?.props?.frameStyle || {}),
           overflow,
-          WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : 'contain',
+          WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
         }}

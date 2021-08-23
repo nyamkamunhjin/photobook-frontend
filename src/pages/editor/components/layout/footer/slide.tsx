@@ -71,7 +71,16 @@ const Slides: React.FC<Props> = ({
               })}
               {objects.map((o: any) => {
                 return (
-                  <div id={o.id} key={o.id} style={o.style} className={o.className}>
+                  <div
+                    id={o.id}
+                    key={o.id}
+                    style={
+                      mustHaveImageCenter
+                        ? { ...o.style, width: slideWidth + 'px', height: slideHeight + 'px' }
+                        : o.style
+                    }
+                    className={o.className}
+                  >
                     {renderObject({
                       object: o,
                       updateObject,
@@ -80,6 +89,8 @@ const Slides: React.FC<Props> = ({
                       scale,
                       zoom: 1,
                       mustHaveImageCenter,
+                      slideWidth,
+                      slideHeight,
                     })}
                   </div>
                 )
