@@ -11,14 +11,14 @@ interface Props {
 const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
   return (
     <Link
-      className="p-2 rounded hover:shadow-lg hover:bg-white ease-in transition-all"
+      className="p-2 rounded hover:shadow-xl hover:bg-white ease-in transition-all transform hover:-translate-y-1 border border-gray-200"
       style={{ width: `calc(100% / ${rowSize} - 0.5rem` }}
       to={`/product/${template.templateType?.name}/template/${template.id}`}
     >
-      <article>
+      <article className="flex flex-col gap-4">
         <div>
           <img
-            className="w-full rounde"
+            className="w-full rounded object-cover bg-gray-50"
             src={`${process.env.REACT_APP_PUBLIC_IMAGE}${template.imageUrl}`}
             alt={template.name}
             width={300}
