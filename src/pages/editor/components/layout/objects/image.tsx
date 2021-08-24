@@ -178,24 +178,36 @@ const Image: React.FC<Props> = ({
     <div
       className={className}
       style={
-        border
-          ? {
-              ...style,
-              ...(object?.props?.frameStyle || {}),
-              overflow,
-              borderStyle: 'solid',
-              borderColor: border ? 'transparent' : borderColor,
-              borderWidth: `${border}px`,
-              transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-            }
-          : {
-              ...style,
-              ...(object?.props?.frameStyle || {}),
-              overflow,
-              borderStyle: 'solid',
-              borderColor: border ? 'transparent' : borderColor,
-              transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-            }
+        // border
+        //   ? {
+        //       ...style,
+        //       ...(object?.props?.frameStyle || {}),
+        //       overflow,
+        //       borderStyle: 'solid',
+        //       borderColor: 'transparent',
+        //       borderWidth: `${border}px`,
+        //       // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
+        //       transform: '',
+        //     }
+        //   : {
+        //       ...style,
+        //       ...(object?.props?.frameStyle || {}),
+        //       overflow,
+        //       borderStyle: 'solid',
+        //       borderColor,
+        //       // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
+        //       transform: '',
+        //     }
+        {
+          ...style,
+          // ...(object?.props?.frameStyle || {}),
+          overflow,
+          // borderStyle: 'solid',
+          // borderColor: 'transparent',
+          // borderWidth: `${border}px`,
+          // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
+          transform: '',
+        }
       }
     >
       <div className="border" />
@@ -221,21 +233,44 @@ const Image: React.FC<Props> = ({
           WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
           WebkitMaskRepeat: 'no-repeat',
           ...(object?.props?.maskStyle || {}),
+          transform: '',
         }}
       >
-        <img
-          ref={imageRef}
-          alt="object"
-          className="image"
-          data-imageurl={imageUrl}
-          style={{
-            ...imageStyle,
-            filter: _filter,
-            transformOrigin: 'left top',
-          }}
-          src={tempUrl}
-          onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-        />
+        <div
+          className={className + ' absolute top-0 left-0'}
+          style={
+            border
+              ? {
+                  // ...((object?.props?.frameStyle as any) || {}),
+                  transform: style.transform,
+                  overflow,
+                  borderStyle: 'solid',
+                  borderColor: 'transparent',
+                  borderWidth: `${border}px`,
+                }
+              : {
+                  // ...((object?.props?.frameStyle as any) || {}),
+                  transform: style.transform,
+                  overflow,
+                  borderStyle: 'solid',
+                  borderColor,
+                }
+          }
+        >
+          <img
+            ref={imageRef}
+            alt="object"
+            className="image"
+            data-imageurl={imageUrl}
+            style={{
+              ...imageStyle,
+              filter: _filter,
+              transformOrigin: 'left top',
+            }}
+            src={tempUrl}
+            onError={(e) => imageOnError(e, imageUrl, updateUrl)}
+          />
+        </div>
       </div>
       <div
         style={

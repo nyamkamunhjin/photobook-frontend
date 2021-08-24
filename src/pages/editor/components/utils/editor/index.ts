@@ -2483,15 +2483,14 @@ export default class Editor {
   public onFlipObject = (_index: number, objects: PObject[]) => {
     if (_index > -1) {
       const { props } = objects[_index]
-      let { transform = '' } = props.style
 
+      let { transform = '' } = props.style
       const scaleX = transform.match(/scaleX\(([^)]+)\)/)
       if (scaleX && scaleX[0] === 'scaleX(1)') {
         transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(-1)')
       } else {
         transform = transform.replace(/scaleX\(([^)]+)\)/, 'scaleX(1)')
       }
-      console.log('onFlipObject', '_index', _index, 'objects', objects, 'transform', transform)
 
       this.updateObject({
         object: {
@@ -2505,7 +2504,6 @@ export default class Editor {
           },
         },
       })
-
       this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
     }
   }
