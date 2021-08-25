@@ -172,43 +172,15 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  // console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
       className={className}
-      style={
-        // border
-        //   ? {
-        //       ...style,
-        //       ...(object?.props?.frameStyle || {}),
-        //       overflow,
-        //       borderStyle: 'solid',
-        //       borderColor: 'transparent',
-        //       borderWidth: `${border}px`,
-        //       // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-        //       transform: '',
-        //     }
-        //   : {
-        //       ...style,
-        //       ...(object?.props?.frameStyle || {}),
-        //       overflow,
-        //       borderStyle: 'solid',
-        //       borderColor,
-        //       // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-        //       transform: '',
-        //     }
-        {
-          ...style,
-          // ...(object?.props?.frameStyle || {}),
-          overflow,
-          // borderStyle: 'solid',
-          // borderColor: 'transparent',
-          // borderWidth: `${border}px`,
-          // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-          transform: '',
-        }
-      }
+      style={{
+        ...style,
+        overflow,
+        transform: '',
+      }}
     >
       <div className="border" />
       <div className="background" style={placeholderStyle} hidden={!edit} />
@@ -229,6 +201,7 @@ const Image: React.FC<Props> = ({
         style={{
           ...style,
           ...(object?.props?.frameStyle || {}),
+          borderImageSlice: parseFloat(object?.props?.frameStyle?.borderWidth || '0'),
           overflow,
           WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
           WebkitMaskRepeat: 'no-repeat',
@@ -241,7 +214,6 @@ const Image: React.FC<Props> = ({
           style={
             border
               ? {
-                  // ...((object?.props?.frameStyle as any) || {}),
                   transform: style.transform,
                   overflow,
                   borderStyle: 'solid',
@@ -249,7 +221,6 @@ const Image: React.FC<Props> = ({
                   borderWidth: `${border}px`,
                 }
               : {
-                  // ...((object?.props?.frameStyle as any) || {}),
                   transform: style.transform,
                   overflow,
                   borderStyle: 'solid',
