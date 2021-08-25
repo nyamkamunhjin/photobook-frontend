@@ -1935,7 +1935,8 @@ export default class Editor {
             if (count === imgObjects.length) {
               // console.log('#child has been added', imgObjects)
               imgObjects.forEach((o: PObject) => {
-                this.imageFitNoDebounce(objects, o, border)
+                const frameBorder = parseFloat(o.props?.frameStyle?.borderWidth || '0')
+                this.imageFitNoDebounce(objects, o, border || frameBorder)
               })
               observer.disconnect()
             }
