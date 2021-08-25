@@ -17,7 +17,10 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
   const router = useRouter()
 
   return (
-    <WidthLimiter className="flex flex-wrap sm:flex-nowrap bg-white shadow-lg" style={{ minHeight: '25rem' }}>
+    <WidthLimiter
+      className="flex flex-wrap sm:flex-nowrap bg-white shadow-lg animate-fade-in"
+      style={{ minHeight: '25rem' }}
+    >
       {imageLeft && (
         <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="canvas" />
       )}

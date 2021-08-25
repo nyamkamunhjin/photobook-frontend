@@ -13,7 +13,6 @@ import { SiFacebook } from 'react-icons/si'
 import ShippingAddressModal from './shipping-address-modal'
 import VoucherList from './voucher-list'
 import BoughtGiftCards from './bought-gift-cards'
-import ActivatedGiftCards from './activated-gift-cards'
 
 const MyInfo: FC = () => {
   const intl = useIntl()
@@ -79,7 +78,6 @@ const MyInfo: FC = () => {
       <span className="font-semibold text-xl">
         <FormattedMessage id="my_info" />
       </span>
-      <hr className="my-1" />
       <div className="mt-4 flex flex-col gap-2">
         <Form
           className="w-full"
@@ -276,8 +274,6 @@ const MyInfo: FC = () => {
           <FormattedMessage id="social_accounts" />
         </span>
 
-        <hr className="my-1" />
-
         <div className="w-full flex flex-col gap-2 mb-4">
           <span className="text-xl">Google</span>
           {user?.googleId ? (
@@ -321,7 +317,6 @@ const MyInfo: FC = () => {
           <FormattedMessage id="addresses" />
         </span>
 
-        <hr className="my-1" />
         <div className="flex flex-col">
           <CustomButton
             className="btn-accept ml-auto mr-4 my-2"

@@ -21,7 +21,6 @@ const VoucherList: FC<Props> = () => {
       <span className="font-semibold text-xl">
         <FormattedMessage id="vouchers" />
       </span>
-      <hr className="my-1" />
 
       <List
         className="mt-4"
