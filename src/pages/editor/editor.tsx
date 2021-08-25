@@ -621,11 +621,12 @@ const BookEditor: React.FC<Props> = ({
                 {Object.keys(editors.transformers).map((t: string) => {
                   const cursor = `${t}-resize`
                   const resize = editors.transformers[t]
+                  const frameBorder = parseFloat(objects[_index]?.props?.frameStyle?.borderWidth || '0')
                   return (
                     <div
                       key={t}
                       style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects)}
+                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 0, frameBorder)}
                       className={`resize ${resize}`}
                     />
                   )

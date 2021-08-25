@@ -72,6 +72,8 @@ const Image: React.FC<Props> = ({
     let startX = e.clientX / scale
     let startY = e.clientY / scale
 
+    const frameBorder = parseFloat(object?.props?.frameStyle?.borderWidth || '0')
+
     const onMouseMove = (sube: any) => {
       const clientX = sube.clientX / scale
       const clientY = sube.clientY / scale
@@ -92,19 +94,19 @@ const Image: React.FC<Props> = ({
       if (Math.abs(t) < 10) t = 0
       if (Math.abs(l) < 10) l = 0
 
-      if ((border && heightDiff >= 0) || (t <= 0 && t > -border)) {
-        image.style.top = `-${border}px`
+      if (((border || frameBorder) && heightDiff >= 0) || (t <= 0 && t > -(border || frameBorder))) {
+        image.style.top = `-${border || frameBorder}px`
       } else if (heightDiff >= 0) {
         image.style.top = '0px'
-      } else if (t <= -border && Math.abs(t) <= Math.abs(heightDiff - border)) {
+      } else if (t <= -border && Math.abs(t) <= Math.abs(heightDiff - (border || frameBorder))) {
         image.style.top = t + 'px'
       }
 
-      if ((border && widthDiff >= 0) || (l <= 0 && l > -border)) {
-        image.style.left = `-${border}px`
+      if (((border || frameBorder) && widthDiff >= 0) || (l <= 0 && l > -(border || frameBorder))) {
+        image.style.left = `-${border || frameBorder}px`
       } else if (widthDiff >= 0) {
         image.style.left = '0px'
-      } else if (l <= -border && Math.abs(l) <= Math.abs(widthDiff - border)) {
+      } else if (l <= -(border || frameBorder) && Math.abs(l) <= Math.abs(widthDiff - (border || frameBorder))) {
         image.style.left = l + 'px'
       }
 
@@ -172,43 +174,15 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  // console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
       className={className}
-      style={
-        // border
-        //   ? {
-        //       ...style,
-        //       ...(object?.props?.frameStyle || {}),
-        //       overflow,
-        //       borderStyle: 'solid',
-        //       borderColor: 'transparent',
-        //       borderWidth: `${border}px`,
-        //       // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-        //       transform: '',
-        //     }
-        //   : {
-        //       ...style,
-        //       ...(object?.props?.frameStyle || {}),
-        //       overflow,
-        //       borderStyle: 'solid',
-        //       borderColor,
-        //       // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-        //       transform: '',
-        //     }
-        {
-          ...style,
-          // ...(object?.props?.frameStyle || {}),
-          overflow,
-          // borderStyle: 'solid',
-          // borderColor: 'transparent',
-          // borderWidth: `${border}px`,
-          // transform: mustHaveImageCenter || isMontage ? '' : style.transform,
-          transform: '',
-        }
-      }
+      style={{
+        ...style,
+        overflow,
+        transform: '',
+      }}
     >
       <div className="border" />
       <div className="background" style={placeholderStyle} hidden={!edit} />
@@ -229,6 +203,7 @@ const Image: React.FC<Props> = ({
         style={{
           ...style,
           ...(object?.props?.frameStyle || {}),
+          borderImageSlice: parseFloat(object?.props?.frameStyle?.borderWidth || '0'),
           overflow,
           WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
           WebkitMaskRepeat: 'no-repeat',
@@ -241,7 +216,6 @@ const Image: React.FC<Props> = ({
           style={
             border
               ? {
-                  // ...((object?.props?.frameStyle as any) || {}),
                   transform: style.transform,
                   overflow,
                   borderStyle: 'solid',
@@ -249,7 +223,6 @@ const Image: React.FC<Props> = ({
                   borderWidth: `${border}px`,
                 }
               : {
-                  // ...((object?.props?.frameStyle as any) || {}),
                   transform: style.transform,
                   overflow,
                   borderStyle: 'solid',
