@@ -25,7 +25,7 @@ module.exports = {
           '@radio-disabled-button-checked-bg': 'tranparent',
           '@font-size-base': '11px',
           '@font-size-sm': '9px',
-          '@border-radius': '0.5rem',
+          '@border-radius-base': '0.5rem',
         },
       },
     },

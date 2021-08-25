@@ -41,7 +41,7 @@ const Profile: FC = () => {
         <div className="flex flex-col gap-2 p-2 items-center sm:flex-row sm:items-start">
           {/* side menu */}
           <div
-            className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg max-w-xs"
+            className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg max-w-xs sticky top-5 shadow"
             style={{ minWidth: '15rem' }}
           >
             <div className="w-40 h-40">
@@ -69,7 +69,7 @@ const Profile: FC = () => {
               ))}
             </div>
           </div>
-          <div className="w-full px-4 bg-white rounded-lg">{menuSwitch(tabState)}</div>
+          <div className="w-full px-4 bg-white rounded-lg shadow">{menuSwitch(tabState)}</div>
         </div>
       ) : (
         <Loading />

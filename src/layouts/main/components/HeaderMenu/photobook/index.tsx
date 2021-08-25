@@ -16,7 +16,10 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
   const router = useRouter()
 
   return (
-    <WidthLimiter className="flex flex-wrap sm:flex-nowrap bg-white  shadow" style={{ minHeight: '25rem' }}>
+    <WidthLimiter
+      className="flex flex-wrap sm:flex-nowrap bg-white shadow animate-fade-in"
+      style={{ minHeight: '25rem' }}
+    >
       {imageLeft && (
         <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="photobook" />
       )}

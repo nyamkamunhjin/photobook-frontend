@@ -25,7 +25,6 @@ const BoughtGiftCards: FC<Props> = () => {
       <span className="font-semibold text-xl">
         <FormattedMessage id="bought_gift_card" />
       </span>
-      <hr className="my-1" />
 
       <List
         className="mt-4"

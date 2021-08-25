@@ -19,10 +19,10 @@ const HeaderMenu: FC = () => {
   const photobookAd = useRequest(() => listHeaderAd('photobook'))
 
   return (
-    <nav className="flex flex-wrap gap-4 justify-center items-center pb-4">
+    <nav className="flex flex-wrap gap-4 justify-center items-center">
       <button
         type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
         onClick={() => router.replace('/')}
       >
         <FormattedMessage id="home" />
@@ -45,7 +45,7 @@ const HeaderMenu: FC = () => {
       >
         <button
           type="button"
-          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
           key="home"
         >
           <FormattedMessage id="photobook" />
@@ -70,7 +70,7 @@ const HeaderMenu: FC = () => {
       >
         <button
           type="button"
-          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
           key="home"
         >
           <FormattedMessage id="canvas" />
@@ -92,7 +92,7 @@ const HeaderMenu: FC = () => {
       >
         <button
           type="button"
-          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
           key="home"
         >
           <FormattedMessage id="photoprint" />
@@ -100,14 +100,14 @@ const HeaderMenu: FC = () => {
       </Tippy>
       <button
         type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
         onClick={() => router.replace('/gift-card')}
       >
         <FormattedMessage id="gift_card" />
       </button>
       <button
         type="button"
-        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform"
+        className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
         onClick={() => router.replace('/photo-trade')}
       >
         <FormattedMessage id="photo_trade" />
