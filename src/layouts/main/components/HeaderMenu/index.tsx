@@ -32,6 +32,7 @@ const HeaderMenu: FC = () => {
         interactive
         placement="bottom"
         maxWidth="100%"
+        offset={[0, 0]}
         render={() => (
           <div className="w-screen mx-auto" style={{ minWidth: '20rem' }}>
             <SubmenuPhotobook
@@ -56,6 +57,7 @@ const HeaderMenu: FC = () => {
         interactive
         placement="bottom"
         maxWidth="100%"
+        offset={[0, 0]}
         render={() => (
           <div className="w-screen mx-auto" style={{ minWidth: '20rem' }}>
             {canvasAd.data && (
@@ -80,6 +82,7 @@ const HeaderMenu: FC = () => {
         interactive
         placement="bottom"
         maxWidth="100%"
+        offset={[0, 0]}
         render={() => (
           <div className="w-screen mx-auto" style={{ minWidth: '20rem' }}>
             <SubmenuPhotoprint
