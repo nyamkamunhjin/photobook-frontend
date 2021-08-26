@@ -108,7 +108,7 @@ const MyCart: React.FC = () => {
   }, [shoppingCart.data, deliveryChecked, selectedAddress])
 
   return (
-    <div className="p-2">
+    <div className="p-2 h-full">
       <span className="font-semibold text-xl">
         <FormattedMessage id="my_cart" />
       </span>
@@ -195,12 +195,8 @@ const MyCart: React.FC = () => {
                 <span className="text-gray-500">{item.project.bindingType?.name}</span>
                 <span className="text-gray-500">{item.project.coverType?.name}</span>
                 <span className="text-gray-500">{item.project.frameMaterial?.name}</span>
-                {/* <span className="text-gray-500">Photo printing</span>
-                <span className="text-gray-500">20x30 large</span>
-                <span className="text-gray-500">Premium Layflat Binding</span>
-                <span className="text-gray-500">Deluxe Hardcover</span>
-                <span className="text-gray-500">Glass Frame</span> */}
-                <div className="border-t border-gray-500 flex flex-col">
+
+                <div className="border-t border-gray-300 flex flex-col">
                   {item.appliedDiscountTypes.length > 0 && (
                     <span className="text-gray-500">
                       <FormattedMessage id="applied_discounts" />:{' '}
@@ -228,7 +224,7 @@ const MyCart: React.FC = () => {
       </div>
       {shoppingCart.data?.cartItems.length > 0 && (
         <div className="flex flex-col lg:flex-row justify-between gap-4 mt-8">
-          <div className="flex flex-col gap-2 w-full justify-evenly">
+          <div className="flex flex-col gap-10 w-full">
             <Checkbox checked={deliveryChecked} onChange={(e) => setDeliveryChecked(e.target.checked)}>
               <FormattedMessage id="delivery" />
             </Checkbox>

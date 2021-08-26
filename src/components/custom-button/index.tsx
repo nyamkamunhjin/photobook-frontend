@@ -11,7 +11,7 @@ interface Props extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLB
 const CustomButton: FC<Props> = ({ loading, type = 'button', icon, iconPosition = 'left', ...props }) => {
   return (
     <button {...props} className={`${props.className} flex justify-center items-center gap-2`} type={type}>
-      {loading && <LoadingOutlined className="text-base transform transition-all duration-150" />}
+      {loading && <LoadingOutlined className="text-base font-bold transform transition-all duration-150" />}
       <div
         className={`flex ${
           iconPosition === 'left' ? '' : 'flex-row-reverse'

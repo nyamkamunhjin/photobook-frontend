@@ -7,7 +7,9 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-50 pt-4" style={{ minWidth: '20rem' }}>
       <WidthLimiter className="flex flex-col gap-4 sm:gap-0 sm:flex-row sm:justify-evenly items-center my-16">
-        <div className="text-4xl font-extrabold">LOGO</div>
+        <div className="">
+          <img className="h-12" src="/exa-logo.webp" alt="Exa Logo" />
+        </div>
         <div className="flex flex-col items-center">
           <p className="font-semibold">Байршил</p>
           <p>ХУД,11-р хороо, Кингтовэр, 118-р байр, B1-101 тоот </p>

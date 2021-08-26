@@ -83,7 +83,6 @@ const PhotoTrade: React.FC = () => {
               <span className="text-base text-gray-500">
                 <FormattedMessage id="you_have_no_selling_photos" />
               </span>
-              {/* <UploadPhoto /> */}
             </div>
           )}
         >

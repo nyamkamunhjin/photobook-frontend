@@ -36,13 +36,13 @@ const Profile: FC = () => {
   }
 
   return (
-    <WidthLimiter className="min-h-screen bg-gray-100 w-full">
+    <WidthLimiter className="min-h-screen bg-gray-100">
       {user ? (
-        <div className="flex flex-col gap-2 p-2 items-center sm:flex-row sm:items-start">
+        <div className="flex flex-col min-h-screen gap-2 p-2 items-center sm:flex-row sm:items-start">
           {/* side menu */}
           <div
-            className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg max-w-xs sticky top-5 shadow"
-            style={{ minWidth: '15rem' }}
+            className="flex flex-col items-center gap-2 w-full sm:w-auto p-4 sm:h-full bg-white rounded-lg sm:sticky sm:top-2 shadow"
+            style={{ minWidth: '16rem' }}
           >
             <div className="w-40 h-40">
               {user.avatarUrl ? (
@@ -69,7 +69,8 @@ const Profile: FC = () => {
               ))}
             </div>
           </div>
-          <div className="w-full px-4 bg-white rounded-lg shadow">{menuSwitch(tabState)}</div>
+          {/* content */}
+          <div className="w-full min-h-screen px-4 bg-white rounded-lg shadow">{menuSwitch(tabState)}</div>
         </div>
       ) : (
         <Loading />
