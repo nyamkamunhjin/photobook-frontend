@@ -205,44 +205,53 @@ const Image: React.FC<Props> = ({
           ...(object?.props?.frameStyle || {}),
           borderImageSlice: parseFloat(object?.props?.frameStyle?.borderWidth || '0'),
           overflow,
-          WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
-          WebkitMaskRepeat: 'no-repeat',
-          ...(object?.props?.maskStyle || {}),
           transform: '',
         }}
       >
         <div
           className={className + ' absolute top-0 left-0'}
-          style={
-            border
-              ? {
-                  transform: style.transform,
-                  overflow,
-                  borderStyle: 'solid',
-                  borderColor: 'transparent',
-                  borderWidth: `${border}px`,
-                }
-              : {
-                  transform: style.transform,
-                  overflow,
-                  borderStyle: 'solid',
-                  borderColor,
-                }
-          }
+          style={{
+            ...style,
+            overflow,
+            WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
+            WebkitMaskRepeat: 'no-repeat',
+            ...(object?.props?.maskStyle || {}),
+            transform: '',
+          }}
         >
-          <img
-            ref={imageRef}
-            alt="object"
-            className="image"
-            data-imageurl={imageUrl}
-            style={{
-              ...imageStyle,
-              filter: _filter,
-              transformOrigin: 'left top',
-            }}
-            src={tempUrl}
-            onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-          />
+          <div
+            className={className + ' absolute top-0 left-0'}
+            style={
+              border
+                ? {
+                    transform: style.transform,
+                    overflow,
+                    borderStyle: 'solid',
+                    borderColor: 'transparent',
+                    borderWidth: `${border}px`,
+                  }
+                : {
+                    transform: style.transform,
+                    overflow,
+                    borderStyle: 'solid',
+                    borderColor,
+                  }
+            }
+          >
+            <img
+              ref={imageRef}
+              alt="object"
+              className="image"
+              data-imageurl={imageUrl}
+              style={{
+                ...imageStyle,
+                filter: _filter,
+                transformOrigin: 'left top',
+              }}
+              src={tempUrl}
+              onError={(e) => imageOnError(e, imageUrl, updateUrl)}
+            />
+          </div>
         </div>
       </div>
       <div
