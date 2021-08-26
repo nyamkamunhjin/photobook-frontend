@@ -24,6 +24,9 @@ interface Props {
   updateObject: (props: { object: PObject }) => void
   updateHistory: (historyType: string, props: any) => void
   removeImageFromObject?: () => void
+  removeFrameFromObject?: () => void
+  removeFrameMaskFromObject?: () => void
+  removeMaskFromObject?: () => void
   rotateLeftObject?: () => void
   rotateRightObject?: () => void
   flipObject?: () => void
@@ -36,6 +39,9 @@ interface Props {
 }
 const Toolbar: React.FC<Props> = ({
   removeImageFromObject,
+  removeFrameFromObject,
+  removeFrameMaskFromObject,
+  removeMaskFromObject,
   rotateRightObject,
   rotateLeftObject,
   updateHistory,
@@ -75,6 +81,9 @@ const Toolbar: React.FC<Props> = ({
           updateObject={updateObject}
           updateHistory={updateHistory}
           removeImageFromObject={removeImageFromObject}
+          removeFrameFromObject={removeFrameFromObject}
+          removeFrameMaskFromObject={removeFrameMaskFromObject}
+          removeMaskFromObject={removeMaskFromObject}
           imageFit={imageFit}
         />
       )}

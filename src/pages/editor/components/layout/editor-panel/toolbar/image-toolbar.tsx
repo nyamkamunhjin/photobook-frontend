@@ -12,6 +12,7 @@ import { ColorResult, SketchPicker } from 'react-color'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
 import { colorPresets, filters } from 'configs'
+import { MinusCircleFilled, MinusCircleOutlined } from '@ant-design/icons'
 
 interface Props {
   index: number
@@ -22,6 +23,9 @@ interface Props {
   object: HTMLDivElement
   objects: PObject[]
   removeImageFromObject?: () => void
+  removeFrameFromObject?: () => void
+  removeFrameMaskFromObject?: () => void
+  removeMaskFromObject?: () => void
   updateHistory: (type: string, object: unknown) => void
   updateObject: (value: { object: PObject }) => void
   imageFit?: () => void
@@ -32,6 +36,9 @@ const ImageToolbar = ({
   object,
   objects,
   removeImageFromObject,
+  removeFrameFromObject,
+  removeFrameMaskFromObject,
+  removeMaskFromObject,
   updateHistory,
   updateObject,
   zoom: _zoom,
@@ -274,6 +281,27 @@ const ImageToolbar = ({
         <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteImage" />}>
           <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeImageFromObject}>
             <AiFillMinusSquare />
+          </span>
+        </Tooltip>
+      )}
+      {removeFrameFromObject && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteFrame" />}>
+          <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeFrameFromObject}>
+            <MinusCircleOutlined className="text-base" />
+          </span>
+        </Tooltip>
+      )}
+      {removeMaskFromObject && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteMask" />}>
+          <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeMaskFromObject}>
+            <MinusCircleFilled className="text-base" />
+          </span>
+        </Tooltip>
+      )}
+      {removeFrameMaskFromObject && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteFrameMask" />}>
+          <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeFrameMaskFromObject}>
+            <MinusCircleFilled className="text-base" />
           </span>
         </Tooltip>
       )}

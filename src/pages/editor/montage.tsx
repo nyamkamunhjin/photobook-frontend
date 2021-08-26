@@ -493,6 +493,7 @@ const BookEditor: React.FC<Props> = ({
             updateHistory={updateHistory}
             moveResizers={editors.moveResizers}
             removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+            removeFrameMaskFromObject={() => editors.onRemoveFrameMaskFromObject(_index, objects, _objectType)}
             rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
             rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
             flipObject={() => editors.onFlipObject(_index, objects)}
