@@ -1094,11 +1094,41 @@ export default class Editor {
     this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
   }
   public onRemoveObject = (containers: Container[], objects: PObject[], _index: number) => {
-    if (_index > -1) {
-      this.removeObject({
-        container: containers[_index],
-        object: objects[_index],
+    if (this._groupObjects) {
+      const groupObjects = Object.values(this._groupObjects)
+      groupObjects.forEach((obj: any) => {
+        _index = objects.findIndex((o: PObject) => o.id === obj.id)
+        this.removeObject({
+          container: containers[_index],
+          object: objects[_index],
+        })
+        objects.splice(_index, 1)
       })
+      this._groupObjects = null
+      this.objects = objects
+      this.deSelectObject()
+    } else if (_index > -1) {
+      /* montage image, text group */
+      if (objects[_index].id.startsWith('image-montage-') || objects[_index].id.startsWith('text-montage-')) {
+        const eachObjectsId = objects[_index].id.startsWith('image-montage-')
+          ? [objects[_index].id, objects[_index].id.replace('image-montage-', 'text-montage-')]
+          : [objects[_index].id, objects[_index].id.replace('text-montage-', 'image-montage-')]
+        if (eachObjectsId.length) {
+          eachObjectsId.forEach((id: string) => {
+            _index = objects.findIndex((o: PObject) => o.id === id)
+            this.removeObject({
+              container: containers[_index],
+              object: objects[_index],
+            })
+            objects.splice(_index, 1)
+          })
+        }
+      } else {
+        this.removeObject({
+          container: containers[_index],
+          object: objects[_index],
+        })
+      }
       this.deSelectObject()
     }
   }
@@ -2966,6 +2996,38 @@ export default class Editor {
       const _h = parseFloat(_height)
       // eslint-disable-next-line prettier/prettier
       this.collisionDetecter(object, objectType, { t: _t, l: _l, w: _w, h: _h }, gap, true)
+
+      /* montage image, text group */
+      if (object.id.startsWith('image-montage-')) {
+        const eachObject = document.getElementById(object.id.replace('image-montage-', 'text-montage-'))
+        if (eachObject) {
+          const objectRect = getComputedStyle(object)
+
+          const pxParser = (text: string) => {
+            return parseFloat(text.replace('px', ''))
+          }
+
+          eachObject.style.top = montagePortraitGap + pxParser(objectRect.top) + pxParser(objectRect.height) + 'px'
+          eachObject.style.left =
+            pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
+        }
+      }
+
+      if (object.id.startsWith('text-montage-')) {
+        const eachObject = document.getElementById(object.id.replace('text-montage-', 'image-montage-'))
+        if (eachObject) {
+          const objectRect = getComputedStyle(object)
+
+          const pxParser = (text: string) => {
+            return parseFloat(text.replace('px', ''))
+          }
+
+          eachObject.style.top =
+            pxParser(objectRect.top) - montagePortraitGap - pxParser(eachObject.style.height) + 'px'
+          eachObject.style.left =
+            pxParser(objectRect.left) + pxParser(objectRect.width) / 2 - pxParser(eachObject.style.width) / 2 + 'px'
+        }
+      }
     }
 
     const onMouseUp = () => {
