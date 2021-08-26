@@ -904,6 +904,10 @@ export default class Editor {
       },
     })
     this.setObjectType('text')
+    // Deselect GroupObject
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
   }
   public updateTextObject = (objects: PObject[], _textObjectIndex: number) => {
     const textContainer: any = this._object.firstChild
@@ -1208,6 +1212,12 @@ export default class Editor {
     }
     if (this._isTextEditing && e.target.nodeName === 'P') return
     if (e.target.classList.contains('image-center')) return
+
+    // Ehleed group object bwal deselect hiine
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
+
     const object = document.getElementById(o.id) as HTMLDivElement
     this.magnetX = document.getElementById('magnetX')
     this.magnetY = document.getElementById('magnetY')
@@ -1755,6 +1765,10 @@ export default class Editor {
     })
 
     this.setObjectType('shape')
+    // Deselect GroupObject
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
   }
   public createMontagePortrait = (e: any, objects: PObject[]) => {
     this.hideToolbar()
@@ -1829,6 +1843,10 @@ export default class Editor {
     this.setObjectType('text')
 
     this.setObjectType('montage-portrait') // ene yag yu hiigeed bnaa
+    // Deselect GroupObject
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
   }
 
   public createSquare = (objects: PObject[]) => {
@@ -1858,6 +1876,10 @@ export default class Editor {
     })
 
     this.setObjectType('shape')
+    // Deselect GroupObject
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
   }
   public createImage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
@@ -1910,6 +1932,10 @@ export default class Editor {
       })
     }
     this.setObjectType('image')
+    // Deselect GroupObject
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
   }
   public createImages = (e: any, objects: PObject[], border = 0) => {
     this.hideToolbar()
@@ -2130,6 +2156,10 @@ export default class Editor {
     } else if ('images'.includes(type)) {
       this.createImages(e, objects, border)
     }
+    // Deselect GroupObject
+    this._groupObjects = null
+    this.objects = objects
+    this.deSelectObject()
   }
 
   public createImagesMontage = (e: any, objects: PObject[]) => {
