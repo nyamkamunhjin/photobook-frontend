@@ -1093,6 +1093,34 @@ export default class Editor {
     this.updateObject({ object: newObject })
     this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
   }
+  public onRemoveFrameFromObject = (_index: number, objects: PObject[], _objectType?: ObjectType) => {
+    if (_objectType !== 'image' || _index === -1) return
+
+    if ('frameImage' in objects[_index].props) delete objects[_index].props.frameImage
+    if ('frameStyle' in objects[_index].props) delete objects[_index].props.frameStyle
+
+    this.updateObject({ object: objects[_index] })
+    this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
+  }
+  public onRemoveMaskFromObject = (_index: number, objects: PObject[], _objectType?: ObjectType) => {
+    if (_objectType !== 'image' || _index === -1) return
+
+    if ('maskImage' in objects[_index].props) delete objects[_index].props.maskImage
+    if ('maskStyle' in objects[_index].props) delete objects[_index].props.maskStyle
+
+    this.updateObject({ object: objects[_index] })
+    this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
+  }
+  public onRemoveFrameMaskFromObject = (_index: number, objects: PObject[], _objectType?: ObjectType) => {
+    if (_objectType !== 'image' || _index === -1) return
+
+    if ('frameMontage' in objects[_index].props) delete objects[_index].props.frameMontage
+    if ('maskImage' in objects[_index].props) delete objects[_index].props.maskImage
+    if ('maskStyle' in objects[_index].props) delete objects[_index].props.maskStyle
+
+    this.updateObject({ object: objects[_index] })
+    this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
+  }
   public onRemoveObject = (containers: Container[], objects: PObject[], _index: number) => {
     if (this._groupObjects) {
       const groupObjects = Object.values(this._groupObjects)
