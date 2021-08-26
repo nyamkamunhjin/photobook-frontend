@@ -33,15 +33,18 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const actualPrice = price + discountedPrice + (giftCardUpdate?.usedAmount || 0)
 
   return (
-    <div className="flex flex-col gap-2 bg-gray- max-w-xs w-full p-4 rounded bg-gray-50 border border-solid">
-      <div className="flex justify-between mb-2">
+    <div
+      className="flex flex-col gap-2 bg-gray- max-w-xs w-full p-4 rounded bg-gray-50 border border-solid "
+      style={{ minHeight: '24rem' }}
+    >
+      <div className="flex justify-between">
         <span className="text-sm font-bold text-gray-700">
           <FormattedMessage id="order_summary" />
         </span>
       </div>
-      <hr className="border-t border-solid border-gray-500" />
-      {loading && <Loading fill={false} />}
-      {!loading && (
+      <hr className="border-t border-solid border-gray-300" />
+      {(loading || !actualPrice) && <Loading fill={false} />}
+      {!(loading || !actualPrice) && (
         <>
           <div className="flex justify-between">
             <span className="text-sm font-light text-gray-700">
@@ -76,7 +79,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             </>
           )}
 
-          <hr className="border-t border-solid border-gray-500" />
+          <hr className="border-t border-solid border-gray-300" />
           <div className="flex justify-between">
             <span className="text-sm font-light text-gray-700">
               <FormattedMessage id="shipping_fee" />
@@ -98,7 +101,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               {daysToDeliver} <FormattedMessage id="day" />
             </span>
           </div>
-          <hr className="border-t border-solid border-gray-500" />
+          <hr className="border-t border-solid border-gray-300" />
 
           <div className="flex justify-between">
             <span className="text-sm font-light text-gray-700">
@@ -106,11 +109,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             </span>
             <span className="font-light">{currencyFormat(totalPrice)} ₮</span>
           </div>
-          <CustomButton className="mt-4 btn-accept" onClick={() => onCreateOrder(shippingFee !== 0)}>
-            <FormattedMessage id="order_now" />
-          </CustomButton>
         </>
       )}
+      <CustomButton
+        className={`mt-auto ${!(loading || !actualPrice) ? 'btn-accept' : 'btn-disabled'}`}
+        onClick={() => onCreateOrder(shippingFee !== 0)}
+      >
+        <FormattedMessage id="order_now" />
+      </CustomButton>
     </div>
   )
 }

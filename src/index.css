@@ -29,6 +29,10 @@
   @apply btn bg-yellow-500 hover:bg-yellow-600 text-white font-normal hover:shadow-lg;
 }
 
+.btn-disabled {
+  @apply btn bg-gray-400 text-gray-800 font-normal hover:shadow-lg;
+}
+
 .component-hover {
   @apply shadow-lg transform hover:-translate-y-0.5 hover:shadow-2xl transition-all ease-in;
 }

@@ -10,7 +10,7 @@ const OrderStatus: FC<Props> = ({ status }) => {
       case 'unconfirmed':
         return 'bg-gray-500'
       case 'confirmed':
-        return 'bg-lightblue-500'
+        return 'bg-indigo-500'
       case 'created':
         return 'bg-blue-500'
       case 'checked':

@@ -29,8 +29,8 @@ const Topbar: React.FC = () => {
     <header className="shadow-md z-10">
       <div className="px-4 mx-auto w-full max-w-7xl">
         <div className="flex  items-center p-2">
-          <Link className="text-2xl font-bold text-black" to="/">
-            LOGO
+          <Link className="" to="/">
+            <img className="h-10" src="/exa-logo.webp" alt="Exa Logo" />
           </Link>
           <div className="ml-auto space-x-2">
             {!user && (
