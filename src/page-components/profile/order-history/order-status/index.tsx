@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 interface Props {
-  status: 'unconfirmed' | 'confirmed' | 'created' | 'checked' | 'delivered' | 'expired' | 'cancelled'
+  status: 'unconfirmed' | 'confirmed' | 'created' | 'checked' | 'delivered' | 'expired'
 }
 const OrderStatus: FC<Props> = ({ status }) => {
   const getColor = (value: typeof status) => {
@@ -18,8 +18,6 @@ const OrderStatus: FC<Props> = ({ status }) => {
       case 'delivered':
         return 'bg-green-500'
       case 'expired':
-        return 'bg-red-500'
-      case 'cancelled':
         return 'bg-red-500'
       default:
         return 'bg-black'
