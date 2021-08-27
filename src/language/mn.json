@@ -5,6 +5,7 @@
   "login": "Нэвтрэх",
   "success!": "Амжилттай",
   "loading!": "Уншиж байна",
+  "failed!": "Алдаа гарлаа",
   "click_to_load_more": "Цааш нь...",
   "close": "Хаах",
   "save": "Хадгалах",
@@ -339,5 +340,8 @@
   "no_photos_found": "Зураг олдсонгүй",
   "filters": "Филтер",
   "color_presets": "Өнгөний сонголтууд",
-  "notices": "Мэдэгдэл"
+  "notices": "Мэдэгдэл",
+  "materials are out of stock": "Материалын нөөц хүрэхгүй байна",
+  "materials_out_of_stock_desc": "Одоогийн материалын нөөц хүрэхгүй байна",
+  "-": "-"
 }

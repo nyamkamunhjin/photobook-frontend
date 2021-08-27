@@ -28,30 +28,26 @@ interface BaseRequestProps {
 }
 
 const catchError = (err: any, isMe: boolean) => {
-  // const isLogin = window.location.pathname.startsWith('/auth/signin')
   if (isMe) {
-    // localStorage.removeItem('token')
     localStorage.removeItem('refresh')
     notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
-    // if (!isLogin) window.location.replace('/auth/signin')
   } else if (err.response) {
     if (err.response.status === 401) {
-      // localStorage.removeItem('token')
       localStorage.removeItem('refresh')
-      // notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
-      // if (!isLogin) window.location.replace('/auth/signin')
     } else if (err.response.status === 403) {
       notification.warn({ message: 'Танд хандах эрх байхгүй байна.' })
     } else if (err.response.status === 404) {
       notification.warn({ message: 'Олдсонгүй.' })
-    } else {
-      notification.error({ message: err.response.data.message })
     }
+    // else {
+    //   notification.error({ message: err.response.data.message })
+    // }
   } else if (err.message === 'Network Error') {
     notification.info({ message: 'Алдаа гарлаа. Дараа дахин оролдоно уу' })
-  } else {
-    notification.error({ message: err.message })
   }
+  // else {
+  //   notification.error({ message: err.message })
+  // }
 }
 
 export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
@@ -73,14 +69,15 @@ export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
   try {
     const responseInstance = await axios(config)
     const response = responseInstance.data as BaseResponse
+    // console.log({ response })
     if (!response.status) {
       // catchError(new Error(response.message), isMe)
-      return null
+      throw new Error(response.message)
     }
     return response || false
   } catch (err) {
     catchError(err, isMe)
-    return null
+    throw err
   }
 }
 // #endregion

@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
-import { List, Popconfirm, InputNumber, Checkbox, notification } from 'antd'
-import React, { useEffect, useMemo, useState } from 'react'
+import { List, Popconfirm, InputNumber, Checkbox, notification, Alert } from 'antd'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import {
   createOrder,
@@ -33,8 +33,12 @@ const MyCart: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
   const [giftCard, setGiftCard] = useState<GiftCard>()
+  const [errorAlert, setErrorAlert] = useState<{ message: string; description: string }>()
   const updateCartItemDebounce = useMemo(() => debounce(updateCartItem, 500), [])
   const paymentTypes = useRequest<PaymentType>(listPaymentTypes)
+
+  const scrollRef = useRef<any>(null)
+  const executeScroll = () => scrollRef.current.scrollIntoView()
 
   const user = useSelector((state: RootInterface) => state.auth.user)
   const shippingAddresses = useRequest(() =>
@@ -52,11 +56,6 @@ const MyCart: React.FC = () => {
       )
     },
   })
-  // const giftCards = useRequest(listActivatedGiftCard, {
-  //   onSuccess: (res) => {
-  //     giftCards.mutate(res.filter((each: GiftCard) => each.remainingAmount > 0))
-  //   },
-  // })
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
@@ -85,14 +84,27 @@ const MyCart: React.FC = () => {
         order.isShipping = true
       }
 
-      createOrder(order).then((res) => {
-        if (res) {
-          notification.success({
-            message: intl.formatMessage({ id: 'success!' }),
-          })
-          history.push('/profile?tab=order_history')
-        }
-      })
+      createOrder(order)
+        .then((res) => {
+          if (res) {
+            notification.success({
+              message: intl.formatMessage({ id: 'success!' }),
+            })
+            history.push('/profile?tab=order_history')
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.data.message)
+          if (err?.response?.data?.message) {
+            const description =
+              err?.response?.data?.message === 'materials are out of stock' ? 'materials_out_of_stock_desc' : '-'
+            setErrorAlert({
+              message: intl.formatMessage({ id: err?.response?.data?.message }),
+              description: intl.formatMessage({ id: description }),
+            })
+            executeScroll()
+          }
+        })
     }
   }
 
@@ -112,11 +124,16 @@ const MyCart: React.FC = () => {
   }, [shoppingCart.data, deliveryChecked, selectedAddress])
 
   return (
-    <div className="p-2 h-full">
+    <div className="p-2 h-full flex flex-col gap-2">
       <span className="font-semibold text-xl">
         <FormattedMessage id="my_cart" />
       </span>
       <div>
+        {errorAlert && (
+          <div ref={scrollRef}>
+            <Alert message={errorAlert.message} description={errorAlert.description} showIcon type="error" />
+          </div>
+        )}
         <List
           className="mt-4"
           itemLayout="horizontal"

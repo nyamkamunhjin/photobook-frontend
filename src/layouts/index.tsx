@@ -24,7 +24,7 @@ const Layout: React.FC<RouteComponentProps> = ({ children }) => {
     if (isPublic) return <Container>{children}</Container>
     if (loading && !isAuthenticated) {
       return (
-        <div className="w-full h-full">
+        <div className="w-full h-40 grid place-content-center">
           <Loading />
         </div>
       )
