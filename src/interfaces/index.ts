@@ -572,7 +572,24 @@ export interface PaperMaterialPrice {
   name: string
   price: number
 }
-
+export type Order = {
+  amount: number
+  createdAt: Date
+  deliveryDays: number
+  giftCardDiscountAmount: number
+  giftCardId?: number
+  id: number
+  orderId: string
+  orderItems: OrderItem[]
+  paidAmount: number
+  paymentAmount: number
+  shippingAddressId: number
+  shippingFee: number
+  status: string
+  updatedAt: Date
+  userId: number
+  vatAmount: number
+}
 export type OrderItem = {
   id: number
   projectId: number

@@ -7,10 +7,10 @@ import { FormattedMessage } from 'react-intl'
 import styles from './styles.module.scss'
 
 const banks = {
-  social: require('assets/bank/social.png'),
-  qpay: require('assets/bank/qpay.png'),
-  organization: require('assets/bank/organization.svg'),
-  personal: require('assets/bank/personal.svg'),
+  social: '/bank/social.png',
+  qpay: '/bank/qpay.png',
+  organization: '/bank/organization.svg',
+  personal: '/bank/personal.svg',
 }
 
 interface Props {
