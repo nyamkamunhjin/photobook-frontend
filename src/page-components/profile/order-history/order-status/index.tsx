@@ -25,7 +25,7 @@ const OrderStatus: FC<Props> = ({ status }) => {
   }
 
   return (
-    <span className={`text-xs font-semibold py-1 px-3 rounded-sm ${getColor(status)} text-white`}>
+    <span className={`text-xs font-semibold py-1 px-3 rounded ${getColor(status)} text-white whitespace-nowrap`}>
       <FormattedMessage id={status} />
     </span>
   )

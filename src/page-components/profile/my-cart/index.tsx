@@ -83,11 +83,13 @@ const MyCart: React.FC = () => {
         order.isShipping = true
       }
 
-      createOrder(order).then(() => {
-        notification.success({
-          message: intl.formatMessage({ id: 'success!' }),
-        })
-        history.push('/profile?tab=order_history')
+      createOrder(order).then((res) => {
+        if (res) {
+          notification.success({
+            message: intl.formatMessage({ id: 'success!' }),
+          })
+          history.push('/profile?tab=order_history')
+        }
       })
     }
   }

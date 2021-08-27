@@ -1,5 +1,5 @@
 import { useAntdTable } from 'ahooks'
-import { List, Table } from 'antd'
+import { List, Table, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/es/table/interface'
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -15,6 +15,14 @@ const OrderHistory: React.FC = () => {
 
   const columnsOrder: ColumnsType<any> = [
     {
+      title: () => <FormattedMessage id="order_id" />,
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center',
+      width: 50,
+      render: (text) => <span>{text}</span>,
+    },
+    {
       title: () => <FormattedMessage id="date" />,
       dataIndex: 'createdAt',
       key: 'createdAt',
@@ -22,18 +30,11 @@ const OrderHistory: React.FC = () => {
       render: (text) => <span>{new Date(text).toLocaleDateString()}</span>,
     },
     {
-      title: () => <FormattedMessage id="order_id" />,
-      dataIndex: 'id',
-      key: 'id',
-      align: 'center',
-      render: (text) => <span>{text}</span>,
-    },
-    {
       title: () => <FormattedMessage id="price" />,
       dataIndex: 'amount',
       key: 'amount',
       align: 'center',
-      render: (text) => <span>{text} ₮</span>,
+      render: (value) => <span>{currencyFormat(value)} ₮</span>,
     },
     {
       title: () => <FormattedMessage id="payment_amount_vat_included" />,
@@ -47,7 +48,14 @@ const OrderHistory: React.FC = () => {
       dataIndex: 'address',
       key: 'address',
       align: 'center',
-      render: (value) => value || <FormattedMessage id="no" />,
+      render: (value) =>
+        value ? (
+          <Tooltip placement="top" title={value}>
+            <p className="truncate m-0">{value}</p>
+          </Tooltip>
+        ) : (
+          '-'
+        ),
     },
     {
       title: () => <FormattedMessage id="status" />,
@@ -74,7 +82,7 @@ const OrderHistory: React.FC = () => {
         }}
         {...tableProps}
         dataSource={tableProps.dataSource.map((each) => {
-          return { ...each, ...each.payment, ...each.address, key: each.id }
+          return { ...each, ...each.payment, ...each.address, key: each.id, id: each.id }
         })}
         loading={loading}
       />
