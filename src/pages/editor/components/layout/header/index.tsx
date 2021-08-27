@@ -30,6 +30,7 @@ interface HeaderProps {
   redo: () => void
   logout: any
   project: ProjectInterface
+  isFullscreen: boolean
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -46,6 +47,7 @@ const Header: React.FC<HeaderProps> = ({
     redoHistory,
     currentProject: { name },
   },
+  isFullscreen,
 }) => {
   const history = useHistory()
   const [saving, setSaving] = useState<boolean>(false)
@@ -100,6 +102,7 @@ const Header: React.FC<HeaderProps> = ({
       <Row style={{ flex: 5, justifyContent: 'flex-start', alignItems: 'center' }}>
         <IconButton
           onClick={() => history.goBack()}
+          hidden={isFullscreen}
           icon={<ArrowLeftOutlined className="icon text-gray-700" style={{ fontSize: 16 }} />}
         >
           <FormattedMessage id="back" />
@@ -108,6 +111,7 @@ const Header: React.FC<HeaderProps> = ({
           <FormattedMessage id="photobook" />
         </div>
         <IconButton
+          hidden={isFullscreen}
           style={{ marginLeft: 20 }}
           onClick={onUndo}
           icon={<UndoOutlined className="icon text-gray-700" style={{ fontSize: 16 }} />}
@@ -116,6 +120,7 @@ const Header: React.FC<HeaderProps> = ({
           <FormattedMessage id="undo" />
         </IconButton>
         <IconButton
+          hidden={isFullscreen}
           className="icon-button"
           onClick={onRedo}
           icon={<RedoOutlined className="icon text-gray-700" style={{ fontSize: 16 }} />}
@@ -124,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({
           <FormattedMessage id="redo" />
         </IconButton>
       </Row>
-      <Row hidden={!saveName} style={{ flex: 1.5, justifyContent: 'center' }}>
+      <Row hidden={!saveName || isFullscreen} style={{ flex: 1.5, justifyContent: 'center' }}>
         <IconInput
           onChange={(e) => _setName(e.currentTarget.value)}
           value={_name}
@@ -136,6 +141,7 @@ const Header: React.FC<HeaderProps> = ({
       </Row>
       <Row style={{ flex: 5, justifyContent: 'flex-end' }}>
         <IconButton
+          hidden={isFullscreen}
           className="icon-button"
           loading={saving}
           onClick={onSave}
@@ -154,6 +160,7 @@ const Header: React.FC<HeaderProps> = ({
         </IconButton>
         {handleOrder && (
           <Button
+            hidden={isFullscreen}
             className="ml-2 flex gap-2 items-center text-sm"
             size="large"
             type="primary"

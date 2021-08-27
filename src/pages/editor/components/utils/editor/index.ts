@@ -2515,7 +2515,7 @@ export default class Editor {
     const rect = this._object.getBoundingClientRect()
     const rotateAngle = objects[_index]?.style?.rotateAngle
 
-    if (!rotateAngle) return
+    if (rotateAngle === null || rotateAngle === undefined) return
 
     this._isMouseDown = true
 
