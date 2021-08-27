@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 import { List, Popconfirm, InputNumber, Checkbox, notification } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import {
   createOrder,
@@ -20,6 +20,7 @@ import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
 import { SelectValue } from 'antd/lib/select'
 import { currencyFormat } from 'utils'
+import { debounce } from 'lodash'
 import CartAddress from './cart-address'
 import OrderSummary from './order-summary'
 import CartVoucher from './cart-voucher'
@@ -32,6 +33,7 @@ const MyCart: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
   const [giftCard, setGiftCard] = useState<GiftCard>()
+  const updateCartItemDebounce = useMemo(() => debounce(updateCartItem, 500), [])
   const paymentTypes = useRequest<PaymentType>(listPaymentTypes)
 
   const user = useSelector((state: RootInterface) => state.auth.user)
@@ -130,9 +132,9 @@ const MyCart: React.FC = () => {
                   min={1}
                   style={{ width: '4rem' }}
                   onChange={(value) => {
-                    updateCartItem(item.id, {
+                    updateCartItemDebounce(item.id, {
                       quantity: value,
-                    }).then((res) => {
+                    })?.then((res) => {
                       if (res) {
                         summary.refresh()
                       }
