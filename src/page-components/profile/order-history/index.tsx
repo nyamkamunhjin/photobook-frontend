@@ -48,6 +48,7 @@ const OrderHistory: React.FC = () => {
       dataIndex: 'address',
       key: 'address',
       align: 'center',
+      width: 50,
       render: (value) =>
         value ? (
           <Tooltip placement="top" title={value}>
@@ -73,7 +74,7 @@ const OrderHistory: React.FC = () => {
       </span>
       <Table
         className="mt-4"
-        scroll={{ x: 400 }}
+        scroll={{ x: '100%' }}
         columns={columnsOrder}
         expandable={{
           expandedRowRender: ({ orderItems, giftCardDiscountAmount }) => (
@@ -136,24 +137,33 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems, giftCardDiscount
                   </span>
                 </div>
               </div>
-              <div className="border-t border-gray-500 flex flex-col">
-                {item.appliedDiscountTypes.length > 0 && (
-                  <span className="text-gray-500">
-                    <FormattedMessage id="applied_discounts" />:{' '}
-                    <span className="">
-                      {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+              <div className="ml-auto flex flex-col text-right">
+                <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
+                <span className="text-gray-500">{item.project.paperSize?.size}</span>
+                <span className="text-gray-500">{item.project.bindingType?.name}</span>
+                <span className="text-gray-500">{item.project.coverType?.name}</span>
+                <span className="text-gray-500">{item.project.frameMaterial?.name}</span>
+                <div className="border-t border-gray-300 flex flex-col">
+                  {item.appliedDiscountTypes.length > 0 && (
+                    <span className="text-gray-500">
+                      <FormattedMessage id="applied_discounts" />:{' '}
+                      <span className="">
+                        {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                      </span>
                     </span>
-                  </span>
-                )}
-                {item.discountedPrice !== 0 && (
-                  <div className="flex justify-end items-center gap-1">
-                    <span className="text-xs line-through">{currencyFormat(item.discountedPrice + item.price)} ₮</span>
-                    <span className="font-bold text-red-500">
-                      (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
-                    </span>
-                  </div>
-                )}
-                <span className="text-sm text-gray-700 text-right">{currencyFormat(item.price)} ₮</span>
+                  )}
+                  {item.discountedPrice !== 0 && (
+                    <div className="flex justify-end items-center gap-1">
+                      <span className="text-xs line-through">
+                        {currencyFormat(item.discountedPrice + item.price)} ₮
+                      </span>
+                      <span className="font-bold text-red-500">
+                        (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-sm text-gray-700 text-right">{currencyFormat(item.price)} ₮</span>
+                </div>
               </div>
             </List.Item>
           )}
