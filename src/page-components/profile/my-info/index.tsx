@@ -64,11 +64,11 @@ const MyInfo: FC = () => {
     updateCurrentUser(values)
       .then(() => {
         dispatch(loadUser())
-        notification.success({ message: intl.formatMessage({ id: 'success' }) })
+        notification.success({ message: intl.formatMessage({ id: 'success!' }) })
         setUpdateLoading(false)
       })
       .catch(() => {
-        notification.error({ message: 'bzbxzbzbzzzzz' })
+        notification.error({ message: 'failed!' })
         setUpdateLoading(false)
       })
   }
@@ -166,12 +166,6 @@ const MyInfo: FC = () => {
                   <FormattedMessage id="phone_number" />
                 </span>
               }
-              rules={[
-                {
-                  // type: 'number',
-                  message: <FormattedMessage id="wrong_phone_number" />,
-                },
-              ]}
             >
               <Input className="w-full text-left" />
             </Form.Item>
@@ -222,47 +216,7 @@ const MyInfo: FC = () => {
           >
             <Input />
           </Form.Item>
-          {/* <Form.Item
-            name="password"
-            label={
-              <span className="font-semibold text-gray-500">
-                <FormattedMessage id="password" />
-              </span>
-            }
-            rules={[
-              {
-                // required: true,
-                message: <FormattedMessage id="please_input_password" />,
-              },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name="confirmPassword"
-            dependencies={['password']}
-            label={
-              <span className="font-semibold text-gray-500">
-                <FormattedMessage id="confirm_password" />
-              </span>
-            }
-            rules={[
-              {
-                // required: true,
-                message: <FormattedMessage id="please_input_confirm_password" />,
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('The two passwords that you entered do not match!'))
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item> */}
+
           <Form.Item>
             <CustomButton className="btn-accept w-full" loading={updateLoading} type="submit">
               <FormattedMessage id="update" />

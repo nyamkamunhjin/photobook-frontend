@@ -1,5 +1,5 @@
 import { useAntdTable } from 'ahooks'
-import { List, Table } from 'antd'
+import { List, Table, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/es/table/interface'
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -15,6 +15,14 @@ const OrderHistory: React.FC = () => {
 
   const columnsOrder: ColumnsType<any> = [
     {
+      title: () => <FormattedMessage id="order_id" />,
+      dataIndex: 'id',
+      key: 'id',
+      align: 'center',
+      width: 50,
+      render: (text) => <span>{text}</span>,
+    },
+    {
       title: () => <FormattedMessage id="date" />,
       dataIndex: 'createdAt',
       key: 'createdAt',
@@ -22,18 +30,11 @@ const OrderHistory: React.FC = () => {
       render: (text) => <span>{new Date(text).toLocaleDateString()}</span>,
     },
     {
-      title: () => <FormattedMessage id="order_id" />,
-      dataIndex: 'id',
-      key: 'id',
-      align: 'center',
-      render: (text) => <span>{text}</span>,
-    },
-    {
       title: () => <FormattedMessage id="price" />,
       dataIndex: 'amount',
       key: 'amount',
       align: 'center',
-      render: (text) => <span>{text} ₮</span>,
+      render: (value) => <span>{currencyFormat(value)} ₮</span>,
     },
     {
       title: () => <FormattedMessage id="payment_amount_vat_included" />,
@@ -47,7 +48,15 @@ const OrderHistory: React.FC = () => {
       dataIndex: 'address',
       key: 'address',
       align: 'center',
-      render: (value) => value || <FormattedMessage id="no" />,
+      width: 50,
+      render: (value) =>
+        value ? (
+          <Tooltip placement="top" title={value}>
+            <p className="truncate m-0">{value}</p>
+          </Tooltip>
+        ) : (
+          '-'
+        ),
     },
     {
       title: () => <FormattedMessage id="status" />,
@@ -65,7 +74,7 @@ const OrderHistory: React.FC = () => {
       </span>
       <Table
         className="mt-4"
-        scroll={{ x: 400 }}
+        scroll={{ x: '100%' }}
         columns={columnsOrder}
         expandable={{
           expandedRowRender: ({ orderItems, giftCardDiscountAmount }) => (
@@ -74,7 +83,7 @@ const OrderHistory: React.FC = () => {
         }}
         {...tableProps}
         dataSource={tableProps.dataSource.map((each) => {
-          return { ...each, ...each.payment, ...each.address, key: each.id }
+          return { ...each, ...each.payment, ...each.address, key: each.id, id: each.id }
         })}
         loading={loading}
       />
@@ -128,24 +137,33 @@ const OrderItemsInfo: React.FC<OrderItemProps> = ({ orderItems, giftCardDiscount
                   </span>
                 </div>
               </div>
-              <div className="border-t border-gray-500 flex flex-col">
-                {item.appliedDiscountTypes.length > 0 && (
-                  <span className="text-gray-500">
-                    <FormattedMessage id="applied_discounts" />:{' '}
-                    <span className="">
-                      {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+              <div className="ml-auto flex flex-col text-right">
+                <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
+                <span className="text-gray-500">{item.project.paperSize?.size}</span>
+                <span className="text-gray-500">{item.project.bindingType?.name}</span>
+                <span className="text-gray-500">{item.project.coverType?.name}</span>
+                <span className="text-gray-500">{item.project.frameMaterial?.name}</span>
+                <div className="border-t border-gray-300 flex flex-col">
+                  {item.appliedDiscountTypes.length > 0 && (
+                    <span className="text-gray-500">
+                      <FormattedMessage id="applied_discounts" />:{' '}
+                      <span className="">
+                        {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                      </span>
                     </span>
-                  </span>
-                )}
-                {item.discountedPrice !== 0 && (
-                  <div className="flex justify-end items-center gap-1">
-                    <span className="text-xs line-through">{currencyFormat(item.discountedPrice + item.price)} ₮</span>
-                    <span className="font-bold text-red-500">
-                      (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
-                    </span>
-                  </div>
-                )}
-                <span className="text-sm text-gray-700 text-right">{currencyFormat(item.price)} ₮</span>
+                  )}
+                  {item.discountedPrice !== 0 && (
+                    <div className="flex justify-end items-center gap-1">
+                      <span className="text-xs line-through">
+                        {currencyFormat(item.discountedPrice + item.price)} ₮
+                      </span>
+                      <span className="font-bold text-red-500">
+                        (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-sm text-gray-700 text-right">{currencyFormat(item.price)} ₮</span>
+                </div>
               </div>
             </List.Item>
           )}

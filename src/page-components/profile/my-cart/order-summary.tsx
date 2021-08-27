@@ -2,7 +2,6 @@ import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { CustomButton, Loading } from 'components'
 import { currencyFormat } from 'utils'
-import { LoadingOutlined } from '@ant-design/icons'
 
 interface OrderSummaryProps {
   price: number
@@ -113,7 +112,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       )}
       <CustomButton
         className={`mt-auto ${!(loading || !actualPrice) ? 'btn-accept' : 'btn-disabled'}`}
-        onClick={() => onCreateOrder(shippingFee !== 0)}
+        onClick={() => (!(loading || !actualPrice) ? onCreateOrder(shippingFee !== 0) : null)}
       >
         <FormattedMessage id="order_now" />
       </CustomButton>
