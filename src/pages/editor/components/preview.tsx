@@ -6,7 +6,7 @@ import { EditorInterface, ProjectInterface, RootInterface } from 'interfaces'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { debounce } from 'utils'
 import { renderBackground, renderObject } from './utils'
-import { BackgroundImages } from './layout'
+import { BackgroundImages, BackgroundSingleImages } from './layout'
 import './styles/editor.scss'
 
 interface Props {
@@ -17,6 +17,8 @@ interface Props {
   nextSlide?: () => void
   hasNext?: () => boolean
   hasPrevious?: () => boolean
+  isPhotobook?: boolean
+  isPublicSize?: boolean
 }
 
 const Preview: React.FC<Props> = ({
@@ -27,6 +29,8 @@ const Preview: React.FC<Props> = ({
   nextSlide,
   hasNext,
   hasPrevious,
+  isPhotobook = true,
+  isPublicSize = true,
 }) => {
   // refs
   const slideViewRef: any = useRef(null)
@@ -96,9 +100,17 @@ const Preview: React.FC<Props> = ({
           <div id="slide_container" ref={slideContainer}>
             <div id="slide_preview">
               <div id="scaled_container" ref={scaledContainerRef}>
-                {!loading && (
-                  <BackgroundImages scale={scale} editor={editor} slideIndex={slideIndex} backgrounds={backgrounds} />
-                )}
+                {!loading &&
+                  (isPhotobook ? (
+                    <BackgroundImages scale={scale} editor={editor} slideIndex={slideIndex} backgrounds={backgrounds} />
+                  ) : (
+                    <BackgroundSingleImages
+                      scale={scale}
+                      editor={editor}
+                      slideIndex={slideIndex}
+                      backgrounds={backgrounds}
+                    />
+                  ))}
                 <div ref={canvasRef} id="canvas_container">
                   {!loading && (
                     <>
@@ -111,7 +123,20 @@ const Preview: React.FC<Props> = ({
                       <div id="container">
                         {objects.map((o: any) => {
                           return (
-                            <div id={o.id} key={o.id} style={o.style} className={o.className}>
+                            <div
+                              id={o.id}
+                              key={o.id}
+                              style={
+                                isPublicSize
+                                  ? o.style
+                                  : {
+                                      ...(o.style as React.CSSProperties),
+                                      width: slideWidth + 'px',
+                                      height: slideHeight + 'px',
+                                    }
+                              }
+                              className={o.className}
+                            >
                               {renderObject({
                                 edit: false,
                                 object: o,

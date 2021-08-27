@@ -5,6 +5,7 @@
   "login": "Нэвтрэх",
   "success!": "Success",
   "loading!": "Loading...",
+  "failed!": "Failed...",
   "click_to_load_more": "Click to load more",
   "close": "Close",
   "save": "Save",
@@ -360,5 +361,8 @@
   "billing.golomt_payment": "Credit Card",
   "billing.golomt_socialpay": "Social pay",
   "billing.success": "Successfully paid",
-  "valid.organization_code": "Байгууллагын НӨАТ"
+  "valid.organization_code": "Байгууллагын НӨАТ",
+  "materials are out of stock": "Materials are out of stock",
+  "materials_out_of_stock_desc": "Currently materials are out of stock",
+  "-": "-"
 }

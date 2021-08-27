@@ -2,7 +2,6 @@ import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { CustomButton, Loading } from 'components'
 import { currencyFormat } from 'utils'
-import { LoadingOutlined } from '@ant-design/icons'
 
 interface OrderSummaryProps {
   price: number

@@ -212,7 +212,21 @@ const BookEditor: React.FC<Props> = ({
   const saveObjects = async () => {
     if (_slideIndex >= currentProject.slides.length) return
     const updatedSlide = currentProject.slides[_slideIndex]
-    updatedSlide.objects = objects
+    updatedSlide.objects = objects.map((o: PObject) => {
+      if (o.props.className !== 'image-placeholder') return o
+      const obj = document.getElementById(o.id)
+      const [img] = obj?.getElementsByTagName('img') as any
+      if (!img) return o
+      const { width: w, height: h, top, left } = img.style
+      if (w !== 'auto' && h !== 'auto') {
+        o.props.imageStyle.width = w
+        o.props.imageStyle.height = h
+      } else if (w !== 'auto') o.props.imageStyle.width = w
+      else if (h !== 'auto') o.props.imageStyle.height = h
+      o.props.imageStyle.top = top
+      o.props.imageStyle.left = left
+      return o
+    })
     updatedSlide.backgrounds = backgrounds
     saveProject(currentProject.id, updatedSlide, _slideIndex)
   }
@@ -246,6 +260,21 @@ const BookEditor: React.FC<Props> = ({
     const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
     setScale(ratio)
     setFitScale(ratio)
+    // Urgeljlel bii
+    console.log(
+      'scale',
+      ratio,
+      'rect',
+      rect,
+      'maxWidth',
+      maxWidth,
+      'maxHeight',
+      maxHeight,
+      'srcWidth',
+      srcWidth,
+      'srcHeight',
+      srcHeight
+    )
 
     const scaledWidth = maxWidth * ratio
     const scaledHeight = maxHeight * ratio
@@ -480,12 +509,11 @@ const BookEditor: React.FC<Props> = ({
     <div className="AdvancedEditorWrapper" ref={ref}>
       <Header
         deSelectObject={editors.deSelectObject}
-        onPreview={() => {
+        onPreview={async () => {
           if (preview || !single) {
-            setPreview.setFalse()
-            setSingle.setTrue()
             exitFull()
           } else {
+            await saveObjects()
             setPreview.setTrue()
             setFull()
           }
@@ -497,6 +525,7 @@ const BookEditor: React.FC<Props> = ({
           await saveObjects()
           setIsOrder(true)
         }}
+        isFullscreen={isFullscreen}
       />
       <div className="EditorOnePageView">
         {!preview && (
@@ -513,7 +542,7 @@ const BookEditor: React.FC<Props> = ({
           />
         )}
         <div className="EditorPanel">
-          {preview ? <Preview slideIndex={_slideIndex} /> : renderEditor}
+          {preview ? <Preview slideIndex={_slideIndex} isPhotobook={false} isPublicSize={false} /> : renderEditor}
           <FooterListTools
             hideTools
             scale={scale}
@@ -545,6 +574,7 @@ const BookEditor: React.FC<Props> = ({
             updateHistory={updateHistory}
             saveObjects={saveObjects}
             mustHaveImageCenter
+            isFullscreen={isFullscreen}
           />
         </div>
       </div>

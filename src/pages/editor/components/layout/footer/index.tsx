@@ -47,6 +47,7 @@ interface Props {
   containers: Container[]
   backgrounds: BackgroundImage[]
   mustHaveImageCenter?: boolean
+  isFullscreen: boolean
 }
 
 const FooterListTools: React.FC<Props> = ({
@@ -79,6 +80,7 @@ const FooterListTools: React.FC<Props> = ({
   hideTools = false,
   scale,
   mustHaveImageCenter = false,
+  isFullscreen,
 }) => {
   const [refreshing, setRefreshing] = useBoolean(false)
   const [_width, _setWidth] = useState(4)
@@ -143,7 +145,7 @@ const FooterListTools: React.FC<Props> = ({
   const zoomOut = () => {
     const canvas_container = document.querySelector('#canvas_container') as HTMLElement
 
-    if (scale > 0.2) {
+    if (scale > 0.1) {
       deSelectObject()
       changeDimension(scale - 0.1)
       setScale(scale - 0.1)
@@ -210,6 +212,7 @@ const FooterListTools: React.FC<Props> = ({
             </div>
             <div
               className={`right ${!single && 'rounded-full border-l-2 selected'}`}
+              hidden={isFullscreen}
               onClick={() => {
                 single.action.setFalse()
                 preview.action.setFalse()

@@ -5,6 +5,7 @@
   "login": "Нэвтрэх",
   "success!": "Амжилттай",
   "loading!": "Уншиж байна",
+  "failed!": "Алдаа гарлаа",
   "click_to_load_more": "Цааш нь...",
   "close": "Хаах",
   "save": "Хадгалах",
@@ -360,5 +361,8 @@
   "billing.golomt_payment": "Банкны карт",
   "billing.golomt_socialpay": "Social pay",
   "billing.success": "Амжилттай төлөгдлөө",
-  "valid.organization_code": "Байгууллагын НӨАТ"
+  "valid.organization_code": "Байгууллагын НӨАТ",
+  "materials are out of stock": "Материалын нөөц хүрэхгүй байна",
+  "materials_out_of_stock_desc": "Одоогийн материалын нөөц хүрэхгүй байна",
+  "-": "-"
 }

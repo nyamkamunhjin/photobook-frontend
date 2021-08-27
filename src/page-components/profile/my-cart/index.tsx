@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
-import { List, Popconfirm, InputNumber, Checkbox, notification } from 'antd'
-import React, { useEffect, useMemo, useState } from 'react'
+import { List, Popconfirm, InputNumber, Checkbox, notification, Alert } from 'antd'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import {
   createOrder,
@@ -34,8 +34,12 @@ const MyCart: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<SelectValue>()
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
   const [giftCard, setGiftCard] = useState<GiftCard>()
+  const [errorAlert, setErrorAlert] = useState<{ message: string; description: string }>()
   const updateCartItemDebounce = useMemo(() => debounce(updateCartItem, 500), [])
   const paymentTypes = useRequest<PaymentType[]>(listPaymentTypes)
+
+  const scrollRef = useRef<any>(null)
+  const executeScroll = () => scrollRef.current.scrollIntoView()
 
   const user = useSelector((state: RootInterface) => state.auth.user)
   const shippingAddresses = useRequest(() =>
@@ -65,11 +69,6 @@ const MyCart: React.FC = () => {
       )
     },
   })
-  // const giftCards = useRequest(listActivatedGiftCard, {
-  //   onSuccess: (res) => {
-  //     giftCards.mutate(res.filter((each: GiftCard) => each.remainingAmount > 0))
-  //   },
-  // })
 
   const summary = useRequest(getShoppingCartSummary, {
     manual: true,
@@ -97,7 +96,32 @@ const MyCart: React.FC = () => {
         order.address = selectedAddress as number
         order.isShipping = true
       }
+<<<<<<< HEAD
       actionOrder.run(order)
+=======
+
+      createOrder(order)
+        .then((res) => {
+          if (res) {
+            notification.success({
+              message: intl.formatMessage({ id: 'success!' }),
+            })
+            history.push('/profile?tab=order_history')
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.data.message)
+          if (err?.response?.data?.message) {
+            const description =
+              err?.response?.data?.message === 'materials are out of stock' ? 'materials_out_of_stock_desc' : '-'
+            setErrorAlert({
+              message: intl.formatMessage({ id: err?.response?.data?.message }),
+              description: intl.formatMessage({ id: description }),
+            })
+            executeScroll()
+          }
+        })
+>>>>>>> 85a93ef4f3f9a3a083f29a63166e1e569c41c63e
     }
   }
 
@@ -117,10 +141,11 @@ const MyCart: React.FC = () => {
   }, [shoppingCart.data, deliveryChecked, selectedAddress])
 
   return (
-    <div className="p-2 h-full">
+    <div className="p-2 h-full flex flex-col gap-2">
       <span className="font-semibold text-xl">
         <FormattedMessage id="my_cart" />
       </span>
+<<<<<<< HEAD
       <>
         {!!actionOrder.data && (
           <Payment
@@ -190,6 +215,67 @@ const MyCart: React.FC = () => {
                       {item.project.name} <span className="text-xs text-gray-500">({item.project.template?.name})</span>
                     </span>
                     <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
+=======
+      <div>
+        {errorAlert && (
+          <div ref={scrollRef}>
+            <Alert message={errorAlert.message} description={errorAlert.description} showIcon type="error" />
+          </div>
+        )}
+        <List
+          className="mt-4"
+          itemLayout="horizontal"
+          dataSource={shoppingCart.data?.cartItems}
+          loading={shoppingCart.loading}
+          renderItem={(item: CartItem) => (
+            <List.Item
+              className="flex flex-wrap gap-4 rounded p-2 hover:bg-gray-50"
+              key={item.id}
+              actions={[
+                <InputNumber
+                  defaultValue={item.quantity}
+                  min={1}
+                  style={{ width: '4rem' }}
+                  onChange={(value) => {
+                    updateCartItemDebounce(item.id, {
+                      quantity: value,
+                    })?.then((res) => {
+                      if (res) {
+                        summary.refresh()
+                      }
+                    })
+                  }}
+                />,
+                <Popconfirm
+                  title={<FormattedMessage id="delete-confirm-text" />}
+                  onConfirm={() => {
+                    deleteCartItem({
+                      ids: [item.id],
+                    }).then(() => {
+                      shoppingCart.refresh()
+                    })
+                  }}
+                  okText={<FormattedMessage id="yes" />}
+                  cancelText={<FormattedMessage id="no" />}
+                >
+                  <CustomButton className="btn-cancel" type="button">
+                    <FormattedMessage id="remove" />
+                  </CustomButton>
+                </Popconfirm>,
+              ]}
+            >
+              <div className="flex gap-2">
+                <img
+                  className="w-28 h-28 rounded "
+                  src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.project.imageUrl}`}
+                  alt="project"
+                />
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-base">
+                    {item.project.name} <span className="text-xs text-gray-500">({item.project.template?.name})</span>
+                  </span>
+                  <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
+>>>>>>> 85a93ef4f3f9a3a083f29a63166e1e569c41c63e
 
                     {item.voucher && (
                       <div className="flex flex-col items-start">

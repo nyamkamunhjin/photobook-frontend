@@ -17,7 +17,7 @@ import {
 import { HistoryProps, ObjectType, PObject, ProjectCreate, ProjectInterface, RootInterface, Slide } from 'interfaces'
 import Spinner from 'components/spinner'
 
-import { useBoolean, useDebounceFn } from 'ahooks'
+import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
 import { Header, PrintPanel } from './components/layout'
 import { Editor } from './components/utils'
 import './components/styles/editor.scss'
@@ -53,6 +53,8 @@ const BookEditor: React.FC<Props> = ({
   const [overflow, setOverflow] = useState<string>('hidden')
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
+  const ref = useRef<any>()
+  const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
 
   // states
   const [_objectType, setObjectType] = useState<ObjectType>('')
@@ -136,7 +138,21 @@ const BookEditor: React.FC<Props> = ({
   const saveObjects = async () => {
     if (_slideIndex >= currentProject.slides.length) return
     const updatedSlide = currentProject.slides[_slideIndex]
-    updatedSlide.objects = objects
+    updatedSlide.objects = objects.map((o: PObject) => {
+      if (o.props.className !== 'image-placeholder') return o
+      const obj = document.getElementById(o.id)
+      const [img] = obj?.getElementsByTagName('img') as any
+      if (!img) return o
+      const { width, height, top, left } = img.style
+      if (width !== 'auto' && height !== 'auto') {
+        o.props.imageStyle.width = width
+        o.props.imageStyle.height = height
+      } else if (width !== 'auto') o.props.imageStyle.width = width
+      else if (height !== 'auto') o.props.imageStyle.height = height
+      o.props.imageStyle.top = top
+      o.props.imageStyle.left = left
+      return o
+    })
     saveProject(currentProject.id, updatedSlide, _slideIndex)
   }
   const onSaveName = (name: string) => {
@@ -159,6 +175,12 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
+  useEffect(() => {
+    if (isFullscreen) return
+    setPreview.setFalse()
+    setSingle.setTrue()
+  }, [isFullscreen])
+
   return fetching ? (
     <div className="AdvancedEditorWrapper">
       <div className="EditorOnePageView">
@@ -169,17 +191,18 @@ const BookEditor: React.FC<Props> = ({
     <div className="AdvancedEditorWrapper h-full">
       <Header
         deSelectObject={editors.deSelectObject}
-        onPreview={() => {
+        onPreview={async () => {
           if (preview || !single) {
-            setPreview.setFalse()
-            setSingle.setTrue()
+            exitFull()
           } else {
+            await saveObjects()
             setPreview.setTrue()
           }
         }}
         saveName={onSaveName}
         saveObjects={saveObjects}
         saveTextBeforeUndo={saveTextBeforeUndo}
+        isFullscreen={isFullscreen}
       />
       <div className="EditorPrintWrapper h-full">
         <PrintPanel />
