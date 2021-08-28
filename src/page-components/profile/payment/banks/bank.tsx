@@ -44,11 +44,7 @@ const Bank: React.FC<Props> = ({ transaction, accounts, close, visible }) => {
               <React.Fragment key={`a${acc.id}`}>
                 <Col span={12} className={styles.key}>
                   <FormattedMessage id={acc.name} />
-                  <img
-                    alt={acc.name}
-                    style={{ width: '20px', marginLeft: '8px' }}
-                    src={require(`assets/bank/${acc.name}.png`)}
-                  />
+                  <img alt={acc.name} style={{ width: '20px', marginLeft: '8px' }} src={`/bank/${acc.name}.png`} />
                 </Col>
                 <Col span={12} className={styles.value}>
                   <strong style={{ fontSize: 16, display: 'inline-block' }}>{acc.account}</strong>
