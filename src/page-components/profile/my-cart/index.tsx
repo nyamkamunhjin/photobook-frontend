@@ -14,7 +14,7 @@ import {
   updateCartItem,
 } from 'api'
 
-import { CartItem, GiftCard, PaymentType, RootInterface, Voucher } from 'interfaces'
+import { CartItem, GiftCard, Order, PaymentType, RootInterface, Voucher } from 'interfaces'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { CustomButton } from 'components'
@@ -25,6 +25,7 @@ import CartAddress from './cart-address'
 import OrderSummary from './order-summary'
 import CartVoucher from './cart-voucher'
 import CartGiftCard from './cart-giftcard'
+import Payment from '../payment'
 
 const MyCart: React.FC = () => {
   const intl = useIntl()
@@ -35,7 +36,7 @@ const MyCart: React.FC = () => {
   const [giftCard, setGiftCard] = useState<GiftCard>()
   const [errorAlert, setErrorAlert] = useState<{ message: string; description: string }>()
   const updateCartItemDebounce = useMemo(() => debounce(updateCartItem, 500), [])
-  const paymentTypes = useRequest<PaymentType>(listPaymentTypes)
+  const paymentTypes = useRequest<PaymentType[]>(listPaymentTypes)
 
   const scrollRef = useRef<any>(null)
   const executeScroll = () => scrollRef.current.scrollIntoView()
@@ -44,6 +45,18 @@ const MyCart: React.FC = () => {
   const shippingAddresses = useRequest(() =>
     listShippingAddress({ current: 0, pageSize: 100 }, { userId: user?.id.toString() })
   )
+
+  const actionOrder = useRequest<Order>(createOrder, {
+    onSuccess: (res) => {
+      if (res) {
+        notification.success({
+          message: intl.formatMessage({ id: 'success!' }),
+        })
+        // history.push('/profile?tab=order_history')
+      }
+    },
+    manual: true,
+  })
 
   const vouchers = useRequest(listVoucher, {
     onSuccess: (res) => {
@@ -83,6 +96,9 @@ const MyCart: React.FC = () => {
         order.address = selectedAddress as number
         order.isShipping = true
       }
+<<<<<<< HEAD
+      actionOrder.run(order)
+=======
 
       createOrder(order)
         .then((res) => {
@@ -105,6 +121,7 @@ const MyCart: React.FC = () => {
             executeScroll()
           }
         })
+>>>>>>> 85a93ef4f3f9a3a083f29a63166e1e569c41c63e
     }
   }
 
@@ -128,6 +145,77 @@ const MyCart: React.FC = () => {
       <span className="font-semibold text-xl">
         <FormattedMessage id="my_cart" />
       </span>
+<<<<<<< HEAD
+      <>
+        {!!actionOrder.data && (
+          <Payment
+            visible
+            payment={{
+              types: paymentTypes.data || ([] as PaymentType[]),
+              accounts: paymentTypes.data || ([] as PaymentType[]),
+            }}
+            loading={false}
+            close={() => {
+              console.log('wtf')
+            }}
+            id={actionOrder.data.id}
+          />
+        )}
+        <div>
+          <List
+            className="mt-4"
+            itemLayout="horizontal"
+            dataSource={shoppingCart.data?.cartItems}
+            loading={shoppingCart.loading}
+            renderItem={(item: CartItem) => (
+              <List.Item
+                className="flex flex-wrap gap-4 rounded p-2 hover:bg-gray-50"
+                key={item.id}
+                actions={[
+                  <InputNumber
+                    defaultValue={item.quantity}
+                    min={1}
+                    style={{ width: '4rem' }}
+                    onChange={(value) => {
+                      updateCartItemDebounce(item.id, {
+                        quantity: value,
+                      })?.then((res) => {
+                        if (res) {
+                          summary.refresh()
+                        }
+                      })
+                    }}
+                  />,
+                  <Popconfirm
+                    title={<FormattedMessage id="delete-confirm-text" />}
+                    onConfirm={() => {
+                      deleteCartItem({
+                        ids: [item.id],
+                      }).then(() => {
+                        shoppingCart.refresh()
+                      })
+                    }}
+                    okText={<FormattedMessage id="yes" />}
+                    cancelText={<FormattedMessage id="no" />}
+                  >
+                    <CustomButton className="btn-cancel" type="button">
+                      <FormattedMessage id="remove" />
+                    </CustomButton>
+                  </Popconfirm>,
+                ]}
+              >
+                <div className="flex gap-2">
+                  <img
+                    className="w-28 h-28 rounded "
+                    src={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.project.imageUrl}`}
+                    alt="project"
+                  />
+                  <div className="flex flex-col items-start">
+                    <span className="font-semibold text-base">
+                      {item.project.name} <span className="text-xs text-gray-500">({item.project.template?.name})</span>
+                    </span>
+                    <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
+=======
       <div>
         {errorAlert && (
           <div ref={scrollRef}>
@@ -187,97 +275,99 @@ const MyCart: React.FC = () => {
                     {item.project.name} <span className="text-xs text-gray-500">({item.project.template?.name})</span>
                   </span>
                   <span className="font-light text-sm text-gray-500">({item.project.templateType?.name})</span>
+>>>>>>> 85a93ef4f3f9a3a083f29a63166e1e569c41c63e
 
-                  {item.voucher && (
-                    <div className="flex flex-col items-start">
-                      <span>
-                        <FormattedMessage id="voucher" />: {item.voucherId}
-                      </span>
-                      <CustomButton
-                        className="btn-cancel"
-                        onClick={() => {
-                          updateCartItem(item.id, {
-                            voucherId: null,
-                          }).then(() => {
-                            notification.info({ message: intl.formatMessage({ id: 'voucher_removed' }) })
-                            shoppingCart.refresh()
-                          })
-                        }}
-                      >
-                        <FormattedMessage id="remove_voucher" />
-                      </CustomButton>
-                    </div>
-                  )}
+                    {item.voucher && (
+                      <div className="flex flex-col items-start">
+                        <span>
+                          <FormattedMessage id="voucher" />: {item.voucherId}
+                        </span>
+                        <CustomButton
+                          className="btn-cancel"
+                          onClick={() => {
+                            updateCartItem(item.id, {
+                              voucherId: null,
+                            }).then(() => {
+                              notification.info({ message: intl.formatMessage({ id: 'voucher_removed' }) })
+                              shoppingCart.refresh()
+                            })
+                          }}
+                        >
+                          <FormattedMessage id="remove_voucher" />
+                        </CustomButton>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="ml-auto flex flex-col text-right">
-                <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
-                <span className="text-gray-500">{item.project.paperSize?.size}</span>
-                <span className="text-gray-500">{item.project.bindingType?.name}</span>
-                <span className="text-gray-500">{item.project.coverType?.name}</span>
-                <span className="text-gray-500">{item.project.frameMaterial?.name}</span>
+                <div className="ml-auto flex flex-col text-right">
+                  <span className="text-gray-500">{item.project.paperMaterial?.name}</span>
+                  <span className="text-gray-500">{item.project.paperSize?.size}</span>
+                  <span className="text-gray-500">{item.project.bindingType?.name}</span>
+                  <span className="text-gray-500">{item.project.coverType?.name}</span>
+                  <span className="text-gray-500">{item.project.frameMaterial?.name}</span>
 
-                <div className="border-t border-gray-300 flex flex-col">
-                  {item.appliedDiscountTypes.length > 0 && (
-                    <span className="text-gray-500">
-                      <FormattedMessage id="applied_discounts" />:{' '}
-                      <span className="">
-                        {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                  <div className="border-t border-gray-300 flex flex-col">
+                    {item.appliedDiscountTypes.length > 0 && (
+                      <span className="text-gray-500">
+                        <FormattedMessage id="applied_discounts" />:{' '}
+                        <span className="">
+                          {item.appliedDiscountTypes.map((each) => intl.formatMessage({ id: each })).join(', ')}
+                        </span>
                       </span>
-                    </span>
-                  )}
-                  {item.discountedPrice !== 0 && (
-                    <div className="flex justify-end items-center gap-1">
-                      <span className="text-xs line-through">
-                        {currencyFormat(item.discountedPrice + item.price)} ₮
-                      </span>
-                      <span className="text-red-500">
-                        (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
-                      </span>
-                    </div>
-                  )}
-                  <span className="text-sm text-gray-700">{currencyFormat(item.price)} ₮</span>
+                    )}
+                    {item.discountedPrice !== 0 && (
+                      <div className="flex justify-end items-center gap-1">
+                        <span className="text-xs line-through">
+                          {currencyFormat(item.discountedPrice + item.price)} ₮
+                        </span>
+                        <span className="text-red-500">
+                          (-{Math.round((1 - item.price / (item.discountedPrice + item.price)) * 100)}%)
+                        </span>
+                      </div>
+                    )}
+                    <span className="text-sm text-gray-700">{currencyFormat(item.price)} ₮</span>
+                  </div>
                 </div>
-              </div>
-            </List.Item>
-          )}
-        />
-      </div>
-      {shoppingCart.data?.cartItems.length > 0 && (
-        <div className="flex flex-col lg:flex-row justify-between gap-4 mt-8">
-          <div className="flex flex-col gap-10 w-full">
-            <Checkbox checked={deliveryChecked} onChange={(e) => setDeliveryChecked(e.target.checked)}>
-              <FormattedMessage id="delivery" />
-            </Checkbox>
-            {deliveryChecked && (
-              <CartAddress
-                shippingAddresses={shippingAddresses.data?.list}
-                selected={selectedAddress}
-                setSelected={setSelectedAddress}
-              />
+              </List.Item>
             )}
-            <CartVoucher
-              vouchers={vouchers.data}
-              selected={selectedVoucher}
-              setSelected={setSelectedVoucher}
-              refresh={() => shoppingCart.refresh()}
-            />
-            <CartGiftCard
-              giftCard={giftCard}
-              setGiftCard={setGiftCard}
-              refresh={() => {
-                shoppingCart.refresh()
-                // giftCards.refresh()
-              }}
-            />
-          </div>
-          <OrderSummary
-            {...summary.data}
-            loading={summary.loading}
-            onCreateOrder={() => onCreateOrder(deliveryChecked)}
           />
         </div>
-      )}
+        {shoppingCart.data?.cartItems.length > 0 && (
+          <div className="flex flex-col lg:flex-row justify-between gap-4 mt-8">
+            <div className="flex flex-col gap-10 w-full">
+              <Checkbox checked={deliveryChecked} onChange={(e) => setDeliveryChecked(e.target.checked)}>
+                <FormattedMessage id="delivery" />
+              </Checkbox>
+              {deliveryChecked && (
+                <CartAddress
+                  shippingAddresses={shippingAddresses.data?.list}
+                  selected={selectedAddress}
+                  setSelected={setSelectedAddress}
+                />
+              )}
+              <CartVoucher
+                vouchers={vouchers.data}
+                selected={selectedVoucher}
+                setSelected={setSelectedVoucher}
+                refresh={() => shoppingCart.refresh()}
+              />
+              <CartGiftCard
+                giftCard={giftCard}
+                setGiftCard={setGiftCard}
+                refresh={() => {
+                  shoppingCart.refresh()
+                  // giftCards.refresh()
+                }}
+              />
+            </div>
+            <OrderSummary
+              {...summary.data}
+              loading={summary.loading}
+              onCreateOrder={() => onCreateOrder(deliveryChecked)}
+            />
+          </div>
+        )}
+      </>
     </div>
   )
 }
