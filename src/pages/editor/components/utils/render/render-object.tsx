@@ -51,7 +51,7 @@ const renderObject: React.FC<Props> = ({
     }, 0)
   }
 
-  if (props.className === 'image-placeholder') {
+  if (props?.className === 'image-placeholder') {
     const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle, frameMontage } = props
 
     return (
@@ -78,7 +78,7 @@ const renderObject: React.FC<Props> = ({
         slideHeight={slideHeight}
       />
     )
-  } else if (props.className === 'text-container') {
+  } else if (props?.className === 'text-container') {
     const { style, className, textStyle, autogrowStyle, texts } = props
     return (
       <Text
@@ -89,7 +89,7 @@ const renderObject: React.FC<Props> = ({
         className={className}
       />
     )
-  } else if (props.className === 'shape') {
+  } else if (props?.className === 'shape') {
     const { style, className, shapeClass, shapeStyle } = props
     return (
       <Shape

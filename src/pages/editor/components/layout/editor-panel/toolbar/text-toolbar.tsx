@@ -213,9 +213,9 @@ const TextToolbar = (props: any) => {
         object: {
           ...object,
           props: {
-            ...object.props,
+            ...object?.props,
             textStyle: {
-              ...object.props.textStyle,
+              ...object?.props?.textStyle,
               color: hex,
             },
           },

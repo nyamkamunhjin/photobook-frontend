@@ -36,6 +36,7 @@ interface Props {
   moveResizers?: (move: MoveResizerInterface) => void
   isLayout?: boolean
   imageFit?: () => void
+  getImagePosition: () => void
 }
 const Toolbar: React.FC<Props> = ({
   removeImageFromObject,
@@ -58,6 +59,7 @@ const Toolbar: React.FC<Props> = ({
   zoom,
   isLayout = false,
   imageFit,
+  getImagePosition,
 }) => {
   return (
     <div className="toolbar">
@@ -85,6 +87,7 @@ const Toolbar: React.FC<Props> = ({
           removeFrameMaskFromObject={removeFrameMaskFromObject}
           removeMaskFromObject={removeMaskFromObject}
           imageFit={imageFit}
+          getImagePosition={getImagePosition}
         />
       )}
       {objectType === 'shape' && (

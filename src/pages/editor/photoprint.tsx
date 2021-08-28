@@ -404,6 +404,7 @@ const BookEditor: React.FC<Props> = ({
             sendForward={() => editors.onSendForward(_index, objects)}
             sendBackward={() => editors.onSendBackward(_index, objects)}
             removeObject={() => editors.onRemoveObject(containers, objects, _index)}
+            getImagePosition={() => editors.getImagePosition(objects[_index])}
           />
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons

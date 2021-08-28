@@ -2656,6 +2656,21 @@ export default class Editor {
       this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
     }
   }
+  public getImagePosition = (o: PObject) => {
+    if (o.props.className !== 'image-placeholder') return o
+    const obj = document.getElementById(o.id)
+    const [img] = obj?.getElementsByTagName('img') as any
+    if (!img) return o
+    const { width, height, top, left } = img.style
+    if (width !== 'auto' && height !== 'auto') {
+      o.props.imageStyle.width = width
+      o.props.imageStyle.height = height
+    } else if (width !== 'auto') o.props.imageStyle.width = width
+    else if (height !== 'auto') o.props.imageStyle.height = height
+    o.props.imageStyle.top = top
+    o.props.imageStyle.left = left
+    return o
+  }
   public imageFitNoDebounce = (objects: PObject[], _obj: PObject, border = 0) => {
     const object = document.getElementById(_obj.id)
     if (!object) return

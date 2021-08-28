@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 interface Props {
   textStyle: any
@@ -10,6 +10,10 @@ interface Props {
 
 const Text: React.FC<Props> = ({ textStyle, autogrowStyle, texts, style, className }) => {
   const textRef: any = useRef(null)
+  const isSelected = useMemo(() => {
+    // urgeljlel bii selected bnu checkled
+    return true
+  }, [texts])
 
   useEffect(() => {
     textRef.current.innerHTML = ''
@@ -19,12 +23,13 @@ const Text: React.FC<Props> = ({ textStyle, autogrowStyle, texts, style, classNa
       else textRef.current.append(t)
     })
   }, [texts])
+  console.log('isSelected', isSelected)
 
   return (
     <div className={className} style={style}>
       <div className="border" />
       <div className="autogrow" style={autogrowStyle} />
-      <span ref={textRef} className="text" style={textStyle} contentEditable={false} spellCheck={false} />
+      <span ref={textRef} className="text" style={textStyle} contentEditable={isSelected} spellCheck={false} />
     </div>
   )
 }

@@ -217,21 +217,7 @@ const BookEditor: React.FC<Props> = ({
   const saveObjects = async () => {
     if (_slideIndex >= currentProject.slides.length) return
     const updatedSlide = currentProject.slides[_slideIndex]
-    updatedSlide.objects = objects.map((o: PObject) => {
-      if (o.props.className !== 'image-placeholder') return o
-      const obj = document.getElementById(o.id)
-      const [img] = obj?.getElementsByTagName('img') as any
-      if (!img) return o
-      const { width, height, top, left } = img.style
-      if (width !== 'auto' && height !== 'auto') {
-        o.props.imageStyle.width = width
-        o.props.imageStyle.height = height
-      } else if (width !== 'auto') o.props.imageStyle.width = width
-      else if (height !== 'auto') o.props.imageStyle.height = height
-      o.props.imageStyle.top = top
-      o.props.imageStyle.left = left
-      return o
-    })
+    updatedSlide.objects = objects.map((o: PObject) => editors.getImagePosition(o))
     updatedSlide.backgrounds = backgrounds
     saveProject(currentProject.id, updatedSlide, _slideIndex)
   }
@@ -409,6 +395,7 @@ const BookEditor: React.FC<Props> = ({
             imageFit={() => {
               editors.imageFitNoDebounce(objects, editors._object, BORDER_WIDTH)
             }}
+            getImagePosition={() => editors.getImagePosition(objects[_index])}
           />
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons
