@@ -79,13 +79,14 @@ export const loginUser = (email: string, password: string) => async (dispatch: a
         type: LOGIN_FAIL,
       })
     }
-  } catch (err) {
-    const { errors } = err.response.data
+  } catch (err: unknown) {
+    // const { errors } = err.response.data
 
-    if (errors) {
-      console.log('error')
-      console.log(errors)
-    }
+    // if (errors) {
+    //   console.log('error')
+    //   console.log(errors)
+    // }
+    console.error(err)
 
     dispatch({
       type: LOGIN_FAIL,

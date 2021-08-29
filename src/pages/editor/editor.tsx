@@ -142,13 +142,12 @@ const BookEditor: React.FC<Props> = ({
   const [isPaperSizeChanged, setIsPaperSizeChanged] = useState<boolean>(false)
   const [_groupObjects, setGroupObjects] = useState<any>(null)
   const [footerCollapse, setFooterCollapse] = useBoolean(false)
-  const [_groupStyles, setGroupStyles] =
-    useState<{
-      left: any
-      top: any
-      width: any
-      height: any
-    }>()
+  const [_groupStyles, setGroupStyles] = useState<{
+    left: any
+    top: any
+    width: any
+    height: any
+  }>()
   const [_slideIndex, setSlideIndex] = useState<number>(0)
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])

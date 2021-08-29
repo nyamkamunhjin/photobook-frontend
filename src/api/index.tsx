@@ -69,15 +69,14 @@ export const BaseRequest = async ({ ...props }: BaseRequestProps) => {
   try {
     const responseInstance = await axios(config)
     const response = responseInstance.data as BaseResponse
-    // console.log({ response })
     if (!response.status) {
-      // catchError(new Error(response.message), isMe)
-      throw new Error(response.message)
+      catchError(new Error(response.message), isMe)
+      return null
     }
     return response || false
   } catch (err) {
     catchError(err, isMe)
-    throw err
+    return null
   }
 }
 // #endregion
