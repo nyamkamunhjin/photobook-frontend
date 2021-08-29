@@ -1107,7 +1107,7 @@ export const createOrder = async (data: { isShipping: boolean; address?: number 
     method: 'POST',
     data,
   })
-  return response
+  return response?.data
 }
 // #endregion [Order]
 
@@ -1443,6 +1443,25 @@ export const paymentBank = async (data: Object) => {
     url: 'payment/bank/create',
     method: 'POST',
     data,
+  })
+  return response?.data
+}
+
+// #endregion
+
+// #region [PaymentWebhook]
+export const webhookQpay = async (id: string | number) => {
+  const response = await BaseRequest({
+    url: `webhook/qpay/${id}`,
+    method: 'GET',
+  })
+  return response?.data
+}
+
+export const webhookSocialPay = async (id: string | number) => {
+  const response = await BaseRequest({
+    url: `webhook/socialpay/${id}`,
+    method: 'GET',
   })
   return response?.data
 }

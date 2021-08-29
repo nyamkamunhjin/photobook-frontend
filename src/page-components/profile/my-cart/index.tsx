@@ -11,6 +11,7 @@ import {
   listVoucher,
   listPaymentTypes,
   updateCartItem,
+  webhookSocialPay,
 } from 'api'
 
 import { CartItem, GiftCard, Order, PaymentType, RootInterface, Voucher } from 'interfaces'
@@ -45,13 +46,17 @@ const MyCart: React.FC = () => {
     listShippingAddress({ current: 0, pageSize: 100 }, { userId: user?.id.toString() })
   )
 
-  const actionOrder = useRequest<Order>(createOrder, {
+  const actionOrder = useRequest(createOrder, {
     onSuccess: (res) => {
       if (res) {
         notification.success({
           message: intl.formatMessage({ id: 'success!' }),
         })
-        history.push('/profile?tab=order_history')
+        console.log(res)
+        webhookSocialPay(res.id)
+
+        // history.push('/profile?tab=order_history')
+        /* call  */
       }
     },
     onError: (err: any) => {
