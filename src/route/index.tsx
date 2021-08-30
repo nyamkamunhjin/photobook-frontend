@@ -182,7 +182,7 @@ const Router: React.FC<RouterProps> = ({ history }) => {
       if (event.storageArea?.getItem('token')) {
         dispatch(loadUser())
         if (!/^\/editor(?=\/|$)/i.test(pathname)) {
-          history.push('/')
+          // history.push('/')
         }
       }
     }

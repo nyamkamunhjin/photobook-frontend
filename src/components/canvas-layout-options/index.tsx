@@ -1,9 +1,11 @@
-import React, { FC, useEffect, useRef } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { PaperMaterial, PaperSize, Template } from 'interfaces'
+import { PaperMaterial, PaperSize, RootInterface, Template } from 'interfaces'
 import { Select } from 'antd'
 import { Link, useHistory } from 'react-router-dom'
 import { CustomButton } from 'components'
+import { useSelector } from 'react-redux'
+import AuthModal from '../auth-modal'
 
 interface Props {
   template: Template
@@ -23,6 +25,8 @@ interface Props {
 
 const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, selectedState, setSelectedState }) => {
   const intl = useIntl()
+  const user = useSelector((state: RootInterface) => state.auth.user)
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const widthRef = useRef<HTMLInputElement>(null)
   const heightRef = useRef<HTMLInputElement>(null)
   const history = useHistory()
@@ -133,12 +137,16 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           </div>
         </div>
       </div>
+      <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
       {template.canvasType === 'Split' ? (
         <CustomButton onClick={onFinish} className="btn-primary max-w-max">
           <FormattedMessage id="start_book" />
         </CustomButton>
       ) : (
-        <Link to={`/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+        <Link
+          to={user ? `/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}` : '#'}
+          onClick={() => !user && setIsModalVisible(true)}
+        >
           <CustomButton className="btn-primary">
             <FormattedMessage id="start_book" />
           </CustomButton>
