@@ -4,7 +4,7 @@ import { buildQuery } from 'utils'
 import { ImageCategory, Image, LayoutInterface, Category, User, TradePhoto } from 'interfaces'
 
 // #region [Import]
-import { message, notification } from 'antd'
+import { notification } from 'antd'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 // #endregion
 

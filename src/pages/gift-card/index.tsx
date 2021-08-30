@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { CustomButton, useRouter, ProductWrapper } from 'components'
 import WidthLimiter from 'layouts/main/components/width-limiter'
 import { useRequest } from 'ahooks'
-import { activateGiftCard, buyGiftCard, listGiftCardType, listProductAd } from 'api'
+import { buyGiftCard, listGiftCardType, listProductAd } from 'api'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { currencyFormat } from 'utils'
-import { Input, notification } from 'antd'
-import ActivateGiftCard from './components/activate-gift-card'
+import { notification } from 'antd'
 
 const GiftCards: React.FC = () => {
   const giftCardTypes = useRequest(listGiftCardType)
