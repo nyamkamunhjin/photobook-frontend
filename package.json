@@ -62,7 +62,8 @@
     "lint-staged": "lint-staged",
     "stylelint": "stylelint --fix src/**/*.{scss,less,css}",
     "prettier": "prettier --write src/**/*.{js,jsx,ts,tsx,scss,less}",
-    "build-rust": "rustc +nightly --target wasm32-unknown-unknown -O --crate-type=cdylib wasm/main.rs -o lib.wasm"
+    "build-rust": "rustc +nightly --target wasm32-unknown-unknown -O --crate-type=cdylib wasm/main.rs -o lib.wasm",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -111,6 +112,7 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
     "tailwindcss-pseudo-elements": "^2.0.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "husky": "^7.0.0"
   }
 }

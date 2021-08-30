@@ -101,6 +101,14 @@ const MyCart: React.FC = () => {
     },
   })
 
+  const onError = (message: string, description: string) => {
+    setErrorAlert({
+      message: intl.formatMessage({ id: message }),
+      description: intl.formatMessage({ id: description }),
+    })
+    executeScroll()
+  }
+
   const onCreateOrder = (shipping: boolean) => {
     const { cartItems } = shoppingCart.data
     const order: { isShipping: boolean; address?: number } = {
@@ -283,6 +291,7 @@ const MyCart: React.FC = () => {
                 selected={selectedVoucher}
                 setSelected={setSelectedVoucher}
                 refresh={() => shoppingCart.refresh()}
+                setErrorAlert={onError}
               />
               <CartGiftCard
                 giftCard={giftCard}
