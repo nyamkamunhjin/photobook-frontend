@@ -39,7 +39,10 @@ const Signup: React.FC = () => {
 
   return (
     <div className="w-full h-screen bg-gray-100">
-      <div className="w-96 bg-white rounded-lg p-6 shadow-md mx-auto mt-10">
+      <div className="w-96 bg-white rounded-lg p-6 shadow-md mx-auto mt-10 flex flex-col gap-4 items-center">
+        <h1 className="text-bold self-center text-xl">
+          <FormattedMessage id="sign-up" />
+        </h1>
         <Form name="basic" layout="vertical" onFinish={(values) => onFinish(values)}>
           <div className="flex gap-4">
             <Form.Item

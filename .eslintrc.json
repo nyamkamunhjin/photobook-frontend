@@ -22,6 +22,7 @@
     "no-useless-escape": "off",
     "no-script-url": "off",
     "indent": "off",
+    "react/no-unused-prop-types": "off",
     "react/jsx-indent": "off",
     "react/jsx-indent-props": "off",
     "jsx-a11y/anchor-has-content": "off",

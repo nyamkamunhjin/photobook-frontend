@@ -364,5 +364,7 @@
   "valid.organization_code": "Байгууллагын НӨАТ",
   "materials are out of stock": "Материалын нөөц хүрэхгүй байна",
   "materials_out_of_stock_desc": "Одоогийн материалын нөөц хүрэхгүй байна",
-  "-": "-"
+  "-": "-",
+  "no cart item.": "Ваучер буруу байна",
+  "no_cart_item_description": "Ваучер-д тохирох бүтээгдхүүн сагсанд байхгүй байна"
 }

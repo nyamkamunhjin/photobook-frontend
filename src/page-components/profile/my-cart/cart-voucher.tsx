@@ -10,9 +10,10 @@ interface Props {
   selected: SelectValue
   setSelected: React.Dispatch<React.SetStateAction<SelectValue>>
   refresh: () => void
+  setErrorAlert?: (message: string, description: string) => void
 }
 
-const CartVoucher: React.FC<Props> = ({ vouchers, selected, setSelected, refresh }) => {
+const CartVoucher: React.FC<Props> = ({ vouchers, selected, setSelected, refresh, setErrorAlert }) => {
   return (
     <div className="flex flex-col gap-4 w-full">
       <span className="text-sm font-semibold">
@@ -28,8 +29,14 @@ const CartVoucher: React.FC<Props> = ({ vouchers, selected, setSelected, refresh
               .then((res) => {
                 if (res) refresh()
               })
-              .catch(() => {
+              .catch((err) => {
                 setSelected(undefined)
+                console.log({ err })
+                if (err?.response?.data?.message && setErrorAlert) {
+                  if (err?.response?.data?.message === 'no cart item.') {
+                    setErrorAlert(err?.response?.data?.message, 'no_cart_item_description')
+                  }
+                }
               })
           }
         }}

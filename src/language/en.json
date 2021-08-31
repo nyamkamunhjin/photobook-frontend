@@ -364,5 +364,7 @@
   "valid.organization_code": "Байгууллагын НӨАТ",
   "materials are out of stock": "Materials are out of stock",
   "materials_out_of_stock_desc": "Currently materials are out of stock",
-  "-": "-"
+  "-": "-",
+  "no cart item.": "Invalid voucher apply",
+  "no_cart_item_description": "Applied voucher doesn`t match with any cart items"
 }

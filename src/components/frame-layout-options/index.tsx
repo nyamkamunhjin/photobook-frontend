@@ -1,8 +1,10 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { FrameMaterial, PaperSize, Template } from 'interfaces'
+import { FrameMaterial, PaperSize, RootInterface, Template } from 'interfaces'
 import { Link } from 'react-router-dom'
 import { CustomButton } from 'components'
+import { useSelector } from 'react-redux'
+import AuthModal from '../auth-modal'
 
 interface Props {
   template: Template
@@ -22,7 +24,8 @@ interface Props {
 
 const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
-
+  const user = useSelector((state: RootInterface) => state.auth.user)
+  const [isModalVisible, setIsModalVisible] = useState(false)
   useEffect(() => {
     const initialState = () => {
       const [paperSize] = paperSizes
@@ -90,7 +93,11 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
           ))}
         </div>
       </div>
-      <Link to={`/editor/frame?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+      <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
+      <Link
+        to={user ? `/editor/frame?template=${template.id}&paperSize=${selectedState.paperSize?.id}` : '#'}
+        onClick={() => !user && setIsModalVisible(true)}
+      >
         <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />
         </CustomButton>

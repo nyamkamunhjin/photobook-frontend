@@ -25,8 +25,6 @@ const Redirect: FC = () => {
 
       if (window.opener && window.opener !== window) {
         window.close()
-      } else {
-        router.push('/')
       }
     }
   }, [router, dispatch])

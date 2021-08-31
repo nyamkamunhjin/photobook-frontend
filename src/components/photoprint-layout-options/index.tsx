@@ -1,9 +1,11 @@
-import React, { FC, useCallback, useEffect } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { PaperSize, Template } from 'interfaces'
+import { PaperSize, RootInterface, Template } from 'interfaces'
 import 'react-alice-carousel/lib/alice-carousel.css'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import CustomButton from '../custom-button'
+import AuthModal from '../auth-modal'
 
 interface Props {
   template: Template
@@ -20,7 +22,8 @@ interface Props {
 
 const PhotoprintLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
-
+  const user = useSelector((state: RootInterface) => state.auth.user)
+  const [isModalVisible, setIsModalVisible] = useState(false)
   const initialState = useCallback(() => {
     const [paperSize] = paperSizes
 
@@ -65,7 +68,11 @@ const PhotoprintLayoutOptions: FC<Props> = ({ template, paperSizes, selectedStat
           ))}
         </div>
       </div>
-      <Link to={`/editor/photoprint?template=${template.id}&paperSize=${selectedState.paperSize?.id}`}>
+      <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
+      <Link
+        to={user ? `/editor/photoprint?template=${template.id}&paperSize=${selectedState.paperSize?.id}` : '#'}
+        onClick={() => !user && setIsModalVisible(true)}
+      >
         <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />
         </CustomButton>

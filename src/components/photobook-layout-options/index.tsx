@@ -1,10 +1,20 @@
-import React, { FC, useCallback, useEffect } from 'react'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import Slider from 'react-alice-carousel'
-import { BindingType, CoverMaterial, CoverMaterialColor, CoverType, PaperSize, Template } from 'interfaces'
+import {
+  BindingType,
+  CoverMaterial,
+  CoverMaterialColor,
+  CoverType,
+  PaperSize,
+  RootInterface,
+  Template,
+} from 'interfaces'
 import 'react-alice-carousel/lib/alice-carousel.css'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import CustomButton from '../custom-button'
+import AuthModal from '../auth-modal'
 
 interface Props {
   template: Template
@@ -29,6 +39,8 @@ interface Props {
 
 const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
+  const user = useSelector((state: RootInterface) => state.auth.user)
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   const initialState = useCallback(() => {
     let coverType
@@ -218,8 +230,14 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
           />
         </div>
       </div>
+      <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
       <Link
-        to={`/editor?template=${template.id}&coverType=${selectedState.coverType?.id}&paperSize=${selectedState.paperSize?.id}&bindingType=${selectedState.bindingType?.id}&material=${selectedState.coverMaterial?.id}&color=${selectedState.coverMaterialColor?.id}`}
+        to={
+          user
+            ? `/editor?template=${template.id}&coverType=${selectedState.coverType?.id}&paperSize=${selectedState.paperSize?.id}&bindingType=${selectedState.bindingType?.id}&material=${selectedState.coverMaterial?.id}&color=${selectedState.coverMaterialColor?.id}`
+            : '#'
+        }
+        onClick={() => !user && setIsModalVisible(true)}
       >
         <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />

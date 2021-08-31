@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react'
 import { Form, Input, notification } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
-import { FormattedMessage, useIntl } from 'react-intl'
-import { signIn } from 'api'
-import { LOGIN_FAIL, LOGIN_SUCCESS } from 'redux/actions/types'
-import { CustomButton, useRouter } from 'components'
-import { loadUser } from 'redux/actions/auth'
+import Modal from 'antd/lib/modal/Modal'
+import React, { useEffect, useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { SiFacebook } from 'react-icons/si'
-import { RootInterface } from 'interfaces'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { signIn } from 'api'
+import { loadUser } from 'redux/actions/auth'
+import { LOGIN_SUCCESS, LOGIN_FAIL } from 'redux/actions/types'
+import { useDispatch, useSelector } from 'react-redux'
+import { CustomButton, useRouter } from '..'
+import { RootInterface } from '../../interfaces'
 
-const Login: React.FC = () => {
+interface IProps {
+  visible: boolean
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const AuthModal: React.FC<IProps> = ({ visible, setVisible }) => {
   const user = useSelector((state: RootInterface) => state.auth.user)
+
+  const intl = useIntl()
   const router = useRouter()
   const dispatch = useDispatch()
-  const intl = useIntl()
   const [loading, setLoading] = useState(false)
 
   const googleSignin = () => {
@@ -51,21 +58,31 @@ const Login: React.FC = () => {
       })
       .finally(() => {
         setLoading(false)
+        setVisible(false)
       })
   }
 
   useEffect(() => {
     if (user) {
-      router.history.push('/')
+      setVisible(false)
     }
   }, [user])
 
   return (
-    <div className="w-full h-screen bg-gray-100">
-      <div className="w-96 flex flex-col gap-4 bg-white rounded-lg p-6 shadow-md mx-auto mt-10">
+    <Modal
+      title={intl.formatMessage({ id: 'log-in' })}
+      visible={visible}
+      footer={null}
+      onOk={() => {
+        setVisible(false)
+      }}
+      onCancel={() => setVisible(false)}
+    >
+      <div className="w-96 flex flex-col gap-4 bg-white mx-auto mt-10">
         <h1 className="text-bold self-center text-xl">
           <FormattedMessage id="sign-in" />
         </h1>
+
         <CustomButton
           className="btn-primary bg-white text-black border border-solid"
           icon={<FcGoogle fontSize={15} />}
@@ -81,7 +98,6 @@ const Login: React.FC = () => {
         >
           Sign in with Facebook
         </CustomButton>
-
         <Form name="basic" layout="vertical" onFinish={onFinish}>
           <Form.Item
             label={
@@ -121,8 +137,8 @@ const Login: React.FC = () => {
           </CustomButton>
         </div>
       </div>
-    </div>
+    </Modal>
   )
 }
 
-export default Login
+export default AuthModal

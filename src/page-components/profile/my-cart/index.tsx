@@ -35,7 +35,19 @@ const MyCart: React.FC = () => {
   const [selectedVoucher, setSelectedVoucher] = useState<SelectValue>()
   const [giftCard, setGiftCard] = useState<GiftCard>()
   const [errorAlert, setErrorAlert] = useState<{ message: string; description: string }>()
-  const updateCartItemDebounce = useMemo(() => debounce(updateCartItem, 500), [])
+  const updateCartItemDebounce = useMemo(
+    () =>
+      debounce(
+        (id: number, data: { quantity: number }) =>
+          updateCartItem(id, data).then((res) => {
+            if (res) {
+              summary.refresh()
+            }
+          }),
+        500
+      ),
+    []
+  )
   const paymentTypes = useRequest<PaymentType[]>(listPaymentTypes)
 
   const scrollRef = useRef<any>(null)
@@ -100,6 +112,14 @@ const MyCart: React.FC = () => {
       }
     },
   })
+
+  const onError = (message: string, description: string) => {
+    setErrorAlert({
+      message: intl.formatMessage({ id: message }),
+      description: intl.formatMessage({ id: description }),
+    })
+    executeScroll()
+  }
 
   const onCreateOrder = (shipping: boolean) => {
     const { cartItems } = shoppingCart.data
@@ -173,10 +193,6 @@ const MyCart: React.FC = () => {
                     onChange={(value) => {
                       updateCartItemDebounce(item.id, {
                         quantity: value,
-                      })?.then((res) => {
-                        if (res) {
-                          summary.refresh()
-                        }
                       })
                     }}
                   />,
@@ -283,6 +299,7 @@ const MyCart: React.FC = () => {
                 selected={selectedVoucher}
                 setSelected={setSelectedVoucher}
                 refresh={() => shoppingCart.refresh()}
+                setErrorAlert={onError}
               />
               <CartGiftCard
                 giftCard={giftCard}
