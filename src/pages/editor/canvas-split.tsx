@@ -73,7 +73,7 @@ interface Props {
   addObject: (props: { object: Object }) => void
   removeObject: (props: { object: Object; container: Object }) => void
 }
-const BORDER_WIDTH = 30
+const BORDER_WIDTH = 3 * 100
 
 const BookEditor: React.FC<Props> = ({
   getProjects,

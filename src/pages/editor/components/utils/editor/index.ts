@@ -2686,8 +2686,6 @@ export default class Editor {
     return o
   }
   public imageFitNoDebounce = (objects: PObject[], _obj: PObject, border = 0) => {
-    console.log('imageFitNoDebounce', border)
-
     const object = document.getElementById(_obj.id)
     if (!object) return
     const { width: w, height: h } = getComputedStyle(object)

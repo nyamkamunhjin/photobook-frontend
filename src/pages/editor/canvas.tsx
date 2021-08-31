@@ -74,8 +74,8 @@ interface Props {
   addObject: (props: { object: Object }) => void
 }
 
-const BORDER_WIDTH = 30
-const GAP = 50
+const BORDER_WIDTH = 3 * 100
+const GAP = 5 * 100
 
 const BookEditor: React.FC<Props> = ({
   getProjects,
@@ -447,7 +447,11 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={o.style as React.CSSProperties}
                               className={o.className}
-                              onMouseDown={(e) => editors.startDrag(e, o, i, objects, GAP)}
+                              onMouseDown={
+                                currentProject.canvasType === 'Single'
+                                  ? (e) => editors.startDrag(e, o, i, objects, GAP)
+                                  : () => ''
+                              }
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
                               onDragOver={editors.onDragObjectOver}
@@ -474,7 +478,7 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 scale,
                                 zoom: 1,
-                                border: BORDER_WIDTH,
+                                border: currentProject.canvasType !== 'Single' ? BORDER_WIDTH : 0,
                               })}
                             </div>
                           )
@@ -501,11 +505,26 @@ const BookEditor: React.FC<Props> = ({
                     <div
                       key={t}
                       style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, GAP, BORDER_WIDTH)}
+                      onMouseDown={
+                        currentProject.canvasType === 'Single'
+                          ? (e) => editors.startResize(e, cursor, resize, _index, objects, GAP, BORDER_WIDTH)
+                          : () => ''
+                      }
                       className={`resize ${resize}`}
                     />
                   )
                 })}
+                {currentProject.canvasType === 'Single' && (
+                  <div
+                    className="absolute top-0 left-0 w-full h-full z-50 mix-blend-multiply"
+                    style={{
+                      borderStyle: 'solid',
+                      borderColor: '#d1d5db',
+                      borderWidth: `${BORDER_WIDTH * scale}px`,
+                      pointerEvents: 'none',
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
