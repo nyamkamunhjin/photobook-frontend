@@ -174,6 +174,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
+  // console.log('object?.props?.frameStyle', object?.props?.frameStyle, object?.props?.frameImage)
 
   return (
     <div
@@ -204,6 +205,10 @@ const Image: React.FC<Props> = ({
           ...style,
           ...(object?.props?.frameStyle || {}),
           borderImageSlice: parseFloat(object?.props?.frameStyle?.borderWidth || '0'),
+          borderWidth: object?.props?.frameStyle?.borderWidth?.includes('px')
+            ? object?.props?.frameStyle?.borderWidth
+            : object?.props?.frameStyle?.borderWidth + 'px',
+          borderColor,
           overflow,
           transform: '',
         }}

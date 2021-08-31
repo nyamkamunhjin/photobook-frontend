@@ -13,6 +13,7 @@ import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
 import { colorPresets, filters } from 'configs'
 import { MinusCircleFilled, MinusCircleOutlined } from '@ant-design/icons'
+import { debounce } from 'lodash'
 
 interface Props {
   index: number
@@ -28,7 +29,7 @@ interface Props {
   removeMaskFromObject?: () => void
   updateHistory: (type: string, object: unknown) => void
   updateObject: (value: { object: PObject }) => void
-  imageFit?: () => void
+  imageFit?: (borderWidth: number) => void
   getImagePosition: () => void
 }
 
@@ -54,6 +55,7 @@ const ImageToolbar = ({
   useHotkeys('shift+=', () => zoomIn(), [objects, index, object])
   useHotkeys('shift+-', () => zoomOut(), [objects, index, object])
   useHotkeys('shift+0', () => zoomFit(), [objects, index, object])
+  const debouncedImageFit = debounce((borderWidth) => imageFit && imageFit(borderWidth), 200)
 
   const onScale = (_object: PObject, zoom: number) => {
     updateObject({
@@ -73,7 +75,7 @@ const ImageToolbar = ({
     if (_zoom) {
       _zoom.action(zoom)
     }
-    if (zoom === 1 && imageFit) imageFit()
+    if (zoom === 1) debouncedImageFit(parseFloat(_object.props.frameStyle?.borderWidth || '0'))
 
     updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
   }
@@ -188,6 +190,7 @@ const ImageToolbar = ({
   }
 
   const changeFrameWidth = (value: number) => {
+    if (!_object) return
     updateObject({
       object: {
         ..._object,
@@ -195,11 +198,14 @@ const ImageToolbar = ({
           ..._object.props,
           frameStyle: {
             ..._object.props.frameStyle,
+            borderImage: 'none',
+            borderImageSource: 'none',
             borderWidth: value + '',
           },
         },
       },
     })
+    debouncedImageFit(value)
   }
   const changeFrameImageWidth = (value: number) => {
     updateObject({
@@ -228,6 +234,7 @@ const ImageToolbar = ({
           frameStyle: {
             ..._object.props.frameStyle,
             borderImage: 'none',
+            borderImageSource: 'none',
             rgb: color.rgb,
           },
         },

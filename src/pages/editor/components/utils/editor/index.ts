@@ -1020,7 +1020,8 @@ export default class Editor {
   }
   // #endregion [TextMethods]
   // #region [ObjectMethods]
-  public onObjectDoubleClick = (e: any, o: any, index: any) => {
+  public onObjectDoubleClick = (e: any, o: any, index: any, objects: PObject[]) => {
+    console.log('onObjectDoubleClick', index)
     const child = e.target.firstChild
     if (child && child.classList && child.classList.contains('text-container')) {
       this.setIsTextEditing(true)
@@ -1126,6 +1127,7 @@ export default class Editor {
     this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
   }
   public onRemoveObject = (containers: Container[], objects: PObject[], _index: number) => {
+    console.log('onRemoveObject', _index)
     if (this._groupObjects) {
       const groupObjects = Object.values(this._groupObjects)
       groupObjects.forEach((obj: any) => {
@@ -1138,7 +1140,6 @@ export default class Editor {
       })
       this._groupObjects = null
       this.objects = objects
-      this.deSelectObject()
     } else if (_index > -1) {
       /* montage image, text group */
       if (objects[_index].id.startsWith('image-montage-') || objects[_index].id.startsWith('text-montage-')) {
@@ -1205,7 +1206,6 @@ export default class Editor {
       toolbar.style.left = `calc(50% - 190px)`
     }
   }
-
   public startDrag = (e: any, o: any, index: number, objects?: PObject[], gap = 0) => {
     if (objects) {
       this.objects = objects
@@ -1240,6 +1240,20 @@ export default class Editor {
 
     this.moveResizers({ object, angle: this._rotateAngle, objectType })
     this._objectType = objectType
+
+    // Text edit or delete
+    // if (o.props.className === 'text-container') {
+    //   const text = e.target.querySelector('.text')
+    //   if (text && text.contentEditable) {
+    //     const { top, left, width, height } = text.getBoundingClientRect()
+    //     if (e.clientX < left || e.clientX > left + width || e.clientY < top || e.clientY > top + height) {
+    //       this.setIsTextEditing(false)
+    //       text.style.pointerEvents = 'none'
+    //       text.style.cursor = 'pointer'
+    //       text.contentEditable = false
+    //     }
+    //   }
+    // }
 
     const onMouseMove = (sube: any) => {
       if (!this._isMouseDown) return
@@ -2672,6 +2686,8 @@ export default class Editor {
     return o
   }
   public imageFitNoDebounce = (objects: PObject[], _obj: PObject, border = 0) => {
+    console.log('imageFitNoDebounce', border)
+
     const object = document.getElementById(_obj.id)
     if (!object) return
     const { width: w, height: h } = getComputedStyle(object)
@@ -3016,7 +3032,6 @@ export default class Editor {
     border = 0
   ) => {
     if (e.button !== 0 || _index === -1 || !this._object) return
-
     // For collisionBorder start
     const o = objects[_index]
     const object = document.getElementById(o.id) as HTMLDivElement

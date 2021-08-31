@@ -35,7 +35,7 @@ interface Props {
   sendForward?: () => void
   moveResizers?: (move: MoveResizerInterface) => void
   isLayout?: boolean
-  imageFit?: () => void
+  imageFit?: (borderWidth: number) => void
   getImagePosition: () => void
 }
 const Toolbar: React.FC<Props> = ({

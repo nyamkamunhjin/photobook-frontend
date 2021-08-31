@@ -134,12 +134,13 @@ const BookEditor: React.FC<Props> = ({
   const [_object, setObject] = useState<any>(null)
   const [_groupObjects, setGroupObjects] = useState<any>(null)
   const [footerCollapse, setFooterCollapse] = useBoolean(false)
-  const [_groupStyles, setGroupStyles] = useState<{
-    left: any
-    top: any
-    width: any
-    height: any
-  }>()
+  const [_groupStyles, setGroupStyles] =
+    useState<{
+      left: any
+      top: any
+      width: any
+      height: any
+    }>()
   const _slideIndex = 0
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])
@@ -391,7 +392,7 @@ const BookEditor: React.FC<Props> = ({
             sendForward={() => editors.onSendForward(_index, objects)}
             sendBackward={() => editors.onSendBackward(_index, objects)}
             removeObject={() => editors.onRemoveObject(containers, objects, _index)}
-            imageFit={() => {
+            imageFit={(borderWidth) => {
               editors.imageFitNoDebounce(objects, editors._object, BORDER_WIDTH)
             }}
             getImagePosition={() => editors.getImagePosition(objects[_index])}
@@ -451,7 +452,7 @@ const BookEditor: React.FC<Props> = ({
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
                               onDragOver={editors.onDragObjectOver}
                               onDragLeave={(e) => editors.onDragObjectLeave(e, _index)}
-                              onDoubleClick={(e) => editors.onObjectDoubleClick(e, o, i)}
+                              onDoubleClick={(e) => editors.onObjectDoubleClick(e, o, i, objects)}
                               onInput={(e) => editors.updateText(_index, objects, e)}
                               onPaste={(e) => editors.updateText(_index, objects, e)}
                               onBlur={(e) => {
