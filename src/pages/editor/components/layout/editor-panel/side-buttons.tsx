@@ -18,7 +18,7 @@ import SlideSettings from './settings'
 
 interface Props {
   type: 'photobook' | 'canvas' | 'photo' | 'frame'
-  createImage: (e: unknown) => void
+  createImage?: (e: unknown) => void
   createText?: () => void
   createSquare?: () => void
   createEclipse?: () => void

@@ -398,18 +398,32 @@ const BookEditor: React.FC<Props> = ({
             getImagePosition={() => editors.getImagePosition(objects[_index])}
           />
           <div id="selection" hidden ref={selectionRef} />
-          <SideButtons
-            createImage={(e) => editors.createImage(e, objects)}
-            createText={() => editors.createText(objects)}
-            createSquare={() => editors.createSquare(objects)}
-            createEclipse={() => editors.createEclipse(objects)}
-            settings={false}
-            type="canvas"
-          />
+          {currentProject.canvasType === 'Single' ? (
+            <SideButtons
+              createImage={(e) => editors.createImage(e, objects)}
+              createText={() => editors.createText(objects)}
+              createSquare={() => editors.createSquare(objects)}
+              createEclipse={() => editors.createEclipse(objects)}
+              settings={false}
+              type="canvas"
+            />
+          ) : (
+            <SideButtons
+              createText={() => editors.createText(objects)}
+              createSquare={() => editors.createSquare(objects)}
+              createEclipse={() => editors.createEclipse(objects)}
+              settings={false}
+              type="canvas"
+            />
+          )}
           <div
             id="slide_container"
             onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH)}
+            onDrop={
+              currentProject.canvasType === 'Single'
+                ? (e) => editors.onObjectDrop(e, editor.type, objects, _index, 0)
+                : (e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, false, true)
+            }
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -448,7 +462,7 @@ const BookEditor: React.FC<Props> = ({
                               style={o.style as React.CSSProperties}
                               className={o.className}
                               onMouseDown={
-                                currentProject.canvasType === 'Single'
+                                currentProject.canvasType === 'Single' || o?.props?.className !== 'image-placeholder'
                                   ? (e) => editors.startDrag(e, o, i, objects, GAP)
                                   : () => ''
                               }
@@ -506,7 +520,7 @@ const BookEditor: React.FC<Props> = ({
                       key={t}
                       style={{ cursor }}
                       onMouseDown={
-                        currentProject.canvasType === 'Single'
+                        currentProject.canvasType === 'Single' || _object?.props?.className !== 'image-placeholder'
                           ? (e) => editors.startResize(e, cursor, resize, _index, objects, GAP, BORDER_WIDTH)
                           : () => ''
                       }

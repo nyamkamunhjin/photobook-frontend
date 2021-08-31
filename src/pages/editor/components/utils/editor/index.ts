@@ -2072,7 +2072,8 @@ export default class Editor {
     objects: PObject[],
     _index: number,
     border = 0,
-    hasDefaultImg = false
+    hasDefaultImg = false,
+    imgWithoutObject = false
   ) => {
     this.hideToolbar()
     e.preventDefault()
