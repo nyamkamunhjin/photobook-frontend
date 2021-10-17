@@ -377,12 +377,25 @@ export const listProject = async (params?: PaginatedParams[0], data?: Record<str
   return project
 }
 
-export const updateProjectImages = async (data: Object, projectId: number) => {
-  const response = await BaseRequest({
-    url: `project/${projectId}/images`,
-    method: 'PUT',
-    data,
-  })
+export const updateProjectImages = async (data: Object, projectId: number, isTradePhotos = false) => {
+  console.log(isTradePhotos)
+  const response = isTradePhotos
+    ? await BaseRequest({
+        url: `project/${projectId}/images`,
+        method: 'PUT',
+        data: {
+          ...data,
+          isTradePhotos: true,
+        },
+      })
+    : await BaseRequest({
+        url: `project/${projectId}/images`,
+        method: 'PUT',
+        data: {
+          ...data,
+          isTradePhotos: false,
+        },
+      })
   return response?.data
 }
 

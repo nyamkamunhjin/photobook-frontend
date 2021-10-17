@@ -1,20 +1,22 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { UploadablePicture } from 'interfaces'
 import { RiComputerFill, RiFacebookBoxFill, RiGoogleFill, RiImageFill } from 'react-icons/ri'
+import { HiPhotograph } from 'react-icons/hi'
 import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import UploadModal from '../upload-modal'
 
 interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
-  linkPhoto: (images: string[]) => void
+  linkPhoto: (images: string[], isTradePhotos?: boolean) => void
   syncPhoto: (images: UploadablePicture[]) => void
   single?: boolean
 }
 
 interface Type {
   visible: boolean
-  type: 'google' | 'facebook' | 'photos'
+  type: 'google' | 'facebook' | 'photos' | 'photo_trade'
 }
 
 const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto, single = false }) => {
@@ -47,6 +49,9 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto,
     }
     setModal({ visible: true, type: 'google' })
   }
+  const onPhotoTrade = () => {
+    setModal({ visible: true, type: 'photo_trade' })
+  }
   const onPhotos = () => {
     setModal({ visible: true, type: 'photos' })
   }
@@ -58,6 +63,7 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto,
       <div className={grid}>
         <input
           type="file"
+          accept="image/*"
           multiple
           style={{ display: 'none' }}
           onChange={(e) => uploadPhoto(e)}
@@ -85,6 +91,12 @@ const UploadPhotosGroup: React.FC<Props> = ({ uploadPhoto, syncPhoto, linkPhoto,
           <RiGoogleFill size={23} />
           <span>
             <FormattedMessage id="upload.google" />
+          </span>
+        </div>
+        <div onClick={onPhotoTrade} className="UploadPhotos">
+          <HiPhotograph size={23} />
+          <span>
+            <FormattedMessage id="upload.photoTrade" />
           </span>
         </div>
       </div>

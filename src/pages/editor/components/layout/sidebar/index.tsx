@@ -45,7 +45,7 @@ import FrameMasks from './tabs/frameMasks'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
-  linkImages: (images: string[], id: number) => Promise<void>
+  linkImages: (images: string[], id: number, isTradePhotos: boolean) => Promise<void>
   unlinkImages: (images: string[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   setType: (type: string) => void
@@ -122,9 +122,10 @@ const SideBarPanel: React.FC<Props> = ({
     }
   }
 
-  const linkPhoto = async (_images: string[]) => {
+  const linkPhoto = async (_images: string[], isTradePhotos = false) => {
+    console.log('linkPhoto', isTradePhotos)
     await uploadImages()
-    await linkImages(_images, currentProject.id)
+    await linkImages(_images, currentProject.id, isTradePhotos)
   }
 
   const unlinkPhoto = async (_images: string[]) => {

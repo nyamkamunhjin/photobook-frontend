@@ -284,6 +284,7 @@
   "upload.my_photos": "My photos",
   "upload.facebook": "Facebook",
   "upload.google": "Google",
+  "upload.photoTrade": "Photo Trade",
   "logged_as": "Logged as {name}",
   "logout.facebook": "Logout from Facebook",
   "logout.google": "Logout from Google",

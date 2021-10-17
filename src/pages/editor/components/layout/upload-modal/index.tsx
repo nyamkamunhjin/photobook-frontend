@@ -6,15 +6,16 @@ import { useIntl } from 'react-intl'
 import Facebook from './facebook'
 import Google from './google'
 import Photos from './photos'
+import PhotoTrade from './photo-trade'
 
 interface Props extends ModalProps {
   type?: 'wide' | 'default' | 'full' | 'fwide'
-  name: 'facebook' | 'google' | 'photos'
+  name: 'facebook' | 'google' | 'photos' | 'photo_trade'
   loading: boolean
   okDisable?: boolean
   cancelDisable?: boolean
   onUpload: (images: any) => void
-  onLink: (images: any) => void
+  onLink: (images: any, isTradePhotos?: boolean) => void
 }
 
 const UploadModal: React.FC<Props> = ({
@@ -75,6 +76,12 @@ const UploadModal: React.FC<Props> = ({
           onClick={(e) => {
             if (name === 'photos') {
               onLink(selectedImages?.map((each) => each.id))
+            } else if (name === 'photo_trade') {
+              console.log(name)
+              onLink(
+                selectedImages?.map((each) => each.id),
+                true
+              )
             } else {
               onUpload(selectedImages)
             }
@@ -98,6 +105,7 @@ const UploadModal: React.FC<Props> = ({
           {name === 'facebook' && <Facebook name={name} setSelectedImages={setSelectedImages} onCancel={onCancel} />}
           {name === 'google' && <Google name={name} setSelectedImages={setSelectedImages} onCancel={onCancel} />}
           {name === 'photos' && <Photos name={name} setSelectedImages={setSelectedImages} />}
+          {name === 'photo_trade' && <PhotoTrade name={name} setSelectedImages={setSelectedImages} />}
         </>
       )}
     </Modal>
