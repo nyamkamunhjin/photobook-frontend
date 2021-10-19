@@ -42,6 +42,7 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
+import { linkImages as _linkImages } from 'redux/actions/image'
 import {
   Header,
   BackgroundSingleImages,
@@ -72,6 +73,7 @@ interface Props {
   loadBackgrounds: (backgrounds: Object[]) => void
   addLayout: (props: { objects: Object[]; layout: FullLayout }) => void
   addObject: (props: { object: Object }) => void
+  linkImages: (images: string[], id: number) => Promise<void>
 }
 
 const BORDER_WIDTH = 3 * 100
@@ -92,6 +94,7 @@ const BookEditor: React.FC<Props> = ({
   loadBackgrounds,
   addLayout,
   addObject,
+  linkImages,
   removeObject,
   project: {
     currentProject,
@@ -164,6 +167,8 @@ const BookEditor: React.FC<Props> = ({
       wait: 1000 * 30,
     }
   )
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
 
   const editors = useMemo(() => {
     return new Editor({
@@ -371,6 +376,11 @@ const BookEditor: React.FC<Props> = ({
   useEffect(() => {
     debouncedSave.run()
   }, [_object])
+
+  useEffect(() => {
+    if (currentProject.images?.length === 0 && tradephoto) linkImages([tradephoto], currentProject.id)
+  }, [tradephoto, currentProject])
+  console.log('currentProject.images', currentProject, 'tradephoto', tradephoto)
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -649,4 +659,5 @@ export default connect(mapStateToProps, {
   removeObject: _removeObject,
   reOrderSlide: _reOrderSlide,
   saveProjectAttribute: _saveProjectAttribute,
+  linkImages: _linkImages,
 })(BookEditor)

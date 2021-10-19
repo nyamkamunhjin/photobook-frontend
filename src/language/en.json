@@ -279,6 +279,9 @@
   "sign-up": "Sign up",
   "home": "Home",
   "canvas": "Canvas",
+  "canvas_single": "Canvas single",
+  "canvas_split": "Canvas split",
+  "framing": "Framing",
   "start_book": "Start book",
   "upload.computer": "Computer",
   "upload.my_photos": "My photos",
@@ -367,5 +370,8 @@
   "materials_out_of_stock_desc": "Currently materials are out of stock",
   "-": "-",
   "no cart item.": "Invalid voucher apply",
-  "no_cart_item_description": "Applied voucher doesn`t match with any cart items"
+  "no_cart_item_description": "Applied voucher doesn`t match with any cart items",
+
+  "choose_editor": "Choose editor",
+  "move_editor": "Move to editor"
 }

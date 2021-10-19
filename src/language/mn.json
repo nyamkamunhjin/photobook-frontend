@@ -279,6 +279,9 @@
   "sign-up": "Бүртгүүлэх",
   "home": "Нүүр",
   "canvas": "Canvas",
+  "canvas_single": "Canvas single",
+  "canvas_split": "Canvas split",
+  "framing": "Жаазлалт",
   "start_book": "Албум эхлүүлэх",
   "upload.computer": "Computer",
   "upload.my_photos": "Миний зургууд",
@@ -367,5 +370,8 @@
   "materials_out_of_stock_desc": "Одоогийн материалын нөөц хүрэхгүй байна",
   "-": "-",
   "no cart item.": "Ваучер буруу байна",
-  "no_cart_item_description": "Ваучер-д тохирох бүтээгдхүүн сагсанд байхгүй байна"
+  "no_cart_item_description": "Ваучер-д тохирох бүтээгдхүүн сагсанд байхгүй байна",
+
+  "choose_editor": "Choose editor",
+  "move_editor": "Move editor"
 }

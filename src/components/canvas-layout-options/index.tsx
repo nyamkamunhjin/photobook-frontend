@@ -25,6 +25,8 @@ interface Props {
 
 const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, selectedState, setSelectedState }) => {
   const intl = useIntl()
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
   const user = useSelector((state: RootInterface) => state.auth.user)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const widthRef = useRef<HTMLInputElement>(null)
@@ -41,7 +43,9 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       return alert('Please check the size')
 
     return history.push(
-      `/editor/canvas/split?template=${template.id}&width=${widthRef.current.value}&height=${heightRef.current.value}`
+      `/editor/canvas/split?template=${template.id}&width=${widthRef.current.value}&height=${heightRef.current.value}${
+        tradephoto ? `&tradephoto=${tradephoto}` : ''
+      }`
     )
   }
 
@@ -144,7 +148,13 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
         </CustomButton>
       ) : (
         <Link
-          to={user ? `/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}` : '#'}
+          to={
+            user
+              ? `/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}${
+                  tradephoto ? `&tradephoto=${tradephoto}` : ''
+                }`
+              : '#'
+          }
           onClick={() => !user && setIsModalVisible(true)}
         >
           <CustomButton className="btn-primary">

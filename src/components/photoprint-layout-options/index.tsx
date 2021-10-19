@@ -22,6 +22,8 @@ interface Props {
 
 const PhotoprintLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
   const user = useSelector((state: RootInterface) => state.auth.user)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const initialState = useCallback(() => {
@@ -70,7 +72,13 @@ const PhotoprintLayoutOptions: FC<Props> = ({ template, paperSizes, selectedStat
       </div>
       <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
       <Link
-        to={user ? `/editor/photoprint?template=${template.id}&paperSize=${selectedState.paperSize?.id}` : '#'}
+        to={
+          user
+            ? `/editor/photoprint?template=${template.id}&paperSize=${selectedState.paperSize?.id}${
+                tradephoto ? `&tradephoto=${tradephoto}` : ''
+              }`
+            : '#'
+        }
         onClick={() => !user && setIsModalVisible(true)}
       >
         <CustomButton className="btn-primary">

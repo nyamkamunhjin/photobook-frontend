@@ -24,6 +24,8 @@ interface Props {
 
 const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, selectedState, setSelectedState }) => {
   const intl = useIntl()
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
   const user = useSelector((state: RootInterface) => state.auth.user)
   const [isModalVisible, setIsModalVisible] = useState(false)
   useEffect(() => {
@@ -95,7 +97,13 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
       </div>
       <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
       <Link
-        to={user ? `/editor/frame?template=${template.id}&paperSize=${selectedState.paperSize?.id}` : '#'}
+        to={
+          user
+            ? `/editor/frame?template=${template.id}&paperSize=${selectedState.paperSize?.id}${
+                tradephoto ? `&tradephoto=${tradephoto}` : ''
+              }`
+            : '#'
+        }
         onClick={() => !user && setIsModalVisible(true)}
       >
         <CustomButton className="btn-primary">

@@ -1,19 +1,31 @@
-import React, { FC } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import 'react-medium-image-zoom/dist/styles.css'
 import Zoom from 'react-medium-image-zoom'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { CustomButton } from 'components'
-import { buyPhoto } from 'api'
+import { buyPhoto, listTemplateCategory } from 'api'
 import { currencyFormat } from 'utils'
-import { notification } from 'antd'
-import { TradePhotoCategory } from 'interfaces'
+import { notification, Select } from 'antd'
+import { Category, TradePhotoCategory } from 'interfaces'
+import { Link } from 'react-router-dom'
 
 interface Props {
   tradePhoto: any
+  categories: any
 }
 
-const PhotoTradeItem: FC<Props> = ({ tradePhoto }) => {
+// угаалгах, жаазлах, canvas /single, split - template сонгох/
+const EDITORS = [
+  { name: 'photoprint', url: '/product/photoprint?all=false', type: 'photoprint' },
+  { name: 'frame', url: '/product/frame?all=false', type: 'frame' },
+  { name: 'canvas_single', url: '/product/canvas?all=false&format=Single', type: 'canvas' },
+  { name: 'canvas_split', url: '/product/canvas?all=false&format=Split', type: 'canvas' },
+]
+
+const PhotoTradeItem: FC<Props> = ({ tradePhoto, categories }) => {
   const intl = useIntl()
+  const [editor, setEditor] = useState<{ name: string; url: string; type: string } | null>(null)
+
   return (
     <div className="flex flex-col items-start min-h-screen ">
       <div className="w-full py-20 px-24 bg-gray-100 shadow-inner">
@@ -83,8 +95,8 @@ const PhotoTradeItem: FC<Props> = ({ tradePhoto }) => {
               <span className="text-lg font-bold">₮</span>
             </span>
           </div>
-          <div className="flex p-6">
-            <CustomButton
+          <div className="flex flex-col gap-4 p-6">
+            {/* <CustomButton
               className="w-full bg-black text-white py-4 px-3 focus:outline-none rounded-xl text-lg font-semibold component-hover"
               onClick={() =>
                 buyPhoto(tradePhoto.data?.id).then((res) => {
@@ -93,7 +105,30 @@ const PhotoTradeItem: FC<Props> = ({ tradePhoto }) => {
               }
             >
               <FormattedMessage id="buy" />
-            </CustomButton>
+            </CustomButton> */}
+            <span className="text-base font-semibold">
+              <FormattedMessage id="choose_editor" />
+            </span>
+            <Select
+              className="w-full"
+              onChange={(value) => {
+                const _editor = EDITORS.find((item) => item.name === value)
+                if (_editor) setEditor(_editor)
+              }}
+            >
+              {EDITORS.map((each) => (
+                <Select.Option key={each.name} value={each.name}>
+                  <FormattedMessage id={each.name} />
+                </Select.Option>
+              ))}
+            </Select>
+            {editor && (
+              <Link to={`${editor.url}&category=${categories[editor.type] || 1}&tradephoto=${tradePhoto.data.id}`}>
+                <CustomButton className="w-full bg-black text-white py-4 px-3 focus:outline-none rounded-xl text-lg font-semibold component-hover">
+                  <FormattedMessage id="move_editor" />
+                </CustomButton>
+              </Link>
+            )}
           </div>
         </div>
       </div>

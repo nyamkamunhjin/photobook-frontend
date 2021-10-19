@@ -35,7 +35,7 @@ const ProductTemplate: FC = () => {
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'canvas' }))
 
   const paperMaterials = useRequest(() => listPaperMaterial())
-  console.log(selectedShowCase)
+
   return (
     <WidthLimiter className="flex flex-col sm:flex-row min-h-screen">
       {template.loading ? (

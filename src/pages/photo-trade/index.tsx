@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { useRequest } from 'ahooks'
 import React, { useEffect, useRef, useState } from 'react'
-import { getTradePhoto, listTradePhoto, listTradePhotoCategory } from 'api'
-import { TradePhoto, TradePhotoCategory } from 'interfaces'
+import { getTradePhoto, listTemplateCategory, listTradePhoto, listTradePhotoCategory } from 'api'
+import { Category, TradePhoto, TradePhotoCategory } from 'interfaces'
 import { CustomButton, Loading } from 'components'
 import { Modal, Input, Select, Collapse } from 'antd'
 import { FormattedMessage } from 'react-intl'
@@ -11,6 +11,8 @@ import 'react-medium-image-zoom/dist/styles.css'
 import PhotoTradeItem from 'page-components/photo-trade-item'
 import { FilterOutlined } from '@ant-design/icons'
 
+const EDITORS = ['photoprint', 'frame', 'canvas']
+
 const PhotoTrade: React.FC = () => {
   const [id, setId] = useState<number>()
   const [sort, setSort] = useState<'most_sold' | 'most_recent'>('most_recent')
@@ -18,8 +20,16 @@ const PhotoTrade: React.FC = () => {
   const [searchWord, setSearchWord] = useState<string>('')
   const [searchTag, setSearchTag] = useState<string>('')
   const [searchCategory, setSearchCategory] = useState<string>()
-
   const containerRef = useRef<HTMLDivElement>(null)
+  const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, {}), {
+    formatResult: ({ list }) => {
+      return list.reduce((acc: any, item: Category) => {
+        if (!item.templateType || item.templateType.name in acc) return acc
+        acc[item.templateType.name] = item.id
+        return acc
+      }, {})
+    },
+  })
 
   const tradePhotoCategories = useRequest(listTradePhotoCategory)
   const tradePhotos = useRequest(
@@ -162,7 +172,7 @@ const PhotoTrade: React.FC = () => {
             </p>
           )}
         </div>
-        {tradePhoto.data && (
+        {tradePhoto.data && categories.data && (
           <Modal
             // title={tradePhoto.data.photoName}
             className="w-full max-w-6xl"
@@ -173,7 +183,7 @@ const PhotoTrade: React.FC = () => {
             onCancel={() => setId(undefined)}
             footer={false}
           >
-            <PhotoTradeItem tradePhoto={tradePhoto} />
+            <PhotoTradeItem tradePhoto={tradePhoto} categories={categories.data} />
           </Modal>
         )}
       </div>

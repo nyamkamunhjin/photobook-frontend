@@ -9,11 +9,16 @@ interface Props {
 }
 
 const TemplateCard: FC<Props> = ({ template, rowSize = 3 }) => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
+
   return (
     <Link
       className="p-2 rounded hover:shadow-xl hover:bg-white ease-in transition-all transform hover:-translate-y-1 border border-gray-200"
       style={{ width: `calc(100% / ${rowSize} - 0.5rem` }}
-      to={`/product/${template.templateType?.name}/template/${template.id}`}
+      to={`/product/${template.templateType?.name}/template/${template.id}${
+        tradephoto ? `?tradephoto=${tradephoto}` : ''
+      }`}
     >
       <article className="flex flex-col gap-4">
         <div>

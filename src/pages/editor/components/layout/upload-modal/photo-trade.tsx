@@ -1,8 +1,8 @@
 import { useRequest } from 'ahooks'
 import { Checkbox, Spin } from 'antd'
-import { listTradeImages } from 'api'
+import { listTradeImages, listTradePhoto } from 'api'
 import { Empty } from 'components'
-import { Image, UploadablePicture } from 'interfaces'
+import { Image, TradePhoto, UploadablePicture } from 'interfaces'
 import React from 'react'
 
 interface Props {
@@ -12,15 +12,35 @@ interface Props {
 
 const PhotoTrade: React.FC<Props> = ({ setSelectedImages }) => {
   const images = useRequest<Image[]>(listTradeImages)
+  const tradePhotos = useRequest<TradePhoto[]>(listTradePhoto)
+  const formatter = new Intl.NumberFormat()
+
   const renderBody = (_images: Image[]) =>
-    _images?.map((image) => (
-      <Checkbox key={image.id} value={image.id} className="w-24 h-24">
-        <img src={image.tempUrl} className="object-cover" alt={image.id} />
-      </Checkbox>
-    ))
+    _images?.map((image) => {
+      if (!tradePhotos.data)
+        return (
+          <Checkbox key={image.id} value={image.id} className="w-24 h-24">
+            <img src={image.tempUrl} className="object-cover" alt={image.id} />
+          </Checkbox>
+        )
+      const { price, sellCount } = tradePhotos.data.find((item) => item.id === parseFloat(image.id)) as TradePhoto
+      return (
+        <Checkbox key={image.id} value={image.id} className="w-24 h-24">
+          <div className="flex flex-col text-xs">
+            <img src={image.tempUrl} className="object-cover" alt={image.id} />
+            <span>
+              Үнэ: <b>{formatter.format(price)}₮</b>
+            </span>
+            <span>
+              Зарагдсан тоо: <b>{sellCount}</b>
+            </span>
+          </div>
+        </Checkbox>
+      )
+    })
   return (
     <>
-      {images.loading ? (
+      {images.loading && tradePhotos.loading ? (
         <Spin spinning>
           <div style={{ height: 150 }} />
         </Spin>

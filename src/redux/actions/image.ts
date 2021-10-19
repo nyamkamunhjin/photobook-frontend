@@ -44,7 +44,7 @@ export const addImage =
   }
 export const linkImages = (keys: string[], id: number) => async (dispatch: any) => {
   try {
-    let { actions } = await updateProjectImages({ link: keys }, id)
+    let { actions } = await updateProjectImages({ link: keys.map((key) => parseFloat(key)) }, id)
     actions = await Promise.all(
       actions.map(async (image: Image) => ({
         ...image,
