@@ -13,7 +13,6 @@ interface Props {
 
 const Photos: React.FC<Props> = ({ setSelectedImages }) => {
   const images = useRequest<Image[]>(listMyImages)
-  console.log(images.data)
   const renderBody = (_images: Image[]) =>
     _images?.map((image) => (
       <Checkbox key={image.id} value={image.id} className="w-24 h-24">

@@ -9,7 +9,7 @@ import UploadModal from '../upload-modal'
 
 interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
-  linkPhoto: (images: string[], isTradePhotos?: boolean) => void
+  linkPhoto: (images: string[]) => void
   syncPhoto: (images: UploadablePicture[]) => void
   single?: boolean
 }

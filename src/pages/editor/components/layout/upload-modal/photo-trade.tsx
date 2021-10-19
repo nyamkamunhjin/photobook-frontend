@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks'
 import { Checkbox, Spin } from 'antd'
-import { listTradePhoto } from 'api'
+import { listTradeImages } from 'api'
 import { Empty } from 'components'
 import { Image, UploadablePicture } from 'interfaces'
 import React from 'react'
@@ -11,15 +11,11 @@ interface Props {
 }
 
 const PhotoTrade: React.FC<Props> = ({ setSelectedImages }) => {
-  const images = useRequest<Image[]>(listTradePhoto)
+  const images = useRequest<Image[]>(listTradeImages)
   const renderBody = (_images: Image[]) =>
     _images?.map((image) => (
       <Checkbox key={image.id} value={image.id} className="w-24 h-24">
-        <img
-          src={image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl}
-          className="object-cover"
-          alt={image.id}
-        />
+        <img src={image.tempUrl} className="object-cover" alt={image.id} />
       </Checkbox>
     ))
   return (

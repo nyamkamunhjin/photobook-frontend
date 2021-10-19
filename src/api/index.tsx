@@ -153,6 +153,23 @@ export const listMyImages = async (params?: PaginatedParams[0], data?: Record<st
   return images
 }
 
+export const listTradeImages = async (params?: PaginatedParams[0], data?: Record<string, unknown>) => {
+  const query = params && data ? buildQuery(params, data) : ''
+
+  const response = await BaseRequest({
+    url: `image?type=tradePhoto&${query}`,
+    method: 'GET',
+  })
+  const images = await Promise.all(
+    response?.data.map(async (image: Image) => ({
+      ...image,
+      tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+    }))
+  )
+  if (params) return { list: images, total: response?.totalCount, offset: response?.offset }
+  return images
+}
+
 export const listImage = async (type?: string, params?: PaginatedParams[0], data?: Record<string, unknown>) => {
   let query = params && data ? buildQuery(params, data) : ''
   if (type) {
@@ -377,25 +394,12 @@ export const listProject = async (params?: PaginatedParams[0], data?: Record<str
   return project
 }
 
-export const updateProjectImages = async (data: Object, projectId: number, isTradePhotos = false) => {
-  console.log(isTradePhotos)
-  const response = isTradePhotos
-    ? await BaseRequest({
-        url: `project/${projectId}/images`,
-        method: 'PUT',
-        data: {
-          ...data,
-          isTradePhotos: true,
-        },
-      })
-    : await BaseRequest({
-        url: `project/${projectId}/images`,
-        method: 'PUT',
-        data: {
-          ...data,
-          isTradePhotos: false,
-        },
-      })
+export const updateProjectImages = async (data: Object, projectId: number) => {
+  const response = await BaseRequest({
+    url: `project/${projectId}/images`,
+    method: 'PUT',
+    data,
+  })
   return response?.data
 }
 

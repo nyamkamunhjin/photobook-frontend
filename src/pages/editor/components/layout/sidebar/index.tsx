@@ -45,7 +45,7 @@ import FrameMasks from './tabs/frameMasks'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
-  linkImages: (images: string[], id: number, isTradePhotos: boolean) => Promise<void>
+  linkImages: (images: string[], id: number) => Promise<void>
   unlinkImages: (images: string[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   setType: (type: string) => void
@@ -122,10 +122,13 @@ const SideBarPanel: React.FC<Props> = ({
     }
   }
 
-  const linkPhoto = async (_images: string[], isTradePhotos = false) => {
-    console.log('linkPhoto', isTradePhotos)
+  const linkPhoto = async (_images: string[]) => {
+    _images = _images.reduce((acc, item) => {
+      if (!images.some((el) => el.id === item)) acc.push(item)
+      return acc
+    }, [] as string[])
     await uploadImages()
-    await linkImages(_images, currentProject.id, isTradePhotos)
+    await linkImages(_images, currentProject.id)
   }
 
   const unlinkPhoto = async (_images: string[]) => {
@@ -234,7 +237,7 @@ const SideBarPanel: React.FC<Props> = ({
     switch (editor.type) {
       case 'images': {
         if (hasImage) {
-          const uploadedImages = images.filter((image) => image.type === editor.type)
+          const uploadedImages = images.filter((image) => image.type === editor.type || image.type === 'tradePhoto')
           return !loading && uploadedImages.length === 0 ? (
             <div className="UploadImageDropArea">
               <div>

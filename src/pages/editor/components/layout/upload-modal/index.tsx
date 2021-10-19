@@ -15,7 +15,7 @@ interface Props extends ModalProps {
   okDisable?: boolean
   cancelDisable?: boolean
   onUpload: (images: any) => void
-  onLink: (images: any, isTradePhotos?: boolean) => void
+  onLink: (images: any) => void
 }
 
 const UploadModal: React.FC<Props> = ({
@@ -74,14 +74,8 @@ const UploadModal: React.FC<Props> = ({
           disabled={okDisable}
           type="primary"
           onClick={(e) => {
-            if (name === 'photos') {
+            if (name === 'photos' || name === 'photo_trade') {
               onLink(selectedImages?.map((each) => each.id))
-            } else if (name === 'photo_trade') {
-              console.log(name)
-              onLink(
-                selectedImages?.map((each) => each.id),
-                true
-              )
             } else {
               onUpload(selectedImages)
             }

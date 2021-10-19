@@ -42,30 +42,28 @@ export const addImage =
       })
     }
   }
-export const linkImages =
-  (keys: string[], id: number, isTradePhotos = false) =>
-  async (dispatch: any) => {
-    try {
-      let { actions } = await updateProjectImages({ link: keys }, id, isTradePhotos)
-      actions = await Promise.all(
-        actions.map(async (image: Image) => ({
-          ...image,
-          tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
-        }))
-      )
-      dispatch({
-        type: ADD_IMAGES,
-        payload: actions,
-      })
-      return actions
-    } catch (err) {
-      dispatch({
-        type: IMAGE_ERROR,
-        payload: { msg: err },
-      })
-      return null
-    }
+export const linkImages = (keys: string[], id: number) => async (dispatch: any) => {
+  try {
+    let { actions } = await updateProjectImages({ link: keys }, id)
+    actions = await Promise.all(
+      actions.map(async (image: Image) => ({
+        ...image,
+        tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+      }))
+    )
+    dispatch({
+      type: ADD_IMAGES,
+      payload: actions,
+    })
+    return actions
+  } catch (err) {
+    dispatch({
+      type: IMAGE_ERROR,
+      payload: { msg: err },
+    })
+    return null
   }
+}
 
 export const unlinkImages = (keys: string[], id: number) => async (dispatch: any) => {
   try {
