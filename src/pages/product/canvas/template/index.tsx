@@ -33,7 +33,6 @@ const ProductTemplate: FC = () => {
   })
 
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'canvas' }))
-
   const paperMaterials = useRequest(() => listPaperMaterial())
 
   return (
@@ -106,7 +105,7 @@ const ProductTemplate: FC = () => {
             <div dangerouslySetInnerHTML={{ __html: template.data.description }} />
           </div>
           <div className="flex flex-col w-full sm:w-1/2 p-4">
-            {template.loading || paperSizes.loading || paperMaterials.loading ? (
+            {template.loading || paperSizes.loading || !paperSizes.data || paperMaterials.loading ? (
               <Loading fill={false} />
             ) : (
               <CanvasLayoutOptions

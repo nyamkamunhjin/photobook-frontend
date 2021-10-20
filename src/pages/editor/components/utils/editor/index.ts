@@ -2177,6 +2177,77 @@ export default class Editor {
     this.deSelectObject()
   }
 
+  public setFirstObject = (
+    image: Image,
+    type: FeatureType,
+    objects: PObject[],
+    slideWidth: number,
+    slideHeight: number,
+    border = 0
+  ) => {
+    const style = {
+      top: 0,
+      left: 0,
+      width: slideWidth,
+      height: slideHeight,
+      rotateAngle: 0,
+      transform: '',
+      zIndex: 100 + objects.length + '',
+    }
+    const _id = uuidv4()
+    this.addObject({
+      object: {
+        id: _id,
+        className: 'object',
+        style,
+        props: {
+          imageUrl: image.imageUrl,
+          tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+          className: 'image-placeholder',
+          imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+          style: { transform: 'scaleX(1)' },
+          placeholderStyle: { opacity: 1 },
+        },
+      },
+    })
+
+    this.setObjectType('image')
+
+    // ImageFit
+    this.imageFitNoDebounce(
+      [
+        {
+          id: _id,
+          className: 'object',
+          style,
+          props: {
+            imageUrl: image.imageUrl,
+            tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+            className: 'image-placeholder',
+            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+            style: { transform: 'scaleX(1)' },
+            placeholderStyle: { opacity: '1' },
+          },
+        },
+      ],
+      {
+        id: _id,
+        className: 'object',
+        style,
+        props: {
+          imageUrl: image.imageUrl,
+          tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+          className: 'image-placeholder',
+          imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+          style: { transform: 'scaleX(1)' },
+          placeholderStyle: { opacity: '1' },
+        },
+      },
+      border
+    )
+    this.objects = objects
+  }
+
   public createImagesMontage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     if (e.dataTransfer) {

@@ -34,6 +34,8 @@ import {
   EditorInterface,
   FullLayout,
   HistoryProps,
+  Image,
+  ImageInterface,
   ObjectType,
   PObject,
   ProjectCreate,
@@ -45,6 +47,7 @@ import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
 import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
+import { linkImages as _linkImages } from 'redux/actions/image'
 import { Header, FooterListTools, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderObject } from './components/utils'
@@ -59,6 +62,7 @@ interface Props {
   reOrderSlide: (projectId: number, slides: Slide[]) => Promise<void>
   editor: EditorInterface
   project: ProjectInterface
+  image: ImageInterface
   loadObjects: (objects: PObject[]) => void
   loadContainers: (containers: Container[]) => void
   updateContainer: (props: { container: Object }) => void
@@ -72,6 +76,7 @@ interface Props {
   addLayout: (props: { objects: Object[]; layout: FullLayout }) => void
   addObject: (props: { object: Object }) => void
   removeObject: (props: { object: Object; container: Object }) => void
+  linkImages: (images: string[], id: number) => Promise<any>
 }
 const BORDER_WIDTH = 3 * 100
 
@@ -88,6 +93,7 @@ const BookEditor: React.FC<Props> = ({
   loadBackgrounds,
   addLayout,
   addObject,
+  linkImages,
   removeObject,
   project: {
     currentProject,
@@ -101,6 +107,7 @@ const BookEditor: React.FC<Props> = ({
     loading,
     fetching,
   },
+  image: { images, loading: imgLoading },
 }) => {
   const [template] = useQueryState('template', 1)
   const [width] = useQueryState('width', 1)
@@ -118,6 +125,7 @@ const BookEditor: React.FC<Props> = ({
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
   const [isOrder, setIsOrder] = useState(false)
+  const [tradephotoLoading, setTradephotoLoading] = useState(false)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -159,6 +167,9 @@ const BookEditor: React.FC<Props> = ({
       wait: 1000 * 30,
     }
   )
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
 
   const editors = useMemo(() => {
     return new Editor({
@@ -373,6 +384,36 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
+  useEffect(() => {
+    const setTradePhoto = async () => {
+      try {
+        if (tradephoto && objects.length === 0) {
+          setTradephotoLoading(true)
+          let image
+          if (currentProject.images?.length === 0 && images.length === 0) {
+            const [_image] = await linkImages([tradephoto], currentProject.id)
+            image = _image
+          } else if (currentProject.images && currentProject.images.length > 0)
+            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+
+          console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
+          if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
+            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
+            debouncedSave.run()
+            setTradephotoLoading(false)
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    console.log(tradephoto, imgLoading, objects.length)
+    if (tradephoto && imgLoading && objects.length === 0) setTradePhoto()
+  }, [tradephoto, currentProject, images, imgLoading])
+
+  console.log('THIS IS SPLIIIIT')
+
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
@@ -500,7 +541,7 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   )
-  return fetching ? (
+  return fetching && !tradephotoLoading ? (
     <div className="AdvancedEditorWrapper">
       <div className="EditorOnePageView">
         <Spinner />
@@ -586,6 +627,7 @@ const BookEditor: React.FC<Props> = ({
 const mapStateToProps = (state: RootInterface) => ({
   project: state.project,
   editor: state.editor,
+  image: state.image,
 })
 
 export default connect(mapStateToProps, {
@@ -608,4 +650,5 @@ export default connect(mapStateToProps, {
   removeObject: _removeObject,
   reOrderSlide: _reOrderSlide,
   saveProjectAttribute: _saveProjectAttribute,
+  linkImages: _linkImages,
 })(BookEditor)

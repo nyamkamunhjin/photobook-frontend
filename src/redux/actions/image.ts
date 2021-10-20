@@ -7,12 +7,12 @@ import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES, REMOVE_I
 export const getImages = () => async (dispatch: any) => {
   try {
     const images = await listImage()
-    dispatch({
+    return dispatch({
       type: GET_IMAGES,
       payload: images,
     })
   } catch (err) {
-    dispatch({
+    return dispatch({
       type: IMAGE_ERROR,
       payload: { msg: err },
     })

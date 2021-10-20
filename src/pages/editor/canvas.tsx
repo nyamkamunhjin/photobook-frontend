@@ -31,6 +31,8 @@ import {
   EditorInterface,
   FullLayout,
   HistoryProps,
+  Image,
+  ImageInterface,
   ObjectType,
   PObject,
   ProjectCreate,
@@ -60,6 +62,7 @@ interface Props {
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
   editor: EditorInterface
   project: ProjectInterface
+  image: ImageInterface
   loadObjects: (objects: PObject[]) => void
   loadContainers: (containers: Container[]) => void
   updateContainer: (props: { container: Object }) => void
@@ -73,7 +76,7 @@ interface Props {
   loadBackgrounds: (backgrounds: Object[]) => void
   addLayout: (props: { objects: Object[]; layout: FullLayout }) => void
   addObject: (props: { object: Object }) => void
-  linkImages: (images: string[], id: number) => Promise<void>
+  linkImages: (images: string[], id: number) => Promise<any>
 }
 
 const BORDER_WIDTH = 3 * 100
@@ -108,6 +111,7 @@ const BookEditor: React.FC<Props> = ({
     loading,
     fetching,
   },
+  image: { images, loading: imgLoading },
 }) => {
   const [template] = useQueryState('template', 1)
   const [paperSizeId] = useQueryState('paperSize', 1)
@@ -126,6 +130,7 @@ const BookEditor: React.FC<Props> = ({
   const ref = useRef<any>()
   const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
   const [isOrder, setIsOrder] = useState(false)
+  const [tradephotoLoading, setTradephotoLoading] = useState(false)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -378,9 +383,31 @@ const BookEditor: React.FC<Props> = ({
   }, [_object])
 
   useEffect(() => {
-    if (currentProject.images?.length === 0 && tradephoto) linkImages([tradephoto], currentProject.id)
-  }, [tradephoto, currentProject])
-  console.log('currentProject.images', currentProject, 'tradephoto', tradephoto)
+    const setTradePhoto = async () => {
+      try {
+        if (tradephoto && objects.length === 0) {
+          setTradephotoLoading(true)
+          let image
+          if (currentProject.images?.length === 0 && images.length === 0) {
+            const [_image] = await linkImages([tradephoto], currentProject.id)
+            image = _image
+          } else if (currentProject.images && currentProject.images.length > 0)
+            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+
+          // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
+          if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
+            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
+            debouncedSave.run()
+            setTradephotoLoading(false)
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    if (currentProject.canvasType === 'Single' && tradephoto && imgLoading && objects.length === 0) setTradePhoto()
+  }, [tradephoto, currentProject, images, imgLoading])
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -544,6 +571,7 @@ const BookEditor: React.FC<Props> = ({
                     style={{
                       borderStyle: 'solid',
                       borderColor: '#d1d5db',
+                      // borderColor: '#de1101',
                       borderWidth: `${BORDER_WIDTH * scale}px`,
                       pointerEvents: 'none',
                     }}
@@ -556,7 +584,7 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   )
-  return fetching ? (
+  return fetching && !tradephotoLoading ? (
     <div className="AdvancedEditorWrapper">
       <div className="EditorOnePageView">
         <Spinner />
@@ -638,6 +666,7 @@ const BookEditor: React.FC<Props> = ({
 const mapStateToProps = (state: RootInterface) => ({
   project: state.project,
   editor: state.editor,
+  image: state.image,
 })
 
 export default connect(mapStateToProps, {

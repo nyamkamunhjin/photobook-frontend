@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { PaperMaterial, PaperSize, RootInterface, Template } from 'interfaces'
 import { Select } from 'antd'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { CustomButton } from 'components'
 import { useSelector } from 'react-redux'
 import AuthModal from '../auth-modal'
@@ -29,25 +29,6 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
   const tradephoto = urlParams.get('tradephoto')
   const user = useSelector((state: RootInterface) => state.auth.user)
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const widthRef = useRef<HTMLInputElement>(null)
-  const heightRef = useRef<HTMLInputElement>(null)
-  const history = useHistory()
-
-  const onFinish = () => {
-    if (
-      !widthRef.current ||
-      !heightRef.current ||
-      parseFloat(widthRef.current?.value) === 0 ||
-      parseFloat(heightRef.current?.value) === 0
-    )
-      return alert('Please check the size')
-
-    return history.push(
-      `/editor/canvas/split?template=${template.id}&width=${widthRef.current.value}&height=${heightRef.current.value}${
-        tradephoto ? `&tradephoto=${tradephoto}` : ''
-      }`
-    )
-  }
 
   useEffect(() => {
     const initialState = () => {
@@ -89,7 +70,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
         </div>
       </div>
 
-      <div className="space-y-4" hidden={template.canvasType === 'Split'}>
+      <div className="space-y-4">
         <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes.map((each: PaperSize) => (
@@ -116,52 +97,21 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           ))}
         </div>
       </div>
-      <div className="space-y-4" hidden={template.canvasType !== 'Split'}>
-        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })} /см/</span>
-        <div className="flex gap-8">
-          <div className="flex flex-col gap-1 flex-1">
-            <span className="text-gray-500 font-medium">Width</span>
-            <input
-              placeholder="width"
-              type="number"
-              ref={widthRef}
-              defaultValue={0}
-              className="max-w-min px-2 py-1 border appearance-none focus:appearance-none hover:appearance-none focus:outline-none focus:border-blue-400 text-sm"
-            />
-          </div>
-          <div className="flex flex-col gap-1 flex-1">
-            <span className="text-gray-500 font-medium">Height</span>
-            <input
-              placeholder="height"
-              type="number"
-              ref={heightRef}
-              defaultValue={0}
-              className="max-w-min px-2 py-1 border appearance-none focus:appearance-none hover:appearance-none focus:outline-none focus:border-blue-400 text-sm"
-            />
-          </div>
-        </div>
-      </div>
       <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
-      {template.canvasType === 'Split' ? (
-        <CustomButton onClick={onFinish} className="btn-primary max-w-max">
+      <Link
+        to={
+          user
+            ? `/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}${
+                tradephoto ? `&tradephoto=${tradephoto}` : ''
+              }`
+            : '#'
+        }
+        onClick={() => !user && setIsModalVisible(true)}
+      >
+        <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />
         </CustomButton>
-      ) : (
-        <Link
-          to={
-            user
-              ? `/editor/canvas?template=${template.id}&paperSize=${selectedState.paperSize?.id}${
-                  tradephoto ? `&tradephoto=${tradephoto}` : ''
-                }`
-              : '#'
-          }
-          onClick={() => !user && setIsModalVisible(true)}
-        >
-          <CustomButton className="btn-primary">
-            <FormattedMessage id="start_book" />
-          </CustomButton>
-        </Link>
-      )}
+      </Link>
     </div>
   )
 }
