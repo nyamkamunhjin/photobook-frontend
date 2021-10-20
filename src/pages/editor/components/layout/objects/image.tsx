@@ -25,13 +25,13 @@ interface Props {
   placeholderStyle: Object
   border: number
   mustHaveImageCenter: boolean
-  isMontage: boolean
   frameMontage?: {
     url: string
     tempUrl: string
   }
   slideWidth?: number
   slideHeight?: number
+  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
 }
 
 const Image: React.FC<Props> = ({
@@ -50,10 +50,10 @@ const Image: React.FC<Props> = ({
   placeholderStyle,
   border = 0,
   mustHaveImageCenter = false,
-  isMontage = false,
   frameMontage,
   slideWidth,
   slideHeight,
+  templateType,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -174,7 +174,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  // console.log('object?.props?.frameStyle', object?.props?.frameStyle, object?.props?.frameImage)
+  console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
@@ -221,6 +221,7 @@ const Image: React.FC<Props> = ({
             WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
             WebkitMaskRepeat: 'no-repeat',
             ...(object?.props?.maskStyle || {}),
+            WebkitMaskImage: `radial-gradient(black, rgba(0, 0, 0, 0.6))`,
             transform: '',
           }}
         >
@@ -272,9 +273,9 @@ const Image: React.FC<Props> = ({
               }
         }
         onMouseDown={(e) => imageReposition(e)}
-        className="image-center"
+        className="image-center flex justify-center items-center"
       >
-        <BsArrowsMove className={`drag-icon ${minSize && 'w-1/2 h-1/2'}`} />
+        <BsArrowsMove className={`drag-icon ${minSize && 'w-1/2 h-1/2'} flex justify-center items-center`} />
       </div>
       {frameMontage && (
         <img
@@ -297,7 +298,7 @@ const Image: React.FC<Props> = ({
       {imageUrl && willBlur && (
         <Tooltip title="It will be blurred">
           <div className="status">
-            <InfoCircleOutlined />
+            <InfoCircleOutlined style={{ fontSize: 4 }} />
           </div>
         </Tooltip>
       )}

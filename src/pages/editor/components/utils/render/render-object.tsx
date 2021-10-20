@@ -13,9 +13,9 @@ interface Props {
   scale: number
   border?: number
   mustHaveImageCenter?: boolean
-  isMontage?: boolean
   slideWidth?: number
   slideHeight?: number
+  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
 }
 
 const renderObject: React.FC<Props> = ({
@@ -28,9 +28,9 @@ const renderObject: React.FC<Props> = ({
   zoom = 1,
   border = 0,
   mustHaveImageCenter = false,
-  isMontage = false,
   slideWidth,
   slideHeight,
+  templateType,
 }) => {
   const { props } = object
 
@@ -72,10 +72,10 @@ const renderObject: React.FC<Props> = ({
         placeholderStyle={placeholderStyle}
         border={border}
         mustHaveImageCenter={mustHaveImageCenter}
-        isMontage={isMontage}
         frameMontage={frameMontage}
         slideWidth={slideWidth}
         slideHeight={slideHeight}
+        templateType={templateType}
       />
     )
   } else if (props?.className === 'text-container') {

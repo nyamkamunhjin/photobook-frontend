@@ -272,20 +272,20 @@ const BookEditor: React.FC<Props> = ({
     setScale(ratio)
     setFitScale(ratio)
     // Urgeljlel bii
-    console.log(
-      'scale',
-      ratio,
-      'rect',
-      rect,
-      'maxWidth',
-      maxWidth,
-      'maxHeight',
-      maxHeight,
-      'srcWidth',
-      srcWidth,
-      'srcHeight',
-      srcHeight
-    )
+    // console.log(
+    //   'scale',
+    //   ratio,
+    //   'rect',
+    //   rect,
+    //   'maxWidth',
+    //   maxWidth,
+    //   'maxHeight',
+    //   maxHeight,
+    //   'srcWidth',
+    //   srcWidth,
+    //   'srcHeight',
+    //   srcHeight
+    // )
 
     const scaledWidth = maxWidth * ratio
     const scaledHeight = maxHeight * ratio
@@ -397,7 +397,6 @@ const BookEditor: React.FC<Props> = ({
             image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
           else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
 
-          console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
           if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
             editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
             debouncedSave.run()
@@ -408,11 +407,10 @@ const BookEditor: React.FC<Props> = ({
         console.error(err)
       }
     }
-    console.log(tradephoto, imgLoading, objects.length)
     if (tradephoto && imgLoading && objects.length === 0) setTradePhoto()
   }, [tradephoto, currentProject, images, imgLoading])
 
-  console.log('THIS IS SPLIIIIT')
+  console.log('objects', objects, 'currentProject.slides[0].objects', currentProject.slides[0].objects)
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -465,6 +463,8 @@ const BookEditor: React.FC<Props> = ({
                                 ...(o.style as React.CSSProperties),
                                 width: slideWidth + 'px',
                                 height: slideHeight + 'px',
+                                top: 0,
+                                left: 0,
                               }}
                               className={o.className}
                               onMouseDown={(e) => {
@@ -503,6 +503,7 @@ const BookEditor: React.FC<Props> = ({
                                 mustHaveImageCenter: true,
                                 slideWidth,
                                 slideHeight,
+                                templateType: 'canvas-split',
                               })}
                             </div>
                           )

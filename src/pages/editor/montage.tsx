@@ -616,7 +616,6 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 scale,
                                 zoom,
-                                isMontage: true,
                               })}
                             </div>
                           )
