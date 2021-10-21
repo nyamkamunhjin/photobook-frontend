@@ -113,6 +113,8 @@ const BookEditor: React.FC<Props> = ({
   const [width] = useQueryState('width', 1)
   const [height] = useQueryState('height', 1)
   const [uuid, setUuid] = useQueryState('project', '')
+  const urlParams = new URLSearchParams(window.location.search)
+  const tradephoto = urlParams.get('tradephoto')
 
   const slideViewRef: any = useRef(null)
   const editorContainerRef: any = useRef(null)
@@ -125,7 +127,7 @@ const BookEditor: React.FC<Props> = ({
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
   const [isOrder, setIsOrder] = useState(false)
-  const [tradephotoLoading, setTradephotoLoading] = useState(false)
+  const [tradephotoLoading, setTradephotoLoading] = useState<boolean>(tradephoto !== null)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -167,9 +169,6 @@ const BookEditor: React.FC<Props> = ({
       wait: 1000 * 30,
     }
   )
-
-  const urlParams = new URLSearchParams(window.location.search)
-  const tradephoto = urlParams.get('tradephoto')
 
   const editors = useMemo(() => {
     return new Editor({
@@ -385,21 +384,29 @@ const BookEditor: React.FC<Props> = ({
   }, [_object])
 
   useEffect(() => {
+    const addTradePhoto = async () => {
+      try {
+        if (tradephoto) {
+          if (images.length === 0) {
+            await linkImages([tradephoto], currentProject.id)
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    if (tradephoto && tradephotoLoading && currentProject.id !== 0 && imgLoading && images.length === 0) addTradePhoto()
+  }, [tradephoto, tradephotoLoading, images, imgLoading, currentProject])
+
+  useEffect(() => {
     const setTradePhoto = async () => {
       try {
-        if (tradephoto && objects.length === 0) {
-          setTradephotoLoading(true)
-          let image
-          if (currentProject.images?.length === 0 && images.length === 0) {
-            const [_image] = await linkImages([tradephoto], currentProject.id)
-            image = _image
-          } else if (currentProject.images && currentProject.images.length > 0)
-            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-
-          if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
-            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
-            debouncedSave.run()
+        if (tradephoto) {
+          const image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+          if (image) {
+            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0, objects[0].id)
+            saveObjects()
             setTradephotoLoading(false)
           }
         }
@@ -407,10 +414,17 @@ const BookEditor: React.FC<Props> = ({
         console.error(err)
       }
     }
-    if (tradephoto && imgLoading && objects.length === 0) setTradePhoto()
-  }, [tradephoto, currentProject, images, imgLoading])
 
-  console.log('objects', objects, 'currentProject.slides[0].objects', currentProject.slides[0].objects)
+    if (
+      tradephoto &&
+      tradephotoLoading &&
+      images.length > 0 &&
+      objects[0] &&
+      objects[0].id &&
+      objects[0].props.imageUrl === 'empty.png'
+    )
+      setTradePhoto()
+  }, [tradephoto, tradephotoLoading, images, objects, currentProject, slideWidth, slideHeight])
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -449,7 +463,7 @@ const BookEditor: React.FC<Props> = ({
             ref={slideContainerRef}
           >
             <div id="slide" style={{ overflow }}>
-              <div id="scaled_container" ref={scaledContainerRef}>
+              <div id="scaled_container" ref={scaledContainerRef} className="relative">
                 <div ref={canvasRef} id="canvas_container">
                   {!loading && (
                     <>

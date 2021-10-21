@@ -76,7 +76,7 @@ const Slides: React.FC<Props> = ({
                     key={o.id}
                     style={
                       mustHaveImageCenter
-                        ? { ...o.style, width: slideWidth + 'px', height: slideHeight + 'px' }
+                        ? { ...o.style, width: slideWidth + 'px', height: slideHeight + 'px', top: 0, left: 0 }
                         : o.style
                     }
                     className={o.className}

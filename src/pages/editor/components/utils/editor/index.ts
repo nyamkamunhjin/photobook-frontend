@@ -2183,7 +2183,8 @@ export default class Editor {
     objects: PObject[],
     slideWidth: number,
     slideHeight: number,
-    border = 0
+    border = 0,
+    objectId?: string
   ) => {
     const style = {
       top: 0,
@@ -2194,29 +2195,37 @@ export default class Editor {
       transform: '',
       zIndex: 100 + objects.length + '',
     }
-    const _id = uuidv4()
-    this.addObject({
-      object: {
-        id: _id,
-        className: 'object',
-        style,
-        props: {
-          imageUrl: image.imageUrl,
-          tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
-          className: 'image-placeholder',
-          imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-          style: { transform: 'scaleX(1)' },
-          placeholderStyle: { opacity: 1 },
+    let _id = uuidv4()
+    if (objectId) {
+      _id = objectId
+      this.updateObject({
+        object: {
+          id: objectId,
+          className: 'object',
+          style,
+          props: {
+            imageUrl: image.imageUrl,
+            tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+            className: 'image-placeholder',
+            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+            style: { transform: 'scaleX(1)' },
+            placeholderStyle: { opacity: 1 },
+          },
         },
-      },
-    })
-
-    this.setObjectType('image')
-
-    // ImageFit
-    this.imageFitNoDebounce(
-      [
-        {
+      })
+      const _object = document.getElementById(_id)
+      if (!_object) return
+      console.log(123)
+      const img = _object.querySelector('img')
+      if (!img) return
+      const onLoad = () => {
+        this.imageFitNoDebounce(objects, objects[0], border)
+        img.removeEventListener('load', onLoad)
+      }
+      img.addEventListener('load', onLoad)
+    } else {
+      this.addObject({
+        object: {
           id: _id,
           className: 'object',
           style,
@@ -2226,25 +2235,45 @@ export default class Editor {
             className: 'image-placeholder',
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
             style: { transform: 'scaleX(1)' },
-            placeholderStyle: { opacity: '1' },
+            placeholderStyle: { opacity: 1 },
           },
         },
-      ],
-      {
-        id: _id,
-        className: 'object',
-        style,
-        props: {
-          imageUrl: image.imageUrl,
-          tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
-          className: 'image-placeholder',
-          imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-          style: { transform: 'scaleX(1)' },
-          placeholderStyle: { opacity: '1' },
-        },
-      },
-      border
-    )
+      })
+
+      this.setObjectType('image')
+    }
+    // // ImageFit
+    // this.imageFitNoDebounce(
+    //   [
+    //     {
+    //       id: _id,
+    //       className: 'object',
+    //       style,
+    //       props: {
+    //         imageUrl: image.imageUrl,
+    //         tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+    //         className: 'image-placeholder',
+    //         imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+    //         style: { transform: 'scaleX(1)' },
+    //         placeholderStyle: { opacity: '1' },
+    //       },
+    //     },
+    //   ],
+    //   {
+    //     id: _id,
+    //     className: 'object',
+    //     style,
+    //     props: {
+    //       imageUrl: image.imageUrl,
+    //       tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+    //       className: 'image-placeholder',
+    //       imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+    //       style: { transform: 'scaleX(1)' },
+    //       placeholderStyle: { opacity: '1' },
+    //     },
+    //   },
+    //   border
+    // )
     this.objects = objects
   }
 

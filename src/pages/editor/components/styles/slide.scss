@@ -798,7 +798,8 @@
       .image-center {
         position: absolute;
         border-radius: 50%;
-        background: rgba(78, 90, 92, 0.5);
+        background: rgba(78, 90, 92, 0.4);
+        box-shadow: 0 0 1px 0 rgb(0 0 0 / 50%), 0 0 0 43px rgb(0 0 0 / 15%) inset;
         align-items: center;
         justify-content: center;
         width: 150px;

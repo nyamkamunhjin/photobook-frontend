@@ -398,7 +398,7 @@ const BookEditor: React.FC<Props> = ({
           // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
           if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
             editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
-            debouncedSave.run()
+            saveObjects()
             setTradephotoLoading(false)
           }
         }

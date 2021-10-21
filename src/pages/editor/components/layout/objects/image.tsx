@@ -174,7 +174,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  console.log('object?.props?.maskStyle', object?.props?.maskStyle)
+  // console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
@@ -214,14 +214,13 @@ const Image: React.FC<Props> = ({
         }}
       >
         <div
-          className={className + ' absolute top-0 left-0'}
+          className={className + ' '}
           style={{
             ...style,
             overflow,
             WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
             WebkitMaskRepeat: 'no-repeat',
             ...(object?.props?.maskStyle || {}),
-            WebkitMaskImage: `radial-gradient(black, rgba(0, 0, 0, 0.6))`,
             transform: '',
           }}
         >
@@ -273,9 +272,9 @@ const Image: React.FC<Props> = ({
               }
         }
         onMouseDown={(e) => imageReposition(e)}
-        className="image-center flex justify-center items-center"
+        className="image-center"
       >
-        <BsArrowsMove className={`drag-icon ${minSize && 'w-1/2 h-1/2'} flex justify-center items-center`} />
+        <BsArrowsMove className={`drag-icon ${minSize && 'h-1/2'}`} />
       </div>
       {frameMontage && (
         <img
