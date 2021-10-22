@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import React from 'react'
 import { PObject, SlideObject, StyleType } from 'interfaces'
-import { Image, Text, Shape } from '../../layout'
+import { Image, Text, Shape, ImageSplit } from '../../layout'
 
 interface Props {
   object: SlideObject
@@ -51,7 +51,31 @@ const renderObject: React.FC<Props> = ({
     }, 0)
   }
 
-  if (props?.className === 'image-placeholder') {
+  if (props?.className === 'image-placeholder' && templateType === 'canvas-split' && slideWidth && slideHeight) {
+    const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle, frameMontage } = props
+
+    return (
+      <ImageSplit
+        scale={scale}
+        zoom={zoom}
+        object={object}
+        edit={edit}
+        updateObject={updateObject}
+        updateHistory={updateHistory}
+        resolution={{ width: Number(object.style.width), height: Number(object.style.height) }}
+        style={style}
+        className={className}
+        tempUrl={tempUrl}
+        imageUrl={imageUrl}
+        updateUrl={updateUrl}
+        imageStyle={imageStyle}
+        placeholderStyle={placeholderStyle}
+        border={border}
+        slideWidth={slideWidth}
+        slideHeight={slideHeight}
+      />
+    )
+  } else if (props?.className === 'image-placeholder') {
     const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle, frameMontage } = props
 
     return (

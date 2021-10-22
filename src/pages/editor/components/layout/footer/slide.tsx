@@ -22,6 +22,7 @@ interface Props {
   height: number
   changeSlideIndex?: (index: number) => void
   mustHaveImageCenter?: boolean
+  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
 }
 
 const Slides: React.FC<Props> = ({
@@ -39,6 +40,7 @@ const Slides: React.FC<Props> = ({
   slide,
   height,
   mustHaveImageCenter = false,
+  templateType,
 }) => {
   const scaledContainerRef = useRef<any>(null)
   const canvasRef = useRef<any>(null)
@@ -91,6 +93,7 @@ const Slides: React.FC<Props> = ({
                       mustHaveImageCenter,
                       slideWidth,
                       slideHeight,
+                      templateType,
                     })}
                   </div>
                 )
@@ -113,6 +116,7 @@ const Slides: React.FC<Props> = ({
                       scale,
                       zoom: 1,
                       mustHaveImageCenter,
+                      templateType,
                     })}
                   </div>
                 )

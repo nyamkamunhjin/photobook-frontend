@@ -2073,13 +2073,43 @@ export default class Editor {
     _index: number,
     border = 0,
     hasDefaultImg = false,
-    imgWithoutObject = false
+    editorType?: string
   ) => {
     this.hideToolbar()
     e.preventDefault()
     if (!'images,cliparts,frames,masks'.includes(type) || this._isTextEditing) return
 
-    if (
+    if (editorType === 'canvas-split') {
+      e.target.style.border = 'none'
+      const index = 0
+      const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
+      const newObject = {
+        ...objects[index],
+        props: {
+          ...objects[index].props,
+          imageUrl: images[0].imageUrl,
+          tempUrl: images[0].tempUrl,
+          imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+          placeholderStyle: { opacity: '1' },
+        },
+      }
+      this.updateObject({ object: newObject })
+      this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+      // ImageFit
+      const _object = document.getElementById(objects[index].id)
+      if (!_object) return
+      if (hasDefaultImg) {
+        const img = _object.querySelector('img')
+        if (!img) return
+        const onLoad = () => {
+          this.imageFitNoDebounce(objects, objects[index], border)
+          img.removeEventListener('load', onLoad)
+        }
+        img.addEventListener('load', onLoad)
+      } else {
+        this.imageFitNoDebounce(objects, objects[index], border)
+      }
+    } else if (
       e.target.classList.contains('object') &&
       e.target.childNodes[0].className === 'image-placeholder' &&
       !'cliparts'.includes(type)
@@ -2169,6 +2199,7 @@ export default class Editor {
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
     } else if ('images'.includes(type)) {
+      console.log('this.createImages(e, objects, border)')
       this.createImages(e, objects, border)
     }
     // Deselect GroupObject
@@ -2204,6 +2235,7 @@ export default class Editor {
           className: 'object',
           style,
           props: {
+            ...objects[0].props,
             imageUrl: image.imageUrl,
             tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
             className: 'image-placeholder',
@@ -2215,7 +2247,6 @@ export default class Editor {
       })
       const _object = document.getElementById(_id)
       if (!_object) return
-      console.log(123)
       const img = _object.querySelector('img')
       if (!img) return
       const onLoad = () => {
@@ -2241,39 +2272,40 @@ export default class Editor {
       })
 
       this.setObjectType('image')
+
+      // ImageFit
+      this.imageFitNoDebounce(
+        [
+          {
+            id: _id,
+            className: 'object',
+            style,
+            props: {
+              imageUrl: image.imageUrl,
+              tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+              className: 'image-placeholder',
+              imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+              style: { transform: 'scaleX(1)' },
+              placeholderStyle: { opacity: '1' },
+            },
+          },
+        ],
+        {
+          id: _id,
+          className: 'object',
+          style,
+          props: {
+            imageUrl: image.imageUrl,
+            tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
+            className: 'image-placeholder',
+            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+            style: { transform: 'scaleX(1)' },
+            placeholderStyle: { opacity: '1' },
+          },
+        },
+        border
+      )
     }
-    // // ImageFit
-    // this.imageFitNoDebounce(
-    //   [
-    //     {
-    //       id: _id,
-    //       className: 'object',
-    //       style,
-    //       props: {
-    //         imageUrl: image.imageUrl,
-    //         tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
-    //         className: 'image-placeholder',
-    //         imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-    //         style: { transform: 'scaleX(1)' },
-    //         placeholderStyle: { opacity: '1' },
-    //       },
-    //     },
-    //   ],
-    //   {
-    //     id: _id,
-    //     className: 'object',
-    //     style,
-    //     props: {
-    //       imageUrl: image.imageUrl,
-    //       tempUrl: image.tempUrl || process.env.REACT_APP_PUBLIC_IMAGE + image.imageUrl,
-    //       className: 'image-placeholder',
-    //       imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
-    //       style: { transform: 'scaleX(1)' },
-    //       placeholderStyle: { opacity: '1' },
-    //     },
-    //   },
-    //   border
-    // )
     this.objects = objects
   }
 
@@ -2787,6 +2819,7 @@ export default class Editor {
     return o
   }
   public imageFitNoDebounce = (objects: PObject[], _obj: PObject, border = 0) => {
+    console.log('imageFitNoDebounce, border', border)
     const object = document.getElementById(_obj.id)
     if (!object) return
     const { width: w, height: h } = getComputedStyle(object)

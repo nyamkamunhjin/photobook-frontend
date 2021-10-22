@@ -101,7 +101,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       <Link
         to={
           user
-            ? `/editor/canvas${template.canvasType === 'Split' && '/split'}?template=${template.id}&paperSize=${
+            ? `/editor/canvas${template.canvasType === 'Split' ? '/split' : ''}?template=${template.id}&paperSize=${
                 selectedState.paperSize?.id
               }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
             : '#'

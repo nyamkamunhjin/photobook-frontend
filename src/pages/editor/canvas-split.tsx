@@ -78,7 +78,7 @@ interface Props {
   removeObject: (props: { object: Object; container: Object }) => void
   linkImages: (images: string[], id: number) => Promise<any>
 }
-const BORDER_WIDTH = 3 * 100
+const BORDER_WIDTH = 0
 
 const BookEditor: React.FC<Props> = ({
   getProjects,
@@ -152,7 +152,7 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
   useHotkeys('shift+w', () => editors.onSendForward(_index, objects), [_index, objects])
   useHotkeys('shift+s', () => editors.onSendBackward(_index, objects), [_index, objects])
-  useHotkeys('Delete', () => editors.onRemoveObject(containers, objects, _index), [_index, objects])
+  // useHotkeys('Delete', () => editors.onRemoveObject(containers, objects, _index), [_index, objects])
   useHotkeys('shift+Delete', () => editors.onRemoveImageFromObject(_index, objects, _objectType), [_index, objects])
   useHotkeys(
     'ctrl+shift+s',
@@ -387,7 +387,8 @@ const BookEditor: React.FC<Props> = ({
     const addTradePhoto = async () => {
       try {
         if (tradephoto) {
-          if (images.length === 0) {
+          if (images.length === 0 || !images.some((image) => parseFloat(image.id) === parseFloat(tradephoto))) {
+            console.log('addTradePhoto')
             await linkImages([tradephoto], currentProject.id)
           }
         }
@@ -396,7 +397,14 @@ const BookEditor: React.FC<Props> = ({
       }
     }
 
-    if (tradephoto && tradephotoLoading && currentProject.id !== 0 && imgLoading && images.length === 0) addTradePhoto()
+    if (
+      tradephoto &&
+      tradephotoLoading &&
+      currentProject.id !== 0 &&
+      !imgLoading &&
+      (images.length === 0 || !images.some((image) => parseFloat(image.id) === parseFloat(tradephoto)))
+    )
+      addTradePhoto()
   }, [tradephoto, tradephotoLoading, images, imgLoading, currentProject])
 
   useEffect(() => {
@@ -405,6 +413,7 @@ const BookEditor: React.FC<Props> = ({
         if (tradephoto) {
           const image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
           if (image) {
+            console.log('setTradePhoto')
             editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0, objects[0].id)
             saveObjects()
             setTradephotoLoading(false)
@@ -419,6 +428,7 @@ const BookEditor: React.FC<Props> = ({
       tradephoto &&
       tradephotoLoading &&
       images.length > 0 &&
+      images.some((image) => parseFloat(image.id) === parseFloat(tradephoto)) &&
       objects[0] &&
       objects[0].id &&
       objects[0].props.imageUrl === 'empty.png'
@@ -458,7 +468,7 @@ const BookEditor: React.FC<Props> = ({
           <div
             id="slide_container"
             // onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, true)}
+            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, 0, BORDER_WIDTH, true, 'canvas-split')}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -514,7 +524,6 @@ const BookEditor: React.FC<Props> = ({
                                 zoom: 1,
                                 scale,
                                 border: BORDER_WIDTH,
-                                mustHaveImageCenter: true,
                                 slideWidth,
                                 slideHeight,
                                 templateType: 'canvas-split',
@@ -632,6 +641,7 @@ const BookEditor: React.FC<Props> = ({
             saveObjects={saveObjects}
             mustHaveImageCenter
             isFullscreen={isFullscreen}
+            templateType="canvas-split"
           />
         </div>
       </div>

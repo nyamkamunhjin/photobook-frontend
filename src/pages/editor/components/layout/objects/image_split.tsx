@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import React, { useEffect, useRef, useState } from 'react'
 import { Tooltip } from 'antd'
-import { InfoCircleOutlined, PlusSquareOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined } from '@ant-design/icons'
 import { BsArrowsMove } from 'react-icons/bs'
 import { ColorPreset, PObject, SlideObject } from 'interfaces'
 import { UPDATE_OBJECT } from 'redux/actions/types'
@@ -24,14 +24,8 @@ interface Props {
   resolution: { width: number; height: number }
   placeholderStyle: Object
   border: number
-  mustHaveImageCenter: boolean
-  frameMontage?: {
-    url: string
-    tempUrl: string
-  }
-  slideWidth?: number
-  slideHeight?: number
-  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  slideWidth: number
+  slideHeight: number
 }
 
 const Image: React.FC<Props> = ({
@@ -49,16 +43,14 @@ const Image: React.FC<Props> = ({
   resolution: { width, height },
   placeholderStyle,
   border = 0,
-  mustHaveImageCenter = false,
-  frameMontage,
   slideWidth,
   slideHeight,
-  templateType,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
   const [overflow, setOverflow] = useState<string>('hidden')
   const imageReposition = (e: any) => {
+    console.log('imageReposition')
     document.body.style.cursor = 'grab'
     const circle = e.target
     circle.style.display = 'none'
@@ -91,8 +83,8 @@ const Image: React.FC<Props> = ({
       t += deltaY
       l += deltaX
 
-      if (Math.abs(t) < 10) t = 0
-      if (Math.abs(l) < 10) l = 0
+      // if (Math.abs(t) < 10) t = 0
+      // if (Math.abs(l) < 10) l = 0
 
       if (((border || frameBorder) && heightDiff >= 0) || (t <= 0 && t > -(border || frameBorder))) {
         image.style.top = `-${border || frameBorder}px`
@@ -104,10 +96,13 @@ const Image: React.FC<Props> = ({
 
       if (((border || frameBorder) && widthDiff >= 0) || (l <= 0 && l > -(border || frameBorder))) {
         image.style.left = `-${border || frameBorder}px`
+        // console.log('image.style.left 1')
       } else if (widthDiff >= 0) {
         image.style.left = '0px'
+        // console.log('image.style.left 2')
       } else if (l <= -(border || frameBorder) && Math.abs(l) <= Math.abs(widthDiff - (border || frameBorder))) {
         image.style.left = l + 'px'
+        // console.log('image.style.left 3', 'border', border, 'frameBorder', frameBorder)
       }
 
       startX = clientX
@@ -168,13 +163,11 @@ const Image: React.FC<Props> = ({
   }, [width, height]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
-  const { rgb, opacity = '100%' } = object?.props?.frameStyle || {}
 
-  const borderColor = rgb ? `rgba(${rgb.r},${rgb.g},${rgb.b},${opacity})` : '#000'
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  // console.log('object?.props?.frameStyle', object?.props?.frameStyle, object?.props?.frameImage)
+  console.log('object?.props?.maskStyle', object?.props?.maskStyle)
 
   return (
     <div
@@ -200,104 +193,46 @@ const Image: React.FC<Props> = ({
         />
       )}
       <div
-        className={className + ' absolute top-0 left-0'}
+        className={className}
         style={{
           ...style,
-          ...(object?.props?.frameStyle || {}),
-          borderImageSlice: parseFloat(object?.props?.frameStyle?.borderWidth || '0'),
-          borderWidth: object?.props?.frameStyle?.borderWidth?.includes('px')
-            ? object?.props?.frameStyle?.borderWidth
-            : object?.props?.frameStyle?.borderWidth + 'px',
-          borderColor,
           overflow,
+          WebkitMaskSize: '100% 100%',
+          maskSize: 'cover',
+          WebkitMaskRepeat: 'no-repeat',
+          ...(object?.props?.maskStyle || {}),
           transform: '',
         }}
       >
-        <div
-          className={className + ' absolute top-0 left-0'}
+        <img
+          ref={imageRef}
+          alt="object"
+          className="image"
+          data-imageurl={imageUrl}
           style={{
-            ...style,
-            overflow,
-            WebkitMaskSize: !mustHaveImageCenter ? '102% 100%, auto, contain' : '100% 100%',
-            WebkitMaskRepeat: 'no-repeat',
-            ...(object?.props?.maskStyle || {}),
-            transform: '',
+            ...imageStyle,
+            filter: _filter,
+            transformOrigin: 'left top',
           }}
-        >
-          <div
-            className={className + ' absolute top-0 left-0'}
-            style={
-              border
-                ? {
-                    transform: style.transform,
-                    overflow,
-                    borderStyle: 'solid',
-                    borderColor: 'transparent',
-                    borderWidth: `${border}px`,
-                  }
-                : {
-                    transform: style.transform,
-                    overflow,
-                    borderStyle: 'solid',
-                    borderColor,
-                  }
-            }
-          >
-            <img
-              ref={imageRef}
-              alt="object"
-              className="image"
-              data-imageurl={imageUrl}
-              style={{
-                ...imageStyle,
-                filter: _filter,
-                transformOrigin: 'left top',
-              }}
-              src={tempUrl}
-              onError={(e) => imageOnError(e, imageUrl, updateUrl)}
-            />
-          </div>
-        </div>
+          src={tempUrl}
+          onError={(e) => imageOnError(e, imageUrl, updateUrl)}
+        />
       </div>
       <div
-        style={
-          minSize
-            ? {
-                visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
-                width: `${minSize * 0.1}px`,
-                height: `${minSize * 0.1}px`,
-              }
-            : {
-                visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
-              }
-        }
+        style={{
+          visibility: imageStyle.display === 'none' ? 'hidden' : 'visible',
+          width: `${minSize * 0.1}px`,
+          height: `${minSize * 0.1}px`,
+        }}
         onMouseDown={(e) => imageReposition(e)}
         className="image-center"
       >
-        <BsArrowsMove className={`drag-icon ${minSize && 'w-1/2 h-1/2'}`} />
+        <BsArrowsMove className={`drag-icon ${minSize && 'h-1/2'}`} />
       </div>
-      {frameMontage && (
-        <img
-          alt="object"
-          // className="frame"
-          data-imageurl={frameMontage.url}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'fill',
-            overflow: 'hidden',
-          }}
-          src={frameMontage.tempUrl}
-        />
-      )}
-      <PlusSquareOutlined
-        className="plus"
-        style={{ display: imageStyle.display === 'none' && edit ? 'block' : 'none' }}
-      />
       {imageUrl && willBlur && (
         <Tooltip title="It will be blurred">
           <div className="status">
-            <InfoCircleOutlined />
+            <InfoCircleOutlined style={{ fontSize: 4 }} />
           </div>
         </Tooltip>
       )}

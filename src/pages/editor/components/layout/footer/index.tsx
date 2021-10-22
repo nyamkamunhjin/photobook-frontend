@@ -48,6 +48,7 @@ interface Props {
   backgrounds: BackgroundImage[]
   mustHaveImageCenter?: boolean
   isFullscreen: boolean
+  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
 }
 
 const FooterListTools: React.FC<Props> = ({
@@ -81,6 +82,7 @@ const FooterListTools: React.FC<Props> = ({
   scale,
   mustHaveImageCenter = false,
   isFullscreen,
+  templateType,
 }) => {
   const [refreshing, setRefreshing] = useBoolean(false)
   const [_width, _setWidth] = useState(4)
@@ -191,6 +193,7 @@ const FooterListTools: React.FC<Props> = ({
                 updateHistory={updateHistory}
                 saveObjects={saveObjects}
                 mustHaveImageCenter={mustHaveImageCenter}
+                templateType={templateType}
               />
             )}
           />
@@ -301,6 +304,7 @@ const FooterListTools: React.FC<Props> = ({
                         updateHistory={updateHistory}
                         saveObjects={saveObjects}
                         mustHaveImageCenter={mustHaveImageCenter}
+                        templateType={templateType}
                       />
                     )}
                   />
