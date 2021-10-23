@@ -143,6 +143,16 @@ export interface ObjectProps {
     url: string
     tempUrl: string
   }
+  maskOptions?: {
+    fullHidden: {
+      maskStyle?: StyleType
+      maskImage?: string
+    }
+    halfHidden: {
+      maskStyle?: StyleType
+      maskImage?: string
+    }
+  }
 }
 export interface PObject {
   className: string

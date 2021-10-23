@@ -49,6 +49,8 @@ const Image: React.FC<Props> = ({
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
   const [overflow, setOverflow] = useState<string>('hidden')
+  // const [mask, setMask] = useState<any>(object?.props?.maskOptions?.fullHidden)
+
   const imageReposition = (e: any) => {
     console.log('imageReposition')
     document.body.style.cursor = 'grab'
@@ -65,6 +67,10 @@ const Image: React.FC<Props> = ({
     let startY = e.clientY / scale
 
     const frameBorder = parseFloat(object?.props?.frameStyle?.borderWidth || '0')
+
+    // setMask(object?.props?.maskOptions?.halfHidden)
+    // placeholder.style.webkitMaskImage = object?.props?.maskOptions?.halfHidden.maskStyle?.WebkitMaskImage || ''
+    // placeholder.style.maskImage = object?.props?.maskOptions?.halfHidden.maskStyle?.maskImage
 
     const onMouseMove = (sube: any) => {
       const clientX = sube.clientX / scale
@@ -114,6 +120,10 @@ const Image: React.FC<Props> = ({
       document.body.style.cursor = 'default'
       circle.style.display = 'flex'
       setOverflow('hidden')
+
+      // setMask(object?.props?.maskOptions?.fullHidden)
+      // placeholder.style.webkitMaskImage = object?.props?.maskOptions?.fullHidden.maskStyle?.WebkitMaskImage || ''
+      // placeholder.style.maskImage = object?.props?.maskOptions?.fullHidden.maskStyle?.maskImage
 
       const { top, left } = object.props.imageStyle
       const newTop = parseFloat(image.style.top)
@@ -167,7 +177,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  console.log('object?.props?.maskStyle', object?.props?.maskStyle)
+  console.log('Image-split edit', edit)
 
   return (
     <div
@@ -186,8 +196,8 @@ const Image: React.FC<Props> = ({
           style={{
             height: imageStyle.height,
             width: imageStyle.width,
-            top: imageStyle.top,
-            left: getComputedStyle(imageRef.current).left,
+            top: 0,
+            left: 0,
             ...object?.props?.colorPreset?.style,
           }}
         />
@@ -200,7 +210,9 @@ const Image: React.FC<Props> = ({
           WebkitMaskSize: '100% 100%',
           maskSize: 'cover',
           WebkitMaskRepeat: 'no-repeat',
-          ...(object?.props?.maskStyle || {}),
+          ...((edit
+            ? object?.props?.maskOptions?.halfHidden.maskStyle
+            : object?.props?.maskOptions?.fullHidden.maskStyle) || {}),
           transform: '',
         }}
       >
@@ -232,7 +244,7 @@ const Image: React.FC<Props> = ({
       {imageUrl && willBlur && (
         <Tooltip title="It will be blurred">
           <div className="status">
-            <InfoCircleOutlined style={{ fontSize: 4 }} />
+            <InfoCircleOutlined style={edit ? { fontSize: 4 } : {}} />
           </div>
         </Tooltip>
       )}

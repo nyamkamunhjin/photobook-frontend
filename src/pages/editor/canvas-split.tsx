@@ -608,7 +608,11 @@ const BookEditor: React.FC<Props> = ({
           />
         )}
         <div className="EditorPanel">
-          {preview ? <Preview slideIndex={_slideIndex} isPhotobook={false} isPublicSize={false} /> : renderEditor}
+          {preview ? (
+            <Preview slideIndex={_slideIndex} isPhotobook={false} templateType="canvas-split" />
+          ) : (
+            renderEditor
+          )}
           <FooterListTools
             hideTools
             scale={scale}

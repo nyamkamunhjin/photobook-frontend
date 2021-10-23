@@ -18,7 +18,7 @@ interface Props {
   hasNext?: () => boolean
   hasPrevious?: () => boolean
   isPhotobook?: boolean
-  isPublicSize?: boolean
+  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
 }
 
 const Preview: React.FC<Props> = ({
@@ -30,7 +30,7 @@ const Preview: React.FC<Props> = ({
   hasNext,
   hasPrevious,
   isPhotobook = true,
-  isPublicSize = true,
+  templateType,
 }) => {
   // refs
   const slideViewRef: any = useRef(null)
@@ -92,6 +92,8 @@ const Preview: React.FC<Props> = ({
     }
   })
 
+  console.log('onPreview')
+
   return (
     <div className="EditorPanelContainerPreview">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
@@ -123,25 +125,13 @@ const Preview: React.FC<Props> = ({
                       <div id="container">
                         {objects.map((o: any) => {
                           return (
-                            <div
-                              id={o.id}
-                              key={o.id}
-                              style={
-                                isPublicSize
-                                  ? o.style
-                                  : {
-                                      ...(o.style as React.CSSProperties),
-                                      width: slideWidth + 'px',
-                                      height: slideHeight + 'px',
-                                    }
-                              }
-                              className={o.className}
-                            >
+                            <div id={o.id} key={o.id} style={o.style} className={o.className}>
                               {renderObject({
                                 edit: false,
                                 object: o,
                                 scale,
                                 zoom: 1,
+                                templateType,
                               })}
                             </div>
                           )
