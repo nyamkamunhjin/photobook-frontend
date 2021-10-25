@@ -122,6 +122,7 @@ export const listImageCategoryByProject = async (templateId: number) => {
       ),
     }))
   )
+  console.log('categories', categories)
   return categories
 }
 
@@ -188,7 +189,7 @@ export const listImage = async (type?: string, params?: PaginatedParams[0], data
       tempUrl: await Storage.get(image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
     }))
   )
-
+  console.log('images', images)
   if (params) return { list: images, total: response?.totalCount, offset: response?.offset }
   return images
 }

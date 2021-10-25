@@ -1,8 +1,11 @@
+/* eslint-disable consistent-return */
 import React, { useEffect, useState } from 'react'
 import { BsArrowsMove } from 'react-icons/bs'
 import { SET_BACKGROUNDS, UPDATE_BACKGROUND } from 'redux/actions/types'
 import { BackgroundImage, EditorInterface, HistoryProps, StyleType } from 'interfaces'
 import { ParseNumber } from 'utils'
+import { Tooltip } from 'antd'
+import { InfoCircleOutlined } from '@ant-design/icons'
 import Toolbar from './toolbar'
 
 interface Props {
@@ -73,7 +76,7 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-left',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
-              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
@@ -92,7 +95,7 @@ const BackgroundImages: React.FC<Props> = ({
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
-              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
             },
           ],
         })
@@ -103,19 +106,19 @@ const BackgroundImages: React.FC<Props> = ({
           {
             className: 'background-full',
             style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
-            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
             src: e.dataTransfer.getData('tempUrl'),
             imageurl: e.dataTransfer.getData('imageUrl'),
           },
           {
             className: 'background-left',
             style: { rotateAngle: 0, transform: '' },
-            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'none' },
           },
           {
             className: 'background-right',
             style: { rotateAngle: 0, transform: '' },
-            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+            bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'none' },
           },
         ],
       })
@@ -133,7 +136,7 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-right',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
-              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
@@ -149,7 +152,7 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-right',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
-              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
+              bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
@@ -193,14 +196,13 @@ const BackgroundImages: React.FC<Props> = ({
     e.stopPropagation()
     e.preventDefault()
     const _background: any = document.querySelector(bgClass)
-    const _image = _background.firstChild
+    const _image = _background.querySelector('img')
     if (!_image) {
       return
     }
     const scaled_container: any = document.querySelector('#scaled_container')
     const slide_container: any = document.querySelector('#slide')
     scaled_container.style.cursor = 'grab'
-
     const circle = e.target
     circle.style.display = 'none'
 
@@ -212,6 +214,16 @@ const BackgroundImages: React.FC<Props> = ({
 
     let startX = e.clientX / scale
     let startY = e.clientY / scale
+    // console.log(
+    //   '_background',
+    //   _background,
+    //   _background.width,
+    //   _background.height,
+    //   '_image',
+    //   _image,
+    //   _image.naturalWidth,
+    //   _image.naturalHeight
+    // )
 
     const onMouseMove = (sube: any) => {
       const clientX = sube.clientX / scale
@@ -367,6 +379,85 @@ const BackgroundImages: React.FC<Props> = ({
     updateHistory(UPDATE_BACKGROUND, { background })
     setBackgrounds({ backgrounds: _backgrounds })
   }
+
+  const checkRatio = (bgClass: string) => {
+    const _background: any = document.querySelector(bgClass)
+    if (!_background) {
+      return false
+    }
+    const _image = _background.querySelector('img')
+    if (!_image) {
+      return false
+    }
+    const { width: bgWidth, height: bgHeight } = getComputedStyle(_background)
+
+    const originalWidth = _image.naturalWidth
+    const originalHeight = _image.naturalHeight
+
+    const widthRatio = parseFloat(bgWidth) / originalWidth
+    const heightRatio = parseFloat(bgHeight) / originalHeight
+
+    if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
+      return false
+    }
+
+    return true
+  }
+
+  const [hasImage, setHasImage] = useState<boolean>(false)
+
+  // const onScale = (_object: PObject, zoom: number) => {
+  //   updateObject({
+  //     object: {
+  //       ..._object,
+  //       props: {
+  //         ..._object.props,
+  //         imageStyle: {
+  //           ..._object.props.imageStyle,
+  //           transform: `scale(${zoom})`,
+  //           scale: zoom,
+  //         },
+  //       },
+  //     },
+  //   })
+
+  //   if (_zoom) {
+  //     _zoom.action(zoom)
+  //   }
+  //   if (zoom === 1) debouncedImageFit(parseFloat(_object.props.frameStyle?.borderWidth || '0'))
+
+  //   updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+  // }
+
+  // const zoomIn = () => {
+  //   if (!object) return false
+  //   const _object = objects[index]
+  //   const { imageStyle } = _object.props
+  //   onScale(_object, (imageStyle.scale || 1) + 0.1)
+  //   return true
+  // }
+
+  // const zoomFit = () => {
+  //   if (!object) return false
+  //   const _object = objects[index]
+  //   onScale(_object, 1)
+  //   return true
+  // }
+
+  // const zoomOut = () => {
+  //   if (!object) return false
+  //   const _object = objects[index]
+  //   const {
+  //     imageStyle: { scale = 0 },
+  //   } = _object.props
+  //   if (scale > 1) {
+  //     onScale(_object, scale - 0.1)
+  //   } else {
+  //     onScale(_object, 1)
+  //   }
+  //   return true
+  // }
+
   return (
     <>
       <div
@@ -394,6 +485,15 @@ const BackgroundImages: React.FC<Props> = ({
         >
           <BsArrowsMove className="drag-icon" />
         </div>
+        <div className="flex items-end justify-center absolute top-0 left-0 w-full h-full p-10">
+          {checkRatio('.background-left') && (
+            <Tooltip title="Background will be blurred">
+              <div className="status flex justify-center items-center w-full text-red-600 text-2xl">
+                <InfoCircleOutlined />
+              </div>
+            </Tooltip>
+          )}
+        </div>
       </div>
       <div className="circle-container middle" onClick={() => setSelectedBG('background-full')}>
         <div
@@ -402,6 +502,15 @@ const BackgroundImages: React.FC<Props> = ({
         >
           <BsArrowsMove className="drag-icon" />
         </div>
+        <div className="flex items-end justify-center absolute top-0 left-0 w-full h-full p-10">
+          {checkRatio('.background-full') && (
+            <Tooltip title="Background will be blurred">
+              <div className="status flex justify-center items-center w-full text-red-600 text-2xl">
+                <InfoCircleOutlined />
+              </div>
+            </Tooltip>
+          )}
+        </div>
       </div>
       <div className="circle-container right" onClick={() => setSelectedBG('background-right')}>
         <div
@@ -409,6 +518,15 @@ const BackgroundImages: React.FC<Props> = ({
           className="center-circle center-circle-right"
         >
           <BsArrowsMove className="drag-icon" />
+        </div>
+        <div className="flex items-end justify-center absolute top-0 left-0 w-full h-full p-10">
+          {checkRatio('.background-right') && (
+            <Tooltip title="Background will be blurred">
+              <div className="status flex justify-center items-center w-full text-red-600 text-2xl">
+                <InfoCircleOutlined />
+              </div>
+            </Tooltip>
+          )}
         </div>
       </div>
       <div className={slideIndex === 0 ? 'book-spine-cover' : 'book-spine'} />

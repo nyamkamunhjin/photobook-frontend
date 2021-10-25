@@ -19,6 +19,7 @@ const Background: React.FC<Props> = ({ bg, bgStyles, updateBackground }) => {
       })
     }
   }
+
   return (
     <div
       key={bg.className}
@@ -32,7 +33,7 @@ const Background: React.FC<Props> = ({ bg, bgStyles, updateBackground }) => {
         <img
           data-imageurl={bg.imageurl}
           src={bg.src}
-          style={bg.style as any}
+          style={{ ...(bg.style as any), zIndex: -10 }}
           onError={(e) => imageOnError(e, bg.imageurl, updateUrl)}
           alt={bg.className}
         />

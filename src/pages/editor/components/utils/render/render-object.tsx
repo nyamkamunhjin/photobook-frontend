@@ -50,7 +50,7 @@ const renderObject: React.FC<Props> = ({
       saveObjects()
     }, 0)
   }
-  console.log('templateType', templateType, 'edit', edit)
+  // console.log('templateType', templateType, 'edit', edit)
   if (props?.className === 'image-placeholder' && templateType === 'canvas-split' && slideWidth && slideHeight) {
     const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle } = props
 
