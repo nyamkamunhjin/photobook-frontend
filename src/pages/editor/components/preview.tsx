@@ -92,8 +92,6 @@ const Preview: React.FC<Props> = ({
     }
   })
 
-  console.log('onPreview')
-
   return (
     <div className="EditorPanelContainerPreview">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">

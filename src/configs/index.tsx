@@ -44,11 +44,11 @@ export const filters: FilterMap = {
 }
 
 export const colorPresets: ColorPreset[] = [
-  {
-    name: 'None',
-    style: { background: `` },
-    filterStyle: { filter: `` },
-  },
+  // {
+  //   name: 'None',
+  //   style: { background: `` },
+  //   filterStyle: { filter: `` },
+  // },
 
   {
     filterStyle: {
