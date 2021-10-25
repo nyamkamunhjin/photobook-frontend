@@ -36,7 +36,7 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
         <ul className="flex flex-col gap-2">
           {categories?.list ? (
             categories?.list?.flatMap((each) => {
-              if (each.templateType?.name === 'photobook') {
+              if (each.templateType?.name === 'photoprint') {
                 return (
                   <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
                     <button

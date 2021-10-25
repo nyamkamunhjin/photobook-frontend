@@ -69,8 +69,9 @@ const Image: React.FC<Props> = ({
     const frameBorder = parseFloat(object?.props?.frameStyle?.borderWidth || '0')
 
     // setMask(object?.props?.maskOptions?.halfHidden)
-    // placeholder.style.webkitMaskImage = object?.props?.maskOptions?.halfHidden.maskStyle?.WebkitMaskImage || ''
-    // placeholder.style.maskImage = object?.props?.maskOptions?.halfHidden.maskStyle?.maskImage
+    // ;(placeholder.style as React.CSSProperties).WebkitMaskImage =
+    //   object?.props?.maskOptions?.halfHidden.maskStyle?.WebkitMaskImage || ''
+    // ;(placeholder.style as React.CSSProperties).maskImage = object?.props?.maskOptions?.halfHidden.maskStyle?.maskImage
 
     const onMouseMove = (sube: any) => {
       const clientX = sube.clientX / scale
@@ -122,8 +123,10 @@ const Image: React.FC<Props> = ({
       setOverflow('hidden')
 
       // setMask(object?.props?.maskOptions?.fullHidden)
-      // placeholder.style.webkitMaskImage = object?.props?.maskOptions?.fullHidden.maskStyle?.WebkitMaskImage || ''
-      // placeholder.style.maskImage = object?.props?.maskOptions?.fullHidden.maskStyle?.maskImage
+      // ;(placeholder.style as React.CSSProperties).WebkitMaskImage =
+      //   object?.props?.maskOptions?.fullHidden.maskStyle?.WebkitMaskImage || ''
+      // ;(placeholder.style as React.CSSProperties).maskImage =
+      //   object?.props?.maskOptions?.fullHidden.maskStyle?.maskImage
 
       const { top, left } = object.props.imageStyle
       const newTop = parseFloat(image.style.top)
