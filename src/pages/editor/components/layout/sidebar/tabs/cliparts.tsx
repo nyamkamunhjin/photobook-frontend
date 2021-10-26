@@ -13,6 +13,8 @@ const Cliparts: React.FC<Props> = ({ loading, categories }) => {
   const dragStart = (e: any, tempUrl: any, imageUrl: any) => {
     e.dataTransfer.setData('tempUrl', tempUrl)
     e.dataTransfer.setData('imageUrl', imageUrl)
+    e.dataTransfer.setData('naturalWidth', e.target.naturalWidth)
+    e.dataTransfer.setData('naturalHeight', e.target.naturalHeight)
   }
 
   return loading ? (

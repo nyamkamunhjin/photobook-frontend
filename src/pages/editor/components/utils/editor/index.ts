@@ -1899,7 +1899,26 @@ export default class Editor {
     this.hideToolbar()
     if (e.dataTransfer) {
       const tempUrl = e.dataTransfer.getData('tempUrl')
-      const imageUrl: any = e.dataTransfer.getData('imageUrl')
+      const imageUrl: string = e.dataTransfer.getData('imageUrl')
+      const naturalWidth: number = e.dataTransfer.getData('naturalWidth')
+      const naturalHeight: number = e.dataTransfer.getData('naturalHeight')
+
+      let width = naturalWidth
+      let height = naturalHeight
+
+      if (width > this.slideWidth) {
+        width = this.slideWidth
+      } else if (width < 200) {
+        width = 200
+      }
+      height = (width * naturalHeight) / naturalWidth
+
+      if (height > this.slideHeight) {
+        height = this.slideHeight
+      } else if (height < 200) {
+        height = 200
+      }
+      width = (height * naturalWidth) / naturalHeight
 
       const { x, y } = this.canvasRef.current.getBoundingClientRect()
       const x1 = e.clientX - x
@@ -1908,8 +1927,8 @@ export default class Editor {
       const style = {
         top: y1,
         left: x1,
-        width: 500,
-        height: 300,
+        width,
+        height,
         rotateAngle: 0,
         transform: '',
         zIndex: 100 + objects.length + '',
@@ -2199,7 +2218,6 @@ export default class Editor {
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
     } else if ('images'.includes(type)) {
-      console.log('this.createImages(e, objects, border)')
       this.createImages(e, objects, border)
     }
     // Deselect GroupObject
