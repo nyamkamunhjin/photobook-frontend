@@ -122,7 +122,6 @@ export const listImageCategoryByProject = async (templateId: number) => {
       ),
     }))
   )
-  console.log('categories', categories)
   return categories
 }
 

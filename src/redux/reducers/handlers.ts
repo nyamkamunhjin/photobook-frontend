@@ -274,7 +274,6 @@ const setBackgroundsHandler = (state: ProjectInterface, action: any) => {
   const { payload } = action
 
   const { backgrounds }: { backgrounds: BackgroundImage[] } = payload
-
   return {
     ...state,
     backgrounds: state.backgrounds.map((x: BackgroundImage) => {

@@ -61,12 +61,27 @@ const BackgroundImages: React.FC<Props> = ({
             style: { top: 0, left: 0 },
             src: e.dataTransfer.getData('tempUrl'),
             imageurl: e.dataTransfer.getData('imageUrl'),
+            props: {
+              imgStyle: {
+                scale: 1,
+              },
+            },
           },
           {
             className: 'background-left',
+            props: {
+              imgStyle: {
+                scale: 1,
+              },
+            },
           },
           {
             className: 'background-right',
+            props: {
+              imgStyle: {
+                scale: 1,
+              },
+            },
           },
         ],
       })
@@ -151,6 +166,7 @@ const BackgroundImages: React.FC<Props> = ({
 
       updateBackground({
         background: {
+          ...background,
           className,
           style: {
             top: _image.style.top,

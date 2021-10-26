@@ -17,7 +17,6 @@ interface Props {
 const ShapeToolbar: React.FC<Props> = ({ setBackgrounds, background, backgrounds }) => {
   const [showPicker, setShowPicker] = useState<boolean>(false)
   const [color, setColor] = useState<string>('')
-  console.log('ShapeToolbar', 'background', background, 'backgrounds', backgrounds)
 
   const onChangeComplete = (_color: any) => {
     const { hex } = _color

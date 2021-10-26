@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { BsArrowsMove } from 'react-icons/bs'
 import { SET_BACKGROUNDS, UPDATE_BACKGROUND } from 'redux/actions/types'
 import { BackgroundImage, EditorInterface, HistoryProps, StyleType } from 'interfaces'
@@ -34,6 +34,8 @@ const BackgroundImages: React.FC<Props> = ({
   onBackgroundDropDragLeave,
 }) => {
   const [selectedBG, setSelectedBG] = useState('')
+  const bg = useMemo(() => backgrounds.find((item) => item.className === selectedBG), [selectedBG, backgrounds])
+
   useEffect(() => {
     const container: HTMLDivElement | null = document.querySelector('#container')
     if (editor.backgroundEdit) {
@@ -69,6 +71,11 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-right',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
               src: backgroundFull?.firstChild?.src,
               imageurl: backgroundFull?.firstChild.getAttribute('data-imageurl'),
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
@@ -76,6 +83,11 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-left',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
@@ -83,6 +95,11 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-full',
               style: { rotateAngle: 0, transform: '' },
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
             },
           ],
@@ -93,6 +110,11 @@ const BackgroundImages: React.FC<Props> = ({
             {
               className: 'background-left',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
@@ -106,6 +128,11 @@ const BackgroundImages: React.FC<Props> = ({
           {
             className: 'background-full',
             style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
+            props: {
+              imgStyle: {
+                scale: 1,
+              },
+            },
             bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
             src: e.dataTransfer.getData('tempUrl'),
             imageurl: e.dataTransfer.getData('imageUrl'),
@@ -113,11 +140,21 @@ const BackgroundImages: React.FC<Props> = ({
           {
             className: 'background-left',
             style: { rotateAngle: 0, transform: '' },
+            props: {
+              imgStyle: {
+                scale: 1,
+              },
+            },
             bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'none' },
           },
           {
             className: 'background-right',
             style: { rotateAngle: 0, transform: '' },
+            props: {
+              imgStyle: {
+                scale: 1,
+              },
+            },
             bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'none' },
           },
         ],
@@ -130,6 +167,11 @@ const BackgroundImages: React.FC<Props> = ({
               style: { rotateAngle: 0, transform: '' },
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               className: 'background-left',
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
               src: backgroundFull.firstChild.src,
               imageurl: backgroundFull.firstChild.getAttribute('data-imageurl'),
             },
@@ -137,12 +179,22 @@ const BackgroundImages: React.FC<Props> = ({
               className: 'background-right',
               style: { top: 0, left: 0, rotateAngle: 0, transform: '' },
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
             },
             {
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center' },
               className: 'background-full',
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
             },
           ],
         })
@@ -155,6 +207,11 @@ const BackgroundImages: React.FC<Props> = ({
               bgStyle: { rotateAngle: 0, transform: '', transformOrigin: 'center center', display: 'block' },
               src: e.dataTransfer.getData('tempUrl'),
               imageurl: e.dataTransfer.getData('imageUrl'),
+              props: {
+                imgStyle: {
+                  scale: 1,
+                },
+              },
             },
           ],
         })
@@ -214,16 +271,8 @@ const BackgroundImages: React.FC<Props> = ({
 
     let startX = e.clientX / scale
     let startY = e.clientY / scale
-    // console.log(
-    //   '_background',
-    //   _background,
-    //   _background.width,
-    //   _background.height,
-    //   '_image',
-    //   _image,
-    //   _image.naturalWidth,
-    //   _image.naturalHeight
-    // )
+
+    if (!bg || !bg.props) return
 
     const onMouseMove = (sube: any) => {
       const clientX = sube.clientX / scale
@@ -236,20 +285,46 @@ const BackgroundImages: React.FC<Props> = ({
       let t = parseFloat(top)
       let l = parseFloat(left)
 
-      const heightDiff = parseFloat(bgHeight) - parseFloat(height)
-      const widthDiff = parseFloat(bgWidth) - parseFloat(width)
+      const heightDiff = parseFloat(bgHeight) - parseFloat(height) * bg.props.imgStyle.scale
+      const widthDiff = parseFloat(bgWidth) - parseFloat(width) * bg.props.imgStyle.scale
 
       t += deltaY
       l += deltaX
 
-      // if (Math.abs(t) < 10) t = 10
-      // if (Math.abs(l) < 10) l = 10
+      if (Math.abs(t) < 10) t = 10
+      if (Math.abs(l) < 10) l = 10
 
-      if (t <= 0 && Math.abs(t) <= Math.abs(heightDiff)) {
+      if (t > (parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2 || heightDiff >= 0) {
+        _image.style.top = (parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2 + 'px'
+      } else if (
+        (t <= -(parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2 &&
+          t + parseFloat(height) * bg.props.imgStyle.scale - (parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2 <=
+            parseFloat(bgHeight)) ||
+        Math.abs(t) > Math.abs(heightDiff)
+      ) {
+        _image.style.top = (parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2 + heightDiff + 'px'
+      } else if (
+        (t >= -(parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2 &&
+          t <= (parseFloat(height) * (bg.props.imgStyle.scale - 1)) / 2) ||
+        Math.abs(t) <= Math.abs(heightDiff)
+      ) {
         _image.style.top = t + 'px'
       }
 
-      if (l <= 0 && Math.abs(l) <= Math.abs(widthDiff)) {
+      if (l > (parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2 || widthDiff >= 0) {
+        _image.style.left = (parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2 + 'px'
+      } else if (
+        (l <= -(parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2 &&
+          l + parseFloat(width) * bg.props.imgStyle.scale - (parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2 <=
+            parseFloat(bgWidth)) ||
+        Math.abs(l) > Math.abs(widthDiff)
+      ) {
+        _image.style.left = (parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2 + widthDiff + 'px'
+      } else if (
+        (l >= -(parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2 &&
+          l <= (parseFloat(width) * (bg.props.imgStyle.scale - 1)) / 2) ||
+        Math.abs(l) <= Math.abs(widthDiff)
+      ) {
         _image.style.left = l + 'px'
       }
 
@@ -276,7 +351,7 @@ const BackgroundImages: React.FC<Props> = ({
 
       updateBackground({
         background: {
-          className,
+          ...background,
           style: {
             ...background.style,
             top: _image.style.top,
@@ -321,6 +396,7 @@ const BackgroundImages: React.FC<Props> = ({
       updateBackground({
         background: {
           ...background,
+          style: { ...background.style, top: 0, left: 0 },
           bgStyle: {
             ...background.bgStyle,
             transform: transform
@@ -404,59 +480,41 @@ const BackgroundImages: React.FC<Props> = ({
     return true
   }
 
-  const [hasImage, setHasImage] = useState<boolean>(false)
+  const onScale = (_bg: BackgroundImage, zoom: number) => {
+    updateObject([
+      ...backgrounds.filter((item: BackgroundImage) => item.className !== _bg.className),
+      {
+        ..._bg,
+        style: { top: 0, left: 0, rotateAngle: 0, transform: `scale(${zoom})` },
+        props: { imgStyle: { scale: zoom } },
+      },
+    ])
 
-  // const onScale = (_object: PObject, zoom: number) => {
-  //   updateObject({
-  //     object: {
-  //       ..._object,
-  //       props: {
-  //         ..._object.props,
-  //         imageStyle: {
-  //           ..._object.props.imageStyle,
-  //           transform: `scale(${zoom})`,
-  //           scale: zoom,
-  //         },
-  //       },
-  //     },
-  //   })
+    // if (zoom === 1) debouncedImageFit(parseFloat(_object.props.frameStyle?.borderWidth || '0'))
+  }
 
-  //   if (_zoom) {
-  //     _zoom.action(zoom)
-  //   }
-  //   if (zoom === 1) debouncedImageFit(parseFloat(_object.props.frameStyle?.borderWidth || '0'))
-
-  //   updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
-  // }
-
-  // const zoomIn = () => {
-  //   if (!object) return false
-  //   const _object = objects[index]
-  //   const { imageStyle } = _object.props
-  //   onScale(_object, (imageStyle.scale || 1) + 0.1)
-  //   return true
-  // }
+  const zoomIn = () => {
+    if (!bg) return false
+    onScale(bg, (bg.props.imgStyle.scale || 1) + 0.1)
+    return true
+  }
 
   // const zoomFit = () => {
-  //   if (!object) return false
-  //   const _object = objects[index]
-  //   onScale(_object, 1)
+  //   if (!bg) return false
+  //   onScale(bg, 1)
   //   return true
   // }
 
-  // const zoomOut = () => {
-  //   if (!object) return false
-  //   const _object = objects[index]
-  //   const {
-  //     imageStyle: { scale = 0 },
-  //   } = _object.props
-  //   if (scale > 1) {
-  //     onScale(_object, scale - 0.1)
-  //   } else {
-  //     onScale(_object, 1)
-  //   }
-  //   return true
-  // }
+  const zoomOut = () => {
+    if (!bg) return false
+    const { scale: _scale = 1 } = bg.props.imgStyle
+    if (scale > 1) {
+      onScale(bg, _scale - 0.1)
+    } else {
+      onScale(bg, 1)
+    }
+    return true
+  }
 
   return (
     <>
@@ -539,6 +597,8 @@ const BackgroundImages: React.FC<Props> = ({
           rotateRightObject={() => onRotate('right')}
           flipObject={() => onFlip()}
           removeObject={() => onRemove()}
+          zoomIn={zoomIn}
+          zoomOut={zoomOut}
         />
       )}
     </>

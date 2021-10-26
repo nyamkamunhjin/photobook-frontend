@@ -428,6 +428,11 @@ export interface BackgroundImage {
   bgStyle?: StyleType
   imageurl?: string
   src?: string
+  props: {
+    imgStyle: {
+      scale: number
+    }
+  }
 }
 export interface FilterStyle {
   filter: string
