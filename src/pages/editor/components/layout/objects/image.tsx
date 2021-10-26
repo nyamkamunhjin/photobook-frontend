@@ -174,7 +174,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  // console.log('object?.props?.frameStyle', object?.props?.frameStyle, object?.props?.frameImage)
+  console.log('imageStyle', imageStyle)
 
   return (
     <div
@@ -248,11 +248,22 @@ const Image: React.FC<Props> = ({
               alt="object"
               className="image"
               data-imageurl={imageUrl}
-              style={{
-                ...imageStyle,
-                filter: _filter,
-                transformOrigin: 'left top',
-              }}
+              style={
+                className.includes('clipart')
+                  ? {
+                      ...imageStyle,
+                      filter: _filter,
+                      transformOrigin: 'left top',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'unset',
+                    }
+                  : {
+                      ...imageStyle,
+                      filter: _filter,
+                      transformOrigin: 'left top',
+                    }
+              }
               src={tempUrl}
               onError={(e) => imageOnError(e, imageUrl, updateUrl)}
             />

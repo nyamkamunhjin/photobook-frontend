@@ -75,7 +75,7 @@ const renderObject: React.FC<Props> = ({
         slideHeight={slideHeight}
       />
     )
-  } else if (props?.className === 'image-placeholder') {
+  } else if (props?.className.includes('image-placeholder')) {
     const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle, frameMontage } = props
 
     return (

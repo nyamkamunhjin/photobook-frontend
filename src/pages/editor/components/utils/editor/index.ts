@@ -1942,7 +1942,7 @@ export default class Editor {
           props: {
             imageUrl,
             tempUrl,
-            className: 'image-placeholder',
+            className: 'image-placeholder clipart',
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
             style: { transform: 'scaleX(1)' },
             placeholderStyle: { opacity: 1 },
@@ -3326,7 +3326,9 @@ export default class Editor {
       width,
       height,
     }
-    this.imageFit(height, width, newSize, oldSize, type, _index, objects, border)
+    if (!objects[_index].props.className.includes('clipart')) {
+      this.imageFit(height, width, newSize, oldSize, type, _index, objects, border)
+    }
     this._object.style.top = top + 'px'
     this._object.style.left = left + 'px'
     this._object.style.width = width + 'px'
