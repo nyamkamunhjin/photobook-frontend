@@ -489,7 +489,7 @@ const BookEditor: React.FC<Props> = ({
   useEffect(() => {
     debouncedSave.run()
   }, [_object])
-
+  console.log('_groupObjects', _groupObjects, containers)
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">

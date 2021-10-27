@@ -2042,7 +2042,9 @@ export default class Editor {
     this.setObjectType('image')
   }
   public loadObjects = (objects: PObject[], border = 0) => {
-    const imgObjects = objects.filter((o) => o.props.className === 'image-placeholder')
+    const imgObjects = objects.filter(
+      (o) => o.props.className === 'image-placeholder' && o.props.tempUrl && o.props.tempUrl.length > 0
+    )
     let count = 0
     const observer = new MutationObserver((mutations_list) => {
       mutations_list.forEach((mutation) => {
@@ -3457,7 +3459,8 @@ export default class Editor {
   // #region [Methods]
   public onSlideMouseDown = (e: any, _index: number, objects: PObject[]) => {
     if (e.target.classList.contains('image-center')) return
-
+    this._groupObjects = null
+    console.log('this._groupObjects', this._groupObjects)
     if (
       e.target.id === 'scaled_container' ||
       e.target.id === 'canvas_container' ||
@@ -3616,6 +3619,7 @@ export default class Editor {
         this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
         this.moveResizers({ styles: selectedStyle, objectType: 'group' })
       }
+      console.log('this._groupObjects ghj', this._groupObjects)
     }
 
     window.addEventListener('mousemove', onMouseMove)

@@ -174,7 +174,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  console.log('imageStyle', imageStyle)
+  // console.log('imageStyle', imageStyle)
 
   return (
     <div
