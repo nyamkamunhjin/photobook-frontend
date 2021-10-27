@@ -223,6 +223,7 @@
   "toolbox.align": "Align text left, right and center",
   "toolbox.font": "Фонт үзэх",
   "toolbox.fontSize": "Фонтын хэмжээ үзэх",
+  "toolbox.size": "Зурагны хэмжээ өөрчлөх",
   "slide": "Slide",
   "slide.remove": "Хасах",
   "slide.duplicate": "Хуулах",
@@ -373,5 +374,6 @@
   "no_cart_item_description": "Ваучер-д тохирох бүтээгдхүүн сагсанд байхгүй байна",
 
   "choose_editor": "Choose editor",
-  "move_editor": "Move editor"
+  "move_editor": "Move editor",
+  "change.size": "Өөрчлөх"
 }

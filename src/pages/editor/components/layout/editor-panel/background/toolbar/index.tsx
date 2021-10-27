@@ -6,7 +6,7 @@ import { AiOutlineRotateLeft, AiOutlineRotateRight } from 'react-icons/ai'
 import { BackgroundImage } from 'interfaces'
 import { Tooltip } from 'antd'
 import { FormattedMessage } from 'react-intl'
-import { VscZoomIn, VscZoomOut } from 'react-icons/vsc'
+import { VscScreenFull, VscZoomIn, VscZoomOut } from 'react-icons/vsc'
 import ShapeToolbar from './shape-toolbar'
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
   rotateRightObject?: () => void
   zoomIn?: () => void
   zoomOut?: () => void
+  zoomFit?: () => void
   flipObject?: () => void
   removeObject: () => void
 }
@@ -27,6 +28,7 @@ const Toolbar: React.FC<Props> = ({
   flipObject,
   zoomIn,
   zoomOut,
+  zoomFit,
   setBackgrounds,
   background,
   backgrounds,
@@ -45,6 +47,11 @@ const Toolbar: React.FC<Props> = ({
       <Tooltip placement="top" title={<FormattedMessage id="toolbox.zoomOut" />}>
         <span onClick={zoomOut} className={`toolbar-icon ${!hasImage && 'inactive'}`}>
           <VscZoomOut />
+        </span>
+      </Tooltip>
+      <Tooltip placement="top" title={<FormattedMessage id="toolbox.zoomFit" />}>
+        <span onClick={zoomFit} className={`toolbar-icon ${!hasImage && 'inactive'}`}>
+          <VscScreenFull />
         </span>
       </Tooltip>
       {rotateLeftObject && (

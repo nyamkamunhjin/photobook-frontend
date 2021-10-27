@@ -223,6 +223,7 @@
   "toolbox.align": "Align text left, right and center",
   "toolbox.font": "Browse font",
   "toolbox.fontSize": "Change the font size",
+  "toolbox.size": "Change the object size",
   "slide": "Slide",
   "slide.remove": "Remove",
   "slide.duplicate": "Duplicate",
@@ -373,5 +374,6 @@
   "no_cart_item_description": "Applied voucher doesn`t match with any cart items",
 
   "choose_editor": "Choose editor",
-  "move_editor": "Move to editor"
+  "move_editor": "Move to editor",
+  "change.size": "Change"
 }

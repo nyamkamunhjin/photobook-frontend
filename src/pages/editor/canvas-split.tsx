@@ -453,7 +453,7 @@ const BookEditor: React.FC<Props> = ({
               if (!_obj) return
               editors.imageFitNoDebounce(objects, _obj, BORDER_WIDTH)
             }}
-            getImagePosition={() => editors.getImagePosition(objects[_index])}
+            getImagePosition={(o: PObject) => editors.getImagePosition(o)}
             // moveResizers={editors.moveResizers}
             // removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
             // rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}

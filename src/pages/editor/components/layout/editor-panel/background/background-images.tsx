@@ -499,11 +499,11 @@ const BackgroundImages: React.FC<Props> = ({
     return true
   }
 
-  // const zoomFit = () => {
-  //   if (!bg) return false
-  //   onScale(bg, 1)
-  //   return true
-  // }
+  const zoomFit = () => {
+    if (!bg) return false
+    onScale(bg, 1)
+    return true
+  }
 
   const zoomOut = () => {
     if (!bg) return false
@@ -599,6 +599,7 @@ const BackgroundImages: React.FC<Props> = ({
           removeObject={() => onRemove()}
           zoomIn={zoomIn}
           zoomOut={zoomOut}
+          zoomFit={zoomFit}
         />
       )}
     </>

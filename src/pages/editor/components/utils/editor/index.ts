@@ -2549,6 +2549,7 @@ export default class Editor {
       let minLeft = 0
       let minTop = 0
 
+      if (this._groupObjects === null) return
       Object.keys(this._groupObjects).forEach((k: string, i: number) => {
         const { top, left } = getComputedStyle(this._groupObjects[k])
         const t = parseFloat(top)
@@ -2594,27 +2595,29 @@ export default class Editor {
       if (!this._isMouseDown) return
       this._isMouseDown = false
 
-      const _objects = Object.keys(this._groupObjects).map((k: string) => {
-        const { top, left, width, height } = getComputedStyle(this._groupObjects[k])
-        const newObject = {
-          ...this._groupObjects[parseFloat(k)],
-          style: {
-            ...this._groupObjects[parseFloat(k)].style,
-            top: parseFloat(top),
-            left: parseFloat(left),
-            width: parseFloat(width),
-            height: parseFloat(height),
-            // rotateAngle: _rotateAngle,
-            // transform: `rotateZ(${_rotateAngle}deg)`,
-          },
-        }
-        return newObject
-      })
+      if (this._groupObjects !== null) {
+        const _objects = Object.keys(this._groupObjects).map((k: string) => {
+          const { top, left, width, height } = getComputedStyle(this._groupObjects[k])
+          const newObject = {
+            ...this._groupObjects[parseFloat(k)],
+            style: {
+              ...this._groupObjects[parseFloat(k)].style,
+              top: parseFloat(top),
+              left: parseFloat(left),
+              width: parseFloat(width),
+              height: parseFloat(height),
+              // rotateAngle: _rotateAngle,
+              // transform: `rotateZ(${_rotateAngle}deg)`,
+            },
+          }
+          return newObject
+        })
 
-      this.updateGroupContainer({ containers: _objects })
-      this.updateHistory(UPDATE_GROUP_CONTAINER, {
-        containers: containers.filter((c: Container) => _objects.find((x) => x.id === c.id)),
-      })
+        this.updateGroupContainer({ containers: _objects })
+        this.updateHistory(UPDATE_GROUP_CONTAINER, {
+          containers: containers.filter((c: Container) => _objects.find((x) => x.id === c.id)),
+        })
+      }
 
       // Redrag is available
       const selector = document.querySelector('.active-border')
@@ -2633,6 +2636,19 @@ export default class Editor {
       this.groupRef.current.style.width = selectedStyle.width * this.scale + 'px'
       this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
       this.moveResizers({ styles: selectedStyle, objectType: 'group' })
+
+      const toolbar: any = document.querySelector('.toolbar')
+      if (toolbar) {
+        if (toolbar.style.display === 'none' || !toolbar.style.display) {
+          toolbar.style.display = 'flex'
+        } else if (toolbar.style.display === 'flex') {
+          toolbar.style.display = 'none'
+        }
+
+        toolbar.style.position = 'absolute'
+        toolbar.style.top = `0px`
+        toolbar.style.left = `calc(50% - 190px)`
+      }
     }
 
     window.addEventListener('mousemove', onMouseMove)
@@ -3626,6 +3642,24 @@ export default class Editor {
         this.groupRef.current.style.width = selectedStyle.width * this.scale + 'px'
         this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
         this.moveResizers({ styles: selectedStyle, objectType: 'group' })
+      }
+
+      if (Object.keys(selectedObjects).length === 0 && this._groupObjects !== null) {
+        this._groupObjects = null
+        this.setGroupObjects(null)
+      } else if (Object.keys(selectedObjects).length > 0) {
+        const toolbar: any = document.querySelector('.toolbar')
+        if (toolbar) {
+          if (toolbar.style.display === 'none' || !toolbar.style.display) {
+            toolbar.style.display = 'flex'
+          } else if (toolbar.style.display === 'flex') {
+            toolbar.style.display = 'none'
+          }
+
+          toolbar.style.position = 'absolute'
+          toolbar.style.top = `0px`
+          toolbar.style.left = `calc(50% - 190px)`
+        }
       }
     }
 

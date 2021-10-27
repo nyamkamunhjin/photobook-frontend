@@ -432,7 +432,7 @@ const BookEditor: React.FC<Props> = ({
             imageFit={(borderWidth) => {
               editors.imageFitNoDebounce(objects, editors._object, BORDER_WIDTH)
             }}
-            getImagePosition={() => editors.getImagePosition(objects[_index])}
+            getImagePosition={(o: PObject) => editors.getImagePosition(o)}
           />
           <div id="selection" hidden ref={selectionRef} />
           {currentProject.canvasType === 'Single' ? (

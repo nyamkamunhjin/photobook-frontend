@@ -30,7 +30,7 @@ interface Props {
   updateHistory: (type: string, object: unknown) => void
   updateObject: (value: { object: PObject }) => void
   imageFit?: (borderWidth: number) => void
-  getImagePosition: () => void
+  getImagePosition: (o: PObject) => void
 }
 
 const ImageToolbar = ({
@@ -77,7 +77,7 @@ const ImageToolbar = ({
     }
     if (zoom === 1) debouncedImageFit(parseFloat(_object.props.frameStyle?.borderWidth || '0'))
 
-    updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+    updateHistory(UPDATE_OBJECT, { object: getImagePosition(objects[index]) })
   }
   const zoomIn = () => {
     if (!object) return false
@@ -125,7 +125,7 @@ const ImageToolbar = ({
       },
     })
 
-    updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+    updateHistory(UPDATE_OBJECT, { object: getImagePosition(objects[index]) })
     return true
   }
 
@@ -146,7 +146,7 @@ const ImageToolbar = ({
       },
     })
 
-    updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+    updateHistory(UPDATE_OBJECT, { object: getImagePosition(objects[index]) })
     return true
   }
 
@@ -168,7 +168,7 @@ const ImageToolbar = ({
       },
     })
 
-    updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+    updateHistory(UPDATE_OBJECT, { object: getImagePosition(objects[index]) })
     return true
   }
 
@@ -244,7 +244,7 @@ const ImageToolbar = ({
     const colorPicker: any = document.querySelector('.color-picker')
     colorPicker.style.background = color.hex
 
-    updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+    updateHistory(UPDATE_OBJECT, { object: getImagePosition(objects[index]) })
     // setShowPicker(false);
     return true
   }
@@ -264,7 +264,7 @@ const ImageToolbar = ({
       },
     })
 
-    updateHistory(UPDATE_OBJECT, { object: getImagePosition() })
+    updateHistory(UPDATE_OBJECT, { object: getImagePosition(objects[index]) })
     return true
   }
 
