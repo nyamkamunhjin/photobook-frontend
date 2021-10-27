@@ -1725,7 +1725,7 @@ export default class Editor {
           .map((group) => lodash.minBy(group, 'size'))
           .value()
         // console.log('X', x, 'Y', y)
-        this.renderLines(object, objectType, true, x, y, gap, isResize)
+        this.renderLines(object, objectType, false, x, y, gap, isResize)
       }
     },
     500
@@ -3643,7 +3643,7 @@ export default class Editor {
         this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
         this.moveResizers({ styles: selectedStyle, objectType: 'group' })
       }
-
+      console.log('selectedObjects', selectedObjects)
       if (Object.keys(selectedObjects).length === 0 && this._groupObjects !== null) {
         this._groupObjects = null
         this.setGroupObjects(null)
