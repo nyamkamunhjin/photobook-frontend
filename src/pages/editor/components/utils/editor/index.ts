@@ -906,6 +906,7 @@ export default class Editor {
     this.setObjectType('text')
     // Deselect GroupObject
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
   }
@@ -1139,6 +1140,8 @@ export default class Editor {
         objects.splice(_index, 1)
       })
       this._groupObjects = null
+      this.setGroupObjects(null)
+
       this.objects = objects
     } else if (_index > -1) {
       /* montage image, text group */
@@ -1215,6 +1218,7 @@ export default class Editor {
 
     // Ehleed group object bwal deselect hiine
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
 
@@ -1781,6 +1785,7 @@ export default class Editor {
     this.setObjectType('shape')
     // Deselect GroupObject
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
   }
@@ -1859,6 +1864,7 @@ export default class Editor {
     this.setObjectType('montage-portrait') // ene yag yu hiigeed bnaa
     // Deselect GroupObject
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
   }
@@ -1892,6 +1898,7 @@ export default class Editor {
     this.setObjectType('shape')
     // Deselect GroupObject
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
   }
@@ -1967,6 +1974,7 @@ export default class Editor {
     this.setObjectType('image')
     // Deselect GroupObject
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
   }
@@ -2224,6 +2232,7 @@ export default class Editor {
     }
     // Deselect GroupObject
     this._groupObjects = null
+    this.setGroupObjects(null)
     this.objects = objects
     this.deSelectObject()
   }
@@ -3459,8 +3468,7 @@ export default class Editor {
   // #region [Methods]
   public onSlideMouseDown = (e: any, _index: number, objects: PObject[]) => {
     if (e.target.classList.contains('image-center')) return
-    this._groupObjects = null
-    console.log('this._groupObjects', this._groupObjects)
+
     if (
       e.target.id === 'scaled_container' ||
       e.target.id === 'canvas_container' ||
@@ -3603,7 +3611,7 @@ export default class Editor {
         this.setObject(object)
         this._object = object
       } else if (Object.keys(selectedObjects).length > 1) {
-        // Object.keys(selectedObjects).forEach((key: string) => {
+        // Object.keys(selectedObjects).forEach(( key: string) => {
         //   const object: any = selectedObjects[key]
         //   const objectType = this.getObjectType(object.firstChild.classList)
         //   this.moveResizers({ object, objectType })
@@ -3619,7 +3627,6 @@ export default class Editor {
         this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
         this.moveResizers({ styles: selectedStyle, objectType: 'group' })
       }
-      console.log('this._groupObjects ghj', this._groupObjects)
     }
 
     window.addEventListener('mousemove', onMouseMove)
