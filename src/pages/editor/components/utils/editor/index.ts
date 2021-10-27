@@ -2564,9 +2564,12 @@ export default class Editor {
       })
 
       Object.keys(this._groupObjects).forEach((k: string) => {
-        const { top, left } = getComputedStyle(this._groupObjects[k])
+        const { top, left, width, height } = getComputedStyle(this._groupObjects[k])
         const t = parseFloat(top)
         const l = parseFloat(left)
+        const w = parseFloat(width)
+        const h = parseFloat(height)
+
         this._groupObjects[k].style.top = t + deltaY + 'px'
         this._groupObjects[k].style.left = l + deltaX + 'px'
         this.moveResizers({
@@ -2578,6 +2581,15 @@ export default class Editor {
             left: minLeft + deltaX,
           },
         })
+
+        const gap = 0
+        this.collisionDetecter(
+          this._groupObjects[k],
+          this.getObjectType(this._groupObjects[k].firstChild.classList),
+          { t, l, w, h },
+          gap,
+          false
+        )
       })
 
       this.groupRef.current.style.top = (minTop + deltaY) * this.scale + 'px'

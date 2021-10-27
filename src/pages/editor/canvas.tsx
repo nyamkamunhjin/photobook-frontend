@@ -429,8 +429,8 @@ const BookEditor: React.FC<Props> = ({
             sendForward={() => editors.onSendForward(_index, objects)}
             sendBackward={() => editors.onSendBackward(_index, objects)}
             removeObject={() => editors.onRemoveObject(containers, objects, _index)}
-            imageFit={(borderWidth) => {
-              editors.imageFitNoDebounce(objects, editors._object, BORDER_WIDTH)
+            imageFit={(borderWidth, o) => {
+              editors.imageFitNoDebounce(objects, o, BORDER_WIDTH)
             }}
             getImagePosition={(o: PObject) => editors.getImagePosition(o)}
           />

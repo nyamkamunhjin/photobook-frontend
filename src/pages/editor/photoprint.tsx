@@ -442,7 +442,7 @@ const BookEditor: React.FC<Props> = ({
             sendBackward={() => editors.onSendBackward(_index, objects)}
             removeObject={() => editors.onRemoveObject(containers, objects, _index)}
             getImagePosition={(o: PObject) => editors.getImagePosition(o)}
-            imageFit={(borderWidth) => editors.imageFitNoDebounce(objects, editors._object, borderWidth)}
+            imageFit={(borderWidth, o) => editors.imageFitNoDebounce(objects, o, borderWidth)}
           />
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons

@@ -41,7 +41,7 @@ interface Props {
   sendForward?: () => void
   moveResizers?: (move: MoveResizerInterface) => void
   isLayout?: boolean
-  imageFit?: (borderWidth: number) => void
+  imageFit?: (borderWidth: number, o: PObject) => void
   getImagePosition: (o: PObject) => void
 }
 const Toolbar: React.FC<Props> = ({
@@ -97,6 +97,9 @@ const Toolbar: React.FC<Props> = ({
             },
           })
           updateHistory(UPDATE_OBJECT, { object: getImagePosition(_object) })
+
+          if (!imageFit) return
+          imageFit(parseFloat(_object.props.frameStyle?.borderWidth || '0'), _object)
         })
       widthRef.current.value = '100%'
       heightRef.current.value = '100%'

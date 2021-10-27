@@ -29,7 +29,7 @@ interface Props {
   removeMaskFromObject?: () => void
   updateHistory: (type: string, object: unknown) => void
   updateObject: (value: { object: PObject }) => void
-  imageFit?: (borderWidth: number) => void
+  imageFit?: (borderWidth: number, o: PObject) => void
   getImagePosition: (o: PObject) => void
 }
 
@@ -55,7 +55,7 @@ const ImageToolbar = ({
   useHotkeys('shift+=', () => zoomIn(), [objects, index, object])
   useHotkeys('shift+-', () => zoomOut(), [objects, index, object])
   useHotkeys('shift+0', () => zoomFit(), [objects, index, object])
-  const debouncedImageFit = debounce((borderWidth) => imageFit && imageFit(borderWidth), 200)
+  const debouncedImageFit = debounce((borderWidth) => imageFit && imageFit(borderWidth, objects[index]), 200)
 
   const onScale = (_object: PObject, zoom: number) => {
     updateObject({
