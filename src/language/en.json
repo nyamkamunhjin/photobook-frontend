@@ -375,5 +375,6 @@
 
   "choose_editor": "Choose editor",
   "move_editor": "Move to editor",
-  "change.size": "Change"
+  "change.size": "Change",
+  "orientation": "Orientation"
 }

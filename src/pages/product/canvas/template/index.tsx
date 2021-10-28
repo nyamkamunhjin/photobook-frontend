@@ -11,11 +11,15 @@ const ProductTemplate: FC = () => {
   const { id }: { id: string } = useParams()
   const [selectedShowCase, setSelectedShowCase] = useState<{ url: string; type: 'video' | 'image' }>()
   const [selectedState, setSelectedState] = useState<{
+    orientation?: string
     paperSize?: PaperSize
     paperMaterial?: PaperMaterial
+    type?: String
   }>({
+    orientation: 'Square',
     paperSize: undefined,
     paperMaterial: undefined,
+    type: 'Air',
   })
 
   const template = useRequest(() => getTemplate(parseInt(id, 10)), {

@@ -375,5 +375,6 @@
 
   "choose_editor": "Choose editor",
   "move_editor": "Move editor",
-  "change.size": "Өөрчлөх"
+  "change.size": "Өөрчлөх",
+  "orientation": "Хэлбэр"
 }

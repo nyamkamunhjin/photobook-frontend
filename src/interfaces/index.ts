@@ -245,6 +245,7 @@ export interface PaperSize {
   templates?: Template[]
   coverTypes?: CoverType[]
   bindingTypes?: BindingType[]
+  orientation: 'Square' | 'Portrait' | 'Landscape' | 'Panoramic'
 }
 
 export interface CoverMaterial {
