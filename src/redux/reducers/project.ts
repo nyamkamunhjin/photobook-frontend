@@ -96,8 +96,8 @@ export const defaultProject: ProjectInterface = {
   undoHistory: [],
   redoHistory: [],
   layout: {
-    left: { count: -1, index: -1, objects: [] },
-    right: { count: -1, index: -1, objects: [] },
+    left: { count: -1, index: -1, objects: [], types: ['whole-page', 'single-page'] },
+    right: { count: -1, index: -1, objects: [], types: ['whole-page', 'single-page'] },
   },
   layouts: [
     {
@@ -112,6 +112,7 @@ export const defaultProject: ProjectInterface = {
             { top: 50, width: 50, left: 0, height: 50, className: 'image-placeholder' },
             { top: 50, width: 50, left: 50, height: 50, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
         {
           count: 4,
@@ -122,6 +123,7 @@ export const defaultProject: ProjectInterface = {
             { top: 55, width: 50, left: 0, height: 45, className: 'image-placeholder' },
             { top: 45, width: 50, left: 50, height: 55, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
       ],
     },
@@ -136,6 +138,7 @@ export const defaultProject: ProjectInterface = {
             { top: 50, width: 50, left: 0, height: 50, className: 'image-placeholder' },
             { top: 50, width: 50, left: 50, height: 50, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
         {
           count: 3,
@@ -145,6 +148,7 @@ export const defaultProject: ProjectInterface = {
             { top: 50, width: 50, left: 0, height: 50, className: 'image-placeholder' },
             { top: 0, width: 50, left: 50, height: 100, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
       ],
     },
@@ -158,6 +162,7 @@ export const defaultProject: ProjectInterface = {
             { top: 0, width: 100, left: 0, height: 50, className: 'image-placeholder' },
             { top: 50, width: 100, left: 0, height: 50, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
         {
           count: 2,
@@ -166,6 +171,7 @@ export const defaultProject: ProjectInterface = {
             { top: 8, width: 80, left: 10, height: 40, className: 'image-placeholder' },
             { top: 52, width: 80, left: 10, height: 40, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
         {
           count: 2,
@@ -174,6 +180,7 @@ export const defaultProject: ProjectInterface = {
             { top: 0, width: 50, left: 0, height: 100, className: 'image-placeholder' },
             { top: 0, width: 50, left: 50, height: 100, className: 'image-placeholder' },
           ],
+          types: ['whole-page', 'single-page'],
         },
       ],
     },
@@ -184,16 +191,19 @@ export const defaultProject: ProjectInterface = {
           count: 1,
           index: 0,
           objects: [{ top: 0, width: 100, left: 0, height: 100, className: 'image-placeholder' }],
+          types: ['whole-page', 'single-page'],
         },
         {
           index: 1,
           count: 1,
           objects: [{ top: 10, width: 80, left: 10, height: 80, className: 'image-placeholder' }],
+          types: ['whole-page', 'single-page'],
         },
         {
           index: 2,
           count: 1,
           objects: [{ top: 20, width: 60, left: 20, height: 60, className: 'image-placeholder' }],
+          types: ['whole-page', 'single-page'],
         },
       ],
     },

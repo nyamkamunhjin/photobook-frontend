@@ -745,7 +745,8 @@ export default class Editor {
     const _height = this.slideHeight - 20
     if (layoutDrop.classList.contains('layout-drop-left')) {
       const layoutData = JSON.parse(e.dataTransfer.getData('layout'))
-      const { count, index } = layoutData
+      const { count, index, types } = layoutData
+      if (!types.includes('single-page')) return
       const layoutObjects: any = []
 
       const leftObjects: any = objects.filter((o: any) => o.style.left < this.slideWidth / 2)
@@ -787,7 +788,8 @@ export default class Editor {
       this.updateHistory(ADD_LAYOUT, { objects, layout })
     } else if (layoutDrop.classList.contains('layout-drop-right')) {
       const layoutData = JSON.parse(e.dataTransfer.getData('layout'))
-      const { count, index } = layoutData
+      const { count, index, types } = layoutData
+      if (!types.includes('single-page')) return
       const layoutObjects: any = []
       layoutData.objects.forEach((o: any, i: number) => {
         const style = {
@@ -822,7 +824,8 @@ export default class Editor {
       layoutDrop.classList.contains('layout-drop-full')
     ) {
       const layoutData = JSON.parse(e.dataTransfer.getData('layout'))
-      const { count, index } = layoutData
+      const { count, index, types } = layoutData
+      if (!types.includes('whole-page')) return
       const layoutObjects: any = []
 
       layoutData.objects.forEach((o: any, i: number) => {

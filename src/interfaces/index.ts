@@ -502,6 +502,7 @@ export interface LayoutInterface {
   index: number
   objects?: LayoutObject[]
   layoutCategories?: LayoutCategory[]
+  types: ('whole-page' | 'single-page')[]
 }
 
 export interface LayoutResponse {

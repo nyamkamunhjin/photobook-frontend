@@ -290,9 +290,6 @@ const addLayoutHandler = (state: ProjectInterface, action: any) => {
 
   const { objects, layout } = payload
 
-  console.log('layout')
-  console.log(layout)
-
   return {
     ...state,
     objects,
