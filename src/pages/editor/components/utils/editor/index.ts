@@ -2532,7 +2532,7 @@ export default class Editor {
   }
   // #endregion [ObjectMethods]
   // #region [GroupMethods]
-  public selectionDragStart = (e: any, containers: Container[]) => {
+  public selectionDragStart = (e: any, containers: Container[], gap = 0) => {
     let startX = e.clientX / this.scale
     let startY = e.clientY / this.scale
 
@@ -2582,14 +2582,13 @@ export default class Editor {
           },
         })
 
-        const gap = 0
-        this.collisionDetecter(
-          this._groupObjects[k],
-          this.getObjectType(this._groupObjects[k].firstChild.classList),
-          { t, l, w, h },
-          gap,
-          false
-        )
+        // this.collisionDetecter(
+        //   this._groupObjects[k],
+        //   this.getObjectType(this._groupObjects[k].firstChild.classList),
+        //   { t, l, w, h },
+        //   gap,
+        //   false
+        // )
       })
 
       this.groupRef.current.style.top = (minTop + deltaY) * this.scale + 'px'

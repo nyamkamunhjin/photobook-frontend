@@ -542,7 +542,7 @@ const BookEditor: React.FC<Props> = ({
                 <div
                   className="group-selection"
                   ref={groupRef}
-                  onMouseDown={(e) => editors.selectionDragStart(e, containers)}
+                  onMouseDown={(e) => editors.selectionDragStart(e, containers, GAP)}
                 />
                 <div className="active-border" />
                 <div className="page-border-canvas" />
