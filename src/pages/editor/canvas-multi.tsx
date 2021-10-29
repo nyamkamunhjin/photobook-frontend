@@ -446,11 +446,7 @@ const BookEditor: React.FC<Props> = ({
           <div
             id="slide_container"
             // onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={
-              currentProject.canvasType === 'Single'
-                ? (e) => editors.onObjectDrop(e, editor.type, objects, _index, 0)
-                : (e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, false)
-            }
+            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, false, 'canvas-multi')}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >

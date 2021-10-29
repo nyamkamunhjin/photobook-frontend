@@ -2230,7 +2230,7 @@ export default class Editor {
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
-    } else if ('images'.includes(type)) {
+    } else if ('images'.includes(type) && editorType !== 'canvas-multi') {
       this.createImages(e, objects, border)
     }
     // Deselect GroupObject
