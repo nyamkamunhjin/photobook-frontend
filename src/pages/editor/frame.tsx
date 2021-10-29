@@ -427,6 +427,7 @@ const BookEditor: React.FC<Props> = ({
             objectType={_objectType}
             index={_index}
             objects={objects}
+            groupObjects={_groupObjects}
             updateObject={updateObject}
             updateHistory={updateHistory}
             moveResizers={editors.moveResizers}

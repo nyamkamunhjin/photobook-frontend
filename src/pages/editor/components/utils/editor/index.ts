@@ -1320,6 +1320,8 @@ export default class Editor {
       const h = parseFloat(height)
 
       this.moveCollisionObject(object, objectType, { t, l, w, h }, gap, false)
+      this.checkActiveWrapper(object)
+
       if (index > -1) {
         this.updateObjectStyle(o, object)
 
@@ -1652,6 +1654,53 @@ export default class Editor {
     }
     return minSizes
   }
+  public addActiveWrapper = (element: OElement, minSizes: any[], isResize = false, isRatioFitter = false) => {
+    const activeWrapper = document.querySelector('.active-wrapper')
+    if (!activeWrapper) return minSizes
+    const { width, height } = getComputedStyle(activeWrapper)
+    minSizes.unshift(
+      diffRect(
+        element,
+        {
+          l: (ParseNumber(this.slideWidth) - parseFloat(width) / this.scale) / 2,
+          h: ParseNumber(parseFloat(height) / this.scale),
+          w: ParseNumber(parseFloat(width) / this.scale),
+          t: (ParseNumber(this.slideHeight) - parseFloat(height) / this.scale) / 2,
+        },
+        -1,
+        0,
+        false,
+        isResize
+      )
+    )
+
+    return minSizes
+  }
+  public checkActiveWrapper = (element: HTMLElement, isResize = false) => {
+    const activeWrapper = document.querySelector('.active-wrapper')
+    if (!activeWrapper) return
+    const { width, height } = getComputedStyle(activeWrapper)
+    const { top: t, left: l } = getComputedStyle(element)
+
+    if (
+      parseFloat(t) > 0 &&
+      parseFloat(t) <= Math.abs((ParseNumber(this.slideHeight) - parseFloat(height) / this.scale) / 2 + 30)
+    ) {
+      if (isResize) {
+        element.style.height = parseFloat(element.style.height) + parseFloat(t) + 'px'
+      }
+      element.style.top = '0px'
+    }
+    if (
+      parseFloat(l) > 0 &&
+      parseFloat(l) <= Math.abs((ParseNumber(this.slideWidth) - parseFloat(width) / this.scale) / 2 + 30)
+    ) {
+      if (isResize) {
+        element.style.width = parseFloat(element.style.width) + parseFloat(l) + 'px'
+      }
+      element.style.left = '0px'
+    }
+  }
   public moveCollisionObject = (
     object: any,
     objectType: string,
@@ -1689,6 +1738,7 @@ export default class Editor {
         return asn
       }, [])
       minSizes = this.addCornerCollision(element, minSizes, isResize, isRatioFitter)
+      minSizes = this.addActiveWrapper(element, minSizes, isResize, isRatioFitter)
       // console.log('minSizes', minSizes)
       const [x, y] = lodash(minSizes.flat(1))
         .groupBy('vertical')
@@ -3328,6 +3378,9 @@ export default class Editor {
       const _h = parseFloat(_height)
       // eslint-disable-next-line prettier/prettier
       this.moveCollisionObject(object, objectType, { t: _t, l: _l, w: _w, h: _h }, gap, true)
+      this.checkActiveWrapper(object, true)
+      this.moveResizers({ object, objectType })
+
       if (_index > -1) {
         this.updateObjectStyle(o, object)
       }

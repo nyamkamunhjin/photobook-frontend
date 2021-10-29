@@ -503,6 +503,7 @@ const BookEditor: React.FC<Props> = ({
               action: setZoom,
             }}
             objects={objects}
+            groupObjects={_groupObjects}
             updateObject={updateObject}
             updateHistory={updateHistory}
             moveResizers={editors.moveResizers}

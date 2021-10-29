@@ -418,6 +418,7 @@ const BookEditor: React.FC<Props> = ({
             objectType={_objectType}
             index={_index}
             objects={objects}
+            groupObjects={_groupObjects}
             updateObject={updateObject}
             updateHistory={updateHistory}
             moveResizers={editors.moveResizers}
@@ -575,7 +576,9 @@ const BookEditor: React.FC<Props> = ({
                       borderWidth: `${BORDER_WIDTH * scale}px`,
                       pointerEvents: 'none',
                     }}
-                  />
+                  >
+                    <div className="active-wrapper w-full h-full z-50 mix-blend-multiply" />
+                  </div>
                 )}
               </div>
             </div>
