@@ -155,7 +155,13 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
   useHotkeys('shift+w', () => editors.onSendForward(_index, objects), [_index, objects])
   useHotkeys('shift+s', () => editors.onSendBackward(_index, objects), [_index, objects])
-  useHotkeys('Delete', () => editors.onRemoveObject(containers, objects, _index), [_index, objects])
+  useHotkeys(
+    'Delete',
+    () =>
+      !objects[_index].props.className.includes('image-placeholder') &&
+      editors.onRemoveObject(containers, objects, _index),
+    [_index, objects]
+  )
   useHotkeys('shift+Delete', () => editors.onRemoveImageFromObject(_index, objects, _objectType), [_index, objects])
   useHotkeys(
     'ctrl+shift+s',
@@ -409,33 +415,54 @@ const BookEditor: React.FC<Props> = ({
     if (currentProject.canvasType === 'Single' && tradephoto && imgLoading && objects.length === 0) setTradePhoto()
   }, [tradephoto, currentProject, images, imgLoading])
 
-  console.log('objects', objects)
-
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
         <div id="editor_container" ref={editorContainerRef}>
-          <Toolbar
-            object={_object}
-            objectType={_objectType}
-            index={_index}
-            objects={objects}
-            updateObject={updateObject}
-            updateHistory={updateHistory}
-            moveResizers={editors.moveResizers}
-            removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
-            removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
-            rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
-            rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
-            flipObject={() => editors.onFlipObject(_index, objects)}
-            sendForward={() => editors.onSendForward(_index, objects)}
-            sendBackward={() => editors.onSendBackward(_index, objects)}
-            removeObject={() => editors.onRemoveObject(containers, objects, _index)}
-            imageFit={(borderWidth, o) => {
-              editors.imageFitNoDebounce(objects, o, BORDER_WIDTH)
-            }}
-            getImagePosition={(o: PObject) => editors.getImagePosition(o)}
-          />
+          {!Array.from(_object?.firstChild?.classList || []).includes('image-placeholder') ? (
+            <Toolbar
+              object={_object}
+              objectType={_objectType}
+              index={_index}
+              objects={objects}
+              updateObject={updateObject}
+              updateHistory={updateHistory}
+              moveResizers={editors.moveResizers}
+              removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+              removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
+              rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
+              rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
+              flipObject={() => editors.onFlipObject(_index, objects)}
+              sendForward={() => editors.onSendForward(_index, objects)}
+              sendBackward={() => editors.onSendBackward(_index, objects)}
+              removeObject={() => editors.onRemoveObject(containers, objects, _index)}
+              imageFit={(borderWidth, o) => {
+                editors.imageFitNoDebounce(objects, o, BORDER_WIDTH)
+              }}
+              getImagePosition={(o: PObject) => editors.getImagePosition(o)}
+            />
+          ) : (
+            <Toolbar
+              object={_object}
+              objectType={_objectType}
+              index={_index}
+              objects={objects}
+              updateObject={updateObject}
+              updateHistory={updateHistory}
+              moveResizers={editors.moveResizers}
+              removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+              removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
+              rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
+              rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
+              flipObject={() => editors.onFlipObject(_index, objects)}
+              sendForward={() => editors.onSendForward(_index, objects)}
+              sendBackward={() => editors.onSendBackward(_index, objects)}
+              imageFit={(borderWidth, o) => {
+                editors.imageFitNoDebounce(objects, o, BORDER_WIDTH)
+              }}
+              getImagePosition={(o: PObject) => editors.getImagePosition(o)}
+            />
+          )}
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons
             createSquare={() => editors.createSquare(objects)}

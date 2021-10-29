@@ -63,7 +63,7 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
 
       const project: Project = await getProject(newProject?.data.id)
       const imageCategories = await listImageCategoryByProject(id)
-      console.log('template', template)
+
       dispatch(setCurrentProject(project))
       dispatch({
         type: GET_CATEGORIES,
