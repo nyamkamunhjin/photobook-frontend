@@ -49,12 +49,21 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       const [paperMaterial] = paperMaterials
       // const [paperMaterial] = paperMaterials
 
-      setSelectedState((oldState) => ({
-        ...oldState,
-        paperSize,
-        paperMaterial,
-        // paperMaterial,
-      }))
+      if (template.canvasType === 'Single') {
+        setSelectedState((oldState) => ({
+          ...oldState,
+          paperSize,
+          paperMaterial,
+          // paperMaterial,
+        }))
+      } else {
+        setSelectedState((oldState) => ({
+          ...oldState,
+          paperSize: template.paperSize,
+          paperMaterial,
+          // paperMaterial,
+        }))
+      }
     }
     if (paperSizes) {
       initialState()
@@ -87,53 +96,57 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
         </div>
       </div>
 
-      <div className="flex gap-4 justify-between">
-        <span className="font-normal text-lg">{intl.formatMessage({ id: 'orientation' })}</span>
-        <div className="flex flex-wrap gap-4 w-2/3">
-          <Select
-            className="w-full"
-            onChange={(value) => {
-              setSelectedState((each) => ({
-                ...each,
-                orientation: value,
-              }))
-            }}
-            defaultValue="Square"
-          >
-            {orientations.map((each) => (
-              <Select.Option key={each.name} value={each.name}>
-                <span className="font-normal text-gray-700 text-sm">{each.name}</span>
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      </div>
+      {template.canvasType === 'Single' && (
+        <>
+          <div className="flex gap-4 justify-between">
+            <span className="font-normal text-lg">{intl.formatMessage({ id: 'orientation' })}</span>
+            <div className="flex flex-wrap gap-4 w-2/3">
+              <Select
+                className="w-full"
+                onChange={(value) => {
+                  setSelectedState((each) => ({
+                    ...each,
+                    orientation: value,
+                  }))
+                }}
+                defaultValue="Square"
+              >
+                {orientations.map((each) => (
+                  <Select.Option key={each.name} value={each.name}>
+                    <span className="font-normal text-gray-700 text-sm">{each.name}</span>
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+          </div>
 
-      <div className="flex gap-4 justify-between">
-        <span className="font-normal text-lg">{intl.formatMessage({ id: 'paper_size' })}</span>
-        <div className="flex flex-wrap gap-4 w-2/3">
-          <Select
-            className="w-full flex items-center"
-            onChange={(value) => {
-              setSelectedState((each) => ({
-                ...each,
-                paperSize: orientations
+          <div className="flex gap-4 justify-between">
+            <span className="font-normal text-lg">{intl.formatMessage({ id: 'paper_size' })}</span>
+            <div className="flex flex-wrap gap-4 w-2/3">
+              <Select
+                className="w-full flex items-center"
+                onChange={(value) => {
+                  setSelectedState((each) => ({
+                    ...each,
+                    paperSize: orientations
+                      .find((item) => item.name === selectedState.orientation)
+                      ?.sizes.find((item: PaperSize) => item.size === value),
+                  }))
+                }}
+                defaultValue={orientations.find((item) => item.name === selectedState.orientation)?.sizes[0].size}
+              >
+                {orientations
                   .find((item) => item.name === selectedState.orientation)
-                  ?.sizes.find((item: PaperSize) => item.size === value),
-              }))
-            }}
-            defaultValue={orientations.find((item) => item.name === selectedState.orientation)?.sizes[0].size}
-          >
-            {orientations
-              .find((item) => item.name === selectedState.orientation)
-              ?.sizes.map((each: PaperSize) => (
-                <Select.Option key={each.size} value={each.size}>
-                  <span className="font-normal text-gray-700 text-sm">{each.size}</span>
-                </Select.Option>
-              ))}
-          </Select>
-        </div>
-      </div>
+                  ?.sizes.map((each: PaperSize) => (
+                    <Select.Option key={each.size} value={each.size}>
+                      <span className="font-normal text-gray-700 text-sm">{each.size}</span>
+                    </Select.Option>
+                  ))}
+              </Select>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* <div className="space-y-4">
         <span className="font-normal text-lg">{intl.formatMessage({ id: 'paper_size' })}</span>
