@@ -113,8 +113,13 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
-    path: '/editor/canvas',
-    component: LoadableLoader(() => import('pages/editor/canvas')),
+    path: '/editor/canvas/single',
+    component: LoadableLoader(() => import('pages/editor/canvas-single')),
+    exact: true,
+  },
+  {
+    path: '/editor/canvas/multi',
+    component: LoadableLoader(() => import('pages/editor/canvas-multi')),
     exact: true,
   },
   {
