@@ -8,6 +8,7 @@ import useRouter from 'components/router'
 import SubmenuPhotobook from './photobook'
 import SubmenuPhotoprint from './photoprint'
 import SubmenuCanvas from './canvas'
+import SubmenuFrame from './frame'
 
 const HeaderMenu: FC = () => {
   const router = useRouter()
@@ -16,6 +17,7 @@ const HeaderMenu: FC = () => {
   const categories = useRequest(() => listTemplateCategory({ current: 0, pageSize: 100 }, {}))
 
   const canvasAd = useRequest(() => listHeaderAd('canvas'))
+  const frameAd = useRequest(() => listHeaderAd('frame'))
   const photobookAd = useRequest(() => listHeaderAd('photobook'))
 
   return (
@@ -78,6 +80,33 @@ const HeaderMenu: FC = () => {
           <FormattedMessage id="canvas" />
         </button>
       </Tippy>
+
+      <Tippy
+        interactive
+        placement="bottom"
+        maxWidth="100%"
+        offset={[0, 0]}
+        render={() => (
+          <div className="w-screen mx-auto" style={{ minWidth: '20rem' }}>
+            {frameAd.data && (
+              <SubmenuFrame
+                categories={categories.data}
+                imageLeft={frameAd.data?.find((each: any) => each.left)?.imageUrl}
+                imageRight={frameAd.data?.find((each: any) => !each.left)?.imageUrl}
+              />
+            )}
+          </div>
+        )}
+      >
+        <button
+          type="button"
+          className="text-gray-500 tracking-widest text-sm font-light focus:outline-none border-solid border-transparent hover:border-blue-300 border-b-2 transition-transform py-4"
+          key="home"
+        >
+          <FormattedMessage id="frame" />
+        </button>
+      </Tippy>
+
       <Tippy
         interactive
         placement="bottom"

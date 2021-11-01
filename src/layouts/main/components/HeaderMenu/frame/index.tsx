@@ -5,7 +5,7 @@ import { Category } from 'interfaces'
 import useRouter from 'components/router'
 import { Loading } from 'components'
 
-interface SubmenuCanvas {
+interface SubmenuFrame {
   categories: {
     list?: Category[]
   }
@@ -13,7 +13,7 @@ interface SubmenuCanvas {
   imageRight: string
 }
 
-const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight }) => {
+const SubmenuFrame: FC<SubmenuFrame> = ({ categories, imageLeft, imageRight }) => {
   const router = useRouter()
 
   return (
@@ -24,34 +24,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
       {imageLeft && (
         <img className="w-52 object-cover" src={`${process.env.REACT_APP_PUBLIC_IMAGE}${imageLeft}`} alt="canvas" />
       )}
-
       <div className="mx-4 p-4">
-        <p className="font-semibold ">
-          <FormattedMessage id="canvas" />
-        </p>
-        <ul className="flex flex-col gap-2">
-          {categories?.list ? (
-            categories?.list?.flatMap((each) => {
-              if (each.templateType?.name === 'canvas') {
-                return (
-                  <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
-                    <button
-                      className="focus:outline-none hover:text-blue-300"
-                      type="button"
-                      onClick={() => router.replace(`/product/canvas?all=false&category=${each.id}`)}
-                    >
-                      {each.name}
-                    </button>
-                  </li>
-                )
-              } else return []
-            })
-          ) : (
-            <Loading fill={false} />
-          )}
-        </ul>
-      </div>
-      {/* <div className="mx-4 p-4">
         <p className="font-semibold">
           <FormattedMessage id="frame" />
         </p>
@@ -76,7 +49,7 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
             <Loading fill={false} />
           )}
         </ul>
-      </div> */}
+      </div>
       {imageRight && (
         <img
           className="w-52 object-cover ml-auto"
@@ -88,4 +61,4 @@ const SubmenuCanvas: FC<SubmenuCanvas> = ({ categories, imageLeft, imageRight })
   )
 }
 
-export default SubmenuCanvas
+export default SubmenuFrame
