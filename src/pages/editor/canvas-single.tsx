@@ -79,7 +79,6 @@ interface Props {
   linkImages: (images: string[], id: number) => Promise<any>
 }
 
-const BORDER_WIDTH = 3 * 100
 const GAP = 5 * 100
 
 const BookEditor: React.FC<Props> = ({
@@ -174,6 +173,8 @@ const BookEditor: React.FC<Props> = ({
   )
   const urlParams = new URLSearchParams(window.location.search)
   const tradephoto = urlParams.get('tradephoto')
+  const type = urlParams.get('type')
+  const BORDER_WIDTH = type === 'Air' ? 3 * 100 : 4 * 100
 
   const editors = useMemo(() => {
     return new Editor({
