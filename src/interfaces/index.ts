@@ -343,6 +343,7 @@ export interface Template {
   images?: Image[]
   layouts?: LayoutInterface[]
   productOptions?: string[] | []
+  frameType?: 'Single' | 'Multi' | 'Unlock'
 }
 
 export type CanvasType = 'Single' | 'Multi' | 'Split'

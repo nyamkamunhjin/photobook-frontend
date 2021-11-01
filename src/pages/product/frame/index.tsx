@@ -58,7 +58,7 @@ const ProductFrame: FC = () => {
     templates.pagination.changeCurrent(1)
     templates.refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory])
+  }, [selectedCategory, selectedFormat])
 
   return (
     <ProductWrapper bannerImageUrl={ad.data?.find((each: any) => each.templateType === templateType)?.imageUrl}>

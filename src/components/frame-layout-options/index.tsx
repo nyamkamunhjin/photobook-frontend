@@ -1,9 +1,12 @@
-import React, { FC, useEffect, useState } from 'react'
+/* eslint-disable no-alert */
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { FrameMaterial, PaperSize, RootInterface, Template } from 'interfaces'
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { CustomButton } from 'components'
 import { useSelector } from 'react-redux'
+import { notification } from 'antd'
+import Button from 'components/button'
 import AuthModal from '../auth-modal'
 
 interface Props {
@@ -27,7 +30,33 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
   const urlParams = new URLSearchParams(window.location.search)
   const tradephoto = urlParams.get('tradephoto')
   const user = useSelector((state: RootInterface) => state.auth.user)
+  const widthRef = useRef<HTMLInputElement>(null)
+  const heightRef = useRef<HTMLInputElement>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const history = useHistory()
+
+  const onFinish = () => {
+    if (
+      !widthRef.current ||
+      !heightRef.current ||
+      parseFloat(widthRef.current?.value) === 0 ||
+      parseFloat(heightRef.current?.value) === 0
+    )
+      return alert('Please check the size')
+
+    if (!user) return notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
+
+    return history.push(
+      `/editor/frame?template=${template.id}${
+        template.frameType === 'Unlock' &&
+        parseFloat(widthRef.current.value) > 0 &&
+        parseFloat(heightRef.current.value) > 0
+          ? `&width=${widthRef.current.value}&height=${heightRef.current.value}`
+          : `&paperSize=${template.paperSize?.id}`
+      }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
+    )
+  }
+
   useEffect(() => {
     const initialState = () => {
       const [paperSize] = paperSizes
@@ -45,7 +74,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
     <div className="flex flex-col gap-4">
       <span className="text-3xl font-bold">{template.name}</span>
 
-      <div className="space-y-4">
+      <div className="space-y-4" hidden={template.frameType === 'Unlock'}>
         <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes?.map((each: PaperSize) => (
@@ -73,6 +102,32 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
         </div>
       </div>
 
+      <div className="space-y-4" hidden={template.frameType !== 'Unlock'}>
+        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })} /см/</span>
+        <div className="flex gap-8">
+          <div className="flex flex-col gap-1 flex-1">
+            <span className="text-gray-500 font-medium">Width</span>
+            <input
+              placeholder="width"
+              type="number"
+              ref={widthRef}
+              defaultValue={0}
+              className="max-w-min px-2 py-1 border appearance-none focus:appearance-none hover:appearance-none focus:outline-none focus:border-blue-400 text-sm"
+            />
+          </div>
+          <div className="flex flex-col gap-1 flex-1">
+            <span className="text-gray-500 font-medium">Height</span>
+            <input
+              placeholder="height"
+              type="number"
+              ref={heightRef}
+              defaultValue={0}
+              className="max-w-min px-2 py-1 border appearance-none focus:appearance-none hover:appearance-none focus:outline-none focus:border-blue-400 text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-4">
         <span className="font-normal text-xl">{intl.formatMessage({ id: 'frame_material' })}</span>
         <div className="flex flex-wrap gap-4">
@@ -95,21 +150,13 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
           ))}
         </div>
       </div>
+
       <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
-      <Link
-        to={
-          user
-            ? `/editor/frame?template=${template.id}&paperSize=${selectedState.paperSize?.id}${
-                tradephoto ? `&tradephoto=${tradephoto}` : ''
-              }`
-            : '#'
-        }
-        onClick={() => !user && setIsModalVisible(true)}
-      >
+      <Button onClick={onFinish}>
         <CustomButton className="btn-primary">
           <FormattedMessage id="start_book" />
         </CustomButton>
-      </Link>
+      </Button>
     </div>
   )
 }
