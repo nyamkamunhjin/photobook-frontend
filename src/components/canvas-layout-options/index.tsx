@@ -52,23 +52,25 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       if (template.canvasType === 'Single') {
         setSelectedState((oldState) => ({
           ...oldState,
-          paperSize,
-          paperMaterial,
-          // paperMaterial,
+          paperSize: (template.productOptions as string[])?.includes('Paper size') ? template.paperSize : paperSize,
+          paperMaterial: (template.productOptions as string[])?.includes('Paper material')
+            ? template.paperMaterial
+            : paperMaterial,
         }))
       } else {
         setSelectedState((oldState) => ({
           ...oldState,
           paperSize: template.paperSize,
-          paperMaterial,
-          // paperMaterial,
+          paperMaterial: (template.productOptions as string[])?.includes('Paper material')
+            ? template.paperMaterial
+            : paperMaterial,
         }))
       }
     }
     if (paperSizes) {
       initialState()
     }
-  }, [paperSizes, setSelectedState, paperMaterials])
+  }, [paperSizes, setSelectedState, paperMaterials, template])
 
   return (
     <div className="flex flex-col gap-4">
@@ -96,7 +98,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
         </div>
       </div>
 
-      {template.canvasType === 'Single' && (
+      {template.canvasType === 'Single' && !(template.productOptions as string[])?.includes('Paper size') && (
         <>
           <div className="flex gap-4 justify-between">
             <span className="font-normal text-lg">{intl.formatMessage({ id: 'orientation' })}</span>
@@ -175,34 +177,37 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
           ))}
         </div>
       </div> */}
-
-      <div className="space-y-4">
-        <span className="font-normal text-lg">{intl.formatMessage({ id: 'paper_material_type' })}</span>
-        <div className="flex flex-wrap gap-4">
-          {paperMaterials.map((each: PaperMaterial) => (
-            <button
-              type="button"
-              className={`w-32 p-2 rounded border-dashed border-4 focus:outline-none  ${
-                selectedState.paperMaterial?.id === each.id ? 'border-green-400 outline-none' : 'hover:border-green-200'
-              } `}
-              key={each.id}
-              onClick={() => {
-                setSelectedState((prev) => ({ ...prev, paperMaterial: each }))
-              }}
-            >
-              <div className="flex flex-col">
-                <div className="w-full grid place-items-center">
-                  <div
-                    className="border-solid border-2 border-gray-700 bg-no-repeat bg-cover bg-center"
-                    style={{ width: 100, height: 100, backgroundImage: `url(${each.tempUrl})` }}
-                  />
+      {!(template.productOptions as string[])?.includes('Paper material') && (
+        <div className="space-y-4">
+          <span className="font-normal text-lg">{intl.formatMessage({ id: 'paper_material_type' })}</span>
+          <div className="flex flex-wrap gap-4">
+            {paperMaterials.map((each: PaperMaterial) => (
+              <button
+                type="button"
+                className={`w-32 p-2 rounded border-dashed border-4 focus:outline-none  ${
+                  selectedState.paperMaterial?.id === each.id
+                    ? 'border-green-400 outline-none'
+                    : 'hover:border-green-200'
+                } `}
+                key={each.id}
+                onClick={() => {
+                  setSelectedState((prev) => ({ ...prev, paperMaterial: each }))
+                }}
+              >
+                <div className="flex flex-col">
+                  <div className="w-full grid place-items-center">
+                    <div
+                      className="border-solid border-2 border-gray-700 bg-no-repeat bg-cover bg-center"
+                      style={{ width: 100, height: 100, backgroundImage: `url(${each.tempUrl})` }}
+                    />
+                  </div>
+                  <span>{each.name}</span>
                 </div>
-                <span>{each.name}</span>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <AuthModal visible={isModalVisible} setVisible={setIsModalVisible} />
       <Link

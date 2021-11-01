@@ -342,6 +342,7 @@ export interface Template {
   categories?: Category[]
   images?: Image[]
   layouts?: LayoutInterface[]
+  productOptions?: string[] | []
 }
 
 export type CanvasType = 'Single' | 'Multi' | 'Split'
