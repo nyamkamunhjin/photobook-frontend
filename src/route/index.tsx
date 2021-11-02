@@ -128,8 +128,18 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
-    path: '/editor/frame',
-    component: LoadableLoader(() => import('pages/editor/frame')),
+    path: '/editor/frame/single',
+    component: LoadableLoader(() => import('pages/editor/frame-single')),
+    exact: true,
+  },
+  {
+    path: '/editor/frame/multi',
+    component: LoadableLoader(() => import('pages/editor/frame-multi')),
+    exact: true,
+  },
+  {
+    path: '/editor/frame/unlock',
+    component: LoadableLoader(() => import('pages/editor/frame-unlock')),
     exact: true,
   },
   {

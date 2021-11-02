@@ -37,38 +37,51 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
 
   const onFinish = () => {
     if (
-      !widthRef.current ||
-      !heightRef.current ||
-      parseFloat(widthRef.current?.value) === 0 ||
-      parseFloat(heightRef.current?.value) === 0
+      template.frameType === 'Unlock' &&
+      (!widthRef.current ||
+        !heightRef.current ||
+        parseFloat(widthRef.current?.value) === 0 ||
+        parseFloat(heightRef.current?.value) === 0)
     )
       return alert('Please check the size')
 
     if (!user) return notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
 
+    if (template.frameType === 'Unlock') {
+      return history.push(
+        `/editor/frame/unlock?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}${
+          parseFloat(widthRef.current?.value || '0') > 0 && parseFloat(heightRef.current?.value || '0') > 0
+            ? `&width=${widthRef.current?.value}&height=${heightRef.current?.value}`
+            : `&paperSize=${template.paperSize?.id}`
+        }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
+      )
+    }
+    if (template.frameType === 'Single') {
+      return history.push(
+        `/editor/frame/single?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}&paperSize=${
+          template.paperSize?.id
+        }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
+      )
+    }
     return history.push(
-      `/editor/frame?template=${template.id}${
-        template.frameType === 'Unlock' &&
-        parseFloat(widthRef.current.value) > 0 &&
-        parseFloat(heightRef.current.value) > 0
-          ? `&width=${widthRef.current.value}&height=${heightRef.current.value}`
-          : `&paperSize=${template.paperSize?.id}`
-      }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
+      `/editor/frame/multi?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}&paperSize=${template.paperSize?.id}`
     )
   }
 
   useEffect(() => {
     const initialState = () => {
       const [paperSize] = paperSizes
+      const [frameMaterial] = frameMaterials
 
       setSelectedState({
         paperSize,
+        frameMaterial,
       })
     }
     if (paperSizes) {
       initialState()
     }
-  }, [paperSizes, setSelectedState])
+  }, [paperSizes, frameMaterials, setSelectedState])
 
   return (
     <div className="flex flex-col gap-4">

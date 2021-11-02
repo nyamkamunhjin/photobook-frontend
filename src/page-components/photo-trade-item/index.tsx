@@ -17,7 +17,7 @@ interface Props {
 // угаалгах, жаазлах, canvas /single, split - template сонгох/
 const EDITORS = [
   { name: 'photoprint', url: '/product/photoprint?all=false', type: 'photoprint' },
-  { name: 'frame', url: '/product/frame?all=false', type: 'frame' },
+  { name: 'frame', url: '/product/frame?all=false&format=Single', type: 'frame' },
   { name: 'canvas_single', url: '/product/canvas?all=false&format=Single', type: 'canvas' },
   { name: 'canvas_split', url: '/product/canvas?all=false&format=Split', type: 'canvas' },
 ]

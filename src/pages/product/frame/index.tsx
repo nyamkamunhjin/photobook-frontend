@@ -8,10 +8,12 @@ import { ProductWrapper, ProductCategories, ProductList } from 'components'
 import { useQueryState } from 'react-router-use-location-state'
 import { FormattedMessage } from 'react-intl'
 import { FrameFormat } from 'configs'
+import { useLocation } from 'react-router'
 
 const templateType = 'frame'
 
 const ProductFrame: FC = () => {
+  const { search } = useLocation()
   const [selectedCategory, setSelectedCategory] = useQueryState('category', 'all')
   const [selectedFormat, setSelectedFormat] = useQueryState('format', FrameFormat.join(','))
   const [rowSize, setRowSize] = useQueryState<3 | 4 | 6>('rowSize', 3)
@@ -66,16 +68,18 @@ const ProductFrame: FC = () => {
         <div className="flex min-h-screen">
           <div className="flex items-center w-1/4 flex-col">
             <ProductCategories categories={categories} selectedCategory={selectedCategory} onMenuClick={onMenuClick} />
-            <div>
-              <h2 className="text-2xl font-bold">
-                <FormattedMessage id="format" />
-              </h2>
-              <Checkbox.Group
-                options={FrameFormat}
-                value={selectedFormat ? selectedFormat.split(',') : []}
-                onChange={(list) => (list.length ? setSelectedFormat(list.join(',')) : setSelectedFormat('all'))}
-              />
-            </div>
+            {!search.includes('tradephoto') && (
+              <div>
+                <h2 className="text-2xl font-bold">
+                  <FormattedMessage id="format" />
+                </h2>
+                <Checkbox.Group
+                  options={FrameFormat}
+                  value={selectedFormat ? selectedFormat.split(',') : []}
+                  onChange={(list) => (list.length ? setSelectedFormat(list.join(',')) : setSelectedFormat('all'))}
+                />
+              </div>
+            )}
           </div>
           <div className="w-3/4">
             <ProductList templates={templates} onRadioChange={onRadioChange} rowSize={rowSize} />
