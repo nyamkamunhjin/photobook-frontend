@@ -58,6 +58,7 @@ export interface StyleType {
 
 export interface ProjectCreate {
   paperSizeId?: number
+  frameMaterialId?: number
   coverTypeId?: number
   bindingTypeId?: number
   coverMaterialId?: number
@@ -171,6 +172,7 @@ export type FeatureType =
   | 'layouts'
   | 'notices'
   | 'frame_masks'
+  | 'frame_materials'
 export interface TemplateType {
   id: number
   name: string
@@ -232,6 +234,8 @@ export interface FrameMaterial {
   price: number
   templates: Template[]
   projects: Project[]
+  borderWidth: number
+  status: 'Active' | 'Passive'
 }
 
 export interface PaperSize {

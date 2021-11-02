@@ -138,11 +138,6 @@ const routes: RouteInterface[] = [
     exact: true,
   },
   {
-    path: '/editor/frame/unlock',
-    component: LoadableLoader(() => import('pages/editor/frame-unlock')),
-    exact: true,
-  },
-  {
     path: '/editor/photoprint',
     component: LoadableLoader(() => import('pages/editor/photoprint')),
     exact: true,

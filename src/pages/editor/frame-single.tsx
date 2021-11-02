@@ -114,6 +114,7 @@ const BookEditor: React.FC<Props> = ({
 }) => {
   const [template] = useQueryState('template', 1)
   const [paperSizeId] = useQueryState('paperSize', 1)
+  const [frameMaterialId] = useQueryState('frameMaterial', 1)
   const [uuid, setUuid] = useQueryState('project', '')
   const urlParams = new URLSearchParams(window.location.search)
   const tradephoto = urlParams.get('tradephoto')
@@ -327,7 +328,7 @@ const BookEditor: React.FC<Props> = ({
       window.history.back()
       return
     }
-    getProjects(template, { paperSizeId }, uuid).then((id) => {
+    getProjects(template, { paperSizeId, frameMaterialId }, uuid).then((id) => {
       if (id) {
         setUuid(id)
       }
@@ -549,6 +550,19 @@ const BookEditor: React.FC<Props> = ({
                     />
                   )
                 })}
+                {currentProject.frameMaterial && (
+                  <div
+                    className="absolute top-0 left-0 w-full h-full z-50"
+                    style={{
+                      borderStyle: 'solid',
+                      borderImage: `url('${currentProject.frameMaterial.tempUrl}')`,
+                      borderWidth: `${currentProject.frameMaterial.borderWidth * scale}px`,
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    <div className="active-wrapper w-full h-full z-50 mix-blend-multiply" />
+                  </div>
+                )}
               </div>
             </div>
           </div>

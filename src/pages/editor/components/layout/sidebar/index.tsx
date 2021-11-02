@@ -30,7 +30,7 @@ import {
 } from 'redux/actions/editor'
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { EditorInterface, ImageInterface, Project, RootInterface, UploadablePicture } from 'interfaces'
+import { EditorInterface, FrameMaterial, ImageInterface, Project, RootInterface, UploadablePicture } from 'interfaces'
 import { createCartItem } from 'api'
 
 import Images from './tabs/images'
@@ -42,6 +42,7 @@ import Layouts from './tabs/layouts'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 import Notices from './tabs/notices'
 import FrameMasks from './tabs/frameMasks'
+import FrameMaterials from './tabs/frameMaterials'
 
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
@@ -57,6 +58,7 @@ interface Props {
   currentProject: Project
   layoutGroups: any
   hasFrames?: boolean
+  hasFrameMaterials?: boolean
   hasImage?: boolean
   hasLayout?: boolean
   hasClipArt?: boolean
@@ -65,12 +67,14 @@ interface Props {
   hasFrameMask?: boolean
   isOrder: boolean
   setIsOrder: (param: any) => void
+  frameMaterials?: FrameMaterial[]
 }
 
 const SideBarPanel: React.FC<Props> = ({
   hasImage,
   hasLayout = true,
   hasFrames = true,
+  hasFrameMaterials,
   hasBackground = true,
   hasClipArt = true,
   hasMask = true,
@@ -89,6 +93,7 @@ const SideBarPanel: React.FC<Props> = ({
   editor,
   image: { images, loading, categories },
   layoutGroups,
+  frameMaterials,
 }) => {
   const [closed, setClosed] = useState<boolean>(!editor.sidebarOpen)
   const [notices, setNotices] = useState<any[]>([])
@@ -346,6 +351,20 @@ const SideBarPanel: React.FC<Props> = ({
           <Frames loading={loading} categories={frames} />
         )
       }
+      case 'frame_materials': {
+        frameMaterials = frameMaterials?.filter((frameMaterial) => frameMaterial.status === 'Active')
+        return !loading && (!frameMaterials || frameMaterials.length === 0) ? (
+          <div className="UploadImageDropArea">
+            <div>
+              <p className="phrase-add">
+                <FormattedMessage id="empty" />
+              </p>
+            </div>
+          </div>
+        ) : (
+          <FrameMaterials loading={loading} frameMaterials={frameMaterials || []} />
+        )
+      }
       case 'frame_masks': {
         if (hasFrameMask) {
           const frameMasks = categories.filter((category) => category.type === editor.type)
@@ -444,6 +463,16 @@ const SideBarPanel: React.FC<Props> = ({
             <BorderOuterOutlined style={{ fontSize: 24 }} />
             <div className="title">
               <FormattedMessage id="frames" />
+            </div>
+          </div>
+          <div
+            hidden={!hasFrameMaterials}
+            onClick={() => switchTab('frame_materials')}
+            className={'HeaderItem ' + isActive('frameMaterials') + isDisabled()}
+          >
+            <BorderOuterOutlined style={{ fontSize: 24 }} />
+            <div className="title">
+              <FormattedMessage id="frame_materials" />
             </div>
           </div>
           <div

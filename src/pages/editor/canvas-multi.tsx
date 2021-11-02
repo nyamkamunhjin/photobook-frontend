@@ -388,32 +388,32 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
-  useEffect(() => {
-    const setTradePhoto = async () => {
-      try {
-        if (tradephoto && objects.length === 0) {
-          setTradephotoLoading(true)
-          let image
-          if (currentProject.images?.length === 0 && images.length === 0) {
-            const [_image] = await linkImages([tradephoto], currentProject.id)
-            image = _image
-          } else if (currentProject.images && currentProject.images.length > 0)
-            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+  // useEffect(() => {
+  //   const setTradePhoto = async () => {
+  //     try {
+  //       if (tradephoto && objects.length === 0) {
+  //         setTradephotoLoading(true)
+  //         let image
+  //         if (currentProject.images?.length === 0 && images.length === 0) {
+  //           const [_image] = await linkImages([tradephoto], currentProject.id)
+  //           image = _image
+  //         } else if (currentProject.images && currentProject.images.length > 0)
+  //           image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+  //         else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
 
-          // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
-          if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
-            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
-            saveObjects()
-            setTradephotoLoading(false)
-          }
-        }
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    if (currentProject.canvasType === 'Single' && tradephoto && imgLoading && objects.length === 0) setTradePhoto()
-  }, [tradephoto, currentProject, images, imgLoading])
+  //         // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
+  //         if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
+  //           editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
+  //           saveObjects()
+  //           setTradephotoLoading(false)
+  //         }
+  //       }
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //   }
+  //   if (currentProject.canvasType === 'Single' && tradephoto && imgLoading && objects.length === 0) setTradePhoto()
+  // }, [tradephoto, currentProject, images, imgLoading])
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -602,7 +602,7 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   )
-  return fetching && !tradephotoLoading ? (
+  return fetching ? (
     <div className="AdvancedEditorWrapper">
       <div className="EditorOnePageView">
         <Spinner />

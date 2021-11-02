@@ -266,4 +266,4 @@ export const SinglePageEditor = 'canvas,frame,photoprint'
 
 export const CanvasFormat = ['Single', 'Multi', 'Split']
 
-export const FrameFormat = ['Single', 'Multi', 'Unlock']
+export const FrameFormat = ['Single', 'Multi']

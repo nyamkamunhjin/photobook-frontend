@@ -2159,7 +2159,7 @@ export default class Editor {
   ) => {
     this.hideToolbar()
     e.preventDefault()
-    if (!'images,cliparts,frames,masks'.includes(type) || this._isTextEditing) return
+    if (!'images,cliparts,frames,masks,frame_materials'.includes(type) || this._isTextEditing) return
 
     if (editorType === 'canvas-split') {
       e.target.style.border = 'none'
@@ -2190,6 +2190,33 @@ export default class Editor {
         img.addEventListener('load', onLoad)
       } else {
         this.imageFitNoDebounce(objects, objects[index], border)
+      }
+    } else if (type === 'frame_materials') {
+      if (editorType === 'frame-multi') {
+        objects.forEach((o: PObject) => {
+          const newObject = {
+            ...o,
+            props: {
+              ...o.props,
+              frameImage: e.dataTransfer.getData('imageUrl'),
+              frameStyle: {
+                borderImageSource: `url(${e.dataTransfer.getData('tempUrl')})`,
+                borderImageSlice: 200,
+                borderImageRepeat: 'stretch',
+                borderColor: 'transparent',
+                borderWidth: `${e.dataTransfer.getData('borderWidth')}px`,
+              },
+              placeholderStyle: { opacity: '1' },
+            },
+          }
+
+          this.updateObject({ object: newObject })
+          this.updateHistory(UPDATE_OBJECT, { object: o })
+        })
+      } else if (editorType === 'frame-single') {
+        console.log('frame-single')
+      } else {
+        console.log('frame-unlock')
       }
     } else if (
       e.target.classList.contains('object') &&
@@ -2280,7 +2307,7 @@ export default class Editor {
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
-    } else if ('images'.includes(type) && editorType !== 'canvas-multi') {
+    } else if ('images'.includes(type) && editorType && !['frame-multi', 'canvas-multi'].includes(editorType)) {
       this.createImages(e, objects, border)
     }
     // Deselect GroupObject

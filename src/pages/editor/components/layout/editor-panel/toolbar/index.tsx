@@ -43,6 +43,7 @@ interface Props {
   isLayout?: boolean
   imageFit?: (borderWidth: number, o: PObject) => void
   getImagePosition: (o: PObject) => void
+  hasFrame?: boolean
 }
 const Toolbar: React.FC<Props> = ({
   removeImageFromObject,
@@ -67,6 +68,7 @@ const Toolbar: React.FC<Props> = ({
   isLayout = false,
   imageFit,
   getImagePosition,
+  hasFrame = true,
 }) => {
   const widthRef = useRef<HTMLInputElement>(null)
   const heightRef = useRef<HTMLInputElement>(null)
@@ -136,6 +138,7 @@ const Toolbar: React.FC<Props> = ({
               removeMaskFromObject={removeMaskFromObject}
               imageFit={imageFit}
               getImagePosition={getImagePosition}
+              hasFrame={hasFrame}
             />
           )}
           {objectType === 'shape' && (

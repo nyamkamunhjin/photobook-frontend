@@ -64,6 +64,10 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
       const project: Project = await getProject(newProject?.data.id)
       const imageCategories = await listImageCategoryByProject(id)
 
+      if (project.frameMaterial && process.env.REACT_APP_PUBLIC_IMAGE) {
+        project.frameMaterial.tempUrl = process.env.REACT_APP_PUBLIC_IMAGE + project.frameMaterial.imageUrl
+      }
+
       dispatch(setCurrentProject(project))
       dispatch({
         type: GET_CATEGORIES,

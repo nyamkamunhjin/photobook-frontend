@@ -46,7 +46,9 @@ import {
 import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
-import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
+import { useBoolean, useDebounceFn, useFullscreen, useRequest } from 'ahooks'
+import { listFrameMaterial } from 'api'
+import { UPDATE_OBJECT } from 'redux/actions/types'
 import {
   Header,
   BackgroundSingleImages,
@@ -81,6 +83,9 @@ interface Props {
   linkImages: (images: string[], id: number) => Promise<any>
 }
 
+const BORDER_WIDTH = 3 * 100
+const GAP = 5 * 100
+
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
@@ -114,6 +119,7 @@ const BookEditor: React.FC<Props> = ({
 }) => {
   const [template] = useQueryState('template', 1)
   const [paperSizeId] = useQueryState('paperSize', 1)
+  const [frameMaterialId] = useQueryState('frameMaterial', 1)
   const [uuid, setUuid] = useQueryState('project', '')
   const urlParams = new URLSearchParams(window.location.search)
   const tradephoto = urlParams.get('tradephoto')
@@ -132,6 +138,7 @@ const BookEditor: React.FC<Props> = ({
   const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
   const [isOrder, setIsOrder] = useState(false)
   const [tradephotoLoading, setTradephotoLoading] = useState<boolean>(tradephoto !== null)
+  const [frameLoading, setFrameLoading] = useState(true)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -173,6 +180,7 @@ const BookEditor: React.FC<Props> = ({
       wait: 1000 * 30,
     }
   )
+  const frameMaterials = useRequest(() => listFrameMaterial())
 
   const editors = useMemo(() => {
     return new Editor({
@@ -327,7 +335,7 @@ const BookEditor: React.FC<Props> = ({
       window.history.back()
       return
     }
-    getProjects(template, { paperSizeId }, uuid).then((id) => {
+    getProjects(template, { paperSizeId, frameMaterialId }, uuid).then((id) => {
       if (id) {
         setUuid(id)
       }
@@ -391,56 +399,108 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
-  useEffect(() => {
-    const setTradePhoto = async () => {
-      try {
-        if (tradephoto && objects.length === 0) {
-          setTradephotoLoading(true)
-          let image
-          if (currentProject.images?.length === 0 && images.length === 0) {
-            const [_image] = await linkImages([tradephoto], currentProject.id)
-            image = _image
-          } else if (currentProject.images && currentProject.images.length > 0)
-            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+  // useEffect(() => {
+  //   const setTradePhoto = async () => {
+  //     try {
+  //       if (tradephoto && objects.length === 0) {
+  //         setTradephotoLoading(true)
+  //         let image
+  //         if (currentProject.images?.length === 0 && images.length === 0) {
+  //           const [_image] = await linkImages([tradephoto], currentProject.id)
+  //           image = _image
+  //         } else if (currentProject.images && currentProject.images.length > 0)
+  //           image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+  //         else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
 
-          // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
-          if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
-            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
-            saveObjects()
-            setTradephotoLoading(false)
-          }
+  //         // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
+  //         if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
+  //           editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
+  //           saveObjects()
+  //           setTradephotoLoading(false)
+  //         }
+  //       }
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //   }
+  //   if (tradephoto && !imgLoading && objects.length === 0) setTradePhoto()
+  // }, [tradephoto, currentProject, images, imgLoading])
+
+  useEffect(() => {
+    if (
+      frameLoading &&
+      currentProject &&
+      currentProject.frameMaterial &&
+      objects.length > 0 &&
+      !objects.some((o) => o.props.frameImage && o.props.frameStyle)
+    ) {
+      objects.forEach((o: PObject) => {
+        const newObject = {
+          ...o,
+          props: {
+            ...o.props,
+            frameImage: currentProject.frameMaterial?.imageUrl,
+            frameStyle: {
+              borderImageSource: `url(${currentProject.frameMaterial?.tempUrl})`,
+              borderImageSlice: 200,
+              borderImageRepeat: 'stretch',
+              borderColor: 'transparent',
+              borderWidth: `${currentProject.frameMaterial?.borderWidth}px`,
+            },
+            placeholderStyle: { opacity: '1' },
+          },
         }
-      } catch (err) {
-        console.error(err)
-      }
+        editors.updateObject({ object: newObject })
+      })
+      saveObjects().then(() => setFrameLoading(false))
     }
-    if (tradephoto && !imgLoading && objects.length === 0) setTradePhoto()
-  }, [tradephoto, currentProject, images, imgLoading])
+  }, [currentProject, objects, frameLoading])
 
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
         <div id="editor_container" ref={editorContainerRef}>
-          <Toolbar
-            object={_object}
-            objectType={_objectType}
-            index={_index}
-            objects={objects}
-            groupObjects={_groupObjects}
-            updateObject={updateObject}
-            updateHistory={updateHistory}
-            moveResizers={editors.moveResizers}
-            removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
-            rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
-            rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
-            flipObject={() => editors.onFlipObject(_index, objects)}
-            sendForward={() => editors.onSendForward(_index, objects)}
-            sendBackward={() => editors.onSendBackward(_index, objects)}
-            removeObject={() => editors.onRemoveObject(containers, objects, _index)}
-            getImagePosition={(o: PObject) => editors.getImagePosition(o)}
-            imageFit={(borderWidth, o) => editors.imageFitNoDebounce(objects, o, borderWidth)}
-          />
+          {!Array.from(_object?.firstChild?.classList || []).includes('image-placeholder') ? (
+            <Toolbar
+              object={_object}
+              objectType={_objectType}
+              index={_index}
+              objects={objects}
+              groupObjects={_groupObjects}
+              updateObject={updateObject}
+              updateHistory={updateHistory}
+              moveResizers={editors.moveResizers}
+              removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+              rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
+              rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
+              flipObject={() => editors.onFlipObject(_index, objects)}
+              sendForward={() => editors.onSendForward(_index, objects)}
+              sendBackward={() => editors.onSendBackward(_index, objects)}
+              removeObject={() => editors.onRemoveObject(containers, objects, _index)}
+              getImagePosition={(o: PObject) => editors.getImagePosition(o)}
+              imageFit={(borderWidth, o) => editors.imageFitNoDebounce(objects, o, borderWidth)}
+            />
+          ) : (
+            <Toolbar
+              object={_object}
+              objectType={_objectType}
+              index={_index}
+              objects={objects}
+              updateObject={updateObject}
+              updateHistory={updateHistory}
+              moveResizers={editors.moveResizers}
+              removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+              removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
+              flipObject={() => editors.onFlipObject(_index, objects)}
+              sendForward={() => editors.onSendForward(_index, objects)}
+              sendBackward={() => editors.onSendBackward(_index, objects)}
+              imageFit={(borderWidth, o) => {
+                editors.imageFitNoDebounce(objects, o, BORDER_WIDTH)
+              }}
+              hasFrame={false}
+              getImagePosition={(o: PObject) => editors.getImagePosition(o)}
+            />
+          )}
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons
             createImage={(e) => editors.createImage(e, objects)}
@@ -452,8 +512,8 @@ const BookEditor: React.FC<Props> = ({
           />
           <div
             id="slide_container"
-            onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index)}
+            // onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
+            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, false, 'frame-multi')}
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -491,7 +551,19 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={o.style as React.CSSProperties}
                               className={o.className}
-                              onMouseDown={(e) => editors.startDrag(e, o, i, objects)}
+                              onMouseDown={
+                                !o?.props?.className.includes('image-placeholder')
+                                  ? (e) => editors.startDrag(e, o, i, objects, GAP)
+                                  : (e) => {
+                                      editors.onSelect(e, o, i, objects)
+                                      // Manage img-circle
+                                      const _o = document.getElementById(o.id) as HTMLElement
+                                      if (!_o) return
+                                      const circle = _o.querySelector('.image-center') as HTMLElement
+                                      if (circle.style.display === 'flex') circle.style.display = 'none'
+                                      else circle.style.display = 'flex'
+                                    }
+                              }
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
                               onDragOver={editors.onDragObjectOver}
@@ -537,18 +609,19 @@ const BookEditor: React.FC<Props> = ({
                 <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
                 <div id="magnetX" />
                 <div id="magnetY" />
-                {Object.keys(editors.transformers).map((t: string) => {
-                  const cursor = `${t}-resize`
-                  const resize = editors.transformers[t]
-                  return (
-                    <div
-                      key={t}
-                      style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects)}
-                      className={`resize ${resize}`}
-                    />
-                  )
-                })}
+                {!Array.from(_object?.firstChild?.classList || []).includes('image-placeholder') &&
+                  Object.keys(editors.transformers).map((t: string) => {
+                    const cursor = `${t}-resize`
+                    const resize = editors.transformers[t]
+                    return (
+                      <div
+                        key={t}
+                        style={{ cursor }}
+                        onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects)}
+                        className={`resize ${resize}`}
+                      />
+                    )
+                  })}
               </div>
             </div>
           </div>
@@ -556,7 +629,7 @@ const BookEditor: React.FC<Props> = ({
       </div>
     </div>
   )
-  return fetching && !tradephotoLoading ? (
+  return fetching && frameLoading ? (
     <div className="AdvancedEditorWrapper">
       <div className="EditorOnePageView">
         <Spinner />
@@ -589,6 +662,8 @@ const BookEditor: React.FC<Props> = ({
           <SideBarPanel
             layoutGroups={layouts}
             hasFrames={false}
+            hasFrameMaterials
+            frameMaterials={frameMaterials.data}
             hasLayout={false}
             isOrder={isOrder}
             setIsOrder={setIsOrder}

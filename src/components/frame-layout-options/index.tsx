@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { FrameMaterial, PaperSize, RootInterface, Template } from 'interfaces'
 import { useHistory } from 'react-router-dom'
@@ -34,10 +34,14 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
   const heightRef = useRef<HTMLInputElement>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const history = useHistory()
+  const _frameMaterials = useMemo(() => {
+    return frameMaterials?.filter((frameMaterial: FrameMaterial) => frameMaterial.status === 'Active')
+  }, [frameMaterials])
 
   const onFinish = () => {
     if (
-      template.frameType === 'Unlock' &&
+      template.frameType === 'Single' &&
+      tradephoto !== null &&
       (!widthRef.current ||
         !heightRef.current ||
         parseFloat(widthRef.current?.value) === 0 ||
@@ -47,36 +51,36 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
 
     if (!user) return notification.warn({ message: 'Танд хандах эрх байхгүй байна. Дахин нэвтэрнэ үү' })
 
-    if (template.frameType === 'Unlock') {
+    if (template.frameType === 'Single' && tradephoto !== null) {
       return history.push(
-        `/editor/frame/unlock?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}${
+        `/editor/frame/single?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}${
           parseFloat(widthRef.current?.value || '0') > 0 && parseFloat(heightRef.current?.value || '0') > 0
             ? `&width=${widthRef.current?.value}&height=${heightRef.current?.value}`
             : `&paperSize=${template.paperSize?.id}`
         }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
       )
     }
-    if (template.frameType === 'Single') {
-      return history.push(
-        `/editor/frame/single?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}&paperSize=${
-          template.paperSize?.id
-        }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
-      )
-    }
     return history.push(
-      `/editor/frame/multi?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}&paperSize=${template.paperSize?.id}`
+      `/editor/frame/${template.frameType?.toLowerCase()}?template=${template.id}&frameMaterial=${
+        selectedState.frameMaterial?.id
+      }&paperSize=${template.paperSize?.id}`
     )
   }
 
   useEffect(() => {
     const initialState = () => {
       const [paperSize] = paperSizes
-      const [frameMaterial] = frameMaterials
-
-      setSelectedState({
-        paperSize,
-        frameMaterial,
-      })
+      if (_frameMaterials.length > 0) {
+        const [frameMaterial] = _frameMaterials
+        setSelectedState({
+          paperSize,
+          frameMaterial,
+        })
+      } else {
+        setSelectedState({
+          paperSize,
+        })
+      }
     }
     if (paperSizes) {
       initialState()
@@ -87,7 +91,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
     <div className="flex flex-col gap-4">
       <span className="text-3xl font-bold">{template.name}</span>
 
-      <div className="space-y-4" hidden={template.frameType === 'Unlock'}>
+      <div className="space-y-4" hidden={template.frameType === 'Single' && tradephoto !== null}>
         <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
         <div className="flex flex-wrap gap-4">
           {paperSizes?.map((each: PaperSize) => (
@@ -115,7 +119,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
         </div>
       </div>
 
-      <div className="space-y-4" hidden={template.frameType !== 'Unlock'}>
+      <div className="space-y-4" hidden={template.frameType !== 'Single' || tradephoto === null}>
         <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })} /см/</span>
         <div className="flex gap-8">
           <div className="flex flex-col gap-1 flex-1">
@@ -144,7 +148,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
       <div className="space-y-4">
         <span className="font-normal text-xl">{intl.formatMessage({ id: 'frame_material' })}</span>
         <div className="flex flex-wrap gap-4">
-          {frameMaterials?.map((each: FrameMaterial) => (
+          {_frameMaterials?.map((each: FrameMaterial) => (
             <button
               type="button"
               className={`w-28 p-2 rounded border-dashed border-4 focus:outline-none  ${

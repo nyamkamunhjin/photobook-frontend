@@ -31,6 +31,7 @@ interface Props {
   updateObject: (value: { object: PObject }) => void
   imageFit?: (borderWidth: number, o: PObject) => void
   getImagePosition: (o: PObject) => void
+  hasFrame?: boolean
 }
 
 const ImageToolbar = ({
@@ -46,6 +47,7 @@ const ImageToolbar = ({
   zoom: _zoom,
   imageFit,
   getImagePosition,
+  hasFrame,
 }: Props) => {
   const [hasImage, setHasImage] = useState<boolean>(false)
   const [showPicker, setShowPicker] = useState<boolean>(false)
@@ -457,17 +459,19 @@ const ImageToolbar = ({
           />
         </span>
       </Tooltip>
-      <Tooltip placement="top" title={<FormattedMessage id="toolbox.frame" />}>
-        <span
-          onClick={() => {
-            setShowFrame(!showFrame)
-            setShowFilters(false)
-          }}
-          className={`toolbar-icon ${!hasImage && 'inactive'}`}
-        >
-          <FcFrame />
-        </span>
-      </Tooltip>
+      {hasFrame && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.frame" />}>
+          <span
+            onClick={() => {
+              setShowFrame(!showFrame)
+              setShowFilters(false)
+            }}
+            className={`toolbar-icon ${!hasImage && 'inactive'}`}
+          >
+            <FcFrame />
+          </span>
+        </Tooltip>
+      )}
       <div style={{ display: showFrame ? 'flex' : 'none' }}>
         <span className="image-filter">
           <span className="row">
