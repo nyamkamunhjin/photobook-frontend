@@ -70,7 +70,7 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
   useEffect(() => {
     const initialState = () => {
       const [paperSize] = paperSizes
-      if (_frameMaterials.length > 0) {
+      if (_frameMaterials && _frameMaterials.length > 0) {
         const [frameMaterial] = _frameMaterials
         setSelectedState({
           paperSize,

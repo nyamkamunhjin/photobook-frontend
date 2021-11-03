@@ -54,6 +54,20 @@ const EmptyText: React.FC<{ data: any }> = ({ data: { onGoto, onHideAllSimilar, 
   )
 }
 
+const EmptyFrameMaterial: React.FC<{ data: any }> = ({ data: { frameMaterial } }) => {
+  return (
+    <div className="p-4 border-t">
+      <div className="flex gap-2">
+        <span className="mt-1.5 w-1.5 h-1.5 rounded-md bg-yellow-500" />
+        <h6 className="text-sm text-gray-500 font-normal">Unavailable frame material</h6>
+      </div>
+      <p className="text-xs text-gray-400 font-normal">
+        {`Frame material named "${frameMaterial.name}" is unavailable. Please choose another one!`}
+      </p>
+    </div>
+  )
+}
+
 const Notices: React.FC<Props> = ({ notices }) => {
   return (
     <>
@@ -67,6 +81,8 @@ const Notices: React.FC<Props> = ({ notices }) => {
             return <EmptySlot data={data} key={key} />
           case 'empty text':
             return <EmptyText data={data} key={key} />
+          case 'unavailable frame material':
+            return <EmptyFrameMaterial data={data} key={key} />
           default:
             return <div>123</div>
         }

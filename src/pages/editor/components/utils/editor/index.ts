@@ -2158,7 +2158,8 @@ export default class Editor {
     hasDefaultImg = false,
     editorType?: string,
     currentProjectId?: number,
-    updateProject?: any
+    updateProject?: any,
+    setFrameLoading?: (param: boolean) => void
   ) => {
     this.hideToolbar()
     e.preventDefault()
@@ -2195,31 +2196,9 @@ export default class Editor {
         this.imageFitNoDebounce(objects, objects[index], border)
       }
     } else if (type === 'frame_materials') {
-      if (editorType === 'frame-multi') {
-        objects.forEach((o: PObject) => {
-          const newObject = {
-            ...o,
-            props: {
-              ...o.props,
-              frameImage: e.dataTransfer.getData('imageUrl'),
-              frameStyle: {
-                borderImageSource: `url(${e.dataTransfer.getData('tempUrl')})`,
-                borderImageSlice: 200,
-                borderImageRepeat: 'stretch',
-                borderColor: 'transparent',
-                borderWidth: `${e.dataTransfer.getData('borderWidth')}px`,
-              },
-              placeholderStyle: { opacity: '1' },
-            },
-          }
-
-          this.updateObject({ object: newObject })
-          this.updateHistory(UPDATE_OBJECT, { object: o })
-        })
-      } else {
-        if (!currentProjectId || !updateProject) return
-        updateProject(currentProjectId, { frameMaterialId: e.dataTransfer.getData('id') })
-      }
+      if (!currentProjectId || !updateProject) return
+      if (setFrameLoading) setFrameLoading(true)
+      updateProject(currentProjectId, { frameMaterialId: e.dataTransfer.getData('id') })
     } else if (
       e.target.classList.contains('object') &&
       e.target.childNodes[0].className === 'image-placeholder' &&

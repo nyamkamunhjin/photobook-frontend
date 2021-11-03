@@ -25,6 +25,7 @@ import {
   setBackgrounds as _setBackgrounds,
   duplicateSlide as _duplicateSlide,
   reOrderSlide as _reOrderSlide,
+  updateProject as _updateProject,
 } from 'redux/actions/project'
 import { linkImages as _linkImages } from 'redux/actions/image'
 
@@ -81,6 +82,7 @@ interface Props {
   addObject: (props: { object: Object }) => void
   removeObject: (props: { object: Object; container: Object }) => void
   linkImages: (images: string[], id: number) => Promise<any>
+  updateProject: (projectId: number, props: { paperSizeId?: number; frameMaterialId?: number }) => void
 }
 
 const BORDER_WIDTH = 3 * 100
@@ -116,6 +118,7 @@ const BookEditor: React.FC<Props> = ({
     fetching,
   },
   image: { images, loading: imgLoading },
+  updateProject,
 }) => {
   const [template] = useQueryState('template', 1)
   const [paperSizeId] = useQueryState('paperSize', 1)
@@ -399,40 +402,15 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
-  // useEffect(() => {
-  //   const setTradePhoto = async () => {
-  //     try {
-  //       if (tradephoto && objects.length === 0) {
-  //         setTradephotoLoading(true)
-  //         let image
-  //         if (currentProject.images?.length === 0 && images.length === 0) {
-  //           const [_image] = await linkImages([tradephoto], currentProject.id)
-  //           image = _image
-  //         } else if (currentProject.images && currentProject.images.length > 0)
-  //           image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-  //         else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-
-  //         // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
-  //         if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
-  //           editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
-  //           saveObjects()
-  //           setTradephotoLoading(false)
-  //         }
-  //       }
-  //     } catch (err) {
-  //       console.error(err)
-  //     }
-  //   }
-  //   if (tradephoto && !imgLoading && objects.length === 0) setTradePhoto()
-  // }, [tradephoto, currentProject, images, imgLoading])
-
   useEffect(() => {
     if (
       frameLoading &&
       currentProject &&
       currentProject.frameMaterial &&
       objects.length > 0 &&
-      !objects.some((o) => o.props.frameImage && o.props.frameStyle)
+      !objects.some(
+        (o) => o.props.frameImage && o.props.frameStyle && o.props.frameImage === currentProject.frameMaterial?.imageUrl
+      )
     ) {
       objects.forEach((o: PObject) => {
         const newObject = {
@@ -455,6 +433,10 @@ const BookEditor: React.FC<Props> = ({
       saveObjects().then(() => setFrameLoading(false))
     }
   }, [currentProject, objects, frameLoading])
+
+  useEffect(() => {
+    console.log('frameLoading', frameLoading)
+  }, [frameLoading])
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -513,7 +495,20 @@ const BookEditor: React.FC<Props> = ({
           <div
             id="slide_container"
             // onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index, BORDER_WIDTH, false, 'frame-multi')}
+            onDrop={(e) =>
+              editors.onObjectDrop(
+                e,
+                editor.type,
+                objects,
+                _index,
+                BORDER_WIDTH,
+                false,
+                'frame-multi',
+                currentProject.id,
+                updateProject,
+                setFrameLoading
+              )
+            }
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -740,4 +735,5 @@ export default connect(mapStateToProps, {
   reOrderSlide: _reOrderSlide,
   saveProjectAttribute: _saveProjectAttribute,
   linkImages: _linkImages,
+  updateProject: _updateProject,
 })(BookEditor)

@@ -31,7 +31,7 @@ import {
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { EditorInterface, FrameMaterial, ImageInterface, Project, RootInterface, UploadablePicture } from 'interfaces'
-import { createCartItem } from 'api'
+import { createCartItem, getFrameMaterial } from 'api'
 
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
@@ -189,7 +189,7 @@ const SideBarPanel: React.FC<Props> = ({
       })
     }
   }
-  const makeOrder = () => {
+  const makeOrder = async () => {
     const _notices = currentProject.slides.reduce((accum, slide, index) => {
       const temp = slide.objects.reduce((acc, o, i) => {
         if (o.props.className.includes('image-placeholder') && !('imageUrl' in o.props)) {
@@ -219,6 +219,25 @@ const SideBarPanel: React.FC<Props> = ({
       }, [] as any[])
       return accum.concat(temp)
     }, [] as any[])
+
+    if (hasFrameMaterials && currentProject.frameMaterialId) {
+      try {
+        const frameMaterial = await getFrameMaterial(currentProject.frameMaterialId)
+        if (frameMaterial.status === 'Passive') {
+          const frameMaterialNotice = {
+            type: 'unavailable frame material',
+            key: 'unavailable frame material',
+            data: {
+              frameMaterial,
+            },
+          }
+          _notices.push(frameMaterialNotice)
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
     setNotices(_notices)
     if (_notices.length > 0) {
       editor.type = 'notices'
@@ -530,13 +549,15 @@ const SideBarPanel: React.FC<Props> = ({
             Please review them carefully before ordering. If you&apos;re sure that everything is okay, you can proceed
             anyway.
           </p>
-          <Checkbox
-            className="text-base font-semibold text-gray-500"
-            onChange={(e) => setIsNoticeChecked(e.target.checked)}
-            checked={isNoticeChecked}
-          >
-            I am sure, everything is fine.
-          </Checkbox>
+          {!notices.some((notice) => notice.type === 'unavailable frame material') && (
+            <Checkbox
+              className="text-base font-semibold text-gray-500"
+              onChange={(e) => setIsNoticeChecked(e.target.checked)}
+              checked={isNoticeChecked}
+            >
+              I am sure, everything is fine.
+            </Checkbox>
+          )}
         </Modal>
       </div>
     </div>
