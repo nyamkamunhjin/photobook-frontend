@@ -8,6 +8,7 @@ import WidthLimiter from 'layouts/main/components/width-limiter'
 import { FrameMaterial, PaperSize, Template } from 'interfaces'
 
 type SelectedState = {
+  orientation?: string
   paperSize?: PaperSize | undefined
   frameMaterial?: FrameMaterial | undefined
 }
@@ -16,6 +17,7 @@ const ProductTemplate: FC = () => {
   const { id }: { id: string } = useParams()
   const [selectedShowCase, setSelectedShowCase] = useState<{ url: string; type: 'video' | 'image' }>()
   const [selectedState, setSelectedState] = useState<SelectedState>({
+    orientation: 'Square',
     paperSize: undefined,
     frameMaterial: undefined,
   })

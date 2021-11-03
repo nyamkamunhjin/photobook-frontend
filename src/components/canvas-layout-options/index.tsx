@@ -45,13 +45,13 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
 
   useEffect(() => {
     const initialState = () => {
-      const [paperSize] = orientations.find((item) => item.name === selectedState.orientation)?.sizes
+      const [paperSize] = orientations[0]?.sizes
       const [paperMaterial] = paperMaterials
-      // const [paperMaterial] = paperMaterials
 
       if (template.canvasType === 'Single') {
         setSelectedState((oldState) => ({
           ...oldState,
+          orientation: orientations[0].name,
           paperSize: (template.productOptions as string[])?.includes('Paper size') ? template.paperSize : paperSize,
           paperMaterial: (template.productOptions as string[])?.includes('Paper material')
             ? template.paperMaterial
@@ -60,6 +60,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
       } else {
         setSelectedState((oldState) => ({
           ...oldState,
+          orientation: orientations[0].name,
           paperSize: template.paperSize,
           paperMaterial: (template.productOptions as string[])?.includes('Paper material')
             ? template.paperMaterial
@@ -111,7 +112,7 @@ const CanvasLayoutOptions: FC<Props> = ({ template, paperSizes, paperMaterials, 
                     orientation: value,
                   }))
                 }}
-                defaultValue="Square"
+                defaultValue={orientations[0].name}
               >
                 {orientations.map((each) => (
                   <Select.Option key={each.name} value={each.name}>

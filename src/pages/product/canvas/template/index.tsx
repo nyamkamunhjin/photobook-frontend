@@ -16,7 +16,7 @@ const ProductTemplate: FC = () => {
     paperMaterial?: PaperMaterial
     type?: String
   }>({
-    orientation: 'Square',
+    orientation: undefined,
     paperSize: undefined,
     paperMaterial: undefined,
     type: 'Air',

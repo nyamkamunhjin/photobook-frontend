@@ -11,12 +11,14 @@ const ProductTemplate: FC = () => {
   const { id }: { id: string } = useParams()
   const [selectedShowCase, setSelectedShowCase] = useState<{ url: string; type: 'video' | 'image' }>()
   const [selectedState, setSelectedState] = useState<{
+    orientation?: string
     paperSize?: PaperSize
     coverType?: CoverType
     bindingType?: BindingType
     coverMaterial?: CoverMaterial
     coverMaterialColor?: CoverMaterialColor
   }>({
+    orientation: 'Square',
     paperSize: undefined,
     coverType: undefined,
     bindingType: undefined,

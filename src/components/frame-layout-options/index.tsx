@@ -5,7 +5,7 @@ import { FrameMaterial, PaperSize, RootInterface, Template } from 'interfaces'
 import { useHistory } from 'react-router-dom'
 import { CustomButton } from 'components'
 import { useSelector } from 'react-redux'
-import { notification } from 'antd'
+import { notification, Select } from 'antd'
 import Button from 'components/button'
 import AuthModal from '../auth-modal'
 
@@ -14,11 +14,13 @@ interface Props {
   paperSizes: PaperSize[]
   frameMaterials: FrameMaterial[]
   selectedState: {
+    orientation?: string
     paperSize?: PaperSize | undefined
     frameMaterial?: FrameMaterial | undefined
   }
   setSelectedState: React.Dispatch<
     React.SetStateAction<{
+      orientation?: string
       paperSize?: PaperSize | undefined
       frameMaterial?: FrameMaterial | undefined
     }>
@@ -37,6 +39,15 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
   const _frameMaterials = useMemo(() => {
     return frameMaterials?.filter((frameMaterial: FrameMaterial) => frameMaterial.status === 'Active')
   }, [frameMaterials])
+
+  const orientations = paperSizes.reduce((acc, paperSize) => {
+    if (!acc.some((item) => item.name === paperSize.orientation)) {
+      acc.push({ name: paperSize.orientation, sizes: [paperSize] })
+    } else {
+      acc.find((item) => item.name === paperSize.orientation)?.sizes.push(paperSize)
+    }
+    return acc
+  }, [] as any[])
 
   const onFinish = () => {
     if (
@@ -69,15 +80,17 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
 
   useEffect(() => {
     const initialState = () => {
-      const [paperSize] = paperSizes
+      const [paperSize] = orientations[0]?.sizes
       if (_frameMaterials && _frameMaterials.length > 0) {
         const [frameMaterial] = _frameMaterials
         setSelectedState({
+          orientation: orientations[0].name,
           paperSize,
           frameMaterial,
         })
       } else {
         setSelectedState({
+          orientation: orientations[0].name,
           paperSize,
         })
       }
@@ -91,31 +104,51 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
     <div className="flex flex-col gap-4">
       <span className="text-3xl font-bold">{template.name}</span>
 
-      <div className="space-y-4" hidden={template.frameType === 'Single' && tradephoto !== null}>
-        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
-        <div className="flex flex-wrap gap-4">
-          {paperSizes?.map((each: PaperSize) => (
-            <button
-              type="button"
-              className={`w-32 p-2 rounded border-dashed border-4 focus:outline-none  ${
-                selectedState.paperSize?.id === each.id ? 'border-green-400 outline-none' : 'hover:border-green-200'
-              } `}
-              key={each.id}
-              onClick={() => {
-                setSelectedState((prev) => ({ ...prev, paperSize: each }))
-              }}
-            >
-              <div className="flex flex-col">
-                <div className="w-full grid place-items-center">
-                  <div
-                    className="border-solid border-2 border-gray-700"
-                    style={{ width: `${each.width}px`, height: `${each.height}px` }}
-                  />
-                </div>
-                <span>{each.size}</span>
-              </div>
-            </button>
-          ))}
+      <div className="flex gap-4 justify-between" hidden={template.frameType === 'Single' && tradephoto !== null}>
+        <span className="font-normal text-lg">{intl.formatMessage({ id: 'orientation' })}</span>
+        <div className="flex flex-wrap gap-4 w-2/3">
+          <Select
+            className="w-full"
+            onChange={(value) => {
+              setSelectedState((each) => ({
+                ...each,
+                orientation: value,
+              }))
+            }}
+            defaultValue={orientations[0].name}
+          >
+            {orientations.map((each) => (
+              <Select.Option key={each.name} value={each.name}>
+                <span className="font-normal text-gray-700 text-sm">{each.name}</span>
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+      </div>
+
+      <div className="flex gap-4 justify-between" hidden={template.frameType === 'Single' && tradephoto !== null}>
+        <span className="font-normal text-lg">{intl.formatMessage({ id: 'paper_size' })}</span>
+        <div className="flex flex-wrap gap-4 w-2/3">
+          <Select
+            className="w-full flex items-center"
+            onChange={(value) => {
+              setSelectedState((each) => ({
+                ...each,
+                paperSize: orientations
+                  .find((item) => item.name === selectedState.orientation)
+                  ?.sizes.find((item: PaperSize) => item.size === value),
+              }))
+            }}
+            defaultValue={orientations.find((item) => item.name === selectedState.orientation)?.sizes[0].size}
+          >
+            {orientations
+              .find((item) => item.name === selectedState.orientation)
+              ?.sizes.map((each: PaperSize) => (
+                <Select.Option key={each.size} value={each.size}>
+                  <span className="font-normal text-gray-700 text-sm">{each.size}</span>
+                </Select.Option>
+              ))}
+          </Select>
         </div>
       </div>
 
