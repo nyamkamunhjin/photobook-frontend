@@ -312,6 +312,20 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
+      {templateType === 'canvas-multi' && (
+        <div
+          className="absolute top-0 left-0 w-full h-full z-50"
+          style={{
+            borderStyle: 'solid',
+            borderColor: 'black',
+            borderWidth: `${5 * scale}px`,
+            pointerEvents: 'none',
+            display: 'block',
+          }}
+        >
+          <div className="w-full h-full z-50 mix-blend-multiply" />
+        </div>
+      )}
     </div>
   )
 }

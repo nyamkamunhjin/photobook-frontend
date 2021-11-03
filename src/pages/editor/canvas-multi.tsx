@@ -551,6 +551,7 @@ const BookEditor: React.FC<Props> = ({
                                 scale,
                                 zoom: 1,
                                 border: currentProject.canvasType !== 'Single' ? BORDER_WIDTH : 0,
+                                templateType: 'canvas-multi',
                               })}
                             </div>
                           )
