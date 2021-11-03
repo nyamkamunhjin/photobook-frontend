@@ -83,43 +83,10 @@ const PhotobookLayoutOptions: FC<Props> = ({ template, paperSizes, selectedState
       initialState()
     }
   }, [initialState, paperSizes])
-  console.log('orientations', orientations)
+
   return (
     <div className="flex flex-col gap-4">
       <span className="text-3xl font-semibold">{template.name}</span>
-      {/* <div className="space-y-4">
-        <span className="font-normal text-xl">{intl.formatMessage({ id: 'paper_size' })}</span>
-        <div className="flex flex-wrap gap-4">
-          {paperSizes.map((each: PaperSize) => (
-            <button
-              type="button"
-              className={`w-32 p-2 rounded border-dashed border-4 focus:outline-none  ${
-                selectedState.paperSize?.id === each.id ? 'border-green-400 outline-none' : 'hover:border-green-200'
-              } `}
-              key={each.id}
-              onClick={() => {
-                setSelectedState({
-                  paperSize: each,
-                  coverType: each.coverTypes?.[0],
-                  bindingType: each.coverTypes?.[0]?.bindingTypes?.[0],
-                  coverMaterial: each.coverTypes?.[0]?.coverMaterials?.[0],
-                  coverMaterialColor: each.coverTypes?.[0]?.coverMaterials?.[0]?.coverMaterialColors?.[0],
-                })
-              }}
-            >
-              <div className="flex flex-col">
-                <div className="w-full grid place-items-center">
-                  <div
-                    className="border-solid border-2 border-gray-700"
-                    style={{ width: `${each.width}px`, height: `${each.height}px` }}
-                  />
-                </div>
-                <span>{each.size}</span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div> */}
 
       <div className="flex gap-4 justify-between">
         <span className="font-normal text-lg">{intl.formatMessage({ id: 'orientation' })}</span>

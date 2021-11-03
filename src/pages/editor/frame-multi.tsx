@@ -434,10 +434,6 @@ const BookEditor: React.FC<Props> = ({
     }
   }, [currentProject, objects, frameLoading])
 
-  useEffect(() => {
-    console.log('frameLoading', frameLoading)
-  }, [frameLoading])
-
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">

@@ -67,14 +67,14 @@ const FrameLayoutOptions: FC<Props> = ({ template, frameMaterials, paperSizes, s
         `/editor/frame/single?template=${template.id}&frameMaterial=${selectedState.frameMaterial?.id}${
           parseFloat(widthRef.current?.value || '0') > 0 && parseFloat(heightRef.current?.value || '0') > 0
             ? `&width=${widthRef.current?.value}&height=${heightRef.current?.value}`
-            : `&paperSize=${template.paperSize?.id}`
+            : `&paperSize=${selectedState.paperSize?.id || template.paperSize?.id}`
         }${tradephoto ? `&tradephoto=${tradephoto}` : ''}`
       )
     }
     return history.push(
       `/editor/frame/${template.frameType?.toLowerCase()}?template=${template.id}&frameMaterial=${
         selectedState.frameMaterial?.id
-      }&paperSize=${template.paperSize?.id}`
+      }&paperSize=${selectedState.paperSize?.id || template.paperSize?.id}`
     )
   }
 
