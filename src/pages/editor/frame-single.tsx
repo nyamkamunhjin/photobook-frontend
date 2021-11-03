@@ -25,6 +25,7 @@ import {
   setBackgrounds as _setBackgrounds,
   duplicateSlide as _duplicateSlide,
   reOrderSlide as _reOrderSlide,
+  updateProject as _updateProject,
 } from 'redux/actions/project'
 import { linkImages as _linkImages } from 'redux/actions/image'
 
@@ -46,7 +47,8 @@ import {
 import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
-import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
+import { useBoolean, useDebounceFn, useFullscreen, useRequest } from 'ahooks'
+import { listFrameMaterial } from 'api'
 import {
   Header,
   BackgroundSingleImages,
@@ -62,6 +64,10 @@ import './components/styles/editor.scss'
 interface Props {
   getProjects: (id: number, params: ProjectCreate, project: string) => Promise<string | undefined>
   saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
+  addNewSlide: (slideIndex: number, projectId: number) => Promise<void>
+  duplicateSlide: (projectId: number, slideIndex: number, duplicatedSlide: Slide) => Promise<void>
+  deleteSlide: (projectId: number, slideIndex: number) => Promise<void>
+  reOrderSlide: (projectId: number, slides: Slide[]) => Promise<void>
   editor: EditorInterface
   project: ProjectInterface
   image: ImageInterface
@@ -79,11 +85,18 @@ interface Props {
   addObject: (props: { object: Object }) => void
   removeObject: (props: { object: Object; container: Object }) => void
   linkImages: (images: string[], id: number) => Promise<any>
+  updateProject: (projectId: number, props: { paperSizeId?: number; frameMaterialId?: number }) => void
 }
+
+const BORDER_WIDTH = 0.5 * 100
 
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
+  addNewSlide,
+  duplicateSlide,
+  reOrderSlide,
+  deleteSlide,
   editor,
   loadObjects,
   loadContainers,
@@ -98,6 +111,7 @@ const BookEditor: React.FC<Props> = ({
   addObject,
   linkImages,
   removeObject,
+  updateProject,
   project: {
     currentProject,
     objects,
@@ -127,6 +141,7 @@ const BookEditor: React.FC<Props> = ({
   const scaledContainerRef = useRef<any>(null)
   const groupRef = useRef<any>(null)
   const [overflow, setOverflow] = useState<string>('hidden')
+  const [refreshing, setRefreshing] = useBoolean(false)
   const [preview, setPreview] = useBoolean(false)
   const [single, setSingle] = useBoolean(true)
   const ref = useRef<any>()
@@ -151,7 +166,7 @@ const BookEditor: React.FC<Props> = ({
       width: any
       height: any
     }>()
-  const _slideIndex = 0
+  const [_slideIndex, setSlideIndex] = useState<number>(0)
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
@@ -174,6 +189,8 @@ const BookEditor: React.FC<Props> = ({
       wait: 1000 * 30,
     }
   )
+
+  const frameMaterials = useRequest(() => listFrameMaterial())
 
   const editors = useMemo(() => {
     return new Editor({
@@ -222,6 +239,68 @@ const BookEditor: React.FC<Props> = ({
       setIsTextEditing(false)
       setTextObjectIndex(_index)
     }
+  }
+
+  const nextSlide = () => {
+    if (_slideIndex < currentProject.slides.length - 1) {
+      changeSlideIndex(_slideIndex + 1)
+    }
+  }
+
+  const onAddSlide = (projectId: number, slideIndex: number) => {
+    setRefreshing.setTrue()
+    addNewSlide(projectId, slideIndex).then(() => {
+      changeSlideIndex(_slideIndex + 1)
+      setRefreshing.setFalse()
+    })
+  }
+
+  const onDuplicateSlide = (projectId: number, slideIndex: number) => {
+    setRefreshing.setTrue()
+    duplicateSlide(projectId, slideIndex, currentProject.slides[slideIndex]).then(() => {
+      changeSlideIndex(_slideIndex + 1)
+      setRefreshing.setFalse()
+    })
+  }
+
+  const onReOrderSlide = (projectId: number, slides: Slide[]) => {
+    setRefreshing.setTrue()
+    reOrderSlide(projectId, slides).then(() => {
+      setRefreshing.setFalse()
+      editors.deSelectObject()
+      setSlideIndex(0)
+    })
+  }
+
+  const onDeleteSlide = (projectId: number, slideIndex: number) => {
+    if (_slideIndex !== 0) {
+      setRefreshing.setTrue()
+      deleteSlide(projectId, slideIndex).then(() => {
+        setRefreshing.setFalse()
+        editors.deSelectObject()
+        setSlideIndex(_slideIndex - 1)
+      })
+    }
+  }
+
+  const prevSlide = () => {
+    if (_slideIndex !== 0) {
+      changeSlideIndex(_slideIndex - 1)
+    }
+  }
+
+  const changeSlideIndex = (index: number) => {
+    saveObjects()
+    editors.deSelectObject()
+    setSlideIndex(index)
+  }
+
+  const hasNext = () => {
+    return !(_slideIndex === currentProject.slides.length - 1)
+  }
+
+  const hasPrevious = () => {
+    return !(_slideIndex === 0)
   }
 
   const saveObjects = async () => {
@@ -306,7 +385,7 @@ const BookEditor: React.FC<Props> = ({
     }
     loadObjects(currentSlide.objects)
     loadContainers(currentSlide.containers)
-    editors.loadObjects(currentSlide.objects)
+    editors.loadObjects(currentSlide.objects, BORDER_WIDTH)
   }
 
   useEffect(() => {
@@ -393,20 +472,36 @@ const BookEditor: React.FC<Props> = ({
   }, [_object])
 
   useEffect(() => {
+    const addTradePhoto = async () => {
+      try {
+        if (tradephoto) {
+          if (images.length === 0 || !images.some((image) => parseFloat(image.id) === parseFloat(tradephoto))) {
+            console.log('addTradePhoto')
+            await linkImages([tradephoto], currentProject.id)
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    if (
+      tradephoto &&
+      tradephotoLoading &&
+      currentProject.id !== 0 &&
+      !imgLoading &&
+      (images.length === 0 || !images.some((image) => parseFloat(image.id) === parseFloat(tradephoto)))
+    )
+      addTradePhoto()
+  }, [tradephoto, tradephotoLoading, images, imgLoading, currentProject])
+
+  useEffect(() => {
     const setTradePhoto = async () => {
       try {
-        if (tradephoto && objects.length === 0) {
-          setTradephotoLoading(true)
-          let image
-          if (currentProject.images?.length === 0 && images.length === 0) {
-            const [_image] = await linkImages([tradephoto], currentProject.id)
-            image = _image
-          } else if (currentProject.images && currentProject.images.length > 0)
-            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-
-          // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
-          if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {
+        if (tradephoto) {
+          const image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+          if (image) {
+            console.log('setTradePhoto')
             editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
             saveObjects()
             setTradephotoLoading(false)
@@ -416,8 +511,16 @@ const BookEditor: React.FC<Props> = ({
         console.error(err)
       }
     }
-    if (tradephoto && !imgLoading && objects.length === 0) setTradePhoto()
-  }, [tradephoto, currentProject, images, imgLoading])
+
+    if (
+      tradephoto &&
+      tradephotoLoading &&
+      images.length > 0 &&
+      images.some((image) => parseFloat(image.id) === parseFloat(tradephoto)) &&
+      objects.length === 0
+    )
+      setTradePhoto()
+  }, [tradephoto, tradephotoLoading, images, objects, currentProject, slideWidth, slideHeight])
 
   const renderEditor = (
     <div className="EditorPanelContainer">
@@ -440,7 +543,7 @@ const BookEditor: React.FC<Props> = ({
             sendBackward={() => editors.onSendBackward(_index, objects)}
             removeObject={() => editors.onRemoveObject(containers, objects, _index)}
             getImagePosition={(o: PObject) => editors.getImagePosition(o)}
-            imageFit={(borderWidth, o) => editors.imageFitNoDebounce(objects, o, borderWidth)}
+            imageFit={(borderWidth, o) => editors.imageFitNoDebounce(objects, o, BORDER_WIDTH)}
           />
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons
@@ -454,7 +557,19 @@ const BookEditor: React.FC<Props> = ({
           <div
             id="slide_container"
             onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index)}
+            onDrop={(e) =>
+              editors.onObjectDrop(
+                e,
+                editor.type,
+                objects,
+                _index,
+                0,
+                false,
+                'frame-single',
+                currentProject.id,
+                updateProject
+              )
+            }
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -545,24 +660,26 @@ const BookEditor: React.FC<Props> = ({
                     <div
                       key={t}
                       style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects)}
+                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 0, BORDER_WIDTH)}
                       className={`resize ${resize}`}
                     />
                   )
                 })}
-                {currentProject.frameMaterial && (
-                  <div
-                    className="absolute top-0 left-0 w-full h-full z-50"
-                    style={{
-                      borderStyle: 'solid',
-                      borderImage: `url('${currentProject.frameMaterial.tempUrl}')`,
-                      borderWidth: `${currentProject.frameMaterial.borderWidth * scale}px`,
-                      pointerEvents: 'none',
-                    }}
-                  >
-                    <div className="active-wrapper w-full h-full z-50 mix-blend-multiply" />
-                  </div>
-                )}
+                {/* {currentProject.frameMaterial && ( */}
+                <div
+                  className="absolute top-0 left-0 w-full h-full z-50"
+                  style={{
+                    borderStyle: 'solid',
+                    borderColor: '#d1d5db',
+                    // borderImage: `url('${currentProject.frameMaterial.tempUrl}')`,
+                    // borderWidth: `${currentProject.frameMaterial.borderWidth * scale}px`,
+                    borderWidth: `${BORDER_WIDTH * scale}px`,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <div className="active-wrapper w-full h-full z-50 mix-blend-multiply" />
+                </div>
+                {/* )} */}
               </div>
             </div>
           </div>
@@ -603,6 +720,8 @@ const BookEditor: React.FC<Props> = ({
           <SideBarPanel
             layoutGroups={layouts}
             hasFrames={false}
+            hasFrameMaterials
+            frameMaterials={frameMaterials.data}
             hasLayout={false}
             isOrder={isOrder}
             setIsOrder={setIsOrder}
@@ -612,7 +731,6 @@ const BookEditor: React.FC<Props> = ({
         <div className="EditorPanel">
           {preview ? <Preview slideIndex={_slideIndex} /> : renderEditor}
           <FooterListTools
-            hideTools
             scale={scale}
             fitScale={fitScale}
             setScale={setScale}
@@ -638,6 +756,15 @@ const BookEditor: React.FC<Props> = ({
             deSelectObject={editors.deSelectObject}
             slideIndex={_slideIndex}
             currentProject={currentProject}
+            changeSlideIndex={changeSlideIndex}
+            addNewSlide={onAddSlide}
+            duplicateSlide={onDuplicateSlide}
+            reOrderSlide={onReOrderSlide}
+            deleteSlide={onDeleteSlide}
+            nextSlide={nextSlide}
+            prevSlide={prevSlide}
+            hasNext={hasNext}
+            hasPrevious={hasPrevious}
             updateObject={updateObject}
             updateHistory={updateHistory}
             saveObjects={saveObjects}
@@ -676,4 +803,5 @@ export default connect(mapStateToProps, {
   reOrderSlide: _reOrderSlide,
   saveProjectAttribute: _saveProjectAttribute,
   linkImages: _linkImages,
+  updateProject: _updateProject,
 })(BookEditor)

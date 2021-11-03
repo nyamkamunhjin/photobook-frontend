@@ -502,14 +502,14 @@ const BookEditor: React.FC<Props> = ({
             />
           )}
           <div id="selection" hidden ref={selectionRef} />
-          <SideButtons
+          {/* <SideButtons
             createImage={(e) => editors.createImage(e, objects)}
             createText={() => editors.createText(objects)}
             createSquare={() => editors.createSquare(objects)}
             createEclipse={() => editors.createEclipse(objects)}
             settings={false}
             type="canvas"
-          />
+          /> */}
           <div
             id="slide_container"
             // onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
@@ -668,6 +668,9 @@ const BookEditor: React.FC<Props> = ({
             isOrder={isOrder}
             setIsOrder={setIsOrder}
             hasImage
+            hasBackground={false}
+            hasClipArt={false}
+            hasMask={false}
           />
         )}
         <div className="EditorPanel">

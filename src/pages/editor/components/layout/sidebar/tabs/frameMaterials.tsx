@@ -8,10 +8,11 @@ interface Props {
 }
 
 const FrameMaterials: React.FC<Props> = ({ loading, frameMaterials }) => {
-  const dragStart = (e: any, tempUrl: any, imageUrl: any, borderWidth = 0) => {
+  const dragStart = (e: any, tempUrl: any, imageUrl: any, borderWidth = 0, id: number) => {
     e.dataTransfer.setData('tempUrl', tempUrl)
     e.dataTransfer.setData('imageUrl', imageUrl)
     e.dataTransfer.setData('borderWidth', borderWidth)
+    e.dataTransfer.setData('id', id)
   }
 
   return loading ? (
@@ -32,7 +33,13 @@ const FrameMaterials: React.FC<Props> = ({ loading, frameMaterials }) => {
               <img
                 draggable
                 onDragStart={(e) =>
-                  dragStart(e, frameMaterial.tempUrl, frameMaterial.imageUrl, frameMaterial.borderWidth)
+                  dragStart(
+                    e,
+                    frameMaterial.tempUrl,
+                    frameMaterial.imageUrl,
+                    frameMaterial.borderWidth,
+                    frameMaterial.id
+                  )
                 }
                 alt={frameMaterial.tempUrl}
                 src={frameMaterial.tempUrl}

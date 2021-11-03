@@ -12,6 +12,7 @@ import {
   ObjectType,
   OElement,
   PObject,
+  ProjectInterface,
   Size,
 } from 'interfaces'
 import { v4 as uuidv4 } from 'uuid'
@@ -2155,7 +2156,9 @@ export default class Editor {
     _index: number,
     border = 0,
     hasDefaultImg = false,
-    editorType?: string
+    editorType?: string,
+    currentProjectId?: number,
+    updateProject?: any
   ) => {
     this.hideToolbar()
     e.preventDefault()
@@ -2213,10 +2216,9 @@ export default class Editor {
           this.updateObject({ object: newObject })
           this.updateHistory(UPDATE_OBJECT, { object: o })
         })
-      } else if (editorType === 'frame-single') {
-        console.log('frame-single')
       } else {
-        console.log('frame-unlock')
+        if (!currentProjectId || !updateProject) return
+        updateProject(currentProjectId, { frameMaterialId: e.dataTransfer.getData('id') })
       }
     } else if (
       e.target.classList.contains('object') &&
