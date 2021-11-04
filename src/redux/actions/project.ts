@@ -66,16 +66,9 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
     if (uuid.length === 0) {
       dispatch({ type: CLEAR_PROJECT })
       const template: Template = await getTemplate(id)
-      console.log(
-        'YYY',
-        params.paperSizeId,
-        params.paperSizeId !== template.paperSizeId,
-        template.paperSize,
-        template.paperSizeId
-      )
+
       let newProject
       if (params.paperSizeId && params.paperSizeId !== template.paperSizeId && template.paperSize) {
-        console.log('FUUCk')
         const paperSize: PaperSize = await getPaperSize(params.paperSizeId)
         const { width: w, height: h } = paperSize
         const { width: _w, height: _h } = template.paperSize
@@ -91,9 +84,7 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
                   return {
                     ...slide,
                     objects: slide.objects.map((o) => {
-                      console.log('FFF', template.templateType?.name)
                       if (['photobook', 'montage'].includes(template.templateType?.name + '')) {
-                        console.log('GGG')
                         return {
                           ...o,
                           style: {
