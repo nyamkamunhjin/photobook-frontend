@@ -66,12 +66,46 @@ export const getProjects = (id: number, params: ProjectCreate, uuid: string) => 
     if (uuid.length === 0) {
       dispatch({ type: CLEAR_PROJECT })
       const template: Template = await getTemplate(id)
-      const newProject = await createProject({
-        ...params,
-        name: 'New Project',
-        templateId: id,
-        slides: template.canvasType === 'Split' ? [template.slidesSplit] : template.slides,
-      })
+
+      let newProject
+      if (params.paperSizeId && params.paperSizeId !== template.paperSizeId && template.paperSize) {
+        const paperSize: PaperSize = await getPaperSize(params.paperSizeId)
+        const { width: w, height: h } = paperSize
+        const { width: _w, height: _h } = template.paperSize
+
+        newProject = await createProject({
+          ...params,
+          name: 'New Project',
+          templateId: id,
+          slides:
+            template.canvasType === 'Split'
+              ? [template.slidesSplit]
+              : template.slides.map((slide) => {
+                  return {
+                    ...slide,
+                    objects: slide.objects.map((o) => {
+                      return {
+                        ...o,
+                        style: {
+                          ...o.style,
+                          width: (parseFloat(o.style.width + '') * w) / _w + 'px',
+                          height: (parseFloat(o.style.height + '') * h) / _h + 'px',
+                          top: (parseFloat(o.style.top + '') * h) / _h + 'px',
+                          left: (parseFloat(o.style.left + '') * w) / _w + 'px',
+                        },
+                      }
+                    }),
+                  }
+                }),
+        })
+      } else {
+        newProject = await createProject({
+          ...params,
+          name: 'New Project',
+          templateId: id,
+          slides: template.canvasType === 'Split' ? [template.slidesSplit] : template.slides,
+        })
+      }
 
       const project: Project = await getProject(newProject?.data.id)
       const imageCategories = await listImageCategoryByProject(id)
