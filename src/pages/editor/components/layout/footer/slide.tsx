@@ -126,7 +126,15 @@ const Slides: React.FC<Props> = ({
         </div>
       </div>
       <p className="label">
-        <FormattedMessage id="slide" /> {index + 1}
+        {templateType && !'montage,photobook'.includes(templateType) ? (
+          <>
+            <FormattedMessage id="slide" /> {index + 1}
+          </>
+        ) : (
+          <>
+            <FormattedMessage id={index === 0 ? 'cover' : 'slide'} /> {index !== 0 && index}
+          </>
+        )}
       </p>
     </>
   )

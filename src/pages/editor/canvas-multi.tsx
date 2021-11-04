@@ -568,7 +568,9 @@ const BookEditor: React.FC<Props> = ({
                 />
                 <div className="active-border" />
                 <div className="page-border-canvas" />
-                <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
+                {!Array.from(_object?.firstChild?.classList || []).includes('image-placeholder') && (
+                  <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
+                )}
                 <div id="magnetX" />
                 <div id="magnetY" />
                 {!Array.from(_object?.firstChild?.classList || []).includes('image-placeholder') &&

@@ -399,6 +399,7 @@ export interface Project {
   categories?: Category[]
   images?: Image[]
   layouts?: LayoutInterface[]
+  coverEditable?: boolean
 }
 
 export interface Image {

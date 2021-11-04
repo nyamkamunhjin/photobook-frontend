@@ -2288,7 +2288,10 @@ export default class Editor {
       }
     } else if ('cliparts'.includes(type)) {
       this.createImage(e, objects)
-    } else if ('images'.includes(type) && editorType && !['frame-multi', 'canvas-multi'].includes(editorType)) {
+    } else if (
+      'images'.includes(type) &&
+      !['frame-multi', 'canvas-multi', 'photobook', 'montage'].includes(editorType + '')
+    ) {
       this.createImages(e, objects, border)
     }
     // Deselect GroupObject
@@ -3718,7 +3721,7 @@ export default class Editor {
         this.groupRef.current.style.height = selectedStyle.height * this.scale + 'px'
         this.moveResizers({ styles: selectedStyle, objectType: 'group' })
       }
-      console.log('selectedObjects', selectedObjects)
+
       if (Object.keys(selectedObjects).length === 0 && this._groupObjects !== null) {
         this._groupObjects = null
         this.setGroupObjects(null)

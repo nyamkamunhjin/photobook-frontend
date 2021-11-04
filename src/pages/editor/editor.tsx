@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable consistent-return */
@@ -490,52 +491,85 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
+  console.log('_slideIndex', _slideIndex, currentProject.coverEditable)
+
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
         <div id="editor_container" ref={editorContainerRef}>
-          <Toolbar
-            object={_object}
-            objectType={_objectType}
-            index={_index}
-            zoom={{
-              state: zoom,
-              action: setZoom,
-            }}
-            objects={objects}
-            groupObjects={_groupObjects}
-            updateObject={updateObject}
-            updateHistory={updateHistory}
-            moveResizers={editors.moveResizers}
-            removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
-            removeFrameFromObject={() => editors.onRemoveFrameFromObject(_index, objects, _objectType)}
-            removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
-            rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
-            rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
-            flipObject={() => editors.onFlipObject(_index, objects)}
-            sendForward={() => editors.onSendForward(_index, objects)}
-            sendBackward={() => editors.onSendBackward(_index, objects)}
-            removeObject={() => editors.onRemoveObject(containers, objects, _index)}
-            getImagePosition={(o: PObject) => editors.getImagePosition(o)}
-            imageFit={(borderWidth: number, o: PObject) => editors.imageFitNoDebounce(objects, o, borderWidth)}
-          />
+          {_slideIndex === 0 && !currentProject.coverEditable ? (
+            <Toolbar
+              object={_object}
+              objectType={_objectType}
+              index={_index}
+              objects={objects}
+              updateObject={updateObject}
+              updateHistory={updateHistory}
+              moveResizers={editors.moveResizers}
+              removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+              removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
+              rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
+              rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
+              flipObject={() => editors.onFlipObject(_index, objects)}
+              sendForward={() => editors.onSendForward(_index, objects)}
+              sendBackward={() => editors.onSendBackward(_index, objects)}
+              imageFit={(borderWidth, o) => {
+                editors.imageFitNoDebounce(objects, o, borderWidth)
+              }}
+              getImagePosition={(o: PObject) => editors.getImagePosition(o)}
+            />
+          ) : (
+            <Toolbar
+              object={_object}
+              objectType={_objectType}
+              index={_index}
+              zoom={{
+                state: zoom,
+                action: setZoom,
+              }}
+              objects={objects}
+              groupObjects={_groupObjects}
+              updateObject={updateObject}
+              updateHistory={updateHistory}
+              moveResizers={editors.moveResizers}
+              removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
+              removeFrameFromObject={() => editors.onRemoveFrameFromObject(_index, objects, _objectType)}
+              removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
+              rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
+              rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
+              flipObject={() => editors.onFlipObject(_index, objects)}
+              sendForward={() => editors.onSendForward(_index, objects)}
+              sendBackward={() => editors.onSendBackward(_index, objects)}
+              removeObject={() => editors.onRemoveObject(containers, objects, _index)}
+              getImagePosition={(o: PObject) => editors.getImagePosition(o)}
+              imageFit={(borderWidth: number, o: PObject) => editors.imageFitNoDebounce(objects, o, borderWidth)}
+            />
+          )}
           <div id="selection" hidden ref={selectionRef} />
-          <SideButtons
-            createImage={(e) => editors.createImage(e, objects)}
-            createText={() => editors.createText(objects)}
-            createSquare={() => editors.createSquare(objects)}
-            createEclipse={() => editors.createEclipse(objects)}
-            // createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
-            changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
-            layout={layout}
-            type="photobook"
-            layouts={layouts}
-            setIsPaperSizeChanged={setIsPaperSizeChanged}
-          />
+          {!(_slideIndex === 0 && !currentProject.coverEditable) && (
+            <SideButtons
+              createImage={(e) => editors.createImage(e, objects)}
+              createText={() => editors.createText(objects)}
+              createSquare={() => editors.createSquare(objects)}
+              createEclipse={() => editors.createEclipse(objects)}
+              // createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
+              changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
+              layout={layout}
+              type="photobook"
+              layouts={layouts}
+              setIsPaperSizeChanged={setIsPaperSizeChanged}
+            />
+          )}
           <div
             id="slide_container"
-            onMouseDown={(e) => editors.onSlideMouseDown(e, _index, objects)}
-            onDrop={(e) => editors.onObjectDrop(e, editor.type, objects, _index)}
+            onMouseDown={(e) =>
+              !(_slideIndex === 0 && !currentProject.coverEditable) && editors.onSlideMouseDown(e, _index, objects)
+            }
+            onDrop={(e) =>
+              !(_slideIndex === 0 && !currentProject.coverEditable)
+                ? editors.onObjectDrop(e, editor.type, objects, _index)
+                : editors.onObjectDrop(e, editor.type, objects, _index, 0, false, 'photobook')
+            }
             onDragOver={editors.onObjectDragOver}
             ref={slideContainerRef}
           >
@@ -591,7 +625,19 @@ const BookEditor: React.FC<Props> = ({
                               key={o.id}
                               style={o.style as React.CSSProperties}
                               className={o.className}
-                              onMouseDown={(e) => editors.startDrag(e, o, i, objects)}
+                              onMouseDown={
+                                !(_slideIndex === 0 && !currentProject.coverEditable)
+                                  ? (e) => editors.startDrag(e, o, i, objects)
+                                  : (e) => {
+                                      editors.onSelect(e, o, i, objects)
+                                      // Manage img-circle
+                                      const _o = document.getElementById(o.id) as HTMLElement
+                                      if (!_o) return
+                                      const circle = _o.querySelector('.image-center') as HTMLElement
+                                      if (circle.style.display === 'flex') circle.style.display = 'none'
+                                      else circle.style.display = 'flex'
+                                    }
+                              }
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
                               onMouseLeave={(e) => editors.objectHoverOff(e, i, _index)}
                               onDragOver={editors.onDragObjectOver}
@@ -634,22 +680,25 @@ const BookEditor: React.FC<Props> = ({
                 />
                 <div className="active-border" />
                 <div className="page-border" />
-                <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
+                {!(_slideIndex === 0 && !currentProject.coverEditable) && (
+                  <div className="rotate" onMouseDown={(e) => editors.startRotate(e, objects, _index)} />
+                )}
                 <div id="magnetX" />
                 <div id="magnetY" />
-                {Object.keys(editors.transformers).map((t: string) => {
-                  const cursor = `${t}-resize`
-                  const resize = editors.transformers[t]
-                  const frameBorder = parseFloat(objects[_index]?.props?.frameStyle?.borderWidth || '0')
-                  return (
-                    <div
-                      key={t}
-                      style={{ cursor }}
-                      onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 0, frameBorder)}
-                      className={`resize ${resize}`}
-                    />
-                  )
-                })}
+                {!(_slideIndex === 0 && !currentProject.coverEditable) &&
+                  Object.keys(editors.transformers).map((t: string) => {
+                    const cursor = `${t}-resize`
+                    const resize = editors.transformers[t]
+                    const frameBorder = parseFloat(objects[_index]?.props?.frameStyle?.borderWidth || '0')
+                    return (
+                      <div
+                        key={t}
+                        style={{ cursor }}
+                        onMouseDown={(e) => editors.startResize(e, cursor, resize, _index, objects, 0, frameBorder)}
+                        className={`resize ${resize}`}
+                      />
+                    )
+                  })}
               </div>
             </div>
           </div>
