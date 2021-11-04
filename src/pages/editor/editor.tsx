@@ -491,8 +491,6 @@ const BookEditor: React.FC<Props> = ({
     debouncedSave.run()
   }, [_object])
 
-  console.log('_slideIndex', _slideIndex, currentProject.coverEditable)
-
   const renderEditor = (
     <div className="EditorPanelContainer">
       <div ref={slideViewRef} className="StepSlideContainer SlideViewContainer">
