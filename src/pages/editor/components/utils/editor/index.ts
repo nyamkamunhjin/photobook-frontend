@@ -1958,6 +1958,12 @@ export default class Editor {
   }
   public createImage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    let x2 = 0
+    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+      const { width } = uneditablePage.getBoundingClientRect()
+      x2 = width / this.scale
+    }
     if (e.dataTransfer) {
       const tempUrl = e.dataTransfer.getData('tempUrl')
       const imageUrl: string = e.dataTransfer.getData('imageUrl')
@@ -1982,7 +1988,7 @@ export default class Editor {
       width = (height * naturalWidth) / naturalHeight
 
       const { x, y } = this.canvasRef.current.getBoundingClientRect()
-      const x1 = e.clientX - x
+      const x1 = e.clientX - x + x2
       const y1 = e.clientY - y
 
       const style = {
@@ -2013,7 +2019,7 @@ export default class Editor {
     } else {
       const style = {
         top: 100,
-        left: 100,
+        left: 100 + x2,
         width: 500,
         height: 300,
         rotateAngle: 0,
@@ -2034,10 +2040,16 @@ export default class Editor {
   }
   public createImages = (e: any, objects: PObject[], border = 0) => {
     this.hideToolbar()
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    let x2 = 0
+    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+      const { width } = uneditablePage.getBoundingClientRect()
+      x2 = width / this.scale
+    }
     if (e.dataTransfer) {
       JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image) => {
         const { x, y } = this.canvasRef.current.getBoundingClientRect()
-        const x1 = e.clientX - x
+        const x1 = e.clientX - x + x2
         const y1 = e.clientY - y
 
         const style = {
@@ -2089,7 +2101,7 @@ export default class Editor {
     } else {
       const style = {
         top: 100,
-        left: 100,
+        left: 100 + x2,
         width: 500,
         height: 300,
         rotateAngle: 0,
@@ -2164,6 +2176,12 @@ export default class Editor {
     this.hideToolbar()
     e.preventDefault()
     if (!'images,cliparts,frames,masks,frame_materials'.includes(type) || this._isTextEditing) return
+
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    if (uneditablePage) {
+      const { top, left, width, height } = uneditablePage.getBoundingClientRect()
+      if (e.clientX >= left && e.clientX <= left + width && e.clientY >= top && e.clientY <= top + height) return
+    }
 
     if (editorType === 'canvas-split') {
       e.target.style.border = 'none'

@@ -694,6 +694,12 @@ const BookEditor: React.FC<Props> = ({
                       />
                     )
                   })}
+                {_slideIndex === 1 && (
+                  <div className="unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 left-0 w-1/2 h-full bg-gray-500 z-50">
+                    <p className="p-0 m-0 uppercase text-white text-base">This page cannot be edited.</p>
+                    <p className="p-0 m-0 text-gray-200">This end paper cannot be edited.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -792,6 +798,7 @@ const BookEditor: React.FC<Props> = ({
             updateHistory={updateHistory}
             saveObjects={saveObjects}
             isFullscreen={isFullscreen}
+            templateType="montage"
           />
         </div>
       </div>
