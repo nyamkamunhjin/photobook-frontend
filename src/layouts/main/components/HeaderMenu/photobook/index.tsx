@@ -28,22 +28,6 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
           <FormattedMessage id="photobook" />
         </p>
         <ul className="flex flex-col gap-2">
-          <li className="text-gray-600 text-xs" key="montage">
-            {/* <button
-              className="focus:outline-none hover:text-blue-300"
-              type="button"
-              onClick={() => router.replace('/editor/montage')}
-            >
-              <FormattedMessage id="montage" />
-            </button> */}
-            <button
-              className="focus:outline-none hover:text-blue-300"
-              type="button"
-              onClick={() => router.replace('/product/montage')}
-            >
-              <FormattedMessage id="montage" />
-            </button>
-          </li>
           {coverTypes ? (
             coverTypes?.map((each) => (
               <li className="text-gray-600 text-xs" key={each.id + each.name + each.quantity}>
@@ -76,6 +60,32 @@ const SubmenuPhotobook: FC<SubmenuPhotobook> = ({ coverTypes, categories, imageL
                       className="focus:outline-none hover:text-blue-300"
                       type="button"
                       onClick={() => router.replace(`/product/photobook?all=false&category=${each.id}`)}
+                    >
+                      {each.name}
+                    </button>
+                  </li>
+                )
+              } else return []
+            })
+          ) : (
+            <Loading fill={false} />
+          )}
+        </ul>
+      </div>
+      <div className="mx-4 p-4">
+        <p className="font-semibold ">
+          <FormattedMessage id="montage" />
+        </p>
+        <ul className="flex flex-col gap-2">
+          {categories?.list ? (
+            categories?.list?.flatMap((each) => {
+              if (each.templateType?.name === 'montage') {
+                return (
+                  <li className="text-gray-600 text-xs" key={each.id + each.name + each.templateType}>
+                    <button
+                      className="focus:outline-none hover:text-blue-300"
+                      type="button"
+                      onClick={() => router.replace(`/product/montage?all=false&category=${each.id}`)}
                     >
                       {each.name}
                     </button>

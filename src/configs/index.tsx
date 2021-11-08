@@ -267,3 +267,5 @@ export const SinglePageEditor = 'canvas,frame,photoprint'
 export const CanvasFormat = ['Single', 'Multi', 'Split']
 
 export const FrameFormat = ['Single', 'Multi']
+
+export const MontageFormat = ['University', 'Highschool', 'Kindergarten']

@@ -5,15 +5,25 @@ import { getTemplate, listPaperSize } from 'api'
 import { Loading, MontageLayoutOptions } from 'components'
 import { useParams } from 'react-router'
 import WidthLimiter from 'layouts/main/components/width-limiter'
-import { PaperSize } from 'interfaces'
+import { BindingType, CoverMaterial, CoverMaterialColor, CoverType, PaperSize } from 'interfaces'
 
 const ProductTemplate: FC = () => {
   const { id }: { id: string } = useParams()
   const [selectedShowCase, setSelectedShowCase] = useState<{ url: string; type: 'video' | 'image' }>()
   const [selectedState, setSelectedState] = useState<{
+    orientation?: string
     paperSize?: PaperSize
+    coverType?: CoverType
+    bindingType?: BindingType
+    coverMaterial?: CoverMaterial
+    coverMaterialColor?: CoverMaterialColor
   }>({
+    orientation: 'Square',
     paperSize: undefined,
+    coverType: undefined,
+    bindingType: undefined,
+    coverMaterial: undefined,
+    coverMaterialColor: undefined,
   })
 
   const template = useRequest(() => getTemplate(parseInt(id, 10)), {
