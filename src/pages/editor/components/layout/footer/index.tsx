@@ -156,7 +156,10 @@ const FooterListTools: React.FC<Props> = ({
   }
 
   const onDragEnd = (source: number, dest: number) => {
-    if (['photobook', 'montage'].includes(currentProject.templateType?.name + '') && (source === 0 || dest === 0))
+    if (
+      ['photobook', 'montage'].includes(currentProject.templateType?.name + '') &&
+      (source === 0 || dest === 0 || source === 1 || dest === 1)
+    )
       return
     if (reOrderSlide) {
       reOrderSlide(currentProject.id, reorder(currentProject.slides, source, dest), dest)
