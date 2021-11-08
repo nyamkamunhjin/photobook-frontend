@@ -13,7 +13,7 @@ import {
   StarOutlined,
 } from '@ant-design/icons'
 import { useDrop } from 'ahooks'
-import { Button, message } from 'antd'
+import { Button, Collapse, message } from 'antd'
 import Checkbox from 'antd/lib/checkbox/Checkbox'
 import Modal from 'antd/lib/modal/Modal'
 import {
@@ -30,7 +30,15 @@ import {
 } from 'redux/actions/editor'
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage, useIntl } from 'react-intl'
-import { EditorInterface, FrameMaterial, ImageInterface, Project, RootInterface, UploadablePicture } from 'interfaces'
+import {
+  EditorInterface,
+  FrameMaterial,
+  Image,
+  ImageInterface,
+  Project,
+  RootInterface,
+  UploadablePicture,
+} from 'interfaces'
 import { createCartItem, getFrameMaterial } from 'api'
 
 import Images from './tabs/images'
@@ -45,8 +53,8 @@ import FrameMasks from './tabs/frameMasks'
 import FrameMaterials from './tabs/frameMaterials'
 
 interface Props {
-  addImages: (images: string[], id: number) => Promise<void>
-  linkImages: (images: string[], id: number) => Promise<void>
+  addImages: (images: string[], id: number, props?: any) => Promise<void>
+  linkImages: (images: string[], id: number, props?: any) => Promise<void>
   unlinkImages: (images: string[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   setType: (type: string) => void
@@ -111,29 +119,29 @@ const SideBarPanel: React.FC<Props> = ({
     },
   })
 
-  const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>, _props?: any) => {
     if (e.target.files && e.target.files?.length > 0) {
       await uploadImages()
       const keys = await s3UploadImages(Array.from(e.target.files))
-      await addImages(keys, currentProject.id)
+      await addImages(keys, currentProject.id, _props)
     }
   }
 
-  const syncPhoto = async (_images: UploadablePicture[]) => {
+  const syncPhoto = async (_images: UploadablePicture[], _props?: any) => {
     if (_images.length) {
       await uploadImages()
       const keys = await s3SyncImages(_images)
-      await addImages(keys, currentProject.id)
+      await addImages(keys, currentProject.id, _props)
     }
   }
 
-  const linkPhoto = async (_images: string[]) => {
+  const linkPhoto = async (_images: string[], _props?: any) => {
     _images = _images.reduce((acc, item) => {
       if (!images.some((el) => el.id === item)) acc.push(item)
       return acc
     }, [] as string[])
     await uploadImages()
-    await linkImages(_images, currentProject.id)
+    await linkImages(_images, currentProject.id, _props)
   }
 
   const unlinkPhoto = async (_images: string[]) => {
@@ -261,30 +269,68 @@ const SideBarPanel: React.FC<Props> = ({
     switch (editor.type) {
       case 'images': {
         if (hasImage) {
-          const uploadedImages = images.filter((image) => image.type === editor.type || image.type === 'tradePhoto')
-          return !loading && uploadedImages.length === 0 ? (
-            <div className="UploadImageDropArea">
-              <div>
-                <p>
-                  <FormattedMessage id="choose_source_to" />
-                </p>
-                <p className="phrase-add">
-                  <FormattedMessage id="add_photos" />
-                </p>
-              </div>
+          if (currentProject.templateType?.name === 'montage') {
+            const uploadedImageGroups = images
+              .filter((image) => (image.type === editor.type || image.type === 'tradePhoto') && image.montageImage)
+              .reduce(
+                (acc, image) => {
+                  acc.find((group) => group.name === image.montageImage)?.images.push(image)
+                  return acc
+                },
+                [
+                  { name: 'Students', images: [] },
+                  { name: 'Teachers', images: [] },
+                  { name: 'Others', images: [] },
+                ] as { name: string; images: Image[] }[]
+              )
 
-              <UploadPhotosGroup uploadPhoto={uploadPhoto} syncPhoto={syncPhoto} linkPhoto={linkPhoto} />
-            </div>
-          ) : (
-            <Images
-              loading={loading}
-              images={uploadedImages}
-              uploadPhoto={uploadPhoto}
-              syncPhoto={syncPhoto}
-              linkPhoto={linkPhoto}
-              unlinkPhoto={unlinkPhoto}
-            />
-          )
+            return (
+              <div className="Images">
+                <div className="ImageGroups">
+                  <Collapse defaultActiveKey={[4]} style={{ width: '100%' }}>
+                    {uploadedImageGroups.map((group: any) => (
+                      <Collapse.Panel header={`${group.name} photos`} key={`parent-${group.name}`}>
+                        <Images
+                          loading={loading}
+                          images={group.images}
+                          uploadPhoto={(e) => uploadPhoto(e, { montageImage: group.name })}
+                          syncPhoto={(e) => syncPhoto(e, { montageImage: group.name })}
+                          linkPhoto={(e) => linkPhoto(e, { montageImage: group.name })}
+                          unlinkPhoto={unlinkPhoto}
+                        />
+                      </Collapse.Panel>
+                    ))}
+                  </Collapse>
+                </div>
+              </div>
+            )
+          } else {
+            const uploadedImages = images.filter((image) => image.type === editor.type || image.type === 'tradePhoto')
+
+            return !loading && uploadedImages.length === 0 ? (
+              <div className="UploadImageDropArea">
+                <div>
+                  <p>
+                    <FormattedMessage id="choose_source_to" />
+                  </p>
+                  <p className="phrase-add">
+                    <FormattedMessage id="add_photos" />
+                  </p>
+                </div>
+
+                <UploadPhotosGroup uploadPhoto={uploadPhoto} syncPhoto={syncPhoto} linkPhoto={linkPhoto} />
+              </div>
+            ) : (
+              <Images
+                loading={loading}
+                images={uploadedImages}
+                uploadPhoto={uploadPhoto}
+                syncPhoto={syncPhoto}
+                linkPhoto={linkPhoto}
+                unlinkPhoto={unlinkPhoto}
+              />
+            )
+          }
         }
         return <div />
       }

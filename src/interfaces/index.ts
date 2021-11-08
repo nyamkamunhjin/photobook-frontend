@@ -416,6 +416,7 @@ export interface Image {
   createdAt: Date
   updatedAt: Date
   imageCategories?: ImageCategory[]
+  montageImage?: 'Students' | 'Teachers' | 'Others'
 }
 export interface FrameMask {
   id: number

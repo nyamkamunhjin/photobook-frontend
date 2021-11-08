@@ -42,9 +42,9 @@ export const addImage =
       })
     }
   }
-export const linkImages = (keys: string[], id: number) => async (dispatch: any) => {
+export const linkImages = (keys: string[], id: number, props?: any) => async (dispatch: any) => {
   try {
-    let { actions } = await updateProjectImages({ link: keys.map((key) => parseFloat(key)) }, id)
+    let { actions } = await updateProjectImages({ link: keys.map((key) => parseFloat(key)), ...props }, id)
     actions = await Promise.all(
       actions.map(async (image: Image) => ({
         ...image,
@@ -80,7 +80,7 @@ export const unlinkImages = (keys: string[], id: number) => async (dispatch: any
   }
 }
 
-export const addImages = (keys: string[], id: number) => async (dispatch: any) => {
+export const addImages = (keys: string[], id: number, props?: any) => async (dispatch: any) => {
   try {
     let images = await createMultiImage(
       keys.map((key) => ({
@@ -88,6 +88,7 @@ export const addImages = (keys: string[], id: number) => async (dispatch: any) =
         name: key.split('-').slice(1, key.split('-').length).join('-').split('.')[0], // sorry medq
         type: 'images',
         projects: [id],
+        ...props,
       }))
     )
     images = await Promise.all(
