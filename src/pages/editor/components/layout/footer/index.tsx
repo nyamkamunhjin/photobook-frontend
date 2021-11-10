@@ -158,7 +158,12 @@ const FooterListTools: React.FC<Props> = ({
   const onDragEnd = (source: number, dest: number) => {
     if (
       ['photobook', 'montage'].includes(currentProject.templateType?.name + '') &&
-      (source === 0 || dest === 0 || source === 1 || dest === 1)
+      (source === 0 ||
+        dest === 0 ||
+        source === 1 ||
+        dest === 1 ||
+        source === currentProject.slides.length - 1 ||
+        dest === currentProject.slides.length - 1)
     )
       return
     if (reOrderSlide) {
@@ -199,6 +204,7 @@ const FooterListTools: React.FC<Props> = ({
                 saveObjects={saveObjects}
                 mustHaveImageCenter={mustHaveImageCenter}
                 templateType={templateType}
+                slideNumber={currentProject.slides.length}
               />
             )}
           />
@@ -310,6 +316,7 @@ const FooterListTools: React.FC<Props> = ({
                         saveObjects={saveObjects}
                         mustHaveImageCenter={mustHaveImageCenter}
                         templateType={templateType}
+                        slideNumber={currentProject.slides.length}
                       />
                     )}
                   />

@@ -23,6 +23,7 @@ interface Props {
   changeSlideIndex?: (index: number) => void
   mustHaveImageCenter?: boolean
   templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  slideNumber: number
 }
 
 const Slides: React.FC<Props> = ({
@@ -41,6 +42,7 @@ const Slides: React.FC<Props> = ({
   height,
   mustHaveImageCenter = false,
   templateType,
+  slideNumber,
 }) => {
   const scaledContainerRef = useRef<any>(null)
   const canvasRef = useRef<any>(null)
@@ -124,12 +126,24 @@ const Slides: React.FC<Props> = ({
             </>
           )}
         </div>
-        {index === 1 && templateType && ['photobook', 'montage'].includes(templateType) && (
-          <div className="unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 left-0 w-1/2 h-full bg-gray-500 z-50">
-            <p className="p-0 m-0 uppercase text-white" style={{ fontSize: 6 }}>
+        {[1, slideNumber - 1].includes(index) && templateType && ['photobook', 'montage'].includes(templateType) && (
+          <div
+            className={
+              'unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 w-1/2 h-full bg-gray-500 z-50' +
+              (index === 1 && ' left-0')
+            }
+            style={
+              index !== 1
+                ? {
+                    left: '50%',
+                  }
+                : {}
+            }
+          >
+            <p className="p-0 m-0 uppercase text-white" style={{ fontSize: 4 }}>
               This page cannot be edited.
             </p>
-            <p className="p-0 m-0 text-gray-200" style={{ fontSize: 5 }}>
+            <p className="p-0 m-0 text-gray-200" style={{ fontSize: 3 }}>
               This end paper cannot be edited.
             </p>
           </div>

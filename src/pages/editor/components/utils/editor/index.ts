@@ -2304,7 +2304,10 @@ export default class Editor {
           this.imageFitNoDebounce(objects, objects[index], border)
         }
       }
-    } else if ('cliparts'.includes(type)) {
+    } else if (
+      'cliparts'.includes(type) &&
+      !['frame-multi', 'canvas-multi', 'photobook', 'montage'].includes(editorType + '')
+    ) {
       this.createImage(e, objects)
     } else if (
       'images'.includes(type) &&

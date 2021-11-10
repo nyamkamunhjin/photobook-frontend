@@ -155,7 +155,11 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
   useHotkeys('shift+w', () => editors.onSendForward(_index, objects), [_index, objects])
   useHotkeys('shift+s', () => editors.onSendBackward(_index, objects), [_index, objects])
-  useHotkeys('Delete', () => editors.onRemoveObject(containers, objects, _index), [_index, objects])
+  useHotkeys(
+    'Delete',
+    () => !(_slideIndex === 0 && !currentProject.coverEditable) && editors.onRemoveObject(containers, objects, _index),
+    [_index, objects]
+  )
   useHotkeys('shift+Delete', () => editors.onRemoveImageFromObject(_index, objects, _objectType), [_index, objects])
   useHotkeys(
     'ctrl+shift+s',
@@ -231,13 +235,16 @@ const BookEditor: React.FC<Props> = ({
 
   const onAddSlide = (projectId: number, slideIndex: number) => {
     setRefreshing.setTrue()
+    if (slideIndex === 0) slideIndex = 1
+    if (slideIndex === currentProject.slides.length - 1) slideIndex -= 1
     addNewSlide(projectId, slideIndex).then(() => {
-      changeSlideIndex(_slideIndex + 1)
+      changeSlideIndex(slideIndex + 1)
       setRefreshing.setFalse()
     })
   }
 
   const onDuplicateSlide = (projectId: number, slideIndex: number) => {
+    if ([0, 1, currentProject.slides.length - 1].includes(slideIndex)) return
     setRefreshing.setTrue()
     duplicateSlide(projectId, slideIndex, currentProject.slides[slideIndex]).then(() => {
       changeSlideIndex(_slideIndex + 1)
@@ -255,14 +262,13 @@ const BookEditor: React.FC<Props> = ({
   }
 
   const onDeleteSlide = (projectId: number, slideIndex: number) => {
-    if (_slideIndex !== 0) {
-      setRefreshing.setTrue()
-      deleteSlide(projectId, slideIndex).then(() => {
-        setRefreshing.setFalse()
-        editors.deSelectObject()
-        setSlideIndex(_slideIndex - 1)
-      })
-    }
+    if ([0, 1, currentProject.slides.length - 1].includes(slideIndex)) return
+    setRefreshing.setTrue()
+    deleteSlide(projectId, slideIndex).then(() => {
+      setRefreshing.setFalse()
+      editors.deSelectObject()
+      setSlideIndex(_slideIndex - 1)
+    })
   }
 
   const prevSlide = () => {
@@ -575,19 +581,25 @@ const BookEditor: React.FC<Props> = ({
                   className="layout-drop layout-drop-left"
                   onDragOver={editors.layoutDragOver}
                   onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
+                  onDrop={(e) =>
+                    !(_slideIndex === 0 && !currentProject.coverEditable) && editors.layoutDragDrop(e, objects, layout)
+                  }
                 />
                 <div
                   className="layout-drop layout-drop-middle"
                   onDragOver={editors.layoutDragOver}
                   onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
+                  onDrop={(e) =>
+                    !(_slideIndex === 0 && !currentProject.coverEditable) && editors.layoutDragDrop(e, objects, layout)
+                  }
                 />
                 <div
                   className="layout-drop layout-drop-right"
                   onDragOver={editors.layoutDragOver}
                   onDragLeave={editors.layoutDragLeave}
-                  onDrop={(e) => editors.layoutDragDrop(e, objects, layout)}
+                  onDrop={(e) =>
+                    !(_slideIndex === 0 && !currentProject.coverEditable) && editors.layoutDragDrop(e, objects, layout)
+                  }
                 />
                 {!loading && (
                   <BackgroundImages
@@ -694,8 +706,20 @@ const BookEditor: React.FC<Props> = ({
                       />
                     )
                   })}
-                {_slideIndex === 1 && (
-                  <div className="unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 left-0 w-1/2 h-full bg-gray-500 z-50">
+                {[1, currentProject.slides.length - 1].includes(_slideIndex) && (
+                  <div
+                    className={
+                      'unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 w-1/2 h-full bg-gray-500 z-50' +
+                      (_slideIndex === 1 && ' left-0')
+                    }
+                    style={
+                      _slideIndex !== 1
+                        ? {
+                            left: '50%',
+                          }
+                        : {}
+                    }
+                  >
                     <p className="p-0 m-0 uppercase text-white text-base">This page cannot be edited.</p>
                     <p className="p-0 m-0 text-gray-200">This end paper cannot be edited.</p>
                   </div>
