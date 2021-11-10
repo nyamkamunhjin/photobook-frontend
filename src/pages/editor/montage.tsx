@@ -157,7 +157,9 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys('shift+s', () => editors.onSendBackward(_index, objects), [_index, objects])
   useHotkeys(
     'Delete',
-    () => !(_slideIndex === 0 && !currentProject.coverEditable) && editors.onRemoveObject(containers, objects, _index),
+    () =>
+      ![0, 1, currentProject.slides.length - 1].includes(_slideIndex) &&
+      editors.onRemoveObject(containers, objects, _index),
     [_index, objects]
   )
   useHotkeys('shift+Delete', () => editors.onRemoveImageFromObject(_index, objects, _objectType), [_index, objects])
