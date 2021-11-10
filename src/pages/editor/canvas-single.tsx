@@ -36,6 +36,7 @@ import {
   ObjectType,
   PObject,
   ProjectCreate,
+  ProjectImage,
   ProjectInterface,
   RootInterface,
   Slide,
@@ -393,8 +394,10 @@ const BookEditor: React.FC<Props> = ({
             const [_image] = await linkImages([tradephoto], currentProject.id)
             image = _image
           } else if (currentProject.images && currentProject.images.length > 0)
-            image = currentProject.images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-          else image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
+            image = currentProject.images.find(
+              (item: ProjectImage) => parseFloat(item.imageId + '') === parseFloat(tradephoto)
+            )
+          else image = images.find((item: ProjectImage) => item.imageId === parseFloat(tradephoto))
 
           // console.log('image', image, 'currentProject.images', currentProject.images, 'images', images)
           if (image && objects.length === 0 && currentProject.slides[0].objects.length === 0) {

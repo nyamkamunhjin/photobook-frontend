@@ -15,7 +15,7 @@ interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
   syncPhoto: (images: UploadablePicture[]) => void
   linkPhoto: (images: string[]) => void
-  unlinkPhoto: (images: string[]) => void
+  unlinkPhoto: (images: Image[]) => void
 }
 
 interface PreviewInterface {
@@ -58,7 +58,8 @@ const Images: React.FC<Props> = ({ loading, images, uploadPhoto, syncPhoto, link
   }
   const onRemote = () => {
     if (selectedImages && selectedImages?.length > 0) {
-      unlinkPhoto(selectedImages?.map((each) => each.id))
+      unlinkPhoto(selectedImages)
+      setSelectedImages([])
     }
   }
   const onZoomOut = () => {

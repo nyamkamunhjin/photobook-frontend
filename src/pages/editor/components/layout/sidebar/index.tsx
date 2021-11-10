@@ -41,6 +41,7 @@ import {
 } from 'interfaces'
 import { createCartItem, getFrameMaterial } from 'api'
 
+import project from 'redux/reducers/project'
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
 import Cliparts from './tabs/cliparts'
@@ -55,7 +56,7 @@ import FrameMaterials from './tabs/frameMaterials'
 interface Props {
   addImages: (images: string[], id: number, props?: any) => Promise<void>
   linkImages: (images: string[], id: number, props?: any) => Promise<void>
-  unlinkImages: (images: string[], id: number) => Promise<void>
+  unlinkImages: (images: number[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   setType: (type: string) => void
   setDragStart: (dragStart: boolean) => void
@@ -119,34 +120,43 @@ const SideBarPanel: React.FC<Props> = ({
     },
   })
 
-  const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>, _props?: any) => {
+  const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>, type?: string) => {
     if (e.target.files && e.target.files?.length > 0) {
       await uploadImages()
       const keys = await s3UploadImages(Array.from(e.target.files))
-      await addImages(keys, currentProject.id, _props)
+      await addImages(keys, currentProject.id, { type })
     }
   }
 
-  const syncPhoto = async (_images: UploadablePicture[], _props?: any) => {
+  const syncPhoto = async (_images: UploadablePicture[], type?: string) => {
     if (_images.length) {
       await uploadImages()
       const keys = await s3SyncImages(_images)
-      await addImages(keys, currentProject.id, _props)
+      await addImages(keys, currentProject.id, { type })
     }
   }
 
-  const linkPhoto = async (_images: string[], _props?: any) => {
+  const linkPhoto = async (_images: string[], type?: string) => {
     _images = _images.reduce((acc, item) => {
-      if (!images.some((el) => el.id === item)) acc.push(item)
+      if (!images.some((el) => el.imageId + '' === item + '' && el.type === type)) acc.push(item)
       return acc
     }, [] as string[])
+    if (_images.length === 0) return
     await uploadImages()
-    await linkImages(_images, currentProject.id, _props)
+    await linkImages(_images, currentProject.id, { type })
   }
 
-  const unlinkPhoto = async (_images: string[]) => {
+  const unlinkPhoto = async (_images: Image[], type?: string) => {
+    const imagesIds = _images.reduce((acc, item) => {
+      const projectImage = item.projects.find(
+        (pImage) => pImage.type === type && pImage.projectId === currentProject.id
+      )
+      if (projectImage) acc.push(projectImage.id)
+      return acc
+    }, [] as number[])
+    if (imagesIds.length === 0) return
     await uploadImages()
-    await unlinkImages(_images, currentProject.id)
+    await unlinkImages(imagesIds, currentProject.id)
   }
 
   const isActive = (name: any) => {
@@ -271,10 +281,10 @@ const SideBarPanel: React.FC<Props> = ({
         if (hasImage) {
           if (currentProject.templateType?.name === 'montage') {
             const uploadedImageGroups = images
-              .filter((image) => (image.type === editor.type || image.type === 'tradePhoto') && image.montageImage)
+              .filter((image) => image.type)
               .reduce(
                 (acc, image) => {
-                  acc.find((group) => group.name === image.montageImage)?.images.push(image)
+                  acc.find((group) => group.name === image.type)?.images.push(image.image)
                   return acc
                 },
                 [
@@ -293,10 +303,10 @@ const SideBarPanel: React.FC<Props> = ({
                         <Images
                           loading={loading}
                           images={group.images}
-                          uploadPhoto={(e) => uploadPhoto(e, { montageImage: group.name })}
-                          syncPhoto={(e) => syncPhoto(e, { montageImage: group.name })}
-                          linkPhoto={(e) => linkPhoto(e, { montageImage: group.name })}
-                          unlinkPhoto={unlinkPhoto}
+                          uploadPhoto={(e) => uploadPhoto(e, group.name)}
+                          syncPhoto={(e) => syncPhoto(e, group.name)}
+                          linkPhoto={(e) => linkPhoto(e, group.name)}
+                          unlinkPhoto={(e) => unlinkPhoto(e, group.name)}
                         />
                       </Collapse.Panel>
                     ))}
@@ -305,7 +315,9 @@ const SideBarPanel: React.FC<Props> = ({
               </div>
             )
           } else {
-            const uploadedImages = images.filter((image) => image.type === editor.type || image.type === 'tradePhoto')
+            const uploadedImages = images
+              .map((projectImage) => projectImage.image)
+              .filter((image) => image.type === editor.type || image.type === 'tradePhoto')
 
             return !loading && uploadedImages.length === 0 ? (
               <div className="UploadImageDropArea">

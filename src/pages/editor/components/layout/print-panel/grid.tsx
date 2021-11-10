@@ -19,7 +19,6 @@ interface Props {
   uploadPhoto: (e: React.ChangeEvent<HTMLInputElement>) => void
   syncPhoto: (images: UploadablePicture[]) => void
   linkPhoto: (images: string[]) => void
-  unlinkPhoto: (images: string[]) => void
   duplicatePhoto: (object: Slide) => void
   removePhoto: (object: Slide) => void
   currentProject: Project

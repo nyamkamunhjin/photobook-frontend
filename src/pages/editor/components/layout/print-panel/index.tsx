@@ -25,7 +25,7 @@ import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 interface Props {
   addImages: (images: string[], id: number) => Promise<void>
   linkImages: (images: string[], id: number) => Promise<Image[] | null>
-  unlinkImages: (images: string[], id: number) => Promise<void>
+  unlinkImages: (images: number[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   addNewPrintSlide: (projectId: number, imageUrl: string[]) => Promise<void>
   duplicatePrintSlide: (projectId: number, slideIndex: string, duplicatedSlide: Slide) => Promise<void>
@@ -90,10 +90,19 @@ const PrintPanel: React.FC<Props> = ({
     await deletePrintSlide(currentProject.id, object.slideId)
   }
 
-  const unlinkPhoto = async (_images: string[]) => {
+  const unlinkPhoto = async (_images: Image[], type?: string) => {
+    const imagesIds = _images.reduce((acc, item) => {
+      const projectImage = item.projects.find(
+        (pImage) => pImage.type === type && pImage.projectId === currentProject.id
+      )
+      if (projectImage) acc.push(projectImage.id)
+      return acc
+    }, [] as number[])
+    if (imagesIds.length === 0) return
     await uploadImages()
-    await unlinkImages(_images, currentProject.id)
+    await unlinkImages(imagesIds, currentProject.id)
   }
+
   return (
     <div className="center-panel h-full" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
       {currentProject.slides.length > 0 && (
@@ -104,7 +113,6 @@ const PrintPanel: React.FC<Props> = ({
           linkPhoto={linkPhoto}
           duplicatePhoto={duplicatePhoto}
           removePhoto={removePhoto}
-          unlinkPhoto={unlinkPhoto}
           paperSizes={paperSizes.data?.list || []}
           paperMaterials={paperMaterials.data?.list || []}
           currentProject={currentProject}

@@ -368,6 +368,14 @@ export interface PaperMaterial {
   projects: Project[]
 }
 
+export interface ProjectImage {
+  id: number
+  projectId: number
+  imageId: number
+  image: Image
+  project: Project
+  type?: string
+}
 export interface Project {
   id: number
   name?: string
@@ -397,7 +405,7 @@ export interface Project {
   templateType?: TemplateType
   user?: UserInterface
   categories?: Category[]
-  images?: Image[]
+  images?: ProjectImage[]
   layouts?: LayoutInterface[]
   coverEditable?: boolean
 }
@@ -416,7 +424,7 @@ export interface Image {
   createdAt: Date
   updatedAt: Date
   imageCategories?: ImageCategory[]
-  montageImage?: 'Students' | 'Teachers' | 'Others'
+  projects: ProjectImage[]
 }
 export interface FrameMask {
   id: number
@@ -565,7 +573,7 @@ export interface HistoryInterface {
 }
 
 export interface ImageInterface {
-  images: Image[]
+  images: ProjectImage[]
   categories: ImageCategory[]
   loading: boolean
 }

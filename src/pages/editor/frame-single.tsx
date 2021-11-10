@@ -40,6 +40,7 @@ import {
   ObjectType,
   PObject,
   ProjectCreate,
+  ProjectImage,
   ProjectInterface,
   RootInterface,
   Slide,
@@ -475,7 +476,7 @@ const BookEditor: React.FC<Props> = ({
     const addTradePhoto = async () => {
       try {
         if (tradephoto) {
-          if (images.length === 0 || !images.some((image) => parseFloat(image.id) === parseFloat(tradephoto))) {
+          if (images.length === 0 || !images.some((projectImage) => projectImage.imageId === parseFloat(tradephoto))) {
             console.log('addTradePhoto')
             await linkImages([tradephoto], currentProject.id)
           }
@@ -490,7 +491,7 @@ const BookEditor: React.FC<Props> = ({
       tradephotoLoading &&
       currentProject.id !== 0 &&
       !imgLoading &&
-      (images.length === 0 || !images.some((image) => parseFloat(image.id) === parseFloat(tradephoto)))
+      (images.length === 0 || !images.some((projectImage) => projectImage.imageId === parseFloat(tradephoto)))
     )
       addTradePhoto()
   }, [tradephoto, tradephotoLoading, images, imgLoading, currentProject])
@@ -499,10 +500,10 @@ const BookEditor: React.FC<Props> = ({
     const setTradePhoto = async () => {
       try {
         if (tradephoto) {
-          const image = images.find((item: Image) => parseFloat(item.id) === parseFloat(tradephoto))
-          if (image) {
+          const projectImage = images.find((item: ProjectImage) => item.imageId === parseFloat(tradephoto))
+          if (projectImage) {
             console.log('setTradePhoto')
-            editors.setFirstObject(image, editor.type, objects, slideWidth, slideHeight, 0)
+            editors.setFirstObject(projectImage.image, editor.type, objects, slideWidth, slideHeight, 0)
             saveObjects()
             setTradephotoLoading(false)
           }
@@ -516,7 +517,7 @@ const BookEditor: React.FC<Props> = ({
       tradephoto &&
       tradephotoLoading &&
       images.length > 0 &&
-      images.some((image) => parseFloat(image.id) === parseFloat(tradephoto)) &&
+      images.some((projectImage) => projectImage.imageId === parseFloat(tradephoto)) &&
       objects.length === 0
     )
       setTradePhoto()
