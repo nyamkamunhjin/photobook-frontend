@@ -318,7 +318,7 @@ const SideBarPanel: React.FC<Props> = ({
             const uploadedImages = images
               .map((projectImage) => projectImage.image)
               .filter((image) => image.type === editor.type || image.type === 'tradePhoto')
-
+            console.log('uploadedImages 1', uploadedImages, images)
             return !loading && uploadedImages.length === 0 ? (
               <div className="UploadImageDropArea">
                 <div>
