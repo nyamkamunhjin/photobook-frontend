@@ -1,7 +1,6 @@
 import { createImage, createMultiImage, listImage, updateProjectImages } from 'api'
 import { Storage } from 'aws-amplify'
-import { Image, ProjectImage } from 'interfaces'
-import project from 'redux/reducers/project'
+import { ProjectImage } from 'interfaces'
 import { GET_IMAGES, ADD_IMAGE, IMAGE_ERROR, ADD_IMAGES, UPLOAD_IMAGES, REMOVE_IMAGES } from './types'
 
 // Get images
@@ -46,31 +45,34 @@ export const addImage =
       })
     }
   }
-export const linkImages = (keys: string[], id: number, props?: any) => async (dispatch: any) => {
-  try {
-    let { actions } = await updateProjectImages({ link: keys.map((key) => ({ id: parseFloat(key), ...props })) }, id)
-    actions = await Promise.all(
-      actions.map(async (projectImage: ProjectImage) => ({
-        ...projectImage,
-        image: {
-          ...projectImage.image,
-          tempUrl: await Storage.get(projectImage.image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
-        },
-      }))
-    )
-    dispatch({
-      type: ADD_IMAGES,
-      payload: actions,
-    })
-    return actions
-  } catch (err) {
-    dispatch({
-      type: IMAGE_ERROR,
-      payload: { msg: err },
-    })
-    return null
+export const linkImages =
+  (keys: string[], id: number, type = 'General') =>
+  async (dispatch: any) => {
+    try {
+      let { actions } = await updateProjectImages({ link: keys.map((key) => ({ imageId: parseFloat(key), type })) }, id)
+      actions = await Promise.all(
+        actions.map(async (projectImage: ProjectImage) => ({
+          ...projectImage,
+          image: {
+            ...projectImage.image,
+            tempUrl: await Storage.get(projectImage.image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+          },
+        }))
+      )
+      console.log('actions', actions)
+      dispatch({
+        type: ADD_IMAGES,
+        payload: actions,
+      })
+      return actions
+    } catch (err) {
+      dispatch({
+        type: IMAGE_ERROR,
+        payload: { msg: err },
+      })
+      return null
+    }
   }
-}
 
 export const unlinkImages = (keys: number[], id: number) => async (dispatch: any) => {
   try {
@@ -87,37 +89,39 @@ export const unlinkImages = (keys: number[], id: number) => async (dispatch: any
   }
 }
 
-export const addImages = (keys: string[], id: number, props?: any) => async (dispatch: any) => {
-  try {
-    let projectImages = await createMultiImage(
-      keys.map((key) => ({
-        imageUrl: key,
-        name: key.split('-').slice(1, key.split('-').length).join('-').split('.')[0], // sorry medq
-        type: 'images',
-        projects: [{ projectId: id, ...props }],
-      }))
-    )
-    projectImages = await Promise.all(
-      projectImages.map(async (projectImage: ProjectImage) => ({
-        ...projectImage,
-        image: {
-          ...projectImage.image,
-          tempUrl: await Storage.get(projectImage.image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
-        },
-      }))
-    )
-    dispatch({
-      type: ADD_IMAGES,
-      payload: projectImages,
-    })
-  } catch (err) {
-    console.log('err', err)
-    dispatch({
-      type: IMAGE_ERROR,
-      payload: { msg: err },
-    })
+export const addImages =
+  (keys: string[], id: number, type = 'General') =>
+  async (dispatch: any) => {
+    try {
+      let projectImages = await createMultiImage(
+        keys.map((key) => ({
+          imageUrl: key,
+          name: key.split('-').slice(1, key.split('-').length).join('-').split('.')[0], // sorry medq
+          type: 'images',
+          projects: [{ projectId: id, type }],
+        }))
+      )
+      projectImages = await Promise.all(
+        projectImages.map(async (projectImage: ProjectImage) => ({
+          ...projectImage,
+          image: {
+            ...projectImage.image,
+            tempUrl: await Storage.get(projectImage.image.imageUrl, { expires: 60 * 60 * 24 * 7 }),
+          },
+        }))
+      )
+      dispatch({
+        type: ADD_IMAGES,
+        payload: projectImages,
+      })
+    } catch (err) {
+      console.log('err', err)
+      dispatch({
+        type: IMAGE_ERROR,
+        payload: { msg: err },
+      })
+    }
   }
-}
 
 export const uploadImages = () => async (dispatch: any) => {
   dispatch({

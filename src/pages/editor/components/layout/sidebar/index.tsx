@@ -41,7 +41,6 @@ import {
 } from 'interfaces'
 import { createCartItem, getFrameMaterial } from 'api'
 
-import project from 'redux/reducers/project'
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
 import Cliparts from './tabs/cliparts'
@@ -124,7 +123,7 @@ const SideBarPanel: React.FC<Props> = ({
     if (e.target.files && e.target.files?.length > 0) {
       await uploadImages()
       const keys = await s3UploadImages(Array.from(e.target.files))
-      await addImages(keys, currentProject.id, { type })
+      await addImages(keys, currentProject.id, type)
     }
   }
 
@@ -132,7 +131,7 @@ const SideBarPanel: React.FC<Props> = ({
     if (_images.length) {
       await uploadImages()
       const keys = await s3SyncImages(_images)
-      await addImages(keys, currentProject.id, { type })
+      await addImages(keys, currentProject.id, type)
     }
   }
 
@@ -143,17 +142,18 @@ const SideBarPanel: React.FC<Props> = ({
     }, [] as string[])
     if (_images.length === 0) return
     await uploadImages()
-    await linkImages(_images, currentProject.id, { type })
+    await linkImages(_images, currentProject.id, type)
   }
 
   const unlinkPhoto = async (_images: Image[], type?: string) => {
     const imagesIds = _images.reduce((acc, item) => {
       const projectImage = item.projects.find(
-        (pImage) => pImage.type === type && pImage.projectId === currentProject.id
+        (pImage) => pImage.type === (type || 'General') && pImage.projectId === currentProject.id
       )
       if (projectImage) acc.push(projectImage.id)
       return acc
     }, [] as number[])
+    console.log('imagesIds', imagesIds)
     if (imagesIds.length === 0) return
     await uploadImages()
     await unlinkImages(imagesIds, currentProject.id)
@@ -318,7 +318,7 @@ const SideBarPanel: React.FC<Props> = ({
             const uploadedImages = images
               .map((projectImage) => projectImage.image)
               .filter((image) => image.type === editor.type || image.type === 'tradePhoto')
-            console.log('uploadedImages 1', uploadedImages, images)
+
             return !loading && uploadedImages.length === 0 ? (
               <div className="UploadImageDropArea">
                 <div>

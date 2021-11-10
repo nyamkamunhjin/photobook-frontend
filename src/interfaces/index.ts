@@ -374,7 +374,7 @@ export interface ProjectImage {
   imageId: number
   image: Image
   project: Project
-  type?: string
+  type: 'Students' | 'Teachers' | 'Others' | 'General'
 }
 export interface Project {
   id: number
