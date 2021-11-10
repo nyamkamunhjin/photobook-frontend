@@ -156,13 +156,10 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
   useHotkeys('shift+w', () => editors.onSendForward(_index, objects), [_index, objects])
   useHotkeys('shift+s', () => editors.onSendBackward(_index, objects), [_index, objects])
-  useHotkeys(
-    'Delete',
-    () =>
-      ![0, 1, currentProject.slides.length - 1].includes(_slideIndex) &&
-      editors.onRemoveObject(containers, objects, _index),
-    [_index, objects]
-  )
+  useHotkeys('Delete', () => _slideIndex !== 0 && editors.onRemoveObject(containers, objects, _index), [
+    _index,
+    objects,
+  ])
   useHotkeys('shift+Delete', () => editors.onRemoveImageFromObject(_index, objects, _objectType), [_index, objects])
   useHotkeys(
     'ctrl+shift+s',
@@ -586,7 +583,9 @@ const BookEditor: React.FC<Props> = ({
                   onDragOver={editors.layoutDragOver}
                   onDragLeave={editors.layoutDragLeave}
                   onDrop={(e) =>
-                    !(_slideIndex === 0 && !currentProject.coverEditable) && editors.layoutDragDrop(e, objects, layout)
+                    !(_slideIndex === 0 && !currentProject.coverEditable) &&
+                    _slideIndex !== 1 &&
+                    editors.layoutDragDrop(e, objects, layout)
                   }
                 />
                 <div
@@ -594,7 +593,9 @@ const BookEditor: React.FC<Props> = ({
                   onDragOver={editors.layoutDragOver}
                   onDragLeave={editors.layoutDragLeave}
                   onDrop={(e) =>
-                    !(_slideIndex === 0 && !currentProject.coverEditable) && editors.layoutDragDrop(e, objects, layout)
+                    [1, currentProject.slides.length - 1].includes(_slideIndex) &&
+                    !(_slideIndex === 0 && !currentProject.coverEditable) &&
+                    editors.layoutDragDrop(e, objects, layout)
                   }
                 />
                 <div
@@ -602,7 +603,9 @@ const BookEditor: React.FC<Props> = ({
                   onDragOver={editors.layoutDragOver}
                   onDragLeave={editors.layoutDragLeave}
                   onDrop={(e) =>
-                    !(_slideIndex === 0 && !currentProject.coverEditable) && editors.layoutDragDrop(e, objects, layout)
+                    _slideIndex !== currentProject.slides.length - 1 &&
+                    !(_slideIndex === 0 && !currentProject.coverEditable) &&
+                    editors.layoutDragDrop(e, objects, layout)
                   }
                 />
                 {!loading && (
@@ -715,7 +718,7 @@ const BookEditor: React.FC<Props> = ({
                   <div
                     className={
                       'unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 w-1/2 h-full bg-gray-500 z-50' +
-                      (_slideIndex === 1 && ' left-0')
+                      (_slideIndex === 1 ? ' left-page left-0' : ' right-page')
                     }
                     style={
                       _slideIndex !== 1

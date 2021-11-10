@@ -130,7 +130,7 @@ const Slides: React.FC<Props> = ({
           <div
             className={
               'unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 w-1/2 h-full bg-gray-500 z-50' +
-              (index === 1 && ' left-0')
+              (index === 1 ? ' left-page left-0' : ' right-page')
             }
             style={
               index !== 1

@@ -2424,6 +2424,7 @@ export default class Editor {
   }
 
   public createImagesMontage = (e: any, objects: PObject[]) => {
+    console.log('createImagesMontage')
     this.hideToolbar()
     if (e.dataTransfer) {
       const emptyObjects = objects.filter((each) => each.id.startsWith('image-montage-') && !each.props.imageUrl)
