@@ -143,7 +143,7 @@ const SideButtons: React.FC<Props> = ({
       </>
     )
   }
-  console.log('slideIndex', slideIndex)
+
   return (
     <div className="side-buttons">
       <div
