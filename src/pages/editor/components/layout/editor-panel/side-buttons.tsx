@@ -13,7 +13,7 @@ import {
 import { FormattedMessage } from 'react-intl'
 import { FaPortrait, FaRegCircle } from 'react-icons/fa'
 import { Popover, Button } from 'antd'
-import { LayoutsInterface } from 'interfaces'
+import { LayoutsInterface, Project } from 'interfaces'
 import SlideSettings from './settings'
 
 interface Props {
@@ -37,6 +37,8 @@ interface Props {
   layouts?: LayoutsInterface[]
   settings?: boolean
   setIsPaperSizeChanged?: any
+  currentProject?: Project
+  slideIndex?: number
 }
 
 const SideButtons: React.FC<Props> = ({
@@ -51,6 +53,8 @@ const SideButtons: React.FC<Props> = ({
   layouts,
   settings = true,
   setIsPaperSizeChanged,
+  currentProject,
+  slideIndex,
 }) => {
   const [settingsVisible, setSettingsVisible] = useState<boolean>(false)
 
@@ -139,11 +143,31 @@ const SideButtons: React.FC<Props> = ({
       </>
     )
   }
-
+  console.log('slideIndex', slideIndex)
   return (
     <div className="side-buttons">
-      <div>{renderButtons('left')}</div>
-      <div>{renderButtons('right')}</div>
+      <div
+        className={
+          currentProject &&
+          ['photobook', 'montage'].includes(currentProject.templateType?.name + '') &&
+          ((slideIndex === 0 && !currentProject.coverEditable) || slideIndex === 1)
+            ? 'invisible'
+            : ''
+        }
+      >
+        {renderButtons('left')}
+      </div>
+      <div
+        className={
+          currentProject &&
+          ['photobook', 'montage'].includes(currentProject.templateType?.name + '') &&
+          ((slideIndex === 0 && !currentProject.coverEditable) || slideIndex === currentProject.slides.length - 1)
+            ? 'invisible'
+            : ''
+        }
+      >
+        {renderButtons('right')}
+      </div>
       <SlideSettings
         type={type}
         setSettingsVisible={setSettingsVisible}

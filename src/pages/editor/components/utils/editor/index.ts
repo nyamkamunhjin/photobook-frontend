@@ -873,9 +873,15 @@ export default class Editor {
   }
   public createText = (objects: PObject[]) => {
     this.hideToolbar()
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    let x2 = 0
+    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+      const { width } = uneditablePage.getBoundingClientRect()
+      x2 = width / this.scale
+    }
     const style = {
       top: 100,
-      left: 100,
+      left: 100 + x2,
       width: 300,
       height: 80,
       rotateAngle: 0,
@@ -1811,9 +1817,15 @@ export default class Editor {
   }
   public createEclipse = (objects: PObject[]) => {
     this.hideToolbar()
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    let x2 = 0
+    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+      const { width } = uneditablePage.getBoundingClientRect()
+      x2 = width / this.scale
+    }
     const style = {
       top: 100,
-      left: 100,
+      left: 100 + x2,
       width: 300,
       height: 300,
       rotateAngle: 0,
@@ -1844,14 +1856,19 @@ export default class Editor {
   }
   public createMontagePortrait = (e: any, objects: PObject[]) => {
     this.hideToolbar()
-
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    let x2 = 0
+    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+      const { width } = uneditablePage.getBoundingClientRect()
+      x2 = width / this.scale
+    }
     /* generate uuid for image and text */
     const uuid = uuidv4()
     const zIndex = 100 + objects.length + ''
     /* create portrait image as a custom image  */
     const imageStyle = {
       top: 100,
-      left: 100,
+      left: 100 + x2,
       width: 500,
       height: 300,
       rotateAngle: 0,
@@ -1878,7 +1895,7 @@ export default class Editor {
 
     const style = {
       top: imageStyle.top + montagePortraitGap + imageStyle.height,
-      left: imageStyle.left + imageStyle.width / 2 - 500 / 2,
+      left: imageStyle.left + imageStyle.width / 2 - 500 / 2 + x2,
       width: 500,
       height: 80,
       rotateAngle: 0,
@@ -1924,9 +1941,15 @@ export default class Editor {
 
   public createSquare = (objects: PObject[]) => {
     this.hideToolbar()
+    const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    let x2 = 0
+    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+      const { width } = uneditablePage.getBoundingClientRect()
+      x2 = width / this.scale
+    }
     const style = {
       top: 100,
-      left: 100,
+      left: 100 + x2,
       width: 300,
       height: 300,
       rotateAngle: 0,

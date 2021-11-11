@@ -559,6 +559,8 @@ const BookEditor: React.FC<Props> = ({
               type="photobook"
               layouts={layouts}
               setIsPaperSizeChanged={setIsPaperSizeChanged}
+              currentProject={currentProject}
+              slideIndex={_slideIndex}
             />
           )}
           <div
