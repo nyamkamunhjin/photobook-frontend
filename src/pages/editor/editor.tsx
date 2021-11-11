@@ -236,7 +236,7 @@ const BookEditor: React.FC<Props> = ({
   const onAddSlide = (projectId: number, slideIndex: number) => {
     setRefreshing.setTrue()
     if (slideIndex === 0) slideIndex = 1
-    if (slideIndex === currentProject.slides.length - 1) slideIndex -= 1
+    if (slideIndex === currentProject.slides.length - 1) return
     addNewSlide(projectId, slideIndex).then(() => {
       changeSlideIndex(slideIndex + 1)
       setRefreshing.setFalse()

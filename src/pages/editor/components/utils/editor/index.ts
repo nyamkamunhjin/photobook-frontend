@@ -2487,7 +2487,56 @@ export default class Editor {
     e.preventDefault()
     if (!'images,cliparts,frames,masks,frame_masks'.includes(type) || this._isTextEditing) return
 
-    if (
+    if (this._groupObjects && Object.values(this._groupObjects).length > 0) {
+      const _objects = Object.values(this._groupObjects)
+      const images = JSON.parse(e.dataTransfer.getData('images')) as Image[]
+      let imageIndex = 0
+      _objects.forEach((_o: any) => {
+        if (images.length <= imageIndex) return
+        const placeholder = _o.querySelector('.image-placeholder')
+        if (!placeholder) return
+        const index = objects.findIndex((o: any) => o.id === _o.id)
+        const newObject = {
+          ...objects[index],
+          props: {
+            ...objects[index].props,
+            imageUrl: images[imageIndex].imageUrl,
+            tempUrl: images[imageIndex].tempUrl,
+            imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
+            placeholderStyle: { opacity: '1' },
+          },
+        }
+
+        /* montage zuragnii text update hiih */
+        if (objects[index].id.startsWith('image-montage-')) {
+          /* text iin olno */
+          const textObjectID = objects[index].id.replace('image-montage-', 'text-montage-')
+          const textObject = objects.find((each) => each.id === textObjectID)
+
+          /* zuragnaas neriine olno */
+          if (textObject && images.length > 0) {
+            /* text update hiine */
+            this.updateObject({
+              object: {
+                ...textObject,
+                props: {
+                  ...textObject.props,
+                  texts: [images[imageIndex].name],
+                },
+              },
+            })
+          }
+        }
+
+        this.updateObject({ object: newObject })
+        this.updateHistory(UPDATE_OBJECT, { object: objects[index] })
+
+        // ImageFit
+        this.imageFitNoDebounce(objects, objects[index])
+
+        imageIndex += 1
+      })
+    } else if (
       e.target.classList.contains('object') &&
       e.target.childNodes[0].className === 'image-placeholder' &&
       !'cliparts'.includes(type)
