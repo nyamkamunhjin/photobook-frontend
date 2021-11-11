@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { BsArrowsMove } from 'react-icons/bs'
 import { SET_BACKGROUNDS, UPDATE_BACKGROUND } from 'redux/actions/types'
-import { BackgroundImage, EditorInterface, HistoryProps, StyleType } from 'interfaces'
+import { BackgroundImage, EditorInterface, HistoryProps, Project, StyleType } from 'interfaces'
 import { ParseNumber } from 'utils'
 import { Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
@@ -13,6 +13,7 @@ interface Props {
   scale: number
   slideIndex?: number
   backgrounds: BackgroundImage[]
+  currentProject?: Project
   setBackgrounds?: (props: { backgrounds: BackgroundImage[] }) => void
   updateBackground?: (props: { background: BackgroundImage }) => void
   updateHistory?: (historyType: string, props: HistoryProps) => void
@@ -26,6 +27,7 @@ const BackgroundImages: React.FC<Props> = ({
   scale,
   slideIndex,
   backgrounds,
+  currentProject,
   setBackgrounds,
   updateBackground,
   updateHistory,
@@ -57,7 +59,21 @@ const BackgroundImages: React.FC<Props> = ({
 
   const onBackgroundDropDragDrop = (e: any) => {
     e.preventDefault()
-    if (!updateHistory || !setBackgrounds) {
+    if (
+      !updateHistory ||
+      !setBackgrounds ||
+      (currentProject &&
+        currentProject.templateType &&
+        slideIndex &&
+        ['photobook', 'montage'].includes(currentProject.templateType.name) &&
+        ((slideIndex === 0 && !currentProject.coverEditable) ||
+          (slideIndex === 1 &&
+            (e.target.classList.contains('background-drop-left') ||
+              e.target.classList.contains('background-drop-middle'))) ||
+          (slideIndex === currentProject?.slides.length - 1 &&
+            (e.target.classList.contains('background-drop-right') ||
+              e.target.classList.contains('background-drop-middle')))))
+    ) {
       return
     }
     const backgroundFull: any = document.querySelector('.background-full')
@@ -536,7 +552,18 @@ const BackgroundImages: React.FC<Props> = ({
         onDragLeave={onBackgroundDropDragLeave}
         onDrop={onBackgroundDropDragDrop}
       />
-      <div className="circle-container left" onClick={() => setSelectedBG('background-left')}>
+      <div
+        className="circle-container left"
+        onClick={() =>
+          !(
+            currentProject &&
+            currentProject.templateType &&
+            slideIndex &&
+            ['photobook', 'montage'].includes(currentProject.templateType.name) &&
+            ((slideIndex === 0 && !currentProject.coverEditable) || slideIndex === 1)
+          ) && setSelectedBG('background-left')
+        }
+      >
         <div
           onMouseDown={(e) => backgroundReposition(e, '.background-left')}
           className="center-circle center-circle-left"
@@ -553,7 +580,19 @@ const BackgroundImages: React.FC<Props> = ({
           )}
         </div>
       </div>
-      <div className="circle-container middle" onClick={() => setSelectedBG('background-full')}>
+      <div
+        className="circle-container middle"
+        onClick={() =>
+          !(
+            currentProject &&
+            currentProject.templateType &&
+            slideIndex &&
+            ['photobook', 'montage'].includes(currentProject.templateType.name) &&
+            ((slideIndex === 0 && !currentProject.coverEditable) ||
+              [1, currentProject.slides.length - 1].includes(slideIndex))
+          ) && setSelectedBG('background-full')
+        }
+      >
         <div
           onMouseDown={(e) => backgroundReposition(e, '.background-full')}
           className="center-circle center-circle-middle"
@@ -570,7 +609,18 @@ const BackgroundImages: React.FC<Props> = ({
           )}
         </div>
       </div>
-      <div className="circle-container right" onClick={() => setSelectedBG('background-right')}>
+      <div
+        className="circle-container right"
+        onClick={() =>
+          !(
+            currentProject &&
+            currentProject.templateType &&
+            slideIndex &&
+            ['photobook', 'montage'].includes(currentProject.templateType.name) &&
+            ((slideIndex === 0 && !currentProject.coverEditable) || slideIndex === currentProject.slides.length - 1)
+          ) && setSelectedBG('background-right')
+        }
+      >
         <div
           onMouseDown={(e) => backgroundReposition(e, '.background-right')}
           className="center-circle center-circle-right"

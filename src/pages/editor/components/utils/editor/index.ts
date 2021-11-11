@@ -740,7 +740,6 @@ export default class Editor {
   }
   public layoutDragDrop = (e: any, objects: PObject[], layout: FullLayout) => {
     e.preventDefault()
-
     const layoutDrop = e.target
     const _width = this.slideWidth - 20
     const _height = this.slideHeight - 20
@@ -2424,12 +2423,10 @@ export default class Editor {
   }
 
   public createImagesMontage = (e: any, objects: PObject[]) => {
-    console.log('createImagesMontage')
     this.hideToolbar()
     if (e.dataTransfer) {
       const emptyObjects = objects.filter((each) => each.id.startsWith('image-montage-') && !each.props.imageUrl)
       JSON.parse(e.dataTransfer.getData('images')).forEach((image: Image, index: number) => {
-        console.log({ image })
         if (index < emptyObjects.length) {
           this.updateObject({
             object: {
@@ -2463,6 +2460,8 @@ export default class Editor {
               },
             })
           }
+        } else {
+          this.createImages(e, objects)
         }
       })
     } else {

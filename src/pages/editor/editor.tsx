@@ -620,6 +620,7 @@ const BookEditor: React.FC<Props> = ({
                     updateHistory={updateHistory}
                     onBackgroundDropDragOver={editors.onBackgroundDropDragOver}
                     onBackgroundDropDragLeave={editors.onBackgroundDropDragLeave}
+                    currentProject={currentProject}
                   />
                 )}
                 <div ref={canvasRef} id="canvas_container">
