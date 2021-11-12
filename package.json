@@ -49,7 +49,7 @@
   "scripts": {
     "start": "craco start",
     "dev": "craco start",
-    "build": "yarn prettier && NODE_ENV=production craco build",
+    "build": "CI= NODE_ENV=production craco build",
     "commit": "yarn build && git commit",
     "test": "craco test",
     "eject": "react-scripts eject",
