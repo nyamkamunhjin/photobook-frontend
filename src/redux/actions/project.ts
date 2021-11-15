@@ -204,32 +204,37 @@ export const getPrintProject = (id: number, params: ProjectCreate, uuid: string)
 }
 
 // update project
-export const updateProject =
-  (projectId: number, props: { paperSizeId?: number; frameMaterialId?: number }) => async (dispatch: any) => {
-    try {
-      if (props.paperSizeId) {
-        await _updateProject(projectId, { paperSizeId: props.paperSizeId })
-        const paperSize: PaperSize = await getPaperSize(props.paperSizeId)
-        dispatch(setSlideStyle(`${paperSize.width}x${paperSize.height}`))
-        dispatch({
-          type: UPDATE_PROJECT,
-          payload: props,
-        })
-      } else if (props.frameMaterialId) {
-        await _updateProject(projectId, { frameMaterialId: parseFloat(props.frameMaterialId + '') })
-        const frameMaterial: FrameMaterial = await getFrameMaterial(props.frameMaterialId)
-        dispatch({
-          type: UPDATE_PROJECT,
-          payload: { ...props, frameMaterial },
-        })
-      }
-    } catch (err) {
+export const updateProject = (projectId: number, props: any) => async (dispatch: any) => {
+  try {
+    if (props.paperSizeId) {
+      await _updateProject(projectId, props)
+      const paperSize: PaperSize = await getPaperSize(props.paperSizeId)
+      dispatch(setSlideStyle(`${paperSize.width}x${paperSize.height}`))
       dispatch({
-        type: PROJECTS_ERROR,
-        payload: { msg: err },
+        type: UPDATE_PROJECT,
+        payload: props,
+      })
+    } else if (!props.frameMaterialId) {
+      await _updateProject(projectId, props)
+      dispatch({
+        type: UPDATE_PROJECT,
+        payload: props,
+      })
+    } else if (props.frameMaterialId) {
+      await _updateProject(projectId, { frameMaterialId: parseFloat(props.frameMaterialId + '') })
+      const frameMaterial: FrameMaterial = await getFrameMaterial(props.frameMaterialId)
+      dispatch({
+        type: UPDATE_PROJECT,
+        payload: { ...props, frameMaterial },
       })
     }
+  } catch (err) {
+    dispatch({
+      type: PROJECTS_ERROR,
+      payload: { msg: err },
+    })
   }
+}
 
 // set current project
 export const setCurrentProject = (project: Project) => async (dispatch: any) => {

@@ -14,6 +14,8 @@ import { FormattedMessage } from 'react-intl'
 import { FaPortrait, FaRegCircle } from 'react-icons/fa'
 import { Popover, Button } from 'antd'
 import { LayoutsInterface, Project } from 'interfaces'
+import { useRequest } from 'ahooks'
+import { listPaperSize } from 'api'
 import SlideSettings from './settings'
 
 interface Props {
@@ -36,9 +38,9 @@ interface Props {
   }
   layouts?: LayoutsInterface[]
   settings?: boolean
-  setIsPaperSizeChanged?: any
   currentProject?: Project
   slideIndex?: number
+  paperSizes?: any
 }
 
 const SideButtons: React.FC<Props> = ({
@@ -52,9 +54,9 @@ const SideButtons: React.FC<Props> = ({
   layout,
   layouts,
   settings = true,
-  setIsPaperSizeChanged,
   currentProject,
   slideIndex,
+  paperSizes,
 }) => {
   const [settingsVisible, setSettingsVisible] = useState<boolean>(false)
 
@@ -134,7 +136,7 @@ const SideButtons: React.FC<Props> = ({
             <FormattedMessage id="montage" />
           </div>
         )}
-        {settings && (
+        {settings && paperSizes && !paperSizes.loading && (
           <div onClick={() => setSettingsVisible(true)} className="item">
             <SettingOutlined style={{ fontSize: 24 }} />
             <FormattedMessage id="settings" />
@@ -168,12 +170,15 @@ const SideButtons: React.FC<Props> = ({
       >
         {renderButtons('right')}
       </div>
-      <SlideSettings
-        type={type}
-        setSettingsVisible={setSettingsVisible}
-        settingsVisible={settingsVisible}
-        setIsPaperSizeChanged={setIsPaperSizeChanged}
-      />
+      {paperSizes && slideIndex && currentProject && !paperSizes.loading && (
+        <SlideSettings
+          setSettingsVisible={setSettingsVisible}
+          settingsVisible={settingsVisible}
+          paperSizes={paperSizes.data.list}
+          slideIndex={slideIndex}
+          currentProject={currentProject}
+        />
+      )}
     </div>
   )
 }

@@ -388,6 +388,7 @@ export interface Project {
   coverTypeId?: number
   bindingTypeId?: number
   coverMaterialId?: number
+  coverColorId?: number
   frameMaterialId?: number
   templateId: number
   templateTypeId?: number
@@ -408,6 +409,7 @@ export interface Project {
   images?: ProjectImage[]
   layouts?: LayoutInterface[]
   coverEditable?: boolean
+  changeRequest?: string[]
 }
 
 export interface Image {

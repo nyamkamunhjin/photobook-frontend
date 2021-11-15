@@ -1,85 +1,191 @@
+/* eslint-disable no-alert */
+/* eslint-disable import/newline-after-import */
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { updateProject } from 'redux/actions/project'
-import { Modal, Select, Form, Button } from 'antd'
-import { useRequest } from 'ahooks'
-import { PaginatedResult, PaperSize, ProjectInterface, StateInterface } from 'interfaces'
-import { FormattedMessage } from 'react-intl'
-import { listPaperSize } from 'api'
-
-const { Option } = Select
-
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 16 },
-}
+import { Modal, Select } from 'antd'
+import {
+  BindingType,
+  CoverMaterial,
+  CoverMaterialColor,
+  CoverType,
+  PaperSize,
+  Project,
+  ProjectInterface,
+  StateInterface,
+} from 'interfaces'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 interface Props {
   setSettingsVisible: (value: boolean) => void
-  type: 'photobook' | 'canvas' | 'photo' | 'frame'
   settingsVisible: boolean
-  updateProject: (projectId: number, props: { paperSizeId: number }) => void
+  updateProject: (projectId: number, props: any) => void
   project: ProjectInterface
-  setIsPaperSizeChanged: any
-}
-
-interface FormValues {
-  paperSizeId: number
+  paperSizes: PaperSize[]
+  slideIndex: number
+  currentProject: Project
 }
 
 const SlideSettings: React.FC<Props> = ({
   setSettingsVisible,
   settingsVisible,
   updateProject,
-  type,
-  project: { currentProject, slideWidth, slideHeight, objects, slideIndex },
-  setIsPaperSizeChanged,
+  project: { slideWidth, slideHeight, objects },
+  paperSizes,
+  slideIndex,
+  currentProject,
 }) => {
-  const [loading, setLoading] = useState<boolean>(false)
-  const submitRef = useRef<HTMLButtonElement>(null)
-  const { data } = useRequest<PaginatedResult<PaperSize>>(() =>
-    listPaperSize({ current: 0, pageSize: 100 }, { templateType: type })
+  const intl = useIntl()
+  const orientations = useMemo(
+    () =>
+      paperSizes.reduce((acc: any, paperSize: any) => {
+        if (!acc.some((item: any) => item.name === paperSize.orientation)) {
+          acc.push({ name: paperSize.orientation, sizes: [paperSize] })
+        } else {
+          acc.find((item: any) => item.name === paperSize.orientation)?.sizes.push(paperSize)
+        }
+        return acc
+      }, [] as any[]),
+    [paperSizes]
   )
+  const [selectedState, setSelectedState] = useState<{
+    orientation?: string
+    paperSize?: PaperSize
+    coverType?: CoverType
+    bindingType?: BindingType
+    coverMaterial?: CoverMaterial
+    coverMaterialColor?: CoverMaterialColor
+    changeRequest?: string
+  }>({
+    orientation: orientations[0].name,
+    paperSize: undefined,
+    coverType: undefined,
+    bindingType: undefined,
+    coverMaterial: undefined,
+    coverMaterialColor: undefined,
+    changeRequest: undefined,
+  })
+
+  // const initialState = useCallback(() => {
+  //   let coverType
+  //   let bindingType
+  //   let coverMaterial
+  //   let coverMaterialColor
+
+  //   const [paperSize] = orientations[0].sizes
+
+  //   if (paperSize.coverTypes && paperSize.coverTypes.length > 0) [coverType] = paperSize.coverTypes
+  //   if (coverType?.bindingTypes && coverType.bindingTypes.length > 0) [bindingType] = coverType.bindingTypes
+  //   if (coverType?.coverMaterials && coverType.coverMaterials.length > 0) [coverMaterial] = coverType.coverMaterials
+  //   if (coverMaterial?.coverMaterialColors && coverMaterial.coverMaterialColors.length > 0)
+  //     [coverMaterialColor] = coverMaterial.coverMaterialColors
+
+  //   setSelectedState({
+  //     orientation: orientations[0].name,
+  //     paperSize,
+  //     coverType,
+  //     bindingType,
+  //     coverMaterial,
+  //     coverMaterialColor,
+  //     changeRequest: 'Unnecessary',
+  //   })
+  // }, [orientations, setSelectedState])
+
+  // useEffect(() => {
+  //   if (paperSizes) {
+  //     initialState()
+  //   }
+  // }, [initialState, paperSizes])
 
   const handleSettingsCancel = useCallback(() => {
     setSettingsVisible(false)
   }, [setSettingsVisible])
 
-  const onFinish = async (values: FormValues) => {
-    if (currentProject.id) {
-      objects.forEach((o) => {
-        o.ratio = {
-          t: parseFloat(o.style.top as string),
-          l: parseFloat(o.style.left as string),
-          h: parseFloat(o.style.height as string),
-          w: parseFloat(o.style.width as string),
-          sw: slideWidth,
-          sh: slideHeight,
+  const onFinish = async () => {
+    try {
+      if (currentProject.id) {
+        const data = {
+          paperSizeId: selectedState.paperSize?.id,
+          coverTypeId: selectedState.paperSize?.coverTypes?.length === 0 ? undefined : selectedState.coverType?.id,
+          bindingTypeId:
+            !selectedState.coverType?.bindingTypes || selectedState.coverType?.bindingTypes?.length === 0
+              ? undefined
+              : selectedState.bindingType?.id,
+          coverMaterialId:
+            !selectedState.coverType?.coverMaterials || selectedState.coverType?.coverMaterials?.length === 0
+              ? undefined
+              : selectedState.coverMaterial?.id,
+          coverColorId:
+            !selectedState.coverMaterial?.coverMaterialColors ||
+            selectedState.coverMaterial?.coverMaterialColors.length === 0
+              ? undefined
+              : selectedState.coverMaterialColor?.id,
+        } as any
+
+        if (!data.paperSizeId) {
+          alert('Please choose all the options')
+          return
         }
-      })
-      currentProject.slides.forEach((slide, index) => {
-        if (index === slideIndex) slide.objects = objects
-        else if (slide.objects.length) {
-          slide.objects.forEach((o) => {
-            o.ratio = {
-              t: parseFloat(o.style.top as string),
-              l: parseFloat(o.style.left as string),
-              h: parseFloat(o.style.height as string),
-              w: parseFloat(o.style.width as string),
-              sw: slideWidth,
-              sh: slideHeight,
+        if (currentProject.paperSizeId === data.paperSizeId) delete data.paperSizeId
+        if (currentProject.coverTypeId === data.coverTypeId) delete data.coverTypeId
+        if (currentProject.bindingTypeId === data.bindingTypeId) delete data.bindingTypeId
+        if (currentProject.coverMaterialId === data.coverMaterialId) delete data.coverMaterialId
+        if (currentProject.coverColorId === data.coverColorId) delete data.coverColorId
+
+        if (
+          currentProject.paperSizeId !== selectedState.paperSize?.id &&
+          selectedState.paperSize &&
+          currentProject.paperSize
+        ) {
+          const { width: wTemp, height: h } = selectedState.paperSize
+          const { width: _wTemp, height: _h } = currentProject.paperSize
+          const w = ['photobook', 'montage'].includes(currentProject.templateType?.name + '')
+            ? wTemp * 100 * 2 + 30
+            : wTemp
+          const _w = ['photobook', 'montage'].includes(currentProject.templateType?.name + '')
+            ? _wTemp * 100 * 2 + 30
+            : _wTemp
+          console.log('new', wTemp, h, 'old', _wTemp, _h)
+          const slides = currentProject.slides.map((slide, index) => {
+            const _objects = index === slideIndex ? objects : slide.objects
+            return {
+              ...slide,
+              objects: _objects.map((o) => {
+                if (['photobook', 'montage'].includes(currentProject.templateType?.name + '')) {
+                  return {
+                    ...o,
+                    style: {
+                      ...o.style,
+                      top: `${(h * parseFloat(o.style.top + '')) / _h}px`,
+                      left: `${(((w - 30) / 2) * parseFloat(o.style.left + '')) / ((_w - 30) / 2)}px`,
+                      height: `${(h * parseFloat(o.style.height + '')) / _h}px`,
+                      width: `${(((w - 30) / 2) * parseFloat(o.style.width + '')) / ((_w - 30) / 2)}px`,
+                    },
+                  }
+                } else {
+                  return {
+                    ...o,
+                    style: {
+                      ...o.style,
+                      width: (parseFloat(o.style.width + '') * w) / _w + 'px',
+                      height: (parseFloat(o.style.height + '') * h) / _h + 'px',
+                      top: (parseFloat(o.style.top + '') * h) / _h + 'px',
+                      left: (parseFloat(o.style.left + '') * w) / _w + 'px',
+                    },
+                  }
+                }
+              }),
             }
           })
+          await updateProject(currentProject.id, { ...data, slides })
+        } else {
+          await updateProject(currentProject.id, data)
         }
-      })
-
-      try {
-        await updateProject(currentProject.id, { paperSizeId: values.paperSizeId })
-        setIsPaperSizeChanged(() => true)
-      } catch (err: any) {
-        console.log(err.message)
+        setSettingsVisible(false)
       }
+    } catch (err: any) {
+      console.log(err.message)
     }
   }
 
@@ -110,55 +216,174 @@ const SlideSettings: React.FC<Props> = ({
       title={<FormattedMessage id="slide_settings" />}
       visible={settingsVisible}
       className="modal-child"
-      footer={[
-        <Button key="back" onClick={handleSettingsCancel}>
-          <FormattedMessage id="cancel" />
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          loading={loading}
-          onClick={() => {
-            setLoading(true)
-            setTimeout(() => {
-              setLoading(false)
-              setTimeout(() => {
-                setSettingsVisible(false)
-              }, 0)
-            }, 500)
-            if (submitRef.current) {
-              submitRef.current.click()
-            }
-          }}
-        >
-          <FormattedMessage id="save" />
-        </Button>,
-      ]}
+      onOk={onFinish}
+      onCancel={handleSettingsCancel}
     >
-      <Form
-        {...layout}
-        name="basic"
-        initialValues={{
-          paperSizeId: currentProject.paperSizeId,
-        }}
-        onFinish={(values) => onFinish(values)}
-      >
-        <Form.Item name="paperSizeId" label="Paper size">
-          <Select style={{ minWidth: 200 }}>
-            {data?.list?.map((paper) => (
-              <Option key={`paper-${paper.id}`} value={paper.id}>
-                {paper.size}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-4 justify-between">
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'orientation' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select
+              className="w-full"
+              onChange={(value) => {
+                setSelectedState((each) => ({
+                  ...each,
+                  orientation: value,
+                }))
+              }}
+              defaultValue={orientations[0].name}
+            >
+              {orientations.map((each: any) => (
+                <Select.Option key={each.name} value={each.name}>
+                  {each.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
 
-        <Form.Item style={{ display: 'none' }}>
-          <Button ref={submitRef} type="primary" htmlType="submit">
-            <FormattedMessage id="save" />
-          </Button>
-        </Form.Item>
-      </Form>
+        <div className="flex gap-4 justify-between">
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'paper_size' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select
+              className="w-full flex items-center"
+              onChange={(value) => {
+                setSelectedState((each) => ({
+                  ...each,
+                  paperSize: orientations
+                    .find((item: any) => item.name === selectedState.orientation)
+                    ?.sizes.find((item: PaperSize) => item.size === value),
+                }))
+              }}
+              defaultValue={orientations.find((item: any) => item.name === selectedState.orientation)?.sizes[0].size}
+            >
+              {orientations
+                .find((item: any) => item.name === selectedState.orientation)
+                ?.sizes.map((each: PaperSize) => (
+                  <Select.Option key={each.size} value={each.size}>
+                    {each.size}
+                  </Select.Option>
+                ))}
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex gap-4 justify-between" hidden={selectedState.paperSize?.coverTypes?.length === 0}>
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'cover_type' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select className="w-full flex items-center">
+              {selectedState.paperSize?.coverTypes?.map((each: CoverType) => (
+                <Select.Option
+                  key={each.id}
+                  value={each.id}
+                  onClick={() => {
+                    setSelectedState((prev) => ({
+                      ...prev,
+                      coverType: each,
+                      bindingType: each.bindingTypes?.[0],
+                      coverMaterial: each.coverMaterials?.[0],
+                      coverMaterialColor: each.coverMaterials?.[0]?.coverMaterialColors?.[0],
+                    }))
+                  }}
+                >
+                  {each.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        <div
+          className="flex gap-4 justify-between"
+          hidden={!selectedState.coverType?.bindingTypes || selectedState.coverType?.bindingTypes?.length === 0}
+        >
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'binding_type' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select className="w-full flex items-center">
+              {selectedState.coverType?.bindingTypes?.map((each: BindingType) => (
+                <Select.Option
+                  key={each.id}
+                  value={each.id}
+                  onClick={() => {
+                    setSelectedState((prev) => ({ ...prev, bindingType: each }))
+                  }}
+                >
+                  {each.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+        <div
+          className="flex gap-4 justify-between"
+          hidden={!selectedState.coverType?.coverMaterials || selectedState.coverType?.coverMaterials?.length === 0}
+        >
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'cover_material' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select className="w-full flex items-center">
+              {selectedState.coverType?.coverMaterials?.map((each: CoverMaterial) => (
+                <Select.Option
+                  key={each.id}
+                  value={each.id}
+                  onClick={() => {
+                    setSelectedState((prev) => ({
+                      ...prev,
+                      coverMaterial: each,
+                      coverMaterialColor: each.coverMaterialColors?.[0],
+                    }))
+                  }}
+                >
+                  {each.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        <div
+          className="flex gap-4 justify-between"
+          hidden={
+            !selectedState.coverMaterial?.coverMaterialColors ||
+            selectedState.coverMaterial?.coverMaterialColors.length === 0
+          }
+        >
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'cover_material_color' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select className="w-full flex items-center">
+              {selectedState.coverMaterial?.coverMaterialColors?.map((each) => (
+                <Select.Option
+                  key={each.id}
+                  value={each.id}
+                  onClick={() => {
+                    setSelectedState((prev) => ({ ...prev, coverMaterialColor: each }))
+                  }}
+                >
+                  {each.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex gap-4 justify-between">
+          <span className="font-normal text-sm">{intl.formatMessage({ id: 'change_request' })}</span>
+          <div className="flex flex-wrap gap-4 w-2/3">
+            <Select className="w-full flex items-center">
+              {['Brightness', 'Color', 'Unnecessary'].map((each) => (
+                <Select.Option
+                  key={each}
+                  value={each}
+                  onClick={() => {
+                    setSelectedState((prev) => ({ ...prev, changeRequest: each }))
+                  }}
+                >
+                  {each}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
+      </div>
     </Modal>
   )
 }

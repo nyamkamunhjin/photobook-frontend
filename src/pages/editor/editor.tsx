@@ -44,7 +44,8 @@ import {
 import Spinner from 'components/spinner'
 import { debounce } from 'utils'
 
-import { useBoolean, useDebounceFn, useFullscreen } from 'ahooks'
+import { useBoolean, useDebounceFn, useFullscreen, useRequest } from 'ahooks'
+import { listPaperSize } from 'api'
 import { Header, BackgroundImages, FooterListTools, SideButtons, SideBarPanel, Toolbar } from './components/layout'
 import Preview from './components/preview'
 import { Editor, renderBackground, renderObject } from './components/utils'
@@ -140,7 +141,6 @@ const BookEditor: React.FC<Props> = ({
   const [_index, setObjectIndex] = useState<number>(-1)
   const [_textObjectIndex, setTextObjectIndex] = useState<number>(-1)
   const [_object, setObject] = useState<any>(null)
-  const [isPaperSizeChanged, setIsPaperSizeChanged] = useState<boolean>(false)
   const [_groupObjects, setGroupObjects] = useState<any>(null)
   const [footerCollapse, setFooterCollapse] = useBoolean(false)
   const [_groupStyles, setGroupStyles] =
@@ -175,6 +175,10 @@ const BookEditor: React.FC<Props> = ({
     {
       wait: 1000 * 30,
     }
+  )
+
+  const paperSizes = useRequest(() =>
+    listPaperSize({ current: 0, pageSize: 100 }, { templateType: currentProject?.templateType?.name })
   )
 
   const editors = useMemo(() => {
@@ -455,38 +459,6 @@ const BookEditor: React.FC<Props> = ({
   }, [editor.dragStart, editor.type])
 
   useEffect(() => {
-    if (!isPaperSizeChanged) return
-    objects.forEach((o: PObject, index: number, arr: PObject[]) => {
-      const { t, l, h, w, sw, sh } = o.ratio as { t: number; l: number; h: number; w: number; sw: number; sh: number }
-      o.style = {
-        ...o.style,
-        top: `${(slideHeight * t) / sh}px`,
-        left: `${(((slideWidth - 30) / 2) * l) / ((sw - 30) / 2)}px`,
-        height: `${(slideHeight * h) / sh}px`,
-        width: `${(((slideWidth - 30) / 2) * w) / ((sw - 30) / 2)}px`,
-      }
-
-      const objectType = editors.getObjectType(o.props.className.split(' '), true)
-      editors.moveCollisionObject(
-        o,
-        objectType,
-        {
-          t: parseFloat(o.style.top as string),
-          l: parseFloat(o.style.left as string),
-          w: parseFloat(o.style.width as string),
-          h: parseFloat(o.style.height as string),
-        },
-        0,
-        true,
-        arr,
-        index
-      )
-    })
-    editors.deSelectObject()
-    setIsPaperSizeChanged(false)
-  }, [slideWidth, slideHeight, objects, isPaperSizeChanged])
-
-  useEffect(() => {
     if (isFullscreen) return
     setPreview.setFalse()
     setSingle.setTrue()
@@ -560,7 +532,9 @@ const BookEditor: React.FC<Props> = ({
               layout={layout}
               type="photobook"
               layouts={layouts}
-              setIsPaperSizeChanged={setIsPaperSizeChanged}
+              currentProject={currentProject}
+              slideIndex={_slideIndex}
+              paperSizes={paperSizes}
             />
           )}
           <div

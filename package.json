@@ -61,7 +61,7 @@
     "lint": "eslint . --ext .js,.ts,.tsx --fix",
     "lint-staged": "lint-staged",
     "stylelint": "stylelint --fix src/**/*.{scss,css}",
-    "prettier": "prettier --write src/**/*.{js,jsx,ts,tsx,scss}",
+    "prettier": "prettier --write src/**/*.{ts,tsx,scss}",
     "build-rust": "rustc +nightly --target wasm32-unknown-unknown -O --crate-type=cdylib wasm/main.rs -o lib.wasm",
     "prepare": "husky install"
   },

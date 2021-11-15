@@ -377,5 +377,6 @@
   "choose_editor": "Choose editor",
   "move_editor": "Move editor",
   "change.size": "Өөрчлөх",
-  "orientation": "Хэлбэр"
+  "orientation": "Хэлбэр",
+  "change_request": "Өөрчлүүлэх хүсэлт"
 }
