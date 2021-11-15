@@ -58,8 +58,8 @@ const SlideSettings: React.FC<Props> = ({
     coverMaterialColor?: CoverMaterialColor
     changeRequest?: string
   }>({
-    orientation: orientations[0].name,
-    paperSize: undefined,
+    orientation: currentProject.paperSize?.orientation,
+    paperSize: currentProject.paperSize,
     coverType: undefined,
     bindingType: undefined,
     coverMaterial: undefined,
@@ -226,12 +226,12 @@ const SlideSettings: React.FC<Props> = ({
             <Select
               className="w-full"
               onChange={(value) => {
-                setSelectedState((each) => ({
+                setSelectedState((each: any) => ({
                   ...each,
                   orientation: value,
                 }))
               }}
-              defaultValue={orientations[0].name}
+              // defaultValue={currentProject.paperSize?.orientation}
             >
               {orientations.map((each: any) => (
                 <Select.Option key={each.name} value={each.name}>
@@ -255,7 +255,7 @@ const SlideSettings: React.FC<Props> = ({
                     ?.sizes.find((item: PaperSize) => item.size === value),
                 }))
               }}
-              defaultValue={orientations.find((item: any) => item.name === selectedState.orientation)?.sizes[0].size}
+              // defaultValue={orientations.find((item: any) => item.name === selectedState.orientation)?.sizes[0].size}
             >
               {orientations
                 .find((item: any) => item.name === selectedState.orientation)

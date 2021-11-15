@@ -212,7 +212,7 @@ export const updateProject = (projectId: number, props: any) => async (dispatch:
       dispatch(setSlideStyle(`${paperSize.width}x${paperSize.height}`))
       dispatch({
         type: UPDATE_PROJECT,
-        payload: props,
+        payload: { ...props, paperSize },
       })
     } else if (!props.frameMaterialId) {
       await _updateProject(projectId, props)
