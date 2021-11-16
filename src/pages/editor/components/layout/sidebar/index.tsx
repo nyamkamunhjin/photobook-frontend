@@ -182,7 +182,7 @@ const SideBarPanel: React.FC<Props> = ({
     setType('')
   }
 
-  const onGoto = (slideId: string, objectId: string) => {
+  const onGoto = (slideId: string, objectId?: string) => {
     console.log('onGoto')
     // _slideIndex = currentProject.slides.findIndex((slide) => slide.slideId === slideId)
     // if(_slideIndex === -1) _slideIndex = 0
@@ -209,32 +209,53 @@ const SideBarPanel: React.FC<Props> = ({
   }
   const makeOrder = async () => {
     const _notices = currentProject.slides.reduce((accum, slide, index) => {
-      const temp = slide.objects.reduce((acc, o, i) => {
-        if (o.props.className.includes('image-placeholder') && !('imageUrl' in o.props)) {
-          acc.push({
-            type: 'empty slot',
-            key: 'empty slot index' + index + 'i' + i,
+      let temp
+      if (
+        slide.objects.length === 0 &&
+        index !== 0 &&
+        currentProject.templateType &&
+        ['photobook', 'montage'].includes(currentProject.templateType.name)
+      ) {
+        temp = [
+          {
+            type: 'empty slide',
+            key: 'empty slide index' + index,
             data: {
               slide: 'slide' + (index + 1),
-              onGoto: () => onGoto(slide.slideId, o.id),
-              onHideAllSimilar: () => onHideAllSimilar('empty slot'),
-              onHideThis: () => onHideThis('empty slot index' + index + 'i' + i),
+              onGoto: () => onGoto(slide.slideId),
+              onHideAllSimilar: () => onHideAllSimilar('empty slide'),
+              onHideThis: () => onHideThis('empty slide index' + index),
             },
-          })
-        } else if (o.props.className.includes('text-container') && o.props.texts?.includes('Enter text here')) {
-          acc.push({
-            type: 'empty text',
-            key: 'empty text index' + index + 'i' + i,
-            data: {
-              slide: 'slide' + (index + 1),
-              onGoto: () => onGoto(slide.slideId, o.id),
-              onHideAllSimilar: () => onHideAllSimilar('empty text'),
-              onHideThis: () => onHideThis('empty text index' + index + 'i' + i),
-            },
-          })
-        }
-        return acc
-      }, [] as any[])
+          },
+        ]
+      } else {
+        temp = slide.objects.reduce((acc, o, i) => {
+          if (o.props.className.includes('image-placeholder') && !('imageUrl' in o.props)) {
+            acc.push({
+              type: 'empty slot',
+              key: 'empty slot index' + index + 'i' + i,
+              data: {
+                slide: 'slide' + (index + 1),
+                onGoto: () => onGoto(slide.slideId, o.id),
+                onHideAllSimilar: () => onHideAllSimilar('empty slot'),
+                onHideThis: () => onHideThis('empty slot index' + index + 'i' + i),
+              },
+            })
+          } else if (o.props.className.includes('text-container') && o.props.texts?.includes('Enter text here')) {
+            acc.push({
+              type: 'empty text',
+              key: 'empty text index' + index + 'i' + i,
+              data: {
+                slide: 'slide' + (index + 1),
+                onGoto: () => onGoto(slide.slideId, o.id),
+                onHideAllSimilar: () => onHideAllSimilar('empty text'),
+                onHideThis: () => onHideThis('empty text index' + index + 'i' + i),
+              },
+            })
+          }
+          return acc
+        }, [] as any[])
+      }
       return accum.concat(temp)
     }, [] as any[])
 
