@@ -55,7 +55,7 @@ import FrameMasks from './tabs/frameMasks'
 import FrameMaterials from './tabs/frameMaterials'
 
 interface Props {
-  addImages: (images: string[], id: number, props?: any) => Promise<void>
+  addImages: (keys: { key: string; naturalSize: any }[], id: number, props?: any) => Promise<void>
   linkImages: (images: string[], id: number, props?: any) => Promise<void>
   unlinkImages: (images: number[], id: number) => Promise<void>
   uploadImages: () => Promise<void>

@@ -42,9 +42,22 @@ export const checkPrintQuality = (o: PObject, ratio: { minImageSquare: number; m
   const image: any = document.querySelector('img')
   if (!image) return false
 
-  const imageSquare =
-    parseFloat(o.props.imageNaturalSize?.width + '') * parseFloat(o.props.imageNaturalSize?.width + '')
+  const imageSquare = parseFloat(o.props.naturalSize?.width + '') * parseFloat(o.props.naturalSize?.width + '')
   const placeholderSquare = parseFloat(o.style.width + '') * parseFloat(o.style.height + '')
-
+  console.log('checkPrintQuality', imageSquare, o)
   return imageSquare / placeholderSquare >= ratio.minImageSquare / ratio.minPlaceholderSquare
+}
+
+export const getSizeFromFile = (file: File) => {
+  return new Promise((res, rej) => {
+    const reader = new FileReader()
+    reader.onload = async (e: any) => {
+      const image = new Image()
+      image.src = e.target.result
+      await image.decode()
+      res({ width: image.width, height: image.height })
+    }
+    reader.onerror = (e) => rej(e)
+    reader.readAsDataURL(file)
+  })
 }

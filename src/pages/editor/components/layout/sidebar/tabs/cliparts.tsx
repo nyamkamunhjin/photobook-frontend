@@ -10,9 +10,10 @@ interface Props {
 const { Panel } = Collapse
 
 const Cliparts: React.FC<Props> = ({ loading, categories }) => {
-  const dragStart = (e: any, tempUrl: any, imageUrl: any) => {
-    e.dataTransfer.setData('tempUrl', tempUrl)
-    e.dataTransfer.setData('imageUrl', imageUrl)
+  const dragStart = (e: any, image: Image) => {
+    e.dataTransfer.setData('tempUrl', image.tempUrl)
+    e.dataTransfer.setData('imageUrl', image.imageUrl)
+    e.dataTransfer.setData('naturalSize', image.naturalSize)
     e.dataTransfer.setData('naturalWidth', e.target.naturalWidth)
     e.dataTransfer.setData('naturalHeight', e.target.naturalHeight)
   }
@@ -34,12 +35,7 @@ const Cliparts: React.FC<Props> = ({ loading, categories }) => {
               >
                 {category.images.map((image: Image) => (
                   <div className="ImageContainer" key={`${image.imageUrl}`}>
-                    <img
-                      draggable
-                      onDragStart={(e) => dragStart(e, image.tempUrl, image.imageUrl)}
-                      alt={image.tempUrl}
-                      src={image.tempUrl}
-                    />
+                    <img draggable onDragStart={(e) => dragStart(e, image)} alt={image.tempUrl} src={image.tempUrl} />
                   </div>
                 ))}
               </div>

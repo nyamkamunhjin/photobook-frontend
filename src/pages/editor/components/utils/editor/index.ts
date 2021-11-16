@@ -1989,6 +1989,7 @@ export default class Editor {
     if (e.dataTransfer) {
       const tempUrl = e.dataTransfer.getData('tempUrl')
       const imageUrl: string = e.dataTransfer.getData('imageUrl')
+      const naturalSize: { width: number; height: number } = e.dataTransfer.getData('naturalSize')
       const naturalWidth: number = e.dataTransfer.getData('naturalWidth')
       const naturalHeight: number = e.dataTransfer.getData('naturalHeight')
 
@@ -2030,6 +2031,7 @@ export default class Editor {
           style,
           props: {
             imageUrl,
+            naturalSize,
             tempUrl,
             className: 'image-placeholder clipart',
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
@@ -2092,6 +2094,7 @@ export default class Editor {
             props: {
               imageUrl: image.imageUrl,
               tempUrl: image.tempUrl,
+              naturalSize: image.naturalSize,
               className: 'image-placeholder',
               imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
               style: { transform: 'scaleX(1)' },
@@ -2110,6 +2113,7 @@ export default class Editor {
               props: {
                 imageUrl: image.imageUrl,
                 tempUrl: image.tempUrl,
+                naturalSize: image.naturalSize,
                 className: 'image-placeholder',
                 imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
                 style: { transform: 'scaleX(1)' },
@@ -2214,6 +2218,7 @@ export default class Editor {
         props: {
           ...objects[index].props,
           imageUrl: images[0].imageUrl,
+          naturalSize: images[0].naturalSize,
           tempUrl: images[0].tempUrl,
           imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
           placeholderStyle: { opacity: '1' },
@@ -2302,6 +2307,7 @@ export default class Editor {
           ...objects[index],
           props: {
             ...objects[index].props,
+            naturalSize: images[0].naturalSize,
             imageUrl: images[0].imageUrl,
             tempUrl: images[0].tempUrl,
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
@@ -2456,6 +2462,7 @@ export default class Editor {
               ...emptyObjects[index],
               props: {
                 ...emptyObjects[index].props,
+                naturalSize: image.naturalSize,
                 imageUrl: image.imageUrl,
                 tempUrl: image.tempUrl,
                 imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
@@ -2523,6 +2530,7 @@ export default class Editor {
           ...objects[index],
           props: {
             ...objects[index].props,
+            naturalSize: images[imageIndex].naturalSize,
             imageUrl: images[imageIndex].imageUrl,
             tempUrl: images[imageIndex].tempUrl,
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },
@@ -2647,6 +2655,7 @@ export default class Editor {
           ...objects[index],
           props: {
             ...objects[index].props,
+            naturalSize: images[0].naturalSize,
             imageUrl: images[0].imageUrl,
             tempUrl: images[0].tempUrl,
             imageStyle: { display: 'block', top: 0, left: 0, width: '100%' },

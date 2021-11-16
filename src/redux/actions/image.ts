@@ -59,7 +59,6 @@ export const linkImages =
           },
         }))
       )
-      console.log('actions', actions)
       dispatch({
         type: ADD_IMAGES,
         payload: actions,
@@ -90,15 +89,16 @@ export const unlinkImages = (keys: number[], id: number) => async (dispatch: any
 }
 
 export const addImages =
-  (keys: string[], id: number, type = 'General') =>
+  (keys: { key: string; naturalSize: { width: number; height: number } }[], id: number, type = 'General') =>
   async (dispatch: any) => {
     try {
       let projectImages = await createMultiImage(
-        keys.map((key) => ({
+        keys.map(({ key, naturalSize }) => ({
           imageUrl: key,
           name: key.split('-').slice(1, key.split('-').length).join('-').split('.')[0], // sorry medq
           type: 'images',
           projects: [{ projectId: id, type }],
+          naturalSize,
         }))
       )
       projectImages = await Promise.all(
@@ -110,6 +110,7 @@ export const addImages =
           },
         }))
       )
+
       dispatch({
         type: ADD_IMAGES,
         payload: projectImages,

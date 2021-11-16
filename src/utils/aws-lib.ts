@@ -2,6 +2,7 @@ import { Storage } from 'aws-amplify'
 import axios from 'axios'
 import { Image, ProjectImage, UploadablePicture } from 'interfaces'
 import Resizer from 'react-image-file-resizer'
+import { getSizeFromFile } from './image-lib'
 
 export async function s3Upload(file: File) {
   const filename = `${Date.now()}-${file.name}`
@@ -94,7 +95,8 @@ export async function s3UploadImages(files: File[]) {
         contentType: file.type,
         ACL: 'public-read',
       })
-      return stored.key
+      const naturalSize = await getSizeFromFile(file)
+      return { key: stored.key, naturalSize }
     })
   )
   return keys

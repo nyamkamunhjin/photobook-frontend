@@ -23,7 +23,7 @@ import Grid from './grid'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 
 interface Props {
-  addImages: (images: string[], id: number) => Promise<void>
+  addImages: (keys: { key: string; naturalSize: any }[], id: number) => Promise<void>
   linkImages: (images: string[], id: number) => Promise<Image[] | null>
   unlinkImages: (images: number[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
@@ -50,7 +50,12 @@ const PrintPanel: React.FC<Props> = ({
     onFiles: (files) => {
       uploadImages()
       s3UploadImages(files).then((keys) => {
-        addImages(keys, currentProject.id).then(() => addNewPrintSlide(currentProject.id, keys))
+        addImages(keys, currentProject.id).then(() =>
+          addNewPrintSlide(
+            currentProject.id,
+            keys.map((key) => key.key)
+          )
+        )
       })
     },
   })
@@ -60,7 +65,10 @@ const PrintPanel: React.FC<Props> = ({
       await uploadImages()
       const keys = await s3UploadImages(Array.from(e.target.files))
       await addImages(keys, currentProject.id)
-      await addNewPrintSlide(currentProject.id, keys)
+      await addNewPrintSlide(
+        currentProject.id,
+        keys.map((key) => key.key)
+      )
     }
   }
 

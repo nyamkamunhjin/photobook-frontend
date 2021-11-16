@@ -136,7 +136,7 @@ export interface ObjectProps {
   shapeStyle?: StyleType
   shapeClass?: string
   imageUrl?: string
-  imageNaturalSize?: { width: number; height: number }
+  naturalSize?: { width: number; height: number }
   placeholderStyle: StyleType
   style: StyleType
   tempUrl?: string
@@ -428,6 +428,7 @@ export interface Image {
   updatedAt: Date
   imageCategories?: ImageCategory[]
   projects: ProjectImage[]
+  naturalSize: { width: number; height: number }
 }
 export interface FrameMask {
   id: number
