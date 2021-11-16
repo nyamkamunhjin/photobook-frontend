@@ -3,9 +3,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Tooltip } from 'antd'
 import { InfoCircleOutlined, PlusSquareOutlined } from '@ant-design/icons'
 import { BsArrowsMove } from 'react-icons/bs'
-import { ColorPreset, PObject, SlideObject } from 'interfaces'
+import { ColorPreset, PObject, SlideObject, TemplateType } from 'interfaces'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { imageOnError } from 'utils'
+import { checkPrintQuality } from 'utils/image-lib'
 
 interface Props {
   scale: number
@@ -31,7 +32,8 @@ interface Props {
   }
   slideWidth?: number
   slideHeight?: number
-  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  _templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  templateType?: TemplateType
 }
 
 const Image: React.FC<Props> = ({
@@ -53,6 +55,7 @@ const Image: React.FC<Props> = ({
   frameMontage,
   slideWidth,
   slideHeight,
+  _templateType,
   templateType,
 }) => {
   const imageRef = useRef<any>(null)
@@ -149,22 +152,22 @@ const Image: React.FC<Props> = ({
     window.addEventListener('mousemove', onMouseMove)
   }
 
-  const checkRatio = () => {
-    const originalWidth = imageRef.current.naturalWidth
-    const originalHeight = imageRef.current.naturalHeight
+  // const checkRatio = () => {
+  //   const originalWidth = imageRef.current.naturalWidth
+  //   const originalHeight = imageRef.current.naturalHeight
 
-    const widthRatio = width / originalWidth
-    const heightRatio = height / originalHeight
+  //   const widthRatio = width / originalWidth
+  //   const heightRatio = height / originalHeight
 
-    if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
-      return false
-    }
+  //   if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
+  //     return false
+  //   }
 
-    return true
-  }
+  //   return true
+  // }
 
   useEffect(() => {
-    setWillBlur(checkRatio())
+    if (templateType && templateType.imageQuality) setWillBlur(checkPrintQuality(object, templateType.imageQuality))
   }, [width, height]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
@@ -312,7 +315,7 @@ const Image: React.FC<Props> = ({
           </div>
         </Tooltip>
       )}
-      {templateType === 'canvas-multi' && (
+      {_templateType === 'canvas-multi' && (
         <div
           className="absolute top-0 left-0 w-full h-full z-50"
           style={{

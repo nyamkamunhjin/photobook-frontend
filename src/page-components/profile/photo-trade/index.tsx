@@ -22,7 +22,7 @@ const PhotoTrade: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <span className="font-semibold text-xl">
           <FormattedMessage id="purchased_photos" />
         </span>
@@ -51,7 +51,7 @@ const PhotoTrade: React.FC = () => {
                   <span className="w-full max-w-xs">{item.description}</span>
                 </div>
 
-                {/* <div className="ml-auto">
+                <div className="ml-auto">
                   <Link
                     className="btn-primary"
                     to={`${process.env.REACT_APP_PUBLIC_IMAGE}${item.imageUrl}`}
@@ -60,15 +60,15 @@ const PhotoTrade: React.FC = () => {
                   >
                     <FormattedMessage id="download" />
                   </Link>
-                </div> */}
+                </div>
               </div>
             </List.Item>
           )}
         />
-      </div>
+      </div> */}
       {/* selling photos */}
       <div className="flex flex-col gap-2">
-        <hr className="my-1" />
+        {/* <hr className="my-1" /> */}
         <div className="flex items-center">
           <span className="font-semibold text-xl">
             <FormattedMessage id="selling_photos" />

@@ -727,6 +727,7 @@ const BookEditor: React.FC<Props> = ({
             isOrder={isOrder}
             setIsOrder={setIsOrder}
             hasImage
+            templateType={currentProject?.templateType}
           />
         )}
         <div className="EditorPanel">

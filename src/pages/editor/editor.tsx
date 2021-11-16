@@ -743,7 +743,15 @@ const BookEditor: React.FC<Props> = ({
         isFullscreen={isFullscreen}
       />
       <div className="EditorOnePageView">
-        {!preview && <SideBarPanel layoutGroups={layouts} hasImage isOrder={isOrder} setIsOrder={setIsOrder} />}
+        {!preview && (
+          <SideBarPanel
+            layoutGroups={layouts}
+            hasImage
+            isOrder={isOrder}
+            setIsOrder={setIsOrder}
+            templateType={currentProject?.templateType}
+          />
+        )}
         <div className="EditorPanel">
           {preview ? (
             <Preview
@@ -795,7 +803,7 @@ const BookEditor: React.FC<Props> = ({
             updateHistory={updateHistory}
             saveObjects={saveObjects}
             isFullscreen={isFullscreen}
-            templateType="photobook"
+            _templateType="photobook"
           />
         </div>
       </div>

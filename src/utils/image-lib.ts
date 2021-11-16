@@ -36,7 +36,7 @@ export const getSlidesa = (sort = 'a-z', slides: Slide[]) => {
   }
 }
 
-export const checkPrintQuality = (o: PObject, ratio: { minImageSquare: number; minPlaceholderSquare: number }) => {
+export const checkPrintQuality = (o: PObject, imageQuality: { imageSquare: number; placeholderSquare: number }) => {
   const placeholder = document.getElementById(o.id)
   if (!placeholder) return false
   const image: any = document.querySelector('img')
@@ -45,7 +45,7 @@ export const checkPrintQuality = (o: PObject, ratio: { minImageSquare: number; m
   const imageSquare = parseFloat(o.props.naturalSize?.width + '') * parseFloat(o.props.naturalSize?.width + '')
   const placeholderSquare = parseFloat(o.style.width + '') * parseFloat(o.style.height + '')
   console.log('checkPrintQuality', imageSquare, o)
-  return imageSquare / placeholderSquare >= ratio.minImageSquare / ratio.minPlaceholderSquare
+  return imageSquare / placeholderSquare >= imageQuality.imageSquare / imageQuality.placeholderSquare
 }
 
 export const getSizeFromFile = (file: File) => {

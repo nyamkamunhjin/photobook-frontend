@@ -37,6 +37,7 @@ import {
   ImageInterface,
   Project,
   RootInterface,
+  TemplateType,
   UploadablePicture,
 } from 'interfaces'
 import { createCartItem, getFrameMaterial } from 'api'
@@ -78,6 +79,7 @@ interface Props {
   isOrder: boolean
   setIsOrder: (param: any) => void
   frameMaterials?: FrameMaterial[]
+  templateType?: TemplateType
 }
 
 const SideBarPanel: React.FC<Props> = ({
@@ -104,6 +106,7 @@ const SideBarPanel: React.FC<Props> = ({
   image: { images, loading, categories },
   layoutGroups,
   frameMaterials,
+  templateType,
 }) => {
   const [closed, setClosed] = useState<boolean>(!editor.sidebarOpen)
   const [notices, setNotices] = useState<any[]>([])
@@ -155,7 +158,6 @@ const SideBarPanel: React.FC<Props> = ({
       if (projectImage) acc.push(projectImage.id)
       return acc
     }, [] as number[])
-    console.log('imagesIds', imagesIds)
     if (imagesIds.length === 0) return
     await uploadImages()
     await unlinkImages(imagesIds, currentProject.id)
@@ -245,7 +247,9 @@ const SideBarPanel: React.FC<Props> = ({
             })
           } else if (
             o.props.className.includes('image-placeholder') &&
-            !checkPrintQuality(o, { minImageSquare: 1, minPlaceholderSquare: 2 })
+            templateType &&
+            templateType.imageQuality &&
+            !checkPrintQuality(o, templateType.imageQuality)
           ) {
             acc.push({
               type: 'poor quality',

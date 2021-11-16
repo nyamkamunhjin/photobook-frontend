@@ -527,7 +527,7 @@ const BookEditor: React.FC<Props> = ({
                                 border: BORDER_WIDTH,
                                 slideWidth,
                                 slideHeight,
-                                templateType: 'canvas-split',
+                                _templateType: 'canvas-split',
                               })}
                             </div>
                           )
@@ -606,11 +606,12 @@ const BookEditor: React.FC<Props> = ({
             hasImage
             isOrder={isOrder}
             setIsOrder={setIsOrder}
+            templateType={currentProject?.templateType}
           />
         )}
         <div className="EditorPanel">
           {preview ? (
-            <Preview slideIndex={_slideIndex} isPhotobook={false} templateType="canvas-split" />
+            <Preview slideIndex={_slideIndex} isPhotobook={false} _templateType="canvas-split" />
           ) : (
             renderEditor
           )}
@@ -646,7 +647,7 @@ const BookEditor: React.FC<Props> = ({
             saveObjects={saveObjects}
             mustHaveImageCenter
             isFullscreen={isFullscreen}
-            templateType="canvas-split"
+            _templateType="canvas-split"
           />
         </div>
       </div>

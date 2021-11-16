@@ -664,6 +664,7 @@ const BookEditor: React.FC<Props> = ({
             hasBackground={false}
             hasClipArt={false}
             hasMask={false}
+            templateType={currentProject?.templateType}
           />
         )}
         <div className="EditorPanel">

@@ -174,12 +174,20 @@ export type FeatureType =
   | 'notices'
   | 'frame_masks'
   | 'frame_materials'
+
+export interface ImageQuality {
+  id: number
+  imageSquare: number
+  placeholderSquare: number
+  templateType: TemplateType
+}
 export interface TemplateType {
   id: number
   name: string
   paperMaterials: PaperMaterial[]
   templates: Template[]
   projects: Project[]
+  imageQuality: ImageQuality
 }
 
 export interface ImageCategory {
@@ -871,6 +879,7 @@ export type TradePhoto = {
   imageUrl: string
   sellCount: number
   user: User
+  naturalSize: { width: number; height: number }
 }
 
 export type TradePhotoApproveType = 'approved' | 'pending' | 'declined'

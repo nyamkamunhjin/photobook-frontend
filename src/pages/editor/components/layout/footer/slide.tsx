@@ -22,7 +22,7 @@ interface Props {
   height: number
   changeSlideIndex?: (index: number) => void
   mustHaveImageCenter?: boolean
-  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  _templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
   slideNumber: number
 }
 
@@ -41,7 +41,7 @@ const Slides: React.FC<Props> = ({
   slide,
   height,
   mustHaveImageCenter = false,
-  templateType,
+  _templateType,
   slideNumber,
 }) => {
   const scaledContainerRef = useRef<any>(null)
@@ -95,7 +95,7 @@ const Slides: React.FC<Props> = ({
                       mustHaveImageCenter,
                       slideWidth,
                       slideHeight,
-                      templateType,
+                      _templateType,
                     })}
                   </div>
                 )
@@ -118,7 +118,7 @@ const Slides: React.FC<Props> = ({
                       scale,
                       zoom: 1,
                       mustHaveImageCenter,
-                      templateType,
+                      _templateType,
                     })}
                   </div>
                 )
@@ -126,7 +126,7 @@ const Slides: React.FC<Props> = ({
             </>
           )}
         </div>
-        {[1, slideNumber - 1].includes(index) && templateType && ['photobook', 'montage'].includes(templateType) && (
+        {[1, slideNumber - 1].includes(index) && _templateType && ['photobook', 'montage'].includes(_templateType) && (
           <div
             className={
               'unavailable-to-edit-page left-page flex flex-col items-center justify-center absolute top-0 w-1/2 h-full bg-gray-500 z-50' +
@@ -150,7 +150,7 @@ const Slides: React.FC<Props> = ({
         )}
       </div>
       <p className="label">
-        {templateType && !'montage,photobook'.includes(templateType) ? (
+        {_templateType && !'montage,photobook'.includes(_templateType) ? (
           <>
             <FormattedMessage id="slide" /> {index + 1}
           </>

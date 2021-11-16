@@ -21,7 +21,8 @@ export async function s3Upload(file: File) {
     contentType: file.type,
   })
 
-  return stored.key
+  const naturalSize = await getSizeFromFile(file)
+  return { key: stored.key, naturalSize }
 }
 
 export async function getS3Images(projectImages: ProjectImage[]) {

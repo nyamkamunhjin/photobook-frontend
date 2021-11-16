@@ -30,8 +30,8 @@ const UploadPhoto: React.FC<Props> = ({ refreshCallback }) => {
       notification.error({ message: intl.formatMessage({ id: 'image.validation' }) })
     } else {
       s3Upload(file)
-        .then((imageUrl) => {
-          request.run({ ...values, imageUrl }).then((res) => {
+        .then(({ key, naturalSize }: any) => {
+          request.run({ ...values, imageUrl: key, naturalSize }).then((res) => {
             if (res) {
               notification.success({ message: intl.formatMessage({ id: 'success!' }) })
               setVisible(false)

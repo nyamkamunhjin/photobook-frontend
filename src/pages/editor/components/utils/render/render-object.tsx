@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import React from 'react'
-import { PObject, SlideObject, StyleType } from 'interfaces'
+import { PObject, SlideObject, StyleType, TemplateType } from 'interfaces'
 import { Image, Text, Shape, ImageSplit } from '../../layout'
 
 interface Props {
@@ -15,7 +15,8 @@ interface Props {
   mustHaveImageCenter?: boolean
   slideWidth?: number
   slideHeight?: number
-  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  _templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  templateType?: TemplateType
 }
 
 const renderObject: React.FC<Props> = ({
@@ -30,6 +31,7 @@ const renderObject: React.FC<Props> = ({
   mustHaveImageCenter = false,
   slideWidth,
   slideHeight,
+  _templateType,
   templateType,
 }) => {
   const { props } = object
@@ -51,7 +53,7 @@ const renderObject: React.FC<Props> = ({
     }, 0)
   }
   // console.log('templateType', templateType, 'edit', edit)
-  if (props?.className === 'image-placeholder' && templateType === 'canvas-split' && slideWidth && slideHeight) {
+  if (props?.className === 'image-placeholder' && _templateType === 'canvas-split' && slideWidth && slideHeight) {
     const { tempUrl, imageUrl, imageStyle, style, className, placeholderStyle } = props
 
     return (
@@ -73,6 +75,7 @@ const renderObject: React.FC<Props> = ({
         border={border}
         slideWidth={slideWidth}
         slideHeight={slideHeight}
+        templateType={templateType}
       />
     )
   } else if (props?.className.includes('image-placeholder')) {
@@ -99,6 +102,7 @@ const renderObject: React.FC<Props> = ({
         frameMontage={frameMontage}
         slideWidth={slideWidth}
         slideHeight={slideHeight}
+        _templateType={_templateType}
         templateType={templateType}
       />
     )

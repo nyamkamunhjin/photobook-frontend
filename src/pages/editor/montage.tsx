@@ -749,6 +749,7 @@ const BookEditor: React.FC<Props> = ({
             hasFrameMask
             hasFrames={false}
             hasMask={false}
+            templateType={currentProject?.templateType}
           />
         )}
         <div className="EditorPanel">
@@ -802,7 +803,7 @@ const BookEditor: React.FC<Props> = ({
             updateHistory={updateHistory}
             saveObjects={saveObjects}
             isFullscreen={isFullscreen}
-            templateType="montage"
+            _templateType="montage"
           />
         </div>
       </div>

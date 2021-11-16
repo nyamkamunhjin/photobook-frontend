@@ -551,7 +551,8 @@ const BookEditor: React.FC<Props> = ({
                                 scale,
                                 zoom: 1,
                                 border: currentProject.canvasType !== 'Single' ? BORDER_WIDTH : 0,
-                                templateType: 'canvas-multi',
+                                _templateType: 'canvas-multi',
+                                templateType: currentProject?.templateType,
                               })}
                             </div>
                           )
@@ -644,6 +645,7 @@ const BookEditor: React.FC<Props> = ({
             hasImage
             isOrder={isOrder}
             setIsOrder={setIsOrder}
+            templateType={currentProject?.templateType}
           />
         )}
         <div className="EditorPanel">

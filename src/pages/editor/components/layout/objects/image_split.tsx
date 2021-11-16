@@ -3,9 +3,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { BsArrowsMove } from 'react-icons/bs'
-import { ColorPreset, PObject, SlideObject } from 'interfaces'
+import { ColorPreset, PObject, SlideObject, TemplateType } from 'interfaces'
 import { UPDATE_OBJECT } from 'redux/actions/types'
 import { imageOnError } from 'utils'
+import { checkPrintQuality } from 'utils/image-lib'
 
 interface Props {
   scale: number
@@ -26,6 +27,7 @@ interface Props {
   border: number
   slideWidth: number
   slideHeight: number
+  templateType?: TemplateType
 }
 
 const Image: React.FC<Props> = ({
@@ -45,6 +47,7 @@ const Image: React.FC<Props> = ({
   border = 0,
   slideWidth,
   slideHeight,
+  templateType,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -157,22 +160,22 @@ const Image: React.FC<Props> = ({
     window.addEventListener('mousemove', onMouseMove)
   }
 
-  const checkRatio = () => {
-    const originalWidth = imageRef.current.naturalWidth
-    const originalHeight = imageRef.current.naturalHeight
+  // const checkRatio = () => {
+  //   const originalWidth = imageRef.current.naturalWidth
+  //   const originalHeight = imageRef.current.naturalHeight
 
-    const widthRatio = width / originalWidth
-    const heightRatio = height / originalHeight
+  //   const widthRatio = width / originalWidth
+  //   const heightRatio = height / originalHeight
 
-    if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
-      return false
-    }
+  //   if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
+  //     return false
+  //   }
 
-    return true
-  }
+  //   return true
+  // }
 
   useEffect(() => {
-    setWillBlur(checkRatio())
+    if (templateType && templateType.imageQuality) setWillBlur(checkPrintQuality(object, templateType.imageQuality))
   }, [width, height]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
@@ -180,7 +183,7 @@ const Image: React.FC<Props> = ({
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
 
   const minSize = slideHeight && slideWidth && slideHeight > slideWidth ? slideWidth : slideHeight
-  console.log('Image-split edit', edit)
+  // console.log('Image-split edit', edit)
 
   return (
     <div

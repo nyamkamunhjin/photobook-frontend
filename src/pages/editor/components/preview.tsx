@@ -18,7 +18,7 @@ interface Props {
   hasNext?: () => boolean
   hasPrevious?: () => boolean
   isPhotobook?: boolean
-  templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
+  _templateType?: 'canvas-split' | 'canvas-single' | 'canvas-multi' | 'photobook' | 'montage'
 }
 
 const Preview: React.FC<Props> = ({
@@ -30,7 +30,7 @@ const Preview: React.FC<Props> = ({
   hasNext,
   hasPrevious,
   isPhotobook = true,
-  templateType,
+  _templateType,
 }) => {
   // refs
   const slideViewRef: any = useRef(null)
@@ -129,7 +129,7 @@ const Preview: React.FC<Props> = ({
                                 object: o,
                                 scale,
                                 zoom: 1,
-                                templateType,
+                                _templateType,
                               })}
                             </div>
                           )
