@@ -136,6 +136,7 @@ export interface ObjectProps {
   shapeStyle?: StyleType
   shapeClass?: string
   imageUrl?: string
+  imageNaturalSize?: { width: number; height: number }
   placeholderStyle: StyleType
   style: StyleType
   tempUrl?: string

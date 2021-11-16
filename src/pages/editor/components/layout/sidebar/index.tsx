@@ -41,6 +41,8 @@ import {
 } from 'interfaces'
 import { createCartItem, getFrameMaterial } from 'api'
 
+import { checkPrintQuality } from 'utils/image-lib'
+
 import Images from './tabs/images'
 import Backgrounds from './tabs/backgrounds'
 import Cliparts from './tabs/cliparts'
@@ -239,6 +241,20 @@ const SideBarPanel: React.FC<Props> = ({
                 onGoto: () => onGoto(slide.slideId, o.id),
                 onHideAllSimilar: () => onHideAllSimilar('empty slot'),
                 onHideThis: () => onHideThis('empty slot index' + index + 'i' + i),
+              },
+            })
+          } else if (
+            o.props.className.includes('image-placeholder') &&
+            !checkPrintQuality(o, { minImageSquare: 1, minPlaceholderSquare: 2 })
+          ) {
+            acc.push({
+              type: 'poor quality',
+              key: 'poor quality index' + index + 'i' + i,
+              data: {
+                slide: 'slide' + (index + 1),
+                onGoto: () => onGoto(slide.slideId, o.id),
+                onHideAllSimilar: () => onHideAllSimilar('poor quality'),
+                onHideThis: () => onHideThis('poor quality index' + index + 'i' + i),
               },
             })
           } else if (o.props.className.includes('text-container') && o.props.texts?.includes('Enter text here')) {
