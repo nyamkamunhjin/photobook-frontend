@@ -42,9 +42,17 @@ export const checkPrintQuality = (o: PObject, imageQuality: { imageSquare: numbe
   const image: any = document.querySelector('img')
   if (!image) return false
 
-  const imageSquare = parseFloat(o.props.naturalSize?.width + '') * parseFloat(o.props.naturalSize?.width + '')
+  let scale = o.props.style.transform?.includes('scaleX')
+    ? parseFloat(o.props.style.transform?.substring(o.props.style.transform.indexOf('scaleX(') + 7))
+    : 1
+  if (Number.isNaN(scale)) scale = 1
+
+  const imageWidth = parseFloat(o.props.naturalSize?.width + '')
+  const imageHeight = parseFloat(o.props.naturalSize?.height + '')
+  const naturalRatio = imageWidth / imageHeight
+  const imageSquare = (imageWidth * scale * imageWidth * scale) / naturalRatio
   const placeholderSquare = parseFloat(o.style.width + '') * parseFloat(o.style.height + '')
-  console.log('checkPrintQuality', imageSquare, o)
+
   return imageSquare / placeholderSquare >= imageQuality.imageSquare / imageQuality.placeholderSquare
 }
 
