@@ -525,6 +525,7 @@ const BookEditor: React.FC<Props> = ({
                                 saveObjects,
                                 scale,
                                 zoom: 1,
+                                templateType: currentProject.templateType,
                               })}
                             </div>
                           )

@@ -528,6 +528,7 @@ const BookEditor: React.FC<Props> = ({
                                 slideWidth,
                                 slideHeight,
                                 _templateType: 'canvas-split',
+                                templateType: currentProject.templateType,
                               })}
                             </div>
                           )
