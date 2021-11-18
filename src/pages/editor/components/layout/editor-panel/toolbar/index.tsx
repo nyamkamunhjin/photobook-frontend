@@ -33,6 +33,7 @@ interface Props {
   removeFrameFromObject?: () => void
   removeFrameMaskFromObject?: () => void
   removeMaskFromObject?: () => void
+  swapImages?: () => void
   rotateLeftObject?: () => void
   rotateRightObject?: () => void
   flipObject?: () => void
@@ -50,6 +51,7 @@ const Toolbar: React.FC<Props> = ({
   removeFrameFromObject,
   removeFrameMaskFromObject,
   removeMaskFromObject,
+  swapImages,
   rotateRightObject,
   rotateLeftObject,
   updateHistory,
@@ -139,6 +141,7 @@ const Toolbar: React.FC<Props> = ({
               imageFit={imageFit}
               getImagePosition={getImagePosition}
               hasFrame={hasFrame}
+              swapImages={swapImages}
             />
           )}
           {objectType === 'shape' && (

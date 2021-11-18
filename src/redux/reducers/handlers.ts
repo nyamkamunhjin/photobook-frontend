@@ -8,6 +8,7 @@ import {
   UPDATE_BACKGROUND,
   UPDATE_GROUP_CONTAINER,
   UPDATE_OBJECT,
+  UPDATE_OBJECTS,
 } from '../actions/types'
 
 const setSlideDimensionHandler = (state: ProjectInterface, action: any) => {
@@ -180,6 +181,7 @@ const loadErrorHandler = (state: ProjectInterface, action: any) => {
 
 const updateHistoryHandler = (state: ProjectInterface, action: { payload: HistoryInterface }) => {
   const { payload } = action
+
   return {
     ...state,
     undoHistory: [...state.undoHistory, payload],
@@ -440,6 +442,27 @@ const undoHandler = (state: ProjectInterface) => {
           {
             historyType: UPDATE_OBJECT,
             props: { object: currentObject },
+          },
+        ],
+        loading: false,
+      }
+    } else if (historyType === UPDATE_OBJECTS) {
+      const { objects } = props
+
+      const currentObjects = objects?.map((object) => state.objects.find((o: any) => o.id === object?.id))
+
+      return {
+        ...state,
+        objects: state.objects.map((x: any) => {
+          const object = objects?.find((o) => o.id === x.id)
+          if (object) return object
+          return x
+        }),
+        redoHistory: [
+          ...state.redoHistory,
+          {
+            historyType: UPDATE_OBJECTS,
+            props: { objects: currentObjects },
           },
         ],
         loading: false,

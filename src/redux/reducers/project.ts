@@ -29,6 +29,7 @@ import {
   UPDATE_PROJECT,
   DUPLICATE_SLIDE,
   CLEAR_PROJECT,
+  UPDATE_OBJECTS,
 } from '../actions/types'
 import projectHandlers from './handlers'
 

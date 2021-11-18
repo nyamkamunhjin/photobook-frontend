@@ -13,6 +13,7 @@ import { UPDATE_OBJECT } from 'redux/actions/types'
 import { FormattedMessage } from 'react-intl'
 import { colorPresets, filters } from 'configs'
 import { MinusCircleFilled, MinusCircleOutlined } from '@ant-design/icons'
+import { RiSwapLine } from 'react-icons/ri'
 import { debounce } from 'lodash'
 
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
   removeFrameFromObject?: () => void
   removeFrameMaskFromObject?: () => void
   removeMaskFromObject?: () => void
+  swapImages?: () => void
   updateHistory: (type: string, object: unknown) => void
   updateObject: (value: { object: PObject }) => void
   imageFit?: (borderWidth: number, o: PObject) => void
@@ -42,6 +44,7 @@ const ImageToolbar = ({
   removeFrameFromObject,
   removeFrameMaskFromObject,
   removeMaskFromObject,
+  swapImages,
   updateHistory,
   updateObject,
   zoom: _zoom,
@@ -314,6 +317,13 @@ const ImageToolbar = ({
         <Tooltip placement="top" title={<FormattedMessage id="toolbox.deleteFrameMask" />}>
           <span className={`toolbar-icon ${!hasImage && 'inactive'}`} onClick={removeFrameMaskFromObject}>
             <MinusCircleFilled className="text-base" />
+          </span>
+        </Tooltip>
+      )}
+      {swapImages && (
+        <Tooltip placement="top" title={<FormattedMessage id="toolbox.swapImages" />}>
+          <span className="toolbar-icon" onClick={swapImages}>
+            <RiSwapLine className="text-lg" />
           </span>
         </Tooltip>
       )}

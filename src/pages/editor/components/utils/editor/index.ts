@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable lines-between-class-members */
 import {
   CollisionObject,
@@ -17,7 +18,7 @@ import {
 } from 'interfaces'
 import { v4 as uuidv4 } from 'uuid'
 import lodash from 'lodash'
-import { ADD_LAYOUT, UPDATE_GROUP_CONTAINER, UPDATE_OBJECT } from 'redux/actions/types'
+import { ADD_LAYOUT, UPDATE_GROUP_CONTAINER, UPDATE_OBJECT, UPDATE_OBJECTS } from 'redux/actions/types'
 import { arraysEqual, debounce, getRotationScaler, montagePortraitGap, ParseNumber } from 'utils'
 import {
   calculateCenter,
@@ -1108,6 +1109,128 @@ export default class Editor {
     this.updateObject({ object: newObject })
     this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
   }
+  public listAllEventListeners = () => {
+    const allElements = Array.prototype.slice.call(document.querySelectorAll('*'))
+    allElements.push(document)
+    allElements.push(window)
+
+    const types = []
+
+    for (const ev in window) {
+      if (/^on/.test(ev)) types[types.length] = ev
+    }
+
+    const elements = []
+    for (let i = 0; i < allElements.length; i += 1) {
+      const currentElement = allElements[i]
+      for (let j = 0; j < types.length; j += 1) {
+        if (typeof currentElement[types[j]] === 'function') {
+          elements.push({
+            node: currentElement,
+            type: types[j],
+            func: currentElement[types[j]].toString(),
+          })
+        }
+      }
+    }
+
+    return elements.sort((a, b) => {
+      return a.type.localeCompare(b.type)
+    })
+  }
+  public listDocumentEventListeners = () => {
+    const types = []
+
+    for (const ev in window) {
+      if (/^on/.test(ev)) types[types.length] = ev
+    }
+
+    const elements = []
+    for (let j = 0; j < types.length; j += 1) {
+      if (typeof document[types[j]] === 'function') {
+        elements.push({
+          node: document,
+          type: types[j],
+          func: document[types[j]].toString(),
+        })
+      }
+    }
+
+    return elements.sort((a, b) => {
+      return a.type.localeCompare(b.type)
+    })
+  }
+  public onSwapImages = (
+    _index: number,
+    objects: PObject[],
+    _objectType: ObjectType,
+    setIsSwapping: (value: boolean) => void
+  ) => {
+    if (_objectType !== 'image' || _index === -1) return
+    setIsSwapping(true)
+
+    const onMouseDown = (e: any) => {
+      document.removeEventListener('mousedown', onMouseDown)
+      setIsSwapping(false)
+
+      const object2 = objects.find((o) => o.id === e.target.id)
+      if (!object2 || !object2.props.className.includes('image-placeholder') || objects[_index].id === object2.id)
+        return
+
+      let newObject1: PObject
+      if (object2.props.imageUrl) {
+        newObject1 = {
+          ...objects[_index],
+          props: {
+            ...objects[_index].props,
+            imageUrl: object2.props.imageUrl,
+            tempUrl: object2.props.tempUrl,
+          },
+        }
+      } else {
+        newObject1 = {
+          ...objects[_index],
+          props: {
+            style: { transform: 'scaleX(1)' },
+            className: 'image-placeholder',
+            imageStyle: { display: 'none', top: 0, left: 0, width: '100%' },
+            placeholderStyle: { opacity: '0.5', backgroundColor: '#737373' },
+          },
+        }
+      }
+
+      let newObject2: PObject
+      if (objects[_index].props.imageUrl) {
+        newObject2 = {
+          ...object2,
+          props: {
+            ...object2.props,
+            imageUrl: objects[_index].props.imageUrl,
+            tempUrl: objects[_index].props.tempUrl,
+          },
+        }
+      } else {
+        newObject2 = {
+          ...object2,
+          props: {
+            style: { transform: 'scaleX(1)' },
+            className: 'image-placeholder',
+            imageStyle: { display: 'none', top: 0, left: 0, width: '100%' },
+            placeholderStyle: { opacity: '0.5', backgroundColor: '#737373' },
+          },
+        }
+      }
+      this.updateObject({ object: newObject1 })
+      this.updateObject({ object: newObject2 })
+      this.updateHistory(UPDATE_OBJECTS, { objects: [objects[_index], object2] })
+      if (newObject1.props.imageUrl)
+        this.imageFitNoDebounce(objects, newObject1, parseFloat(newObject1.props.frameStyle?.borderWidth || '0'))
+      if (newObject1.props.imageUrl)
+        this.imageFitNoDebounce(objects, newObject2, parseFloat(newObject2.props.frameStyle?.borderWidth || '0'))
+    }
+
+    document.addEventListener('mousedown', onMouseDown)
+  }
   public onRemoveFrameFromObject = (_index: number, objects: PObject[], _objectType?: ObjectType) => {
     if (_objectType !== 'image' || _index === -1) return
 
@@ -1218,7 +1341,8 @@ export default class Editor {
       toolbar.style.left = `calc(50% - 190px)`
     }
   }
-  public startDrag = (e: any, o: any, index: number, objects?: PObject[], gap = 0) => {
+  public startDrag = (e: any, o: any, index: number, objects?: PObject[], gap = 0, isSwapping = false) => {
+    if (isSwapping) return
     if (objects) {
       this.objects = objects
     }

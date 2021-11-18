@@ -131,6 +131,7 @@ const BookEditor: React.FC<Props> = ({
   const [isFullscreen, { setFull, exitFull }] = useFullscreen(ref)
   const [isOrder, setIsOrder] = useState(false)
   const [tradephotoLoading, setTradephotoLoading] = useState(false)
+  const [isSwapping, setIsSwapping] = useState(false)
 
   // states
   const [scale, setScale] = useState<number>(1)
@@ -428,6 +429,7 @@ const BookEditor: React.FC<Props> = ({
             moveResizers={editors.moveResizers}
             removeImageFromObject={() => editors.onRemoveImageFromObject(_index, objects, _objectType)}
             removeMaskFromObject={() => editors.onRemoveMaskFromObject(_index, objects, _objectType)}
+            swapImages={() => editors.onSwapImages(_index, objects, _objectType, setIsSwapping)}
             rotateLeftObject={() => editors.onRotateLeftObject(_index, objects)}
             rotateRightObject={() => editors.onRotateRightObject(_index, objects)}
             flipObject={() => editors.onFlipObject(_index, objects)}
@@ -505,7 +507,7 @@ const BookEditor: React.FC<Props> = ({
                               className={o.className}
                               onMouseDown={
                                 currentProject.canvasType === 'Single' || o?.props?.className !== 'image-placeholder'
-                                  ? (e) => editors.startDrag(e, o, i, objects, GAP)
+                                  ? (e) => editors.startDrag(e, o, i, objects, GAP, isSwapping)
                                   : () => ''
                               }
                               onMouseEnter={(e) => editors.objectHover(e, i, _index)}
