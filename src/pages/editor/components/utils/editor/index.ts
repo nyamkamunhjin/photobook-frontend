@@ -1183,6 +1183,7 @@ export default class Editor {
           ...objects[_index],
           props: {
             ...objects[_index].props,
+            imageStyle: { ...objects[_index].props.imageStyle, display: 'block' },
             imageUrl: object2.props.imageUrl,
             tempUrl: object2.props.tempUrl,
           },
@@ -1205,6 +1206,7 @@ export default class Editor {
           ...object2,
           props: {
             ...object2.props,
+            imageStyle: { ...object2.props.imageStyle, display: 'block' },
             imageUrl: objects[_index].props.imageUrl,
             tempUrl: objects[_index].props.tempUrl,
           },
@@ -1225,7 +1227,7 @@ export default class Editor {
       this.updateHistory(UPDATE_OBJECTS, { objects: [objects[_index], object2] })
       if (newObject1.props.imageUrl)
         this.imageFitNoDebounce(objects, newObject1, parseFloat(newObject1.props.frameStyle?.borderWidth || '0'))
-      if (newObject1.props.imageUrl)
+      if (newObject2.props.imageUrl)
         this.imageFitNoDebounce(objects, newObject2, parseFloat(newObject2.props.frameStyle?.borderWidth || '0'))
     }
 

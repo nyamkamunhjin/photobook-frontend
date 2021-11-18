@@ -226,6 +226,7 @@
   "toolbox.fontSize": "Change the font size",
   "toolbox.size": "Change the object size",
   "toolbox.swapImages": "Change the objects' images",
+  "toolbox.borderRadius": "Change the border radius",
   "slide": "Slide",
   "slide.remove": "Remove",
   "slide.duplicate": "Duplicate",
