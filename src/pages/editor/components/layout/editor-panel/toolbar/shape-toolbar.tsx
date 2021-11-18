@@ -23,7 +23,6 @@ const ShapeToolbar: React.FC<{
   const [color, setColor] = useState<string>('')
   const { borderRadius = objects[index]?.props.shapeClass?.includes('square') ? '0%' : '50%' } =
     (objects[index]?.props.shapeStyle as any) || {}
-  console.log('objects[index]?.props.shapeStyle', objects[index]?.props.shapeStyle)
 
   const onChangeComplete = (_color: any) => {
     const { hex } = _color

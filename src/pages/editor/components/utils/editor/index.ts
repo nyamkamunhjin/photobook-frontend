@@ -872,11 +872,16 @@ export default class Editor {
 
     return texts
   }
-  public createText = (objects: PObject[]) => {
+  public createText = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    const scaled_container = document.querySelector('#scaled_container')
     let x2 = 0
-    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+
+    if (scaled_container && e.target.closest('.right-sidebuttons')) {
+      const { width } = scaled_container.getBoundingClientRect()
+      x2 = width / (this.scale * 2)
+    } else if (uneditablePage && uneditablePage.className.includes('left-page')) {
       const { width } = uneditablePage.getBoundingClientRect()
       x2 = width / this.scale
     }
@@ -1941,11 +1946,16 @@ export default class Editor {
 
     return objectType
   }
-  public createEclipse = (objects: PObject[]) => {
+  public createEclipse = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    const scaled_container = document.querySelector('#scaled_container')
     let x2 = 0
-    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+
+    if (scaled_container && e.target.closest('.right-sidebuttons')) {
+      const { width } = scaled_container.getBoundingClientRect()
+      x2 = width / (this.scale * 2)
+    } else if (uneditablePage && uneditablePage.className.includes('left-page')) {
       const { width } = uneditablePage.getBoundingClientRect()
       x2 = width / this.scale
     }
@@ -1983,8 +1993,13 @@ export default class Editor {
   public createMontagePortrait = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    const scaled_container = document.querySelector('#scaled_container')
     let x2 = 0
-    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+
+    if (scaled_container && e.target.closest('.right-sidebuttons')) {
+      const { width } = scaled_container.getBoundingClientRect()
+      x2 = width / (this.scale * 2)
+    } else if (uneditablePage && uneditablePage.className.includes('left-page')) {
       const { width } = uneditablePage.getBoundingClientRect()
       x2 = width / this.scale
     }
@@ -2065,11 +2080,16 @@ export default class Editor {
     this.deSelectObject()
   }
 
-  public createSquare = (objects: PObject[]) => {
+  public createSquare = (e: any, objects: PObject[]) => {
     this.hideToolbar()
     const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    const scaled_container = document.querySelector('#scaled_container')
     let x2 = 0
-    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+
+    if (scaled_container && e.target.closest('.right-sidebuttons')) {
+      const { width } = scaled_container.getBoundingClientRect()
+      x2 = width / (this.scale * 2)
+    } else if (uneditablePage && uneditablePage.className.includes('left-page')) {
       const { width } = uneditablePage.getBoundingClientRect()
       x2 = width / this.scale
     }
@@ -2106,12 +2126,19 @@ export default class Editor {
   }
   public createImage = (e: any, objects: PObject[]) => {
     this.hideToolbar()
+
     const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    const scaled_container = document.querySelector('#scaled_container')
     let x2 = 0
-    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+
+    if (scaled_container && e.target.closest('.right-sidebuttons')) {
+      const { width } = scaled_container.getBoundingClientRect()
+      x2 = width / (this.scale * 2)
+    } else if (uneditablePage && uneditablePage.className.includes('left-page')) {
       const { width } = uneditablePage.getBoundingClientRect()
       x2 = width / this.scale
     }
+
     if (e.dataTransfer) {
       const tempUrl = e.dataTransfer.getData('tempUrl')
       const imageUrl: string = e.dataTransfer.getData('imageUrl')
@@ -2191,8 +2218,13 @@ export default class Editor {
   public createImages = (e: any, objects: PObject[], border = 0) => {
     this.hideToolbar()
     const uneditablePage = document.querySelector('.unavailable-to-edit-page')
+    const scaled_container = document.querySelector('#scaled_container')
     let x2 = 0
-    if (uneditablePage && uneditablePage.className.includes('left-page')) {
+
+    if (scaled_container && e.target.closest('.right-sidebuttons')) {
+      const { width } = scaled_container.getBoundingClientRect()
+      x2 = width / (this.scale * 2)
+    } else if (uneditablePage && uneditablePage.className.includes('left-page')) {
       const { width } = uneditablePage.getBoundingClientRect()
       x2 = width / this.scale
     }

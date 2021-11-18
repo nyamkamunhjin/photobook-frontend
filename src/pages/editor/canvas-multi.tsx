@@ -468,8 +468,8 @@ const BookEditor: React.FC<Props> = ({
           )}
           <div id="selection" hidden ref={selectionRef} />
           <SideButtons
-            createSquare={() => editors.createSquare(objects)}
-            createEclipse={() => editors.createEclipse(objects)}
+            createSquare={(e) => editors.createSquare(e, objects)}
+            createEclipse={(e) => editors.createEclipse(e, objects)}
             settings={false}
             type="canvas"
           />

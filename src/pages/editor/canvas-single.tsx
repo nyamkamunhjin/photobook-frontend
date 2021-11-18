@@ -445,17 +445,17 @@ const BookEditor: React.FC<Props> = ({
           {currentProject.canvasType === 'Single' ? (
             <SideButtons
               createImage={(e) => editors.createImage(e, objects)}
-              createText={() => editors.createText(objects)}
-              createSquare={() => editors.createSquare(objects)}
-              createEclipse={() => editors.createEclipse(objects)}
+              createText={(e) => editors.createText(e, objects)}
+              createSquare={(e) => editors.createSquare(e, objects)}
+              createEclipse={(e) => editors.createEclipse(e, objects)}
               settings={false}
               type="canvas"
             />
           ) : (
             <SideButtons
-              createText={() => editors.createText(objects)}
-              createSquare={() => editors.createSquare(objects)}
-              createEclipse={() => editors.createEclipse(objects)}
+              createText={(e) => editors.createText(e, objects)}
+              createSquare={(e) => editors.createSquare(e, objects)}
+              createEclipse={(e) => editors.createEclipse(e, objects)}
               settings={false}
               type="canvas"
             />

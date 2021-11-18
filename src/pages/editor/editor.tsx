@@ -527,9 +527,9 @@ const BookEditor: React.FC<Props> = ({
           {!(_slideIndex === 0 && !currentProject.coverEditable) && (
             <SideButtons
               createImage={(e) => editors.createImage(e, objects)}
-              createText={() => editors.createText(objects)}
-              createSquare={() => editors.createSquare(objects)}
-              createEclipse={() => editors.createEclipse(objects)}
+              createText={(e) => editors.createText(e, objects)}
+              createSquare={(e) => editors.createSquare(e, objects)}
+              createEclipse={(e) => editors.createEclipse(e, objects)}
               // createMontagePortrait={(e) => editors.createMontagePortrait(e, objects)}
               changeLayout={(align, type) => editors.changeLayout(objects, layout, layouts, align, type)}
               layout={layout}

@@ -21,9 +21,9 @@ import SlideSettings from './settings'
 interface Props {
   type: 'photobook' | 'canvas' | 'photo' | 'frame'
   createImage?: (e: unknown) => void
-  createText?: () => void
-  createSquare?: () => void
-  createEclipse?: () => void
+  createText?: (e: unknown) => void
+  createSquare?: (e: unknown) => void
+  createEclipse?: (e: unknown) => void
   createMontagePortrait?: (e: unknown) => void
   changeLayout?: (align: string, type: string) => void
   layout?: {
@@ -153,8 +153,8 @@ const SideButtons: React.FC<Props> = ({
           currentProject &&
           ['photobook', 'montage'].includes(currentProject.templateType?.name + '') &&
           ((slideIndex === 0 && !currentProject.coverEditable) || slideIndex === 1)
-            ? 'invisible'
-            : ''
+            ? 'invisible left-sidebuttons'
+            : 'left-sidebuttons'
         }
       >
         {renderButtons('left')}
@@ -164,8 +164,8 @@ const SideButtons: React.FC<Props> = ({
           currentProject &&
           ['photobook', 'montage'].includes(currentProject.templateType?.name + '') &&
           ((slideIndex === 0 && !currentProject.coverEditable) || slideIndex === currentProject.slides.length - 1)
-            ? 'invisible'
-            : ''
+            ? 'invisible right-sidebuttons'
+            : 'right-sidebuttons'
         }
       >
         {renderButtons('right')}
