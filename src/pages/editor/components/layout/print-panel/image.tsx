@@ -658,7 +658,11 @@ const Image: React.FC<Props> = ({
       cropper.top = parseFloat(img_offsetTop)
       cropper.left = (img_offsetWidth - cropper.width) / 2
       setLoader(false)
-    } else if (imgRatio <= 1 && loader) {
+    } else if (imgRatio === 1 && loader) {
+      cropper.top = (img_offsetHeight - cropper.height) / 2
+      cropper.left = (img_offsetWidth - cropper.width) / 2
+      setLoader(false)
+    } else if (imgRatio < 1 && loader) {
       cropper.left = parseFloat(img_offsetLeft)
       cropper.top = (img_offsetHeight - cropper.height) / 2
       setLoader(false)
