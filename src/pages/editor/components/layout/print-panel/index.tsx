@@ -64,7 +64,10 @@ const PrintPanel: React.FC<Props> = ({
         addImages(keys, currentProject.id).then(() =>
           addNewPrintSlide(
             currentProject.id,
-            keys.map((key) => key.key)
+            keys.map((key) => ({
+              imageUrl: key.key,
+              naturalSize: key.naturalSize as { width: number; height: number },
+            }))
           )
         )
       })
@@ -78,7 +81,7 @@ const PrintPanel: React.FC<Props> = ({
       await addImages(keys, currentProject.id)
       await addNewPrintSlide(
         currentProject.id,
-        keys.map((key) => key.key)
+        keys.map((key) => ({ imageUrl: key.key, naturalSize: key.naturalSize as { width: number; height: number } }))
       )
     }
   }
@@ -88,7 +91,10 @@ const PrintPanel: React.FC<Props> = ({
       await uploadImages()
       const keys = await s3SyncImages(_images)
       await addImages(keys, currentProject.id)
-      await addNewPrintSlide(currentProject.id, keys)
+      await addNewPrintSlide(
+        currentProject.id,
+        keys.map((key) => ({ imageUrl: key.key, naturalSize: key.naturalSize as { width: number; height: number } }))
+      )
     }
   }
 
