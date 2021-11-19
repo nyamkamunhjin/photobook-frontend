@@ -168,6 +168,7 @@ export const getPrintProject = (id: number, params: ProjectCreate, uuid: string)
   try {
     if (uuid.length === 0) {
       dispatch({ type: CLEAR_PROJECT })
+
       const newProject = await createProject({
         ...params,
         name: 'New Print',
@@ -393,23 +394,25 @@ export const loadBackgrounds = (backgrounds: Object[]) => async (dispatch: any) 
   }
 }
 // Add new slide
-export const addNewPrintSlide = (projectId: number, imageUrls: string[]) => async (dispatch: any) => {
-  try {
-    const result = await updateProjectPrintSlides(projectId, {
-      push: imageUrls,
-    })
-    console.log('aaaaaaaaaaaa', result?.data.actions)
-    dispatch({
-      type: NEW_SLIDES,
-      payload: { slides: result?.data.actions || [] },
-    })
-  } catch (err) {
-    dispatch({
-      type: SLIDES_ERROR,
-      payload: { msg: err },
-    })
+export const addNewPrintSlide =
+  (projectId: number, images: { imageUrl: string; naturalSize: { width: number; height: number } }[]) =>
+  async (dispatch: any) => {
+    try {
+      const result = await updateProjectPrintSlides(projectId, {
+        push: images,
+      })
+      console.log('aaaaaaaaaaaa fuck', result?.data.actions)
+      dispatch({
+        type: NEW_SLIDES,
+        payload: { slides: result?.data.actions || [] },
+      })
+    } catch (err) {
+      dispatch({
+        type: SLIDES_ERROR,
+        payload: { msg: err },
+      })
+    }
   }
-}
 // Duplicate slide
 export const duplicatePrintSlide = (projectId: number, slideIndex: string, slide: Slide) => async (dispatch: any) => {
   try {

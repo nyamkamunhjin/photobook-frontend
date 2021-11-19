@@ -68,7 +68,7 @@ const Image: React.FC<Props> = ({
     },
     { wait: 50 }
   )
-  const [loader, setLoader] = useState(true)
+  const [loader, setLoader] = useState(false)
   const [_cropperRatio, set_CropperRatio] = useState(0)
   const _cropperAngle = useRef(0)
 
@@ -626,7 +626,7 @@ const Image: React.FC<Props> = ({
   const cropperRatio = cropper ? cropper.width / cropper.height : 0
 
   const adjustCropper = useCallback(() => {
-    if (!cropper) return
+    if (!cropper || !changeReq.isChanged) return
     // console.log('adjustCropper', 111111112)
 
     let {

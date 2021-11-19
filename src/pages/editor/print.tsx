@@ -6,7 +6,6 @@ import { useQueryState } from 'react-router-use-location-state'
 import { connect } from 'react-redux'
 import {
   getPrintProject as _getProjects,
-  saveProject as _saveProject,
   saveProjectAttribute as _saveProjectAttribute,
   updateHistory as _updateHistory,
   removeObject as _removeObject,
@@ -25,7 +24,6 @@ import './components/styles/editor.scss'
 
 interface Props {
   getProjects: (id: number, params: ProjectCreate, project: string) => Promise<string | undefined>
-  saveProject: (projectId: number, updatedSlide: Slide, slideIndex: number) => void
   project: ProjectInterface
   loadObjects: (objects: PObject[]) => void
   saveProjectAttribute: (projectId: number, props: Object) => void
@@ -36,7 +34,6 @@ interface Props {
 
 const BookEditor: React.FC<Props> = ({
   getProjects,
-  saveProject,
   saveProjectAttribute,
   updateObject,
   updateHistory,
@@ -178,14 +175,14 @@ const BookEditor: React.FC<Props> = ({
     <div className="AdvancedEditorWrapper h-full">
       <Header
         deSelectObject={editors.deSelectObject}
-        onPreview={async () => {
-          if (preview || !single) {
-            exitFull()
-          } else {
-            await saveSlides()
-            setPreview.setTrue()
-          }
-        }}
+        // onPreview={async () => {
+        //   if (preview || !single) {
+        //     exitFull()
+        //   } else {
+        //     await saveSlides()
+        //     setPreview.setTrue()
+        //   }
+        // }}
         saveName={onSaveName}
         saveObjects={saveSlides}
         saveTextBeforeUndo={saveTextBeforeUndo}
@@ -205,7 +202,6 @@ const mapStateToProps = (state: RootInterface) => ({
 
 export default connect(mapStateToProps, {
   getProjects: _getProjects,
-  saveProject: _saveProject,
   loadObjects: _loadObjects,
   updateObject: _updateObject,
   updateHistory: _updateHistory,

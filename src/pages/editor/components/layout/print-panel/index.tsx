@@ -35,7 +35,10 @@ interface Props {
   linkImages: (images: string[], id: number, type: string) => Promise<ProjectImage[] | null>
   unlinkImages: (images: number[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
-  addNewPrintSlide: (projectId: number, imageUrl: string[]) => Promise<void>
+  addNewPrintSlide: (
+    projectId: number,
+    images: { imageUrl: string; naturalSize: { width: number; height: number } }[]
+  ) => Promise<void>
   duplicatePrintSlide: (projectId: number, slideIndex: string, duplicatedSlide: Slide) => Promise<void>
   deletePrintSlide: (projectId: number, slideIndex: string) => Promise<void>
   image: ImageInterface
@@ -100,7 +103,7 @@ const PrintPanel: React.FC<Props> = ({
     if (timages) {
       await addNewPrintSlide(
         currentProject.id,
-        timages.map(({ image }) => image.imageUrl)
+        timages.map(({ image }) => ({ imageUrl: image.imageUrl, naturalSize: image.naturalSize }))
       )
     }
   }
