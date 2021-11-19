@@ -79,9 +79,6 @@ interface Props {
   linkImages: (images: string[], id: number) => Promise<any>
 }
 
-const BORDER_WIDTH = 3 * 100
-const GAP = 5 * 100
-
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
@@ -181,6 +178,9 @@ const BookEditor: React.FC<Props> = ({
   )
   const urlParams = new URLSearchParams(window.location.search)
   const tradephoto = urlParams.get('tradephoto')
+
+  const BORDER_WIDTH = (currentProject.templateType?.gap?.borderWidth || 0) * 100
+  const GAP = (currentProject.templateType?.gap?.gap || 0) * 100
 
   const editors = useMemo(() => {
     return new Editor({

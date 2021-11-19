@@ -4,7 +4,7 @@
 import React, { useState } from 'react'
 import { Select } from 'antd'
 import { useDispatch } from 'react-redux'
-import { Cropper, PaperMaterial, PaperSize, PObject, Slide } from 'interfaces'
+import { Cropper, PaperMaterial, PaperSize, PObject, Slide, TemplateType } from 'interfaces'
 import { FormattedMessage } from 'react-intl'
 import { InputNumber } from 'components'
 import { saveProject as _saveProject, deleteSlide as _deleteSlide, updateObject } from 'redux/actions/project'
@@ -21,6 +21,7 @@ interface Props {
   height: number
   paperSizes?: PaperSize[]
   paperMaterials?: PaperMaterial[]
+  templateType?: TemplateType
 }
 
 const Images: React.FC<Props> = ({
@@ -33,6 +34,7 @@ const Images: React.FC<Props> = ({
   onEdit,
   onDuplicate,
   onRemove,
+  templateType,
 }) => {
   const dispatch = useDispatch()
   const [popVisible, setPopVisible] = useState(-1)
@@ -149,6 +151,7 @@ const Images: React.FC<Props> = ({
                   placeholderStyle={object.object?.props.placeholderStyle}
                   changeReq={changeReq}
                   setChangeReq={setChangeReq}
+                  templateType={templateType}
                 />
               </div>
             </div>

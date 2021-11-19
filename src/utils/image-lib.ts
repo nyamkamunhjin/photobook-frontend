@@ -1,4 +1,4 @@
-import { PObject, Slide } from 'interfaces'
+import { PObject, Slide, TemplateType } from 'interfaces'
 
 export const getSlides = (sort = 'a-z', slides: Slide[]) => {
   switch (sort) {
@@ -36,24 +36,38 @@ export const getSlidesa = (sort = 'a-z', slides: Slide[]) => {
   }
 }
 
-export const checkPrintQuality = (o: PObject, imageQuality: { imageSquare: number; placeholderSquare: number }) => {
-  const placeholder = document.getElementById(o.id)
-  if (!placeholder) return false
-  const image: any = document.querySelector('img')
-  if (!image) return false
+export const checkPrintQuality = (o: PObject, templateType: TemplateType) => {
+  if (!templateType.imageQuality) return true
+  if (templateType.name === 'print') {
+    const imageSquare = parseFloat(o.props.naturalSize?.width + '') * parseFloat(o.props.naturalSize?.height + '')
+    const placeholderSquare = parseFloat(o.props.cropStyle?.width + '') * parseFloat(o.props.cropStyle?.height + '')
 
-  let scale = o.props.style.transform?.includes('scaleX')
-    ? parseFloat(o.props.style.transform?.substring(o.props.style.transform.indexOf('scaleX(') + 7))
-    : 1
-  if (Number.isNaN(scale)) scale = 1
+    return (
+      imageSquare / placeholderSquare >=
+      templateType.imageQuality.imageSquare / templateType.imageQuality.placeholderSquare
+    )
+  } else {
+    const placeholder = document.getElementById(o.id)
+    if (!placeholder) return false
+    const image: any = document.querySelector('img')
+    if (!image) return false
 
-  const imageWidth = parseFloat(o.props.naturalSize?.width + '')
-  const imageHeight = parseFloat(o.props.naturalSize?.height + '')
-  const naturalRatio = imageWidth / imageHeight
-  const imageSquare = (imageWidth * scale * imageWidth * scale) / naturalRatio
-  const placeholderSquare = parseFloat(o.style.width + '') * parseFloat(o.style.height + '')
+    let scale = o.props.style.transform?.includes('scaleX')
+      ? parseFloat(o.props.style.transform?.substring(o.props.style.transform.indexOf('scaleX(') + 7))
+      : 1
+    if (Number.isNaN(scale)) scale = 1
 
-  return imageSquare / placeholderSquare >= imageQuality.imageSquare / imageQuality.placeholderSquare
+    const imageWidth = parseFloat(o.props.naturalSize?.width + '')
+    const imageHeight = parseFloat(o.props.naturalSize?.height + '')
+    const naturalRatio = imageWidth / imageHeight
+    const imageSquare = (imageWidth * scale * imageWidth * scale) / naturalRatio
+    const placeholderSquare = parseFloat(o.style.width + '') * parseFloat(o.style.height + '')
+
+    return (
+      imageSquare / placeholderSquare >=
+      templateType.imageQuality.imageSquare / templateType.imageQuality.placeholderSquare
+    )
+  }
 }
 
 export const getSizeFromFile = (file: File) => {

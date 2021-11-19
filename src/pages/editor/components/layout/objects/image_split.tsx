@@ -175,7 +175,7 @@ const Image: React.FC<Props> = ({
   // }
 
   useEffect(() => {
-    if (templateType && templateType.imageQuality) setWillBlur(!checkPrintQuality(object, templateType.imageQuality))
+    if (templateType && templateType.imageQuality) setWillBlur(!checkPrintQuality(object, templateType))
   }, [width, height]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle

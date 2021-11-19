@@ -182,6 +182,7 @@ export const getPrintProject = (id: number, params: ProjectCreate, uuid: string)
       const project: Project = await getProjectByUuid(uuid)
       const imageCategories = await listImageCategoryByProject(project.templateId)
       const images = await getS3Images(project.images || [])
+
       dispatch(setCurrentProject(project))
       dispatch({
         type: GET_CATEGORIES,

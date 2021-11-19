@@ -79,7 +79,6 @@ interface Props {
   removeObject: (props: { object: Object; container: Object }) => void
   linkImages: (images: string[], id: number) => Promise<any>
 }
-const BORDER_WIDTH = 0
 
 const BookEditor: React.FC<Props> = ({
   getProjects,
@@ -170,6 +169,8 @@ const BookEditor: React.FC<Props> = ({
       wait: 1000 * 30,
     }
   )
+
+  const BORDER_WIDTH = currentProject.templateType?.gap?.borderWidth || 0
 
   const editors = useMemo(() => {
     return new Editor({

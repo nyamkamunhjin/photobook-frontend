@@ -249,7 +249,7 @@ const SideBarPanel: React.FC<Props> = ({
             o.props.className.includes('image-placeholder') &&
             templateType &&
             templateType.imageQuality &&
-            !checkPrintQuality(o, templateType.imageQuality)
+            !checkPrintQuality(o, templateType)
           ) {
             acc.push({
               type: 'poor quality',

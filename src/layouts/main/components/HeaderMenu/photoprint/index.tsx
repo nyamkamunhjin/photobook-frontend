@@ -26,7 +26,7 @@ const SubmenuPhotobook: FC<SubmenuPhotoprint> = ({ categories, imageLeft, imageR
         <button
           className="focus:outline-none hover:text-blue-300 font-semibold"
           type="button"
-          onClick={() => router.replace(`/editor/print?template=2`)}
+          onClick={() => router.replace(`/editor/print?template=1`)}
         >
           <FormattedMessage id="print" />
         </button>

@@ -175,19 +175,22 @@ export type FeatureType =
   | 'frame_masks'
   | 'frame_materials'
 
-export interface ImageQuality {
-  id: number
-  imageSquare: number
-  placeholderSquare: number
-  templateType: TemplateType
-}
 export interface TemplateType {
   id: number
   name: string
   paperMaterials: PaperMaterial[]
   templates: Template[]
   projects: Project[]
-  imageQuality: ImageQuality
+  imageQuality?: {
+    imageSquare: number
+    placeholderSquare: number
+  }
+  gap?: {
+    borderWidth: number
+    air: number
+    standart: number
+    gap: number
+  }
 }
 
 export interface ImageCategory {

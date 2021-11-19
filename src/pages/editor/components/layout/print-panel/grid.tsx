@@ -31,7 +31,7 @@ const Grid: React.FC<Props> = ({
   linkPhoto,
   duplicatePhoto,
   removePhoto,
-  currentProject: { slides },
+  currentProject: { slides, templateType },
   paperSizes,
   paperMaterials,
 }) => {
@@ -161,6 +161,7 @@ const Grid: React.FC<Props> = ({
           selectedObjects={selectedSlides || []}
           toggle={toggle}
           height={(zoom || 1) * 80}
+          templateType={templateType}
         />
       </div>
       {slideIndex !== -1 && (

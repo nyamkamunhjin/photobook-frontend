@@ -1114,57 +1114,6 @@ export default class Editor {
     this.updateObject({ object: newObject })
     this.updateHistory(UPDATE_OBJECT, { object: objects[_index] })
   }
-  public listAllEventListeners = () => {
-    const allElements = Array.prototype.slice.call(document.querySelectorAll('*'))
-    allElements.push(document)
-    allElements.push(window)
-
-    const types = []
-
-    for (const ev in window) {
-      if (/^on/.test(ev)) types[types.length] = ev
-    }
-
-    const elements = []
-    for (let i = 0; i < allElements.length; i += 1) {
-      const currentElement = allElements[i]
-      for (let j = 0; j < types.length; j += 1) {
-        if (typeof currentElement[types[j]] === 'function') {
-          elements.push({
-            node: currentElement,
-            type: types[j],
-            func: currentElement[types[j]].toString(),
-          })
-        }
-      }
-    }
-
-    return elements.sort((a, b) => {
-      return a.type.localeCompare(b.type)
-    })
-  }
-  public listDocumentEventListeners = () => {
-    const types = []
-
-    for (const ev in window) {
-      if (/^on/.test(ev)) types[types.length] = ev
-    }
-
-    const elements = []
-    for (let j = 0; j < types.length; j += 1) {
-      if (typeof document[types[j]] === 'function') {
-        elements.push({
-          node: document,
-          type: types[j],
-          func: document[types[j]].toString(),
-        })
-      }
-    }
-
-    return elements.sort((a, b) => {
-      return a.type.localeCompare(b.type)
-    })
-  }
   public onSwapImages = (
     _index: number,
     objects: PObject[],

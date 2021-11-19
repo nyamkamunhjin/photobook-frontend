@@ -2,10 +2,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { Cropper, PObject, SlideObject } from 'interfaces'
+import { Cropper, PObject, SlideObject, TemplateType } from 'interfaces'
 import { imageOnError, ParseNumber } from 'utils'
 import { useThrottleFn } from 'ahooks'
 import { centerToTL, degToRadian, getLength, getNewStyle, tLToCenter } from 'utils/transformer-lib'
+import { checkPrintQuality } from 'utils/image-lib'
 
 interface Props extends React.HTMLProps<HTMLImageElement> {
   object: SlideObject
@@ -26,6 +27,7 @@ interface Props extends React.HTMLProps<HTMLImageElement> {
   changeReq: any
   setChangeReq: any
   cropperCenter?: { top: number; left: number }
+  templateType?: TemplateType
 }
 
 const transformers = {
@@ -51,6 +53,7 @@ const Image: React.FC<Props> = ({
   changeReq,
   setChangeReq,
   cropperCenter,
+  templateType,
 }) => {
   const imageRef = useRef<any>(null)
   const [willBlur, setWillBlur] = useState<boolean>(false)
@@ -562,18 +565,18 @@ const Image: React.FC<Props> = ({
     window.addEventListener('mousemove', onMouseMove)
   }
 
-  const checkRatio = () => {
-    const originalWidth = imageRef.current.naturalWidth
-    const originalHeight = imageRef.current.naturalHeight
+  // const checkRatio = () => {
+  //   const originalWidth = imageRef.current.naturalWidth
+  //   const originalHeight = imageRef.current.naturalHeight
 
-    const widthRatio = resolution.width / originalWidth
-    const heightRatio = resolution.height / originalHeight
+  //   const widthRatio = resolution.width / originalWidth
+  //   const heightRatio = resolution.height / originalHeight
 
-    if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
-      return false
-    }
-    return true
-  }
+  //   if (widthRatio >= 0.2 && widthRatio <= 2 && heightRatio >= 0.2 && heightRatio <= 2) {
+  //     return false
+  //   }
+  //   return true
+  // }
 
   const getPosition = (resizer: string, cropper?: Cropper) => {
     switch (resizer) {
@@ -603,7 +606,7 @@ const Image: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    setWillBlur(checkRatio())
+    if (templateType && templateType.imageQuality) setWillBlur(!checkPrintQuality(object, templateType))
   }, [resolution]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

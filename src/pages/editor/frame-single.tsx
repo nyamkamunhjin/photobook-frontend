@@ -89,8 +89,6 @@ interface Props {
   updateProject: (projectId: number, props: { paperSizeId?: number; frameMaterialId?: number }) => void
 }
 
-const BORDER_WIDTH = 0.5 * 100
-
 const BookEditor: React.FC<Props> = ({
   getProjects,
   saveProject,
@@ -193,6 +191,7 @@ const BookEditor: React.FC<Props> = ({
   )
 
   const frameMaterials = useRequest(() => listFrameMaterial())
+  const BORDER_WIDTH = (currentProject.templateType?.gap?.borderWidth || 0) * 100
 
   const editors = useMemo(() => {
     return new Editor({

@@ -17,14 +17,22 @@ import {
 import { s3SyncImages, s3UploadImages } from 'utils/aws-lib'
 import { FormattedMessage } from 'react-intl'
 import { listPaperMaterial, listPaperSize } from 'api'
-import { Image, ImageInterface, ProjectInterface, RootInterface, Slide, UploadablePicture } from 'interfaces'
+import {
+  Image,
+  ImageInterface,
+  ProjectImage,
+  ProjectInterface,
+  RootInterface,
+  Slide,
+  UploadablePicture,
+} from 'interfaces'
 
 import Grid from './grid'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 
 interface Props {
   addImages: (keys: { key: string; naturalSize: any }[], id: number) => Promise<void>
-  linkImages: (images: string[], id: number) => Promise<Image[] | null>
+  linkImages: (images: string[], id: number, type: string) => Promise<ProjectImage[] | null>
   unlinkImages: (images: number[], id: number) => Promise<void>
   uploadImages: () => Promise<void>
   addNewPrintSlide: (projectId: number, imageUrl: string[]) => Promise<void>
@@ -81,13 +89,18 @@ const PrintPanel: React.FC<Props> = ({
     }
   }
 
-  const linkPhoto = async (_images: string[]) => {
+  const linkPhoto = async (_images: string[], type = 'General') => {
+    _images = _images.reduce((acc, item) => {
+      if (!currentProject.images?.some((el) => el.imageId + '' === item + '' && el.type === type)) acc.push(item)
+      return acc
+    }, [] as string[])
+    if (_images.length === 0) return
     await uploadImages()
-    const timages = await linkImages(_images, currentProject.id)
+    const timages = await linkImages(_images, currentProject.id, type)
     if (timages) {
       await addNewPrintSlide(
         currentProject.id,
-        timages.map((each) => each.imageUrl)
+        timages.map(({ image }) => image.imageUrl)
       )
     }
   }

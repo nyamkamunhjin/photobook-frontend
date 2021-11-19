@@ -12,6 +12,7 @@ import {
   removeObject as _removeObject,
   loadObjects as _loadObjects,
   updateObject as _updateObject,
+  updateProject as _updateProject,
 } from 'redux/actions/project'
 
 import { HistoryProps, ObjectType, PObject, ProjectCreate, ProjectInterface, RootInterface, Slide } from 'interfaces'
@@ -30,6 +31,7 @@ interface Props {
   saveProjectAttribute: (projectId: number, props: Object) => void
   updateObject: (props: { object: PObject }) => void
   updateHistory: (historyType: string, props: HistoryProps) => void
+  updateProject: (id: number, data: any) => void
 }
 
 const BookEditor: React.FC<Props> = ({
@@ -38,6 +40,7 @@ const BookEditor: React.FC<Props> = ({
   saveProjectAttribute,
   updateObject,
   updateHistory,
+  updateProject,
   project: { currentProject, objects, containers, backgrounds, slideWidth, slideHeight, fetching },
 }) => {
   const [template] = useQueryState('template', 1)
@@ -70,7 +73,7 @@ const BookEditor: React.FC<Props> = ({
       width: any
       height: any
     }>()
-  const _slideIndex = 0
+
   useHotkeys('shift+a', () => editors.onRotateLeftObject(_index, objects), [_index, objects])
   useHotkeys('shift+d', () => editors.onRotateRightObject(_index, objects), [_index, objects])
   useHotkeys('shift+q', () => editors.onFlipObject(_index, objects), [_index, objects])
@@ -81,13 +84,13 @@ const BookEditor: React.FC<Props> = ({
   useHotkeys(
     'ctrl+shift+s',
     () => {
-      saveObjects()
+      saveSlides()
     },
     [objects, backgrounds]
   )
   const debouncedSave = useDebounceFn(
     () => {
-      saveObjects()
+      saveSlides()
     },
     {
       wait: 1000 * 30,
@@ -135,26 +138,10 @@ const BookEditor: React.FC<Props> = ({
     }
   }
 
-  const saveObjects = async () => {
-    if (_slideIndex >= currentProject.slides.length) return
-    const updatedSlide = currentProject.slides[_slideIndex]
-    updatedSlide.objects = objects.map((o: PObject) => {
-      if (o.props.className !== 'image-placeholder') return o
-      const obj = document.getElementById(o.id)
-      const [img] = obj?.getElementsByTagName('img') as any
-      if (!img) return o
-      const { width, height, top, left } = img.style
-      if (width !== 'auto' && height !== 'auto') {
-        o.props.imageStyle.width = width
-        o.props.imageStyle.height = height
-      } else if (width !== 'auto') o.props.imageStyle.width = width
-      else if (height !== 'auto') o.props.imageStyle.height = height
-      o.props.imageStyle.top = top
-      o.props.imageStyle.left = left
-      return o
-    })
-    saveProject(currentProject.id, updatedSlide, _slideIndex)
+  const saveSlides = async () => {
+    await updateProject(currentProject.id, { slides: currentProject.slides })
   }
+
   const onSaveName = (name: string) => {
     saveProjectAttribute(currentProject.id, { name })
   }
@@ -195,12 +182,12 @@ const BookEditor: React.FC<Props> = ({
           if (preview || !single) {
             exitFull()
           } else {
-            await saveObjects()
+            await saveSlides()
             setPreview.setTrue()
           }
         }}
         saveName={onSaveName}
-        saveObjects={saveObjects}
+        saveObjects={saveSlides}
         saveTextBeforeUndo={saveTextBeforeUndo}
         isFullscreen={isFullscreen}
       />
@@ -224,4 +211,5 @@ export default connect(mapStateToProps, {
   updateHistory: _updateHistory,
   removeObject: _removeObject,
   saveProjectAttribute: _saveProjectAttribute,
+  updateProject: _updateProject,
 })(BookEditor)
