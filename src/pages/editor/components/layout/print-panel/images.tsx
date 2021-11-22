@@ -120,6 +120,7 @@ const Images: React.FC<Props> = ({
           onClick={(e) => toggle.run(object, e)}
           onMouseEnter={() => setPopVisible(key)}
           onMouseLeave={() => setPopVisible(-1)}
+          id={object.slideId}
         >
           <div
             className={

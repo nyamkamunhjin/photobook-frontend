@@ -20,14 +20,17 @@ import { GrRotateLeft, GrRotateRight } from 'react-icons/gr'
 import { IoIosTabletLandscape, IoIosTabletPortrait } from 'react-icons/io'
 import Select from 'rc-select'
 import { InputNumber } from 'antd'
+import { updateProject } from 'redux/actions/project'
+import { ParseNumber } from 'utils'
 
 interface Props {
   currentProject: Project
   loading: Boolean
   selectedSlides?: Slide[]
   setSelectedSlides: (value: any) => void
+  setChangeReq: (value: any) => void
 }
-const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, setSelectedSlides }) => {
+const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, setSelectedSlides, setChangeReq }) => {
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'print' }))
   const paperMaterials = useRequest(() => listPaperMaterial({ current: 0, pageSize: 100 }, { templateTypes: 'print' }))
   const [selectedState, setSelectedState] = useState<{
@@ -42,80 +45,144 @@ const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, set
     amount: undefined,
   })
 
-  const onRotate = (angle: string) => {
-    console.log('onRotate', angle)
+  const onRotate = async (angle: string) => {
+    const slides = currentProject.slides.map((slide) => {
+      if (!selectedSlides?.some((item) => item.slideId === slide.slideId) || !slide.object?.props.imageStyle)
+        return slide
 
-    // let { rotateAngle = 0, transform = 'rotate(0deg)' } = object.props.imageStyle
-    // if (!transform.match(/rotate\(([^)]+)\)/)) {
-    //   transform += ' rotate(0deg)'
-    // }
-    // if (angle === 'left') {
-    //   rotateAngle -= 90
-    // } else {
-    //   rotateAngle += 90
-    // }
-    // updateObject(
-    //   {
-    //     object: {
-    //       ...object,
-    //       props: {
-    //         ...object.props,
-    //         imageStyle: {
-    //           ...object.props.imageStyle,
-    //           rotateAngle,
-    //           transform: transform.replace(/rotate\(([^)]+)\)/, `rotate(${rotateAngle}deg)`),
-    //         },
-    //       },
-    //     },
-    //   },
-    //   slideId
-    // )
-    // setChangeReq({ isChanged: true, action: 'angle' })
+      let { rotateAngle = 0, transform = 'rotate(0deg)' } = slide.object?.props.imageStyle
+      if (!transform.match(/rotate\(([^)]+)\)/)) {
+        transform += ' rotate(0deg)'
+      }
+      if (angle === 'left') {
+        rotateAngle -= 90
+      } else {
+        rotateAngle += 90
+      }
+
+      return {
+        ...slide,
+        object: {
+          ...slide.object,
+          props: {
+            ...slide.object?.props,
+            imageStyle: {
+              ...slide.object?.props.imageStyle,
+              rotateAngle,
+              transform: transform.replace(/rotate\(([^)]+)\)/, `rotate(${rotateAngle}deg)`),
+            },
+          },
+        },
+      }
+    })
+    try {
+      await updateProject(currentProject.id, { slides })
+      setChangeReq({ isChanged: true, action: 'angle' })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  const onOrientation = (position: string) => {
-    console.log('onOrientation', position)
+  const onOrientation = async (position: string) => {
+    const slides = currentProject.slides.map((slide) => {
+      if (!selectedSlides?.some((item) => item.slideId === slide.slideId) || !slide.object?.props.imageStyle)
+        return slide
+      const { cropStyle } = slide.object?.props
+      const cropper = document.getElementById(slide.slideId)
+      if (!cropStyle || !cropper) return slide
+      const img = cropper.querySelector('img')
+      if (!img) return slide
 
-    // if (!cropStyle) return
+      let width = ParseNumber(cropStyle.width)
+      let height = ParseNumber(cropStyle.height)
+      if (position === 'vertical') {
+        if (width > height) {
+          width = height
+          height = ParseNumber(cropStyle?.width)
+          cropStyle.width = width
+          cropStyle.height = height
+          setChangeReq({ isChanged: true, action: 'orientation vertical' })
+        } else return slide
+      } else if (width < height) {
+        width = height
+        height = ParseNumber(cropStyle?.width)
+        cropStyle.width = width
+        cropStyle.height = height
+        setChangeReq({ isChanged: true, action: 'orientation horizontal' })
+      } else return slide
 
-    // setCropperCenter({
-    //   top: cropStyle.top + cropStyle.height / 2,
-    //   left: cropStyle.left + cropStyle.width / 2,
-    // })
+      const cropperRatio = width / height
 
-    // let width = ParseNumber(cropStyle.width)
-    // let height = ParseNumber(cropStyle.height)
-    // if (position === 'vertical') {
-    //   if (width > height) {
-    //     width = height
-    //     height = ParseNumber(cropStyle?.width)
-    //     cropStyle.width = width
-    //     cropStyle.height = height
-    //     setChangeReq({ isChanged: true, action: 'orientation vertical' })
-    //   }
-    // } else if (width < height) {
-    //   width = height
-    //   height = ParseNumber(cropStyle?.width)
-    //   cropStyle.width = width
-    //   cropStyle.height = height
-    //   setChangeReq({ isChanged: true, action: 'orientation horizontal' })
-    // }
-    // updateObject(
-    //   {
-    //     object: {
-    //       ...object,
-    //       props: {
-    //         ...object.props,
-    //         cropStyle: {
-    //           ...(object.props?.cropStyle as Cropper),
-    //           width,
-    //           height,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   slideId
-    // )
+      let {
+        offsetTop: img_offsetTop,
+        offsetLeft: img_offsetLeft,
+        offsetHeight: img_offsetHeight,
+        offsetWidth: img_offsetWidth,
+      } = img
+      const { rotateAngle = 0 } = slide.object.props.imageStyle
+      if (rotateAngle % 180 !== 0) {
+        const _img_offsetTop = img_offsetTop
+        const _img_offsetWidth = img_offsetWidth
+        img_offsetTop = img_offsetLeft
+        img_offsetLeft = _img_offsetTop
+        img_offsetWidth = img_offsetHeight
+        img_offsetHeight = _img_offsetWidth
+      }
+
+      const imgRatio = img_offsetWidth / img_offsetHeight
+      if (imgRatio >= cropperRatio) {
+        cropStyle.height = img_offsetHeight
+        cropStyle.width = cropStyle.height * cropperRatio
+      } else {
+        cropStyle.width = img_offsetWidth
+        cropStyle.height = cropStyle.width / cropperRatio
+      }
+
+      if (imgRatio > 1) {
+        cropStyle.top = img_offsetTop
+        cropStyle.left = (img_offsetWidth - cropStyle.width) / 2
+      } else if (imgRatio === 1) {
+        cropStyle.top = (img_offsetHeight - cropStyle.height) / 2
+        cropStyle.left = (img_offsetWidth - cropStyle.width) / 2
+      } else if (imgRatio < 1) {
+        cropStyle.left = img_offsetLeft
+        cropStyle.top = (img_offsetHeight - cropStyle.height) / 2
+      }
+
+      if (cropStyle.left + cropStyle.width > img_offsetLeft + img_offsetWidth) {
+        cropStyle.left = img_offsetLeft + img_offsetWidth - cropStyle.width
+      }
+      if (cropStyle.top + cropStyle.height > img_offsetTop + img_offsetHeight) {
+        cropStyle.top = img_offsetTop + img_offsetHeight - cropStyle.height
+      }
+
+      return {
+        ...slide,
+        object: {
+          ...slide.object,
+          props: {
+            ...slide.object.props,
+            cropStyle: {
+              ...(slide.object.props?.cropStyle as {
+                top: number
+                left: number
+                width: number
+                height: number
+              }),
+              width: cropStyle.width,
+              height: cropStyle.height,
+              top: cropStyle.top,
+              left: cropStyle.left,
+            },
+          },
+        },
+      }
+    })
+    try {
+      await updateProject(currentProject.id, { slides })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const handleApply = () => {

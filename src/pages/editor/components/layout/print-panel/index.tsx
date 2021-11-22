@@ -59,6 +59,7 @@ const PrintPanel: React.FC<Props> = ({
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'print' }))
   const paperMaterials = useRequest(() => listPaperMaterial({ current: 0, pageSize: 100 }, { templateTypes: 'print' }))
   const [selectedSlides, setSelectedSlides] = useState<Slide[]>()
+  const [changeReq, setChangeReq] = useState({ isChanged: false, action: '' })
   const [props, { isHovering }] = useDrop({
     onFiles: (files) => {
       uploadImages()
@@ -152,6 +153,8 @@ const PrintPanel: React.FC<Props> = ({
               currentProject={currentProject}
               selectedSlides={selectedSlides}
               setSelectedSlides={setSelectedSlides}
+              changeReq={changeReq}
+              setChangeReq={setChangeReq}
             />
           )}
           <div className="TabView">
@@ -177,6 +180,7 @@ const PrintPanel: React.FC<Props> = ({
           loading={projectLoading}
           selectedSlides={selectedSlides}
           setSelectedSlides={setSelectedSlides}
+          setChangeReq={setChangeReq}
         />
       </div>
     </div>
