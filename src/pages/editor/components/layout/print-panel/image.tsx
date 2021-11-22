@@ -620,7 +620,7 @@ const Image: React.FC<Props> = ({
     })
   }, [object.props?.cropStyle || object.props])
 
-  const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props.imageStyle
+  const { brightness = 100, contrast = 100, saturation = 100, filter = '' } = object.props?.imageStyle
   const cropper = object.props.cropStyle
   const _filter = `${filter}brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`
   const cropperRatio = cropper ? cropper.width / cropper.height : 0

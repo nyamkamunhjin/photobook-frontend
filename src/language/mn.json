@@ -380,5 +380,14 @@
   "move_editor": "Move editor",
   "change.size": "Өөрчлөх",
   "orientation": "Хэлбэр",
-  "change_request": "Өөрчлүүлэх хүсэлт"
+  "change_request": "Өөрчлүүлэх хүсэлт",
+  "select_and_customise_multiple_photos": "Select and customize multiple photos.",
+  "select_all": "Select all",
+  "selected_photos": "Selected photos:",
+  "edit_selected_photos": "Edit selected photos",
+  "rotate": "Rotate",
+  "crop": "Crop",
+  "image_brightening_enhancement": "Image brightening / Enhancement",
+  "amount": "Amount",
+  "apply": "Apply"
 }

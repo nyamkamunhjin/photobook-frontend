@@ -401,7 +401,6 @@ export const addNewPrintSlide =
       const result = await updateProjectPrintSlides(projectId, {
         push: images,
       })
-      console.log('aaaaaaaaaaaa fuck', result?.data.actions)
       dispatch({
         type: NEW_SLIDES,
         payload: { slides: result?.data.actions || [] },

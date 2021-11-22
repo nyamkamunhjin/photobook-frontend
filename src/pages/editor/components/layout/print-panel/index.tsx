@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { useDrop, useRequest } from 'ahooks'
 import {
@@ -28,6 +28,7 @@ import {
 } from 'interfaces'
 
 import Grid from './grid'
+import Sidebar from './sidebar'
 import UploadPhotosGroup from '../upload-modal/upload-photos-group'
 
 interface Props {
@@ -57,6 +58,7 @@ const PrintPanel: React.FC<Props> = ({
 }) => {
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'print' }))
   const paperMaterials = useRequest(() => listPaperMaterial({ current: 0, pageSize: 100 }, { templateTypes: 'print' }))
+  const [selectedSlides, setSelectedSlides] = useState<Slide[]>()
   const [props, { isHovering }] = useDrop({
     onFiles: (files) => {
       uploadImages()
@@ -135,35 +137,47 @@ const PrintPanel: React.FC<Props> = ({
 
   return (
     <div className="center-panel h-full" style={isHovering ? { background: '#add6ff' } : {}} {...props}>
-      {currentProject.slides.length > 0 && (
-        <Grid
-          loading={loading || projectLoading}
-          uploadPhoto={uploadPhoto}
-          syncPhoto={syncPhoto}
-          linkPhoto={linkPhoto}
-          duplicatePhoto={duplicatePhoto}
-          removePhoto={removePhoto}
-          paperSizes={paperSizes.data?.list || []}
-          paperMaterials={paperMaterials.data?.list || []}
-          currentProject={currentProject}
-        />
-      )}
-      <div className="TabView">
-        <div className="UserPhotoList">
-          <div className="LibraryItemsListContainer">
-            <div className="UploadImageDropArea">
-              <div>
-                <p>
-                  <FormattedMessage id="choose_source_to" />
-                </p>
-                <p className="phrase-add">
-                  <FormattedMessage id="add_photos" />
-                </p>
+      <div className="flex h-full w-full">
+        <div className="flex-1">
+          {currentProject.slides.length > 0 && (
+            <Grid
+              loading={loading || projectLoading}
+              uploadPhoto={uploadPhoto}
+              syncPhoto={syncPhoto}
+              linkPhoto={linkPhoto}
+              duplicatePhoto={duplicatePhoto}
+              removePhoto={removePhoto}
+              paperSizes={paperSizes.data?.list || []}
+              paperMaterials={paperMaterials.data?.list || []}
+              currentProject={currentProject}
+              selectedSlides={selectedSlides}
+              setSelectedSlides={setSelectedSlides}
+            />
+          )}
+          <div className="TabView">
+            <div className="UserPhotoList">
+              <div className="LibraryItemsListContainer">
+                <div className="UploadImageDropArea">
+                  <div>
+                    <p>
+                      <FormattedMessage id="choose_source_to" />
+                    </p>
+                    <p className="phrase-add">
+                      <FormattedMessage id="add_photos" />
+                    </p>
+                  </div>
+                  <UploadPhotosGroup single uploadPhoto={uploadPhoto} syncPhoto={syncPhoto} linkPhoto={linkPhoto} />
+                </div>
               </div>
-              <UploadPhotosGroup single uploadPhoto={uploadPhoto} syncPhoto={syncPhoto} linkPhoto={linkPhoto} />
             </div>
           </div>
         </div>
+        <Sidebar
+          currentProject={currentProject}
+          loading={projectLoading}
+          selectedSlides={selectedSlides}
+          setSelectedSlides={setSelectedSlides}
+        />
       </div>
     </div>
   )

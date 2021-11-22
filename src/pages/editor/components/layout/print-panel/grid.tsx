@@ -22,6 +22,8 @@ interface Props {
   duplicatePhoto: (object: Slide) => void
   removePhoto: (object: Slide) => void
   currentProject: Project
+  selectedSlides?: Slide[]
+  setSelectedSlides: (value: any) => void
 }
 
 const Grid: React.FC<Props> = ({
@@ -34,9 +36,10 @@ const Grid: React.FC<Props> = ({
   currentProject: { slides, templateType },
   paperSizes,
   paperMaterials,
+  selectedSlides,
+  setSelectedSlides,
 }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
-  const [selectedSlides, setSelectedSlides] = useState<Slide[]>()
   const [slideIndex, setSlideIndex] = useState<number>(-1)
   const [sort, setSort] = useLocalStorageState('sort', 'a-z')
   const [zoom, setZoom] = useLocalStorageState('zoom', 1)

@@ -421,7 +421,7 @@ export interface Project {
   images?: ProjectImage[]
   layouts?: LayoutInterface[]
   coverEditable?: boolean
-  changeRequest?: string[]
+  enhancement?: boolean
 }
 
 export interface Image {

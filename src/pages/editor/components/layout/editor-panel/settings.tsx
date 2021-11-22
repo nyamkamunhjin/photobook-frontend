@@ -56,7 +56,7 @@ const SlideSettings: React.FC<Props> = ({
     bindingType?: BindingType
     coverMaterial?: CoverMaterial
     coverMaterialColor?: CoverMaterialColor
-    changeRequest?: string
+    enhancement?: boolean
   }>({
     orientation: currentProject.paperSize?.orientation,
     paperSize: currentProject.paperSize,
@@ -64,7 +64,7 @@ const SlideSettings: React.FC<Props> = ({
     bindingType: undefined,
     coverMaterial: undefined,
     coverMaterialColor: undefined,
-    changeRequest: undefined,
+    enhancement: undefined,
   })
 
   // const initialState = useCallback(() => {
@@ -88,7 +88,7 @@ const SlideSettings: React.FC<Props> = ({
   //     bindingType,
   //     coverMaterial,
   //     coverMaterialColor,
-  //     changeRequest: 'Unnecessary',
+  //     enhancement: false,
   //   })
   // }, [orientations, setSelectedState])
 
@@ -369,12 +369,12 @@ const SlideSettings: React.FC<Props> = ({
           <span className="font-normal text-sm">{intl.formatMessage({ id: 'change_request' })}</span>
           <div className="flex flex-wrap gap-4 w-2/3">
             <Select className="w-full flex items-center">
-              {['Brightness', 'Color', 'Unnecessary'].map((each) => (
+              {['Yes', 'No'].map((each) => (
                 <Select.Option
                   key={each}
                   value={each}
                   onClick={() => {
-                    setSelectedState((prev) => ({ ...prev, changeRequest: each }))
+                    setSelectedState((prev) => ({ ...prev, enhancement: each === 'Yes' }))
                   }}
                 >
                   {each}
