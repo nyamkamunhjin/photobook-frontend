@@ -32,8 +32,6 @@ interface Props {
   hasPrevious?: () => boolean
   visible: boolean
   onRemove: (index: number) => void
-  changeReq: any
-  setChangeReq: (value: any) => void
 }
 
 const Editor: React.FC<Props> = ({
@@ -49,8 +47,6 @@ const Editor: React.FC<Props> = ({
   paperSizes,
   paperMaterials,
   onRemove,
-  changeReq,
-  setChangeReq,
 }) => {
   const [height] = useWindow()
   const maxWidth = 1000
@@ -62,6 +58,7 @@ const Editor: React.FC<Props> = ({
   const ratio = Math.min(srcWidth / maxWidth, srcHeight / maxHeight)
   const object = getSlides(sort, slides)[slideIndex]
   const [cropperCenter, setCropperCenter] = useState({ top: 0, left: 0 })
+  const [changeReq, setChangeReq] = useState({ isChanged: false, action: '' })
 
   // states
   return (
@@ -132,9 +129,7 @@ const Editor: React.FC<Props> = ({
     </ImageModal>
   )
 }
-const mapStateToProps = (state: RootInterface) => ({
-  slides: state.project.currentProject.slides,
-})
+const mapStateToProps = (state: RootInterface) => ({})
 
 export default connect(mapStateToProps, {
   saveProject: _saveProject,

@@ -24,8 +24,6 @@ interface Props {
   currentProject: Project
   selectedSlides?: Slide[]
   setSelectedSlides: (value: any) => void
-  changeReq: any
-  setChangeReq: (value: any) => void
 }
 
 const Grid: React.FC<Props> = ({
@@ -40,8 +38,6 @@ const Grid: React.FC<Props> = ({
   paperMaterials,
   selectedSlides,
   setSelectedSlides,
-  changeReq,
-  setChangeReq,
 }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   const [slideIndex, setSlideIndex] = useState<number>(-1)
@@ -180,8 +176,7 @@ const Grid: React.FC<Props> = ({
           visible={slideIndex !== -1}
           object={slides[slideIndex]}
           onRemove={(index) => onRemove(slides[index])}
-          changeReq={changeReq}
-          setChangeReq={setChangeReq}
+          slides={getSlides(sort, slides)}
         />
       )}
     </div>

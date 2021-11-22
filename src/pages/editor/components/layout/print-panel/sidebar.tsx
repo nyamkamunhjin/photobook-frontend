@@ -28,9 +28,8 @@ interface Props {
   loading: Boolean
   selectedSlides?: Slide[]
   setSelectedSlides: (value: any) => void
-  setChangeReq: (value: any) => void
 }
-const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, setSelectedSlides, setChangeReq }) => {
+const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, setSelectedSlides }) => {
   const paperSizes = useRequest(() => listPaperSize({ current: 0, pageSize: 100 }, { templateType: 'print' }))
   const paperMaterials = useRequest(() => listPaperMaterial({ current: 0, pageSize: 100 }, { templateTypes: 'print' }))
   const [selectedState, setSelectedState] = useState<{
@@ -77,7 +76,6 @@ const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, set
     })
     try {
       await updateProject(currentProject.id, { slides })
-      setChangeReq({ isChanged: true, action: 'angle' })
     } catch (err) {
       console.error(err)
     }
@@ -101,14 +99,12 @@ const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, set
           height = ParseNumber(cropStyle?.width)
           cropStyle.width = width
           cropStyle.height = height
-          setChangeReq({ isChanged: true, action: 'orientation vertical' })
         } else return slide
       } else if (width < height) {
         width = height
         height = ParseNumber(cropStyle?.width)
         cropStyle.width = width
         cropStyle.height = height
-        setChangeReq({ isChanged: true, action: 'orientation horizontal' })
       } else return slide
 
       const cropperRatio = width / height
@@ -342,7 +338,6 @@ const Sidebar: React.FC<Props> = ({ currentProject, loading, selectedSlides, set
 
 const mapStateToProps = (state: RootInterface) => ({
   image: state.image,
-  project: state.project,
 })
 
 export default connect(mapStateToProps, {})(Sidebar)
