@@ -1,3 +1,3 @@
-# Exa photobook
+# Photobook
 
 
